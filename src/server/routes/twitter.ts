@@ -1,6 +1,6 @@
 import {Express} from 'express';
 import {OAuth} from 'oauth';
-import {createUser, getUserByTwitterId} from './models/user';
+import {createUser, getUserByTwitterId} from '../models/user';
 
 /*
  * Here's how Twitter auth works:

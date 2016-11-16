@@ -16,7 +16,7 @@ function genAuthToken(): Promise<string> {
   });
 }
 
-interface User {
+export interface User {
   id: number;
   authToken: string;
   twitterId: string;
@@ -45,8 +45,8 @@ export async function createUser(opts: CreateUserOptions): Promise<User> {
   return user;
 }
 
-export async function getUserByTwitterId(id: string): Promise<User | null> {
-  const query = db!('users').where({twitter_id: id});
+async function getUserWhere(params: any) {
+  const query = db!('users').where(params);
 
   const [row] = await (query as any);
 
@@ -60,15 +60,13 @@ export async function getUserByTwitterId(id: string): Promise<User | null> {
 }
 
 export async function getUserByAuthToken(authToken: string): Promise<User | null> {
-  const query = db!('users').where({auth_token: authToken});
+  return await getUserWhere({auth_token: authToken});
+}
 
-  const [row] = await (query as any);
+export async function getUserByTwitterId(id: string): Promise<User | null> {
+  return await getUserWhere({twitter_id: id});
+}
 
-  if (!row) {
-    return null;
-  }
-
-  const user = camelizeKeys(row) as User;
-
-  return user;
+export async function getUserByTwitterName(name: string): Promise<User | null> {
+  return await getUserWhere({twitter_name: name});
 }
