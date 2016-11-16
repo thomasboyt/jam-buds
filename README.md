@@ -4,6 +4,14 @@ Jam Buds is a tiny web application that helps you share music with your friends.
 
 In Jam Buds, a user can paste links to songs that like. These links are then put into a playlist for that user that their friends can access and play through at their leisure.
 
+## TODOs
+
+- [ ] Create frontend app scaffolding (Redux, React-Router, etc)
+- [ ] Implement login wall & current user endpoint
+- [ ] Implement post song page
+- [ ] Implement song list page
+- [ ] Implement friends list page
+
 ## Install
 
 ```
@@ -46,6 +54,8 @@ Jam Buds's frontend will likely be a simple React and Redux app.
 Jam Buds's API should be a simple REST-ish JSON thing. It would be nice to make it possible to make an iPhone app down the line, so it'll be access token-based instead of cookie-based.
 
 * `POST /users` - Create or log in as a user with a Twitter auth token (this is gonna be some kinda OAuth callback-y thing)
-* `POST /users/me/songs` - Post a new song to your list
-* `DELETE /users/me/songs/:id` - Change your mind on a song
-* `GET /users/:id/songs` - Get a user's playlist
+* `GET /users/me` - Get current user. Hit when you first load the app to make sure you're logged in and get basic info.
+* `POST /users/me/songs` - Post a new song to your list.
+* `GET /users/:id/songs` - Get a user's playlist.
+* `DELETE /users/me/songs/:id` - Change your mind on a song.
+* `GET /users/friends` - Get your Twitter friends who are on Jam Buds.
