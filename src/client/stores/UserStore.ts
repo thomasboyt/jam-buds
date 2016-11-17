@@ -17,8 +17,8 @@ export default class UserStore {
         this.loggedIn = true;
         this.name = user.name;
       }
-
-      this.loadedUser = true;
     }
+
+    this.loadedUser = true;
   }
 }
