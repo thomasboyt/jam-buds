@@ -4,8 +4,9 @@ import {User, getUserByAuthToken} from './models/user';
 export async function getUserFromRequest(req: Request): Promise<User | null> {
   let user: User | null = null;
 
-  if (req.query.authToken) {
-    user = await getUserByAuthToken(req.query.authToken);
+  const token = req.get('X-Auth-Token');
+  if (token) {
+    user = await getUserByAuthToken(token);
   }
 
   return user;

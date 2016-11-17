@@ -1,11 +1,12 @@
 import * as React from 'react';
-import getHttpApiUrl from '../util/getHttpApiUrl';
 
 function openTwitterAuth(e: React.MouseEvent<any>) {
   e.preventDefault();
 
+  const apiUrl = process.env.SERVER_URL;
+
   window.open(
-    `${getHttpApiUrl()}/twitter-sign-in`,
+    `${apiUrl}/twitter-sign-in`,
     'TwitterSignIn',
     'resizable,scrolbars,status,width=500,height=400'
   );

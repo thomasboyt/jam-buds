@@ -5,18 +5,20 @@ import './twitterAuthHandler';
 
 import * as React from 'react';
 import {render} from 'react-dom';
+import {Provider} from 'mobx-react';
 
 import {Router, Route, browserHistory} from 'react-router';
-import {Provider} from 'react-redux';
-
-import makeStore from './makeStore';
-
-const store = makeStore(browserHistory);
 
 import MainScreen from './components/MainScreen';
 
+import UserStore from './stores/UserStore';
+
+const stores = {
+  userStore: new UserStore,
+};
+
 render((
-  <Provider store={store}>
+  <Provider {...stores}>
     <Router history={browserHistory}>
       <Route path="/" component={MainScreen} />
     </Router>

@@ -1,12 +1,11 @@
 import {AUTH_TOKEN_KEY} from './constants';
-import getHttpApiUrl from './util/getHttpApiUrl';
 
 window.addEventListener('message', async (event: MessageEvent) => {
   const data = JSON.parse(event.data);
 
   if (data.type === 'twitterAuth') {
     const {token, secret} = data;
-    const apiUrl = getHttpApiUrl();
+    const apiUrl = process.env.SERVER_URL;
 
     const resp = await fetch(`${apiUrl}/twitter-auth-token`, {
       method: 'POST',
