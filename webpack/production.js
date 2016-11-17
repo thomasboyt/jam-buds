@@ -12,6 +12,7 @@ module.exports = webpackMerge(config, {
       'process.env': {
         NODE_ENV: '"production"',
         BUILD_SHA: `"${sha}"`,
+        SERVER_URL: `"${process.env.SERVER_URL || 'https://jambuds.herokuapp.com'}"`,
       }
     }),
 

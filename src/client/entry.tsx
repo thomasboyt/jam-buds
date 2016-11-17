@@ -1,6 +1,7 @@
 require('../../styles/main.scss');
 
 import 'whatwg-fetch';
+import './twitterAuthHandler';
 
 import * as React from 'react';
 import {render} from 'react-dom';

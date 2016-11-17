@@ -29,6 +29,7 @@
   },
   "dependencies": {
     "@types/body-parser": "0.0.33",
+    "@types/cors": "0.0.33",
     "@types/express": "^4.0.34",
     "@types/humps": "^1.1.2",
     "@types/knex": "0.0.35",
@@ -41,8 +42,10 @@
     "@types/redux-thunk": "^2.1.31",
     "@types/whatwg-fetch": "0.0.32",
     "body-parser": "^1.15.2",
+    "cors": "^2.8.1",
     "express": "^4.14.0",
     "humps": "^2.0.0",
+    "immutable": "^3.8.1",
     "knex": "^0.12.6",
     "oauth": "^0.9.14",
     "pg": "^6.1.0",

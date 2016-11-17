@@ -35,7 +35,32 @@ npm run run-server
 
 ## Deploy
 
-TODO.
+Create a Heroku app and create configuration:
+
+```
+# you want to set this to make sure things like sentry, etc. are enabled
+heroku config:set NODE_ENV=production
+
+# obviously replace these with wherever you deploy the backend & frontend
+heroku config:set SERVER_URL=https://myapp.herokuapps.com
+heroku config:set STATIC_URL=https://myapp.surge.sh
+
+# Twitter API key and secret, used for Twitter OAuth.
+heroku config:set TWITTER_API_KEY=foo
+heroku config:set TWITTER_API_SECRET=bar
+```
+
+You're gonna want a database:
+
+```
+heroku addons:create heroku-postgresql:hobby-dev
+```
+
+Grab the DATABASE_URL from `heroku config:get DATABASE_URL`, and paste it into your knexfile so you can run migrations:
+
+```
+/node_modules/.bin/knex migrate:latest --env production
+```
 
 ## Architecture
 
