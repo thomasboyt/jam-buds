@@ -6,8 +6,8 @@ In Jam Buds, a user can paste links to songs that like. These links are then put
 
 ## TODOs
 
-- [ ] Create frontend app scaffolding (Redux, React-Router, etc)
-- [ ] Implement login wall & current user endpoint
+- [x] Create frontend app scaffolding (~~Redux~~ Mobx, React-Router, etc)
+- [x] Implement login wall & current user endpoint
 - [ ] Implement post song page
 - [ ] Implement song list page
 - [ ] Implement friends list page
