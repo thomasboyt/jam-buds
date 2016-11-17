@@ -35,6 +35,8 @@ npm run run-server
 
 ## Deploy
 
+### Backend (Heroku)
+
 Create a Heroku app and create configuration:
 
 ```
@@ -61,6 +63,28 @@ Grab the DATABASE_URL from `heroku config:get DATABASE_URL`, and paste it into y
 ```
 /node_modules/.bin/knex migrate:latest --env production
 ```
+
+### Frontend (Firebase Hosting)
+
+*Note: you can host this with just about anything, as long as you upload the `build/` folder output by `npm run build` somewhere!*
+
+Install Firebase's CLI tools if you don't have it:
+
+```
+npm install -g firebase-tools
+```
+
+Create a new Firebase hosting project. Then add a `.firebaserc`:
+
+```
+{
+  "projects": {
+    "default": "firebase-project-id"
+  }
+}
+```
+
+Then run `npm run deploy` to build and deploy to Firebase.
 
 ## Architecture
 

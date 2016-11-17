@@ -7,6 +7,8 @@
   "scripts": {
     "run-client": "webpack-dev-server --config webpack/dev.js",
     "run-server": "ts-node --fast src/server/entry.ts",
+    "build": "rm -rf build/ && webpack --config webpack/production.js && cp -r static/* build/",
+    "deploy": "npm run build && firebase deploy",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Thomas Boyt <me@thomasboyt.com>",

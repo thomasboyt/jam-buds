@@ -8,7 +8,7 @@ module.exports = {
   },
 
   output: {
-    path: './build/client',
+    path: './build',
     filename: '[name].[chunkhash].js'
   },
 
