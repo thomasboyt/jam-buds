@@ -7,9 +7,11 @@ import * as React from 'react';
 import {render} from 'react-dom';
 import {Provider} from 'mobx-react';
 
-import {Router, Route, browserHistory} from 'react-router';
+import {Router, Route, IndexRoute, browserHistory} from 'react-router';
 
-import MainScreen from './components/MainScreen';
+import App from './components/App';
+import HomeScreenPlaceholder from './components/HomeScreenPlaceholder';
+import Playlist from './components/Playlist';
 
 import UserStore from './stores/UserStore';
 
@@ -20,7 +22,10 @@ const stores = {
 render((
   <Provider {...stores}>
     <Router history={browserHistory}>
-      <Route path="/" component={MainScreen} />
+      <Route path="/" component={App}>
+        <IndexRoute component={HomeScreenPlaceholder} />
+        <Route path="/playlist/:name" component={Playlist} />
+       </Route>
     </Router>
   </Provider>
 ), document.querySelector('.app-container'));

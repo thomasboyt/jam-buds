@@ -9,7 +9,8 @@ module.exports = {
 
   output: {
     path: './build',
-    filename: '[name].[chunkhash].js'
+    filename: '[name].[chunkhash].js',
+    publicPath: '/',
   },
 
   plugins: [

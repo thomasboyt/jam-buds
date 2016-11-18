@@ -108,3 +108,16 @@ Jam Buds's API should be a simple REST-ish JSON thing. It would be nice to make 
 * `GET /users/:id/songs` - Get a user's playlist.
 * `DELETE /users/me/songs/:id` - Change your mind on a song.
 * `GET /users/friends` - Get your Twitter friends who are on Jam Buds.
+
+## Design
+
+Jam Buds is designed as a two-pane single-screen app. In a left-hand column, you can select a friend's playlist, or post a new song to your own. In the right hand-column, the current playlist is displayed. In a v2 I want to display a feed of all songs you haven't heard on the right-hand side.
+
+At the top of the left-hand column will be the audio player itself. Not sure how that's gonna work with non-Youtube sources yet.
+
+The playlist is presented as a time-descending list of songs. By default, the playlist grays out songs that you have already listened to. A "skip played" option, enabled by default, should be displayed somewhere.
+
+some potentially useful things:
+
+- react audio (youtube) player widget from loudplaces.disco.zone https://github.com/thomasboyt/loudplaces.disco.zone/tree/master/app/components/audio
+- how to do a social feed http://stackoverflow.com/questions/1443960/how-to-implement-the-activity-stream-in-a-social-network
