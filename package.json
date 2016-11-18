@@ -4,6 +4,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "engines": {
+    "node": "6.x"
+  },
   "scripts": {
     "run-client": "webpack-dev-server --config webpack/dev.js",
     "run-server": "ts-node --fast src/server/entry.ts",
