@@ -9,10 +9,6 @@ if (process.env.NODE_ENV !== 'production') {
   pg.defaults.ssl = true;
 }
 
-if (process.env.NODE_ENV !== 'production') {
- require('dotenv').config();
-}
-
 module.exports = {
 
   development: {
