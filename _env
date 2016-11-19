@@ -1,3 +1,9 @@
+###
+# DON'T MODIFY THIS FILE WITH YOUR VARIOUS SECRET THINGS!
+#
+# Copy-paste it to .env and add them there
+###
+
 # The URL of the database. This is set automatically by Heroku.
 DATABASE_URL=postgres://username@localhost:5432/jambuds
 
@@ -10,3 +16,7 @@ SERVER_URL=http://localhost:3000
 
 # The root origin of the web app. Also used for Twitter auth stuff.
 STATIC_URL=http://localhost:8080
+
+# Spotify API key and secret
+SPOTIFY_CLIENT_ID=
+SPOTIFY_CLIENT_SECRET=

@@ -46,6 +46,7 @@
     "express": "^4.14.0",
     "humps": "^2.0.0",
     "knex": "^0.12.6",
+    "microdata-node": "^0.2.1",
     "mobx": "^2.6.2",
     "mobx-react": "^3.5.9",
     "normalize.css": "^5.0.0",

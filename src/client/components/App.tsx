@@ -4,9 +4,8 @@ import {observer, inject} from 'mobx-react';
 import UserStore from '../stores/UserStore';
 
 import TwitterAuth from './TwitterAuth';
+import SubmitBox from './SubmitBox';
 import {AUTH_TOKEN_KEY} from '../constants';
-
-import getSongsSearch from '../api/getSongsSearch';
 
 function signOut() {
   localStorage.removeItem(AUTH_TOKEN_KEY);
@@ -15,23 +14,6 @@ function signOut() {
 
 interface Props {
   userStore?: UserStore;
-}
-
-class SubmitBox extends React.Component<> {
-  handleSubmit(e: Event) {
-    e.preventDefault();
-
-    // todo: this should be an action lol
-    getSongsSearch('broccoli');
-  }
-
-  render() {
-    return (
-      <div>
-        <input type="text" /> <button onClick={(e) => this.handleSubmit(e)}>is my shit</button>
-      </div>
-    );
-  }
 }
 
 @inject((allStores) => ({
