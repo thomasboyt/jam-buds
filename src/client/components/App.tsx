@@ -6,6 +6,8 @@ import UserStore from '../stores/UserStore';
 import TwitterAuth from './TwitterAuth';
 import {AUTH_TOKEN_KEY} from '../constants';
 
+import getSongsSearch from '../api/getSongsSearch';
+
 function signOut() {
   localStorage.removeItem(AUTH_TOKEN_KEY);
   document.location.href = '/';
@@ -13,6 +15,23 @@ function signOut() {
 
 interface Props {
   userStore?: UserStore;
+}
+
+class SubmitBox extends React.Component<> {
+  handleSubmit(e: Event) {
+    e.preventDefault();
+
+    // todo: this should be an action lol
+    getSongsSearch('broccoli');
+  }
+
+  render() {
+    return (
+      <div>
+        <input type="text" /> <button onClick={(e) => this.handleSubmit(e)}>is my shit</button>
+      </div>
+    );
+  }
 }
 
 @inject((allStores) => ({
@@ -32,7 +51,7 @@ class App extends React.Component<Props, {}> {
 
         <p>hey, post a song! paste a link here and get goin'</p>
 
-        <input type="text" /> <button>is my shit</button>
+        <SubmitBox />
 
         <p>listen to a friend's tunes</p>
 

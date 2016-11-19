@@ -5,6 +5,7 @@ import * as cors from 'cors';
 import {configureDatabase} from './db';
 import registerTwitterEndpoints from './routes/twitter';
 import registerUserEndpoints from './routes/users';
+import registerSearchEndpoints from './routes/search';
 import {getUserByAuthToken} from './models/user';
 
 if (process.env.NODE_ENV !== 'production') {
@@ -22,6 +23,7 @@ app.use(cors({
 
 registerUserEndpoints(app);
 registerTwitterEndpoints(app);
+registerSearchEndpoints(app);
 
 const port = process.env.PORT || 3000;
 

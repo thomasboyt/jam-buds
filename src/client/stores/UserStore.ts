@@ -1,5 +1,6 @@
 import {observable, action} from 'mobx';
 import getCurrentUser from '../api/getCurrentUser';
+import {AUTH_TOKEN_KEY} from '../constants';
 
 export default class UserStore {
   @observable loadedUser: boolean = false;
@@ -8,7 +9,7 @@ export default class UserStore {
 
   @action async logIn() {
     this.loadedUser = false;
-    const token = localStorage.getItem('authToken');
+    const token = localStorage.getItem(AUTH_TOKEN_KEY);
 
     if (token) {
       const user = await getCurrentUser();
