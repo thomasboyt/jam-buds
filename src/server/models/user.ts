@@ -1,20 +1,6 @@
 import {db} from '../db';
-import * as crypto from 'crypto';
+import genAuthToken from '../util/genAuthToken';
 import {camelizeKeys, decamelizeKeys} from 'humps';
-
-function genAuthToken(): Promise<string> {
-  return new Promise<string>((resolve, reject) => {
-    crypto.randomBytes(24, (err, buf) => {
-      if (err) {
-        reject(err);
-        return;
-      }
-
-      const str = buf.toString('hex') + Date.now();
-      resolve(str);
-    });
-  });
-}
 
 export interface User {
   id: number;
