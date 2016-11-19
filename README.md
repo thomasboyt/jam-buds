@@ -8,9 +8,10 @@ In Jam Buds, a user can paste links to songs that like. These links are then put
 
 - [x] Create frontend app scaffolding (~~Redux~~ Mobx, React-Router, etc)
 - [x] Implement login wall & current user endpoint
-- [ ] Implement post song page
-- [ ] Implement song list page
-- [ ] Implement friends list page
+- [ ] Implement post song/search results
+- [ ] Implement playlist
+- [ ] Implement friends list
+- [ ] Implement audio player
 
 ## Install
 
@@ -96,7 +97,7 @@ Your shared songs list is public, so even without authenticating, other users ca
 
 ### Frontend
 
-Jam Buds's frontend will likely be a simple React and Redux app.
+Jam Buds's frontend is a simple React and Mobx app.
 
 ### API
 
