@@ -12,11 +12,14 @@ import {Router, Route, IndexRoute, browserHistory} from 'react-router';
 import App from './components/App';
 import HomeScreenPlaceholder from './components/HomeScreenPlaceholder';
 import Playlist from './components/Playlist';
+import SearchResults from './components/SearchResults';
 
 import UserStore from './stores/UserStore';
+import SearchStore from './stores/SearchStore';
 
 const stores = {
-  userStore: new UserStore,
+  userStore: new UserStore(),
+  searchStore: new SearchStore(),
 };
 
 render((
@@ -25,6 +28,7 @@ render((
       <Route path="/" component={App}>
         <IndexRoute component={HomeScreenPlaceholder} />
         <Route path="/playlist/:name" component={Playlist} />
+        <Route path="/search" component={SearchResults} />
        </Route>
     </Router>
   </Provider>

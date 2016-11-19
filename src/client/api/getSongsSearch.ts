@@ -6,4 +6,6 @@ export default async function getCurrentUser(query: string): Promise<any> {
     method: 'GET',
     params: { query },
   });
+
+  return resp.data.songs;
 }

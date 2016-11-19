@@ -62,7 +62,7 @@ class App extends React.Component<Props, {}> {
           {this.props.children}
         </div>
       </div>
-    )
+    );
   }
 
   render() {

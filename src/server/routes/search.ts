@@ -3,8 +3,21 @@ import {isAuthenticated} from '../auth';
 import * as spotify from '../apis/spotify';
 import * as bandcamp from '../apis/bandcamp';
 
+import {SearchResult} from '../../universal/resources';
+
 const SPOTIFY_URL = /https:\/\/open.spotify.com\/track\/(.*)/;
 const BANDCAMP_URL = /https:\/\/(.*).bandcamp.com\/track\/(.*)/;
+
+function serializeSpotifyResults(results: any[]): SearchResult[] {
+  return results.map((result) => {
+    return {
+      name: result.name,
+      album: result.album.name,
+      artists: result.artists.map((artist: any) => artist.name),
+      spotifyId: result.id,
+    };
+  });
+}
 
 export default function registerSearchEndpoints(app: Express) {
 
@@ -24,7 +37,8 @@ export default function registerSearchEndpoints(app: Express) {
     if (SPOTIFY_URL.test(query)) {
       const spotifyId = (query.match(SPOTIFY_URL)!)[1];
       // TODO: look up from database before making request
-      results = [await spotify.getTrackById(spotifyId)];
+      const song = await spotify.getTrackById(spotifyId);
+      results = [song];
 
     } else {
       if (BANDCAMP_URL.test(query)) {
@@ -34,12 +48,8 @@ export default function registerSearchEndpoints(app: Express) {
       results = await spotify.search(query);
     }
 
-    console.log(results);
-
-    // TODO: transform results here
-
     res.send({
-      results: [],
+      songs: serializeSpotifyResults(results),
     });
   });
 

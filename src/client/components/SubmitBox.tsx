@@ -1,17 +1,26 @@
 import * as React from 'react';
+import {withRouter, InjectedRouter} from 'react-router';
 
 import getSongsSearch from '../api/getSongsSearch';
 
-class SubmitBox extends React.Component<{}, {}> {
+interface Props {
+  router: InjectedRouter;
+}
+
+@withRouter
+class SubmitBox extends React.Component<Props, {}> {
   input: HTMLInputElement;
 
   handleSubmit(e: React.MouseEvent<any>) {
     e.preventDefault();
 
     const query = this.input.value;
+    const {router} = this.props;
 
-    // todo: this should be an action lol
-    getSongsSearch(query);
+    router.push({
+      pathname: '/search',
+      query: {query},
+    });
   }
 
   render() {
