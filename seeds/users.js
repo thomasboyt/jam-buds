@@ -6,7 +6,6 @@ exports.seed = function(knex, Promise) {
       return Promise.all([
         // Inserts seed entries
         knex('users').insert({
-          id: 1,
           auth_token: 'devaccount',
           twitter_name: 'devaccount',
           twitter_id: '1234',

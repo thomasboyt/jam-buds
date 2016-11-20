@@ -1,0 +1,6 @@
+#!/bin/bash
+
+dropdb jambuds
+createdb jambuds
+./node_modules/.bin/knex migrate:latest
+./node_modules/.bin/knex seed:run

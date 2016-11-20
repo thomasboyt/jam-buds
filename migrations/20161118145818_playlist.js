@@ -4,10 +4,17 @@ exports.up = function(knex, Promise) {
     table.increments('id');
     table.timestamps();
 
-    table.string('artist')
+    table
+      .specificType('artists', 'text[]')
+      .notNullable();
+
+    table.string('album')
       .notNullable();
 
     table.string('title')
+      .notNullable();
+
+    table.string('spotify_id')
       .notNullable();
 
     table.string('youtube_url')
@@ -44,7 +51,7 @@ exports.up = function(knex, Promise) {
       table.index(['user_id', 'song_id']);
     });
   });
-  
+
 };
 
 exports.down = function(knex, Promise) {

@@ -19,12 +19,7 @@ In Jam Buds, a user can paste links to songs that like. These links are then put
 npm install
 createdb jambuds
 ./node_modules/.bin/knex init
-```
-
-Replace the databases in `knexfile.js` and `.env` with the correct development locations. Then run:
-
-```
-./node_modules/.bin/knex migrate:latest
+npm run resetdb
 ```
 
 To start the app, in two separate sessions, run:

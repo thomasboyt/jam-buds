@@ -1,6 +1,14 @@
 import {Express} from 'express';
 import {User, getUserByTwitterName} from '../models/user';
+
+import {
+  getSongBySpotifyId,
+  createSongFromSpotifyResource,
+  addSongToPlaylist
+} from '../models/song';
+
 import {getUserFromRequest, isAuthenticated} from '../auth';
+import * as spotify from '../apis/spotify';
 
 export default function registerUserEndpoints(app: Express) {
 
@@ -26,8 +34,20 @@ export default function registerUserEndpoints(app: Express) {
   // post a new song to your playlist
   app.post('/playlist', isAuthenticated, async (req, res) => {
     const user: User = res.locals.user;
+    const spotifyId = req.body.spotifyId;
 
-    // TODO: post to playlist
+    let song = await getSongBySpotifyId(spotifyId);
+
+    if (!song) {
+      const spotifyResource = await spotify.getTrackById(spotifyId);
+      song = await createSongFromSpotifyResource(spotifyResource);
+    }
+
+    await addSongToPlaylist(user.id, song.id);
+
+    res.json({
+      success: true,
+    });
   });
 
   // delete a song from your playlist
