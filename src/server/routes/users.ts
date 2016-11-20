@@ -8,6 +8,7 @@ import {
 
 import {
   addSongToPlaylist,
+  getPlaylistByUserId,
 } from '../models/playlist';
 
 import {getUserFromRequest, isAuthenticated} from '../auth';
@@ -68,7 +69,7 @@ export default function registerUserEndpoints(app: Express) {
   // get a user's playlist
   app.get('/playlists/:userName', async (req, res) => {
     const userName = req.params.userName;
-    const user = getUserByTwitterName(userName);
+    const user = await getUserByTwitterName(userName);
 
     if (!user) {
       res.status(404).json({
@@ -77,7 +78,12 @@ export default function registerUserEndpoints(app: Express) {
 
       return;
     }
-    // TODO: get user's playlist
+
+    const playlist = await getPlaylistByUserId(user.id);
+
+    res.send({
+      playlist,
+    });
   });
 
 }
