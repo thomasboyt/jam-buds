@@ -15,9 +15,16 @@ interface Props {
 })) @observer
 class SearchResults extends React.Component<Props, {}> {
   componentWillMount() {
-    const {searchStore} = this.props;
     const {query} = this.props.location.query;
-    searchStore!.search(query);
+    this.props.searchStore!.search(query);
+  }
+
+  componentWillReceiveProps(nextProps: Props) {
+    const nextQuery = nextProps.location.query.query;
+
+    if (nextQuery !== this.props.location.query.query) {
+      this.props.searchStore!.search(nextQuery);
+    }
   }
 
   render() {

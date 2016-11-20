@@ -4,7 +4,7 @@ import {withRouter, InjectedRouter} from 'react-router';
 import getSongsSearch from '../api/getSongsSearch';
 
 interface Props {
-  router: InjectedRouter;
+  router?: InjectedRouter;
 }
 
 @withRouter
@@ -17,7 +17,7 @@ class SubmitBox extends React.Component<Props, {}> {
     const query = this.input.value;
     const {router} = this.props;
 
-    router.push({
+    router!.push({
       pathname: '/search',
       query: {query},
     });

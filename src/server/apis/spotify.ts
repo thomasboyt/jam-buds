@@ -19,6 +19,6 @@ export async function getTrackById(id: string) {
  */
 export async function search(query: string) {
   const res = await spotifyApi.searchTracks(query);
-  const tracks = res.body.tracks;
+  const tracks = res.body.tracks.items;
   return tracks;
 }
