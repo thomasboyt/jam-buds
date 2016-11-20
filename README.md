@@ -117,9 +117,9 @@ The playlist is presented as a time-descending list of songs. By default, the pl
 
 The `users` table contains users.
 
-The `songs` table contains songs. These are normalized from various input sources, ideally, so they should have unique-enforced columns for youtube link, spotify link, etc.
+The `songs` table contains songs. These songs are the songs that are searched for via the Spotify API, after the user has pasted a link to a song. These songs are indexed on their Spotify ID, but a song entry can also not have a Spotify ID due to being a manual entry (for when songs don't exist in Spotify's database).
 
-A `users_songs` table joins users to songs, forming that user's playlist. This table should also include the date the user added that song for sorting.
+A `playlist_entry` table joins users to songs, forming that user's playlist. Beyond just joining the two tables' IDs, this table is also what actually contains the Youtube/Bandcamp/Soundcloud link a user shares. Think of this as a "shared song" resource. This table also includes the date the user added that song for sorting.
 
 A `users_songs_listened` table is what's used to track whether a specific user has listened to a song. Theoreticlaly, an entry in this row for a user and song means that user has listened to that song. This join could be weird?
 
