@@ -18,12 +18,16 @@ class Playlist extends React.Component<Props, {}> {
   }
 
   render() {
-    const tracks = this.props.playlistStore!.items;
+    const {items, name} = this.props.playlistStore!;
 
     return (
-      <ul>
-        {tracks.map((track) => <PlaylistItem key={track.id} track={track} />)}
-      </ul>
+      <div>
+        <h2>@{name}'s playlist</h2>
+
+        <ul>
+          {items.map((track) => <PlaylistItem key={track.id} track={track} />)}
+        </ul>
+      </div>
     );
   }
 }
