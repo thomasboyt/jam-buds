@@ -4,8 +4,11 @@ import {User, getUserByTwitterName} from '../models/user';
 import {
   getSongBySpotifyId,
   createSongFromSpotifyResource,
-  addSongToPlaylist
 } from '../models/song';
+
+import {
+  addSongToPlaylist,
+} from '../models/playlist';
 
 import {getUserFromRequest, isAuthenticated} from '../auth';
 import * as spotify from '../apis/spotify';
@@ -43,7 +46,11 @@ export default function registerUserEndpoints(app: Express) {
       song = await createSongFromSpotifyResource(spotifyResource);
     }
 
-    await addSongToPlaylist(user.id, song.id);
+    await addSongToPlaylist({
+      userId: user.id,
+      songId: song.id,
+      youtubeUrl: req.body.youtubeUrl,
+    });
 
     res.json({
       success: true,

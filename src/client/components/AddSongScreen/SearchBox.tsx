@@ -1,8 +1,7 @@
 import * as React from 'react';
 import {observer, inject} from 'mobx-react';
 
-import AddSongStore from '../stores/AddSongStore';
-import getSongsSearch from '../api/getSongsSearch';
+import AddSongStore from '../../stores/AddSongStore';
 
 interface Props {
   addSongStore?: AddSongStore
@@ -11,7 +10,7 @@ interface Props {
 @inject((allStores) => ({
   addSongStore: allStores.addSongStore
 })) @observer
-class SubmitBox extends React.Component<Props, {}> {
+class SearchBox extends React.Component<Props, {}> {
   input: HTMLInputElement;
 
   handleSubmit(e: React.MouseEvent<any>) {
@@ -20,17 +19,17 @@ class SubmitBox extends React.Component<Props, {}> {
     const query = this.input.value;
 
     const {addSongStore} = this.props;
-    addSongStore!.showAddSongScreen(query);
+    addSongStore!.search(query);
   }
 
   render() {
     return (
       <div>
         <input type="text" ref={(el) => this.input = el} />
-        <button onClick={(e) => this.handleSubmit(e)}>is my shit</button>
+        <button onClick={(e) => this.handleSubmit(e)}>find</button>
       </div>
     );
   }
 }
 
-export default SubmitBox;
+export default SearchBox;

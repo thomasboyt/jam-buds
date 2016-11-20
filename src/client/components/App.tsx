@@ -1,11 +1,14 @@
 import * as React from 'react';
 import {Link} from 'react-router';
 import {observer, inject} from 'mobx-react';
+
+import {AUTH_TOKEN_KEY} from '../constants';
 import UserStore from '../stores/UserStore';
+import AddSongStore from '../stores/AddSongStore';
 
 import TwitterAuth from './TwitterAuth';
 import SubmitBox from './SubmitBox';
-import {AUTH_TOKEN_KEY} from '../constants';
+import AddSongScreen from './AddSongScreen';
 
 function signOut() {
   localStorage.removeItem(AUTH_TOKEN_KEY);
@@ -14,10 +17,12 @@ function signOut() {
 
 interface Props {
   userStore?: UserStore;
+  addSongStore?: AddSongStore,
 }
 
 @inject((allStores) => ({
-  userStore: allStores.userStore as UserStore,
+  userStore: allStores.userStore,
+  addSongStore: allStores.addSongStore,
 })) @observer
 class App extends React.Component<Props, {}> {
   componentDidMount() {
@@ -51,6 +56,7 @@ class App extends React.Component<Props, {}> {
 
   renderLoadedUser() {
     const {loggedIn} = this.props.userStore!;
+    const {showAddSongScreen} = this.props.addSongStore!;
 
     return (
       <div>
@@ -61,6 +67,9 @@ class App extends React.Component<Props, {}> {
         <div className="playlist">
           {this.props.children}
         </div>
+
+        {showAddSongScreen ? <AddSongScreen /> : null}
+
       </div>
     );
   }

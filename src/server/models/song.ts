@@ -49,14 +49,3 @@ export async function createSongFromSpotifyResource(res: SpotifyResource): Promi
 
   return song;
 }
-
-export async function addSongToPlaylist(userId: number, songId: number) {
-  const values = {
-    user_id: userId,
-    song_id: songId,
-  };
-
-  const query = db!.insert(values).into('songs_users');
-
-  await (query as any);
-}

@@ -15,18 +15,12 @@ exports.up = function(knex, Promise) {
       .notNullable();
 
     table.string('spotify_id')
-      .notNullable();
-
-    table.string('youtube_url')
       .index()
-      .unique();
-
-    table.string('spotify_url')
-      .index()
-      .unique();
+      .nullable();
 
   }).then(() => {
-    return knex.schema.createTable('songs_users', (table) => {
+
+    return knex.schema.createTable('playlist_entry', (table) => {
       table.increments();
       table.timestamps();
 
@@ -36,7 +30,10 @@ exports.up = function(knex, Promise) {
       table.integer('user_id')
         .references('users.id')
         .index();
+
+      table.string('youtube_url');
     });
+
   }).then(() => {
     return knex.schema.createTable('songs_users_listened', (table) => {
       table.increments();
