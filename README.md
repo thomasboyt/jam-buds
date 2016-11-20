@@ -57,7 +57,7 @@ heroku addons:create heroku-postgresql:hobby-dev
 Grab the DATABASE_URL from `heroku config:get DATABASE_URL`, and paste it into your knexfile so you can run migrations:
 
 ```
-/node_modules/.bin/knex migrate:latest --env production
+NODE_ENV=production /node_modules/.bin/knex migrate:latest
 ```
 
 ### Frontend (Firebase Hosting)
