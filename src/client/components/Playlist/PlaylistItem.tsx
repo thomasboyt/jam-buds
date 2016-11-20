@@ -17,7 +17,7 @@ export default class PlaylistItem extends React.Component<Props, {}> {
 
     return (
       <li>
-        <a href="#">
+        <a href={track.youtubeUrl} target="_blank" rel="noopener noreferrer">
           {track.artists.join(', ')} - {track.title}
         </a>
       </li>
