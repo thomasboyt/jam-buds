@@ -37,5 +37,7 @@ export default class AddSongStore {
 
   @action async addSong(spotifyId: string) {
     await addSong(spotifyId, this.shareLink);
+
+    this.showingAddSong = false;
   }
 }

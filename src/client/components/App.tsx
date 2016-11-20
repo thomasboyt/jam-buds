@@ -56,7 +56,7 @@ class App extends React.Component<Props, {}> {
 
   renderLoadedUser() {
     const {loggedIn} = this.props.userStore!;
-    const {showAddSongScreen} = this.props.addSongStore!;
+    const {showingAddSong} = this.props.addSongStore!;
 
     return (
       <div>
@@ -68,8 +68,7 @@ class App extends React.Component<Props, {}> {
           {this.props.children}
         </div>
 
-        {showAddSongScreen ? <AddSongScreen /> : null}
-
+        {showingAddSong ? <AddSongScreen /> : null}
       </div>
     );
   }
