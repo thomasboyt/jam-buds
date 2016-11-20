@@ -14,7 +14,7 @@ interface Props {
 class SubmitBox extends React.Component<Props, {}> {
   input: HTMLInputElement;
 
-  handleSubmit(e: React.MouseEvent<any>) {
+  handleSubmit(e: React.FormEvent<any>) {
     e.preventDefault();
 
     const query = this.input.value;
@@ -25,10 +25,10 @@ class SubmitBox extends React.Component<Props, {}> {
 
   render() {
     return (
-      <div>
+      <form className="submit-box" onSubmit={(e) => this.handleSubmit(e)}>
         <input type="text" ref={(el) => this.input = el} />
-        <button onClick={(e) => this.handleSubmit(e)}>is my shit</button>
-      </div>
+        <button type="submit">is my shit</button>
+      </form>
     );
   }
 }

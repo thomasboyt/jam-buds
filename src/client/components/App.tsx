@@ -59,12 +59,12 @@ class App extends React.Component<Props, {}> {
     const {showingAddSong} = this.props.addSongStore!;
 
     return (
-      <div>
+      <div className="container">
         <div className="sidebar">
           {loggedIn ? this.renderLoggedIn() : <TwitterAuth />}
         </div>
 
-        <div className="playlist">
+        <div className="main">
           {this.props.children}
         </div>
 
@@ -77,8 +77,10 @@ class App extends React.Component<Props, {}> {
     const {loadedUser} = this.props.userStore!;
 
     return (
-      <div>
-        <h1>jam buds</h1>
+      <div className="app-container">
+        <header>
+          <h1><Link to="/">jam buds!</Link></h1>
+        </header>
 
         {loadedUser ? this.renderLoadedUser() : <div>Loading...</div>}
       </div>

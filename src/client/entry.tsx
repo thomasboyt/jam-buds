@@ -32,4 +32,4 @@ render((
       </Route>
     </Router>
   </Provider>
-), document.querySelector('.app-container'));
+), document.querySelector('.react-root'));

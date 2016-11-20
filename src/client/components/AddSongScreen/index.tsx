@@ -32,7 +32,11 @@ class AddSongScreen extends React.Component<Props, {}> {
   render() {
     const {loadedShareLink} = this.props.addSongStore!;
 
-    return loadedShareLink ? this.renderLoaded() : <div>loading...</div>;
+    return (
+      <div className="add-song-screen">
+        {loadedShareLink ? this.renderLoaded() : <div>loading...</div>}
+      </div>
+    );
   }
 }
 
