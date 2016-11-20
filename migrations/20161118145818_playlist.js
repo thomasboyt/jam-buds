@@ -20,7 +20,7 @@ exports.up = function(knex, Promise) {
 
   }).then(() => {
 
-    return knex.schema.createTable('playlist_entry', (table) => {
+    return knex.schema.createTable('playlist_entries', (table) => {
       table.increments();
       table.timestamps();
 

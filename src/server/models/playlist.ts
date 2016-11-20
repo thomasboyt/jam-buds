@@ -8,7 +8,7 @@ interface PlaylistValues {
 }
 
 export async function addSongToPlaylist(values: PlaylistValues) {
-  const query = db!.insert(decamelizeKeys(values)).into('playlist_entry');
+  const query = db!.insert(decamelizeKeys(values)).into('playlist_entries');
 
   await (query as any);
 }
