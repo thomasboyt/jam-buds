@@ -88,11 +88,12 @@ html, body, .react-root, .app-container {
 }
 
 .sidebar {
-  flex: 0 0 300px;
+  flex: 0 0 250px;
 }
 
 .main {
   flex: 1 0 auto;
+  margin-left: 30px;
 
   h2 {
     margin-top: 0px;
@@ -108,8 +109,13 @@ html, body, .react-root, .app-container {
 
   margin: 20px 0px;
 
+  .input-container {
+    // 0px here keeps it from getting a weird thing specified by input, I guess?
+    flex: 1 0 0px;
+  }
+
   input {
-    flex: 1 0 auto;
+    width: 100%;
   }
 
   button {

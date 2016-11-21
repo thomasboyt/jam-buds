@@ -28,7 +28,9 @@ class SubmitBox extends React.Component<Props, {}> {
   render() {
     return (
       <form className="submit-box" onSubmit={(e) => this.handleSubmit(e)}>
-        <input type="text" ref={(el) => this.input = el} />
+        <div className="input-container">
+          <input type="text" ref={(el) => this.input = el} />
+        </div>
         <button type="submit">is my shit</button>
       </form>
     );
