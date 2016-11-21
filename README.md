@@ -127,9 +127,33 @@ A `following` table joins users to who they're following. This list is auto-popu
 
 #### Twitter Sync
 
+Twitter sync is expecting to be a somewhat-expensive operation. Therefore, it should be triggered only when the friends list was last synced > X minutes ago, and handled as a "background operation" in the frontend.
+
+What this means is that when a user loads their home page initially, the page is immediately rendered with their current friends list. The frontend should make a query immediately after fetching `/me` to sync. This query (let's say to `/twitter-sync`) should return immediately with a `synced: false` payload if the user was not over the specified sync time.
+
+Otherwise, the query should kick off the syncing process. Ideally, no matter where the user is in the application, the request should remain open in the background as the sync continues. If the user disconnects and the request is not fulfilled, the sync should still successfully finish so that when they later return it will have their up to date information.
+
+In the friends list, to avoid elements from moving out from under user input, _the list should not actually update when the new following list is fetched_.
+
+If the query ends up being faster than expected, it may be possible to change the friends list to not render until the request is made, likely with some maximum timeout. This would happen by having `/me` make the sync request and just return early if there's a timeout. Then, the friends list would not be refreshed until the user makes another query to `/me`.
+
+Pseudo code:
+
 ```
+if (last sync time was less than X minutes ago) {
+  return {
+    "synced": false,
+  }
+}
+
 # retrieve IDs from Twitter endpoint
 twitterIds = getFollowingIds()
+
+# short-circuit if nothing changed
+existingCount = select count(*) from following where user_id=$currentUserId
+if (existingCount === twitterIds.length) {
+  return
+}
 
 # get list of all Jam Buds user IDs for all Twitter users you following
 # (todo: is there a better way to do this lookup? caching in a table per user?)
@@ -146,6 +170,13 @@ idsToDelete = _.difference(oldIds, newIds)
 within a single transaction (!):
   for id in idsToAdd: insert ($currentUserId, $id) into "following"
   for id in idsToDelete: delete from "following" where id=$id
+
+following = getFollowingForUserId(userId)
+
+return {
+  "synced": true,
+  "following": [...],
+}
 ```
 
 ### Resources
