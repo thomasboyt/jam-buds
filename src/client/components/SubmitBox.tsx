@@ -21,6 +21,8 @@ class SubmitBox extends React.Component<Props, {}> {
 
     const {addSongStore} = this.props;
     addSongStore!.showAddSongScreen(query);
+
+    this.input.value = '';
   }
 
   render() {

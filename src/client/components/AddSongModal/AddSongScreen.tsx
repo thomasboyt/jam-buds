@@ -34,6 +34,10 @@ class AddSongScreen extends React.Component<Props, {}> {
 
     return (
       <div className="add-song-screen">
+        <div style={{textAlign: 'center'}}>
+          <h2>share a jam!</h2>
+        </div>
+
         {loadedShareLink ? this.renderLoaded() : <div>loading...</div>}
       </div>
     );

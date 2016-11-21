@@ -8,7 +8,7 @@ import AddSongStore from '../stores/AddSongStore';
 
 import TwitterAuth from './TwitterAuth';
 import SubmitBox from './SubmitBox';
-import AddSongScreen from './AddSongScreen';
+import AddSongModal from './AddSongModal';
 
 function signOut() {
   localStorage.removeItem(AUTH_TOKEN_KEY);
@@ -56,7 +56,6 @@ class App extends React.Component<Props, {}> {
 
   renderLoadedUser() {
     const {loggedIn} = this.props.userStore!;
-    const {showingAddSong} = this.props.addSongStore!;
 
     return (
       <div className="container">
@@ -68,7 +67,7 @@ class App extends React.Component<Props, {}> {
           {this.props.children}
         </div>
 
-        {showingAddSong ? <AddSongScreen /> : null}
+        <AddSongModal />
       </div>
     );
   }

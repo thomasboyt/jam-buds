@@ -13,7 +13,7 @@ header {
 
 @mixin box {
   background: hotpink;
-  box-shadow: yellow 10px 10px;
+  box-shadow: yellow 15px 15px;
 }
 
 h1 {
@@ -38,7 +38,7 @@ h1:hover {
   }
 
   100% {
-    background: darken(hotpink, 25%);
+    background: purple;
     transform: scale(1.5) skewY(-5deg) rotate(5deg);
   }
 }
@@ -131,6 +131,94 @@ button {
 button:active {
   box-shadow: none;
   transform: translate(2px, 2px);
-  /*margin-top: 2px;
-  margin-left: 2px;*/
+}
+
+/*
+ * Modals
+ */
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+$modal-width: 450px;
+$modal-height: 450px;
+
+.modal-content {
+  overflow: auto;
+
+  background: skyblue;
+  box-shadow: yellow 15px 15px;
+
+  position: absolute;
+  width: $modal-width;
+  height: $modal-height;
+  top: 50%;
+  left: 50%;
+  margin-top: -$modal-height/2 - 20px;
+  margin-left: -$modal-width/2 - 20px;
+
+  padding: 20px;
+
+  outline: none;
+}
+
+.ReactModal__Content--after-open {
+  animation: flyIn ease-in-out 1.5s;
+}
+
+.ReactModal__Content--before-close {
+  animation: flyOut ease-in-out 1s reverse;
+}
+
+@keyframes flyIn {
+  0% {
+    transform: rotate(-180deg) scale(0);
+  }
+
+  100% {
+    transform: rotate(720deg) scale(1);
+  }
+}
+
+@keyframes flyOut {
+  100% {
+    transform: rotate(720deg) scale(1);
+  }
+
+  0% {
+    transform: rotate(-180deg) scale(0);
+  }
+}
+
+.add-song-screen {
+  a {
+    color: darkblue;
+  }
+
+  .header-container {
+    text-align: center;
+  }
+
+  h2 {
+    display: inline-block;
+    margin-top: 0;
+    margin-bottom: 25px;
+
+    transform: skew(-15deg);
+
+    font-weight: bold;
+    background: yellow;
+    padding: 10px 20px;
+  }
+}
+
+/* Remove scroll on the body when react-modal is open */
+.ReactModal__Body--open {
+    overflow: hidden;
 }

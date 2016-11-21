@@ -24,6 +24,10 @@ export default class AddSongStore {
     this.loadedShareLink = true;
   }
 
+  @action async hideAddSongScreen() {
+    this.showingAddSong = false;
+  }
+
   @observable loadedSearch: boolean = false;
   @observable searchResults: SearchResult[] = [];
 
