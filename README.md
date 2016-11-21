@@ -125,6 +125,29 @@ A `users_songs_listened` table is what's used to track whether a specific user h
 
 A `following` table joins users to who they're following. This list is auto-populated by their Twitter following when they join. I'm not sure how it gets refreshed, yet. Maybe it doesn't and there's a manual "follow" button?
 
+#### Twitter Sync
+
+```
+# retrieve IDs from Twitter endpoint
+twitterIds = getFollowingIds()
+
+# get list of all Jam Buds user IDs for all Twitter users you following
+# (todo: is there a better way to do this lookup? caching in a table per user?)
+newIds = select user_id from users where twitter_id in (...$twitterIds)
+
+# get list of currently-following users
+oldIds = select following_id from following where user_id=$currentUserId
+
+# get IDs to add and remove from that list
+idsToAdd = _.difference(newIds, oldIds)
+idsToDelete = _.difference(oldIds, newIds)
+
+# perform diff
+within a single transaction (!):
+  for id in idsToAdd: insert ($currentUserId, $id) into "following"
+  for id in idsToDelete: delete from "following" where id=$id
+```
+
 ### Resources
 
 some potentially useful things:
