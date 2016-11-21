@@ -20,10 +20,14 @@ class AddSongScreen extends React.Component<Props, {}> {
     return (
       <div>
         <p>
-          You're adding "{shareTitle}" via YouTube.
+          You're sharing the video "{shareTitle}" via YouTube.
+        </p>
+        <p>
+          To finish sharing, just search for the song title and artist that matches this video:
         </p>
 
         <SearchBox />
+
         <SearchResults />
       </div>
     );
