@@ -12,3 +12,13 @@ export interface PlaylistEntry {
   title: string;
   youtubeUrl: string;
 }
+
+export interface PublicUser {
+  id: number;
+  twitterName: string;
+}
+
+export interface CurrentUser {
+  name: string;
+  following: PublicUser[];
+}

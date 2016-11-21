@@ -1,11 +1,13 @@
 import {observable, action} from 'mobx';
 import getCurrentUser from '../api/getCurrentUser';
 import {AUTH_TOKEN_KEY} from '../constants';
+import {PublicUser} from '../../universal/resources';
 
 export default class UserStore {
   @observable loadedUser: boolean = false;
   @observable loggedIn: boolean = false;
   @observable name: string | null = null;
+  @observable following: PublicUser[] = [];
 
   @action async logIn() {
     this.loadedUser = false;
@@ -17,6 +19,7 @@ export default class UserStore {
       if (user) {
         this.loggedIn = true;
         this.name = user.name;
+        this.following = user.following;
       }
     }
 

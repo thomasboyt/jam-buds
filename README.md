@@ -123,7 +123,7 @@ A `playlist_entries` table joins users to songs, forming that user's playlist. B
 
 A `users_songs_listened` table is what's used to track whether a specific user has listened to a song. Theoreticlaly, an entry in this row for a user and song means that user has listened to that song. This join could be weird?
 
-It might be good to come up with some seed data to make it easy to experiment with this schema and test queries.
+A `following` table joins users to who they're following. This list is auto-populated by their Twitter following when they join. I'm not sure how it gets refreshed, yet. Maybe it doesn't and there's a manual "follow" button?
 
 ### Resources
 

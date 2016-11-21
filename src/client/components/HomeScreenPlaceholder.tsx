@@ -4,7 +4,9 @@ import * as React from 'react';
 class HomeScreenPlaceholder extends React.Component<{}, {}> {
   render() {
     return (
-      <div />
+      <div>
+        <h2>your buds</h2>
+      </div>
     );
   }
 }

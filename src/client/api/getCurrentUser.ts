@@ -1,17 +1,14 @@
 import apiRequest from '../util/apiRequest';
+import {CurrentUser} from '../../universal/resources';
 
-interface User {
-  name: string;
-}
-
-export default async function getCurrentUser(): Promise<User | null> {
+export default async function getCurrentUser(): Promise<CurrentUser | null> {
   const resp = await apiRequest({
-    url: '/users/me',
+    url: '/me',
     method: 'GET',
   });
 
   if (resp.data.user) {
-    return resp.data.user as User;
+    return resp.data.user as CurrentUser;
   } else {
     return null;
   }

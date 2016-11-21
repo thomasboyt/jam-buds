@@ -11,13 +11,19 @@ import {
   getPlaylistByUserId,
 } from '../models/playlist';
 
+import {
+  getFollowingForUserId,
+} from '../models/following';
+
 import {getUserFromRequest, isAuthenticated} from '../auth';
 import * as spotify from '../apis/spotify';
+
+import {PublicUser, CurrentUser} from '../../universal/resources';
 
 export default function registerUserEndpoints(app: Express) {
 
   // get information about the current user
-  app.get('/users/me', async (req, res) => {
+  app.get('/me', async (req, res) => {
     const user = await getUserFromRequest(req);
 
     if (!user) {
@@ -26,13 +32,32 @@ export default function registerUserEndpoints(app: Express) {
       });
 
     } else {
+      const followingUsers = await getFollowingForUserId(user.id);
+
+      const serializedUsers: PublicUser[] = followingUsers.map((user) => {
+        return {
+          id: user.id,
+          twitterName: user.twitterName,
+        };
+      });
+
+      const currentUser: CurrentUser = {
+        name: user.twitterName,
+        following: serializedUsers,
+      };
+
       res.json({
-        user: {
-          name: user.twitterName,
-          // TODO: probably put a friends list here
-        },
+        user: currentUser,
       });
     }
+  });
+
+  // follow a user
+  app.post('/following', isAuthenticated, async (req, res) => {
+  });
+
+  // unfollow a user
+  app.delete('/following/:id', isAuthenticated, async (req, res) => {
   });
 
   // post a new song to your playlist
