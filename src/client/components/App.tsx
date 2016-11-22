@@ -34,20 +34,11 @@ class App extends React.Component<Props, {}> {
 
     return (
       <div>
-        <p>what up, {name}</p>
+        <p>what up, <Link to={`/playlist/${name}`}>{name}</Link></p>
 
         <p>hey, post a song! paste a link here and get goin'</p>
 
         <SubmitBox />
-
-        <p>listen to a friend's tunes</p>
-
-        <ul>
-          <li>friend one</li>
-          <li>friend two</li>
-        </ul>
-
-        <p>or <Link to={`/playlist/${name}`}>check your own</Link></p>
 
         <p>or <a href="#" onClick={signOut}>sign out</a></p>
       </div>
