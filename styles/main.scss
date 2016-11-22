@@ -68,6 +68,62 @@ html, body, .react-root, .app-container {
   min-height: 100%;
 }
 
+$rainbow-length: 1000px;
+
+.top-container {
+  display: flex;
+  align-items: center;
+
+  header {
+    flex: 0 0 auto;
+  }
+
+  .submit-box {
+    flex: 1 0 auto;
+    margin-left: 150px;
+
+    height: 50px;
+
+    input {
+      padding: 0 10px;
+    }
+
+    input, button {
+      transform: skew(-15deg) translate3d(0px, 0px, 0px);
+      height: 100%;
+    }
+
+    button {
+      background-color: yellow;
+      color: black;
+      font-weight: bold;
+      font-size: 1.5em;
+      padding: 0px 0px;
+      width: 155px;
+
+      span {
+        display: none;
+      }
+
+      &:disabled {
+        cursor: default;
+      }
+
+      &:after {
+        content: 'is my shit';
+      }
+
+      &:enabled:hover:after {
+        content: 'yeah!!!!';
+      }
+
+      &:active:enabled {
+        transform: skew(-15deg) translate3d(4px, 4px, 0px);
+      }
+    }
+  }
+}
+
 .app-container {
   display: flex;
   flex-flow: column;
@@ -125,11 +181,11 @@ html, body, .react-root, .app-container {
 }
 
 button {
-  background-color: purple;
-  color: yellow;
+  /*background-color: purple;
+  color: yellow;*/
+  /*box-shadow: yellow 2px 2px;*/
   -webkit-appearance: none;
   border: none;
-  box-shadow: yellow 2px 2px;
   outline: none;
   cursor: pointer;
 }

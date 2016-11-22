@@ -14,24 +14,42 @@ interface Props {
 class SubmitBox extends React.Component<Props, {}> {
   input: HTMLInputElement;
 
+  state = {
+    value: '',
+  };
+
+  handleChange(e: React.SyntheticEvent<HTMLInputElement>) {
+    this.setState({
+      value: e.currentTarget.value,
+    });
+  }
+
   handleSubmit(e: React.FormEvent<any>) {
     e.preventDefault();
 
-    const query = this.input.value;
+    const query = this.state.value;
 
     const {addSongStore} = this.props;
     addSongStore!.showAddSongScreen(query);
 
-    this.input.value = '';
+    this.setState({
+      value: '',
+    });
   }
 
   render() {
     return (
       <form className="submit-box" onSubmit={(e) => this.handleSubmit(e)}>
         <div className="input-container">
-          <input type="text" ref={(el) => this.input = el} />
+          <input type="text"
+            onChange={(e) => this.handleChange(e)}
+            value={this.state.value}
+            placeholder="Paste a Youtube link here!!" />
         </div>
-        <button type="submit">is my shit</button>
+
+        <button type="submit" disabled={this.state.value === ''}>
+          <span>is my shit</span>
+        </button>
       </form>
     );
   }

@@ -38,8 +38,6 @@ class App extends React.Component<Props, {}> {
 
         <p>hey, post a song! paste a link here and get goin'</p>
 
-        <SubmitBox />
-
         <p>or <a href="#" onClick={signOut}>sign out</a></p>
       </div>
     );
@@ -68,9 +66,13 @@ class App extends React.Component<Props, {}> {
 
     return (
       <div className="app-container">
-        <header>
-          <h1><Link to="/">jam buds!</Link></h1>
-        </header>
+        <div className="top-container">
+          <header>
+            <h1><Link to="/">jam buds!</Link></h1>
+          </header>
+
+          <SubmitBox />
+        </div>
 
         {loadedUser ? this.renderLoadedUser() : <div>Loading...</div>}
       </div>
