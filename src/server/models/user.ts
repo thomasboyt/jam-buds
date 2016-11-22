@@ -56,3 +56,7 @@ export async function getUserByTwitterId(id: string): Promise<User | null> {
 export async function getUserByTwitterName(name: string): Promise<User | null> {
   return await getUserWhere({twitter_name: name});
 }
+
+export async function getUserByUserId(id: number): Promise<User | null> {
+  return await getUserWhere({id});
+}

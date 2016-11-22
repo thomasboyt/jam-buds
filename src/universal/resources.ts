@@ -19,6 +19,12 @@ export interface PublicUser {
 }
 
 export interface CurrentUser {
+  id: number;
   name: string;
   following: PublicUser[];
+}
+
+export interface Playlist {
+  user: PublicUser;
+  tracks: PlaylistEntry[];
 }

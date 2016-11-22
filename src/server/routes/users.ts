@@ -1,5 +1,9 @@
 import {Express} from 'express';
-import {User, getUserByTwitterName} from '../models/user';
+import {
+  User,
+  getUserByTwitterName,
+  getUserByUserId,
+} from '../models/user';
 
 import {
   getSongBySpotifyId,
@@ -12,13 +16,21 @@ import {
 } from '../models/playlist';
 
 import {
+  followUser,
   getFollowingForUserId,
 } from '../models/following';
 
 import {getUserFromRequest, isAuthenticated} from '../auth';
 import * as spotify from '../apis/spotify';
 
-import {PublicUser, CurrentUser} from '../../universal/resources';
+import {PublicUser, CurrentUser, Playlist} from '../../universal/resources';
+
+function serializePublicUser(user: User): PublicUser {
+  return {
+    id: user.id,
+    twitterName: user.twitterName,
+  };
+}
 
 export default function registerUserEndpoints(app: Express) {
 
@@ -34,14 +46,10 @@ export default function registerUserEndpoints(app: Express) {
     } else {
       const followingUsers = await getFollowingForUserId(user.id);
 
-      const serializedUsers: PublicUser[] = followingUsers.map((user) => {
-        return {
-          id: user.id,
-          twitterName: user.twitterName,
-        };
-      });
+      const serializedUsers: PublicUser[] = followingUsers.map(serializePublicUser);
 
       const currentUser: CurrentUser = {
+        id: user.id,
         name: user.twitterName,
         following: serializedUsers,
       };
@@ -54,6 +62,32 @@ export default function registerUserEndpoints(app: Express) {
 
   // follow a user
   app.post('/following', isAuthenticated, async (req, res) => {
+    const user: User = res.locals.user;
+    const followingId: number = req.body.userId;
+
+    if (!followingId) {
+      res.status(400).json({
+        error: 'Missing userId parameter in body'
+      });
+
+      return;
+    }
+
+    const followingUser = await getUserByUserId(followingId);
+
+    if (!followingUser) {
+      res.status(400).json({
+        error: `Could not find user with ID ${followingId}`
+      });
+
+      return;
+    }
+
+    await followUser(user.id, followingId);
+
+    res.json({
+      user: serializePublicUser(followingUser),
+    });
   });
 
   // unfollow a user
@@ -104,11 +138,16 @@ export default function registerUserEndpoints(app: Express) {
       return;
     }
 
-    const playlist = await getPlaylistByUserId(user.id);
+    const tracks = await getPlaylistByUserId(user.id);
 
-    res.send({
-      playlist,
-    });
+    const serializedUser = serializePublicUser(user);
+
+    const resp: Playlist = {
+      user: serializedUser,
+      tracks,
+    };
+
+    res.send(resp);
   });
 
 }
