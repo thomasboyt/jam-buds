@@ -21,6 +21,7 @@ function serializePlaylistEntry(row: any): PlaylistEntry {
     artists: row.artists,
     title: row.title,
     youtubeUrl: row.youtube_url,
+    albumArt: row.album_art,
   };
 }
 

@@ -27,6 +27,7 @@ interface SpotifyResource {
   name: string;
   album: {
     name: string;
+    images: {url: string}[];
   };
   artists: {
     name: string;
@@ -40,6 +41,7 @@ export async function createSongFromSpotifyResource(res: SpotifyResource): Promi
     artists: res.artists.map((artist) => artist.name),
     album: res.album.name,
     title: res.name,
+    album_art: res.album.images[0].url,
   };
 
   const query = db!.insert(values).returning('*').into('songs');

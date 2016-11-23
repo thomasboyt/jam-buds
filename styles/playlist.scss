@@ -1,0 +1,38 @@
+.playlist {
+  ul.playlist-entries {
+    list-style-type: none;
+    padding-left: 0px;
+  }
+
+  li.playlist-entry {
+    display: block;
+    height: 64px;
+    margin-bottom: 20px;
+
+    a {
+      display: flex;
+      align-items: center;
+
+      background: yellow;
+      color: black;
+      text-decoration: none;
+
+      transition: transform 0.2s linear;
+
+      &:hover {
+        transform: scale(1.2);
+      }
+    }
+
+    img {
+      height: 100%;
+      flex: 0 0 64px;
+    }
+
+    .title {
+      flex: 1 0 auto;
+      padding: 0 20px;
+      line-height: 24px;
+    }
+  }
+}

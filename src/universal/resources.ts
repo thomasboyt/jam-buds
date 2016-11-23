@@ -11,6 +11,7 @@ export interface PlaylistEntry {
   album: string;
   title: string;
   youtubeUrl: string;
+  albumArt: string;
 }
 
 export interface PublicUser {

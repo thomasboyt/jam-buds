@@ -16,9 +16,14 @@ export default class PlaylistItem extends React.Component<Props, {}> {
     const {track} = this.props;
 
     return (
-      <li>
+      <li className="playlist-entry">
         <a href={track.youtubeUrl} target="_blank" rel="noopener noreferrer">
-          {track.artists.join(', ')} - {track.title}
+          <img src={track.albumArt} />
+          <span className="title">
+            {track.artists.join(', ')}
+            <br/>
+            {track.title}
+          </span>
         </a>
       </li>
     );

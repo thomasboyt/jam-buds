@@ -28,12 +28,12 @@ class Playlist extends React.Component<Props, {}> {
     const isFollowing = this.props.userStore!.isFollowing(userId);
 
     return (
-      <div>
+      <div className="playlist">
         <h2>@{name}'s playlist</h2>
 
         <FollowStatus userId={userId} isFollowing={isFollowing} />
 
-        <ul>
+        <ul className="playlist-entries">
           {items.map((track) => <PlaylistItem key={track.id} track={track} />)}
         </ul>
       </div>
