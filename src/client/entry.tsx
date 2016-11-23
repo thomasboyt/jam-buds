@@ -10,7 +10,7 @@ import {Provider} from 'mobx-react';
 import {Router, Route, IndexRoute, browserHistory} from 'react-router';
 
 import App from './components/App';
-import HomeScreenPlaceholder from './components/HomeScreenPlaceholder';
+import HomeScreen from './components/HomeScreen';
 import Playlist from './components/Playlist';
 
 import UserStore from './stores/UserStore';
@@ -27,7 +27,7 @@ render((
   <Provider {...stores}>
     <Router history={browserHistory}>
       <Route path="/" component={App}>
-        <IndexRoute component={HomeScreenPlaceholder} />
+        <IndexRoute component={HomeScreen} />
         <Route path="/playlist/:name" component={Playlist} />
       </Route>
     </Router>

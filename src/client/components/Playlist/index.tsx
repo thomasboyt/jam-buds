@@ -6,6 +6,7 @@ import UserStore from '../../stores/UserStore';
 
 import PlaylistItem from './PlaylistItem';
 import FollowStatus from './FollowStatus';
+import SidebarWrapper from '../SidebarWrapper';
 
 interface Props {
   playlistStore?: PlaylistStore;
@@ -28,15 +29,17 @@ class Playlist extends React.Component<Props, {}> {
     const isFollowing = this.props.userStore!.isFollowing(userId);
 
     return (
-      <div className="playlist">
-        <h2>@{name}'s playlist</h2>
+      <SidebarWrapper>
+        <div className="playlist">
+          <h2>@{name}'s playlist</h2>
 
-        <FollowStatus userId={userId} isFollowing={isFollowing} />
+          <FollowStatus userId={userId} isFollowing={isFollowing} />
 
-        <ul className="playlist-entries">
-          {items.map((track) => <PlaylistItem key={track.id} track={track} />)}
-        </ul>
-      </div>
+          <ul className="playlist-entries">
+            {items.map((track) => <PlaylistItem key={track.id} track={track} />)}
+          </ul>
+        </div>
+      </SidebarWrapper>
     );
   }
 }

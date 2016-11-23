@@ -2,7 +2,7 @@ import * as React from 'react';
 import {Link} from 'react-router';
 import {inject, observer} from 'mobx-react';
 
-import UserStore from '../stores/UserStore';
+import UserStore from '../../stores/UserStore';
 
 interface Props {
   userStore?: UserStore;
@@ -12,7 +12,7 @@ interface Props {
 @inject((allStores) => ({
   userStore: allStores.userStore,
 })) @observer
-class HomeScreenPlaceholder extends React.Component<Props, {}> {
+class LoggedInHome extends React.Component<Props, {}> {
   render() {
     const {following} = this.props.userStore!;
 
@@ -23,7 +23,7 @@ class HomeScreenPlaceholder extends React.Component<Props, {}> {
         <ul>
           {following.map((user) => (
             <li key={user.id}>
-              <Link to ={`/playlist/${user.twitterName}`}>
+              <Link to={`/playlist/${user.twitterName}`}>
                 {user.twitterName}
               </Link>
             </li>
@@ -34,4 +34,4 @@ class HomeScreenPlaceholder extends React.Component<Props, {}> {
   }
 }
 
-export default HomeScreenPlaceholder;
+export default LoggedInHome;
