@@ -6,7 +6,6 @@ import UserStore from '../stores/UserStore';
 
 interface Props {
   userStore?: UserStore;
-  // children: React.ReactNode;
 }
 
 @inject((allStores) => ({

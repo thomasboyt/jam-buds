@@ -6,6 +6,7 @@ import {AUTH_TOKEN_KEY} from '../constants';
 import UserStore from '../stores/UserStore';
 
 import TwitterAuth from './TwitterAuth';
+import VideoPlayer from './VideoPlayer';
 
 function signOut() {
   localStorage.removeItem(AUTH_TOKEN_KEY);
@@ -34,6 +35,8 @@ class SidebarWrapper extends React.Component<Props, {}> {
         <p>hey, post a song! paste a link here and get goin'</p>
 
         <p>or <a href="#" onClick={signOut}>sign out</a></p>
+
+        <VideoPlayer />
       </div>
     );
   }

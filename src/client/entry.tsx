@@ -16,11 +16,13 @@ import Playlist from './components/Playlist';
 import UserStore from './stores/UserStore';
 import AddSongStore from './stores/AddSongStore';
 import PlaylistStore from './stores/PlaylistStore';
+import PlaybackStore from './stores/PlaybackStore';
 
 const stores = {
   userStore: new UserStore(),
   addSongStore: new AddSongStore(),
   playlistStore: new PlaylistStore(),
+  playbackStore: new PlaybackStore(),
 };
 
 render((
