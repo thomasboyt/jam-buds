@@ -25,7 +25,7 @@ function serializePlaylistEntry(row: any): PlaylistEntry {
   };
 }
 
-export async function getPlaylistByUserId(id: number) {
+export async function getPlaylistByUserId(id: number): Promise<PlaylistEntry[]> {
   const query =
     db!('playlist_entries')
     .where({user_id: id})
