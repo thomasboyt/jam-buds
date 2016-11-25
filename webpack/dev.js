@@ -7,7 +7,7 @@ module.exports = webpackMerge(config, {
   plugins: [
     new webpack.DefinePlugin({
       'process.env': {
-        NODE_ENV: 'null',
+        NODE_ENV: '"development"',
         SERVER_URL: '"http://localhost:3000"',
       }
     }),

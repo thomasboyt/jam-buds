@@ -1,4 +1,4 @@
-import {AUTH_TOKEN_KEY} from './constants';
+import {getAuthToken, setAuthToken} from './util/authToken';
 
 window.addEventListener('message', async (event: MessageEvent) => {
   const data = JSON.parse(event.data);
@@ -15,7 +15,7 @@ window.addEventListener('message', async (event: MessageEvent) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        authToken: localStorage.getItem(AUTH_TOKEN_KEY),
+        authToken: getAuthToken,
         twitterToken: token,
         twitterSecret: secret,
       }),
@@ -28,7 +28,7 @@ window.addEventListener('message', async (event: MessageEvent) => {
 
     const respData: any = await resp.json();
 
-    localStorage.setItem(AUTH_TOKEN_KEY, respData.authToken);
+    setAuthToken(respData.authToken);
     document.location.reload();
   }
 });

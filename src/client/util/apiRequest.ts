@@ -1,10 +1,10 @@
 import axios, {AxiosRequestConfig} from 'axios';
-import {AUTH_TOKEN_KEY} from '../constants';
+import {getAuthToken} from './authToken';
 
 export default async function apiRequest(opts: AxiosRequestConfig): Promise<any> {
   opts.url = process.env.SERVER_URL + opts.url;
 
-  const token = localStorage.getItem(AUTH_TOKEN_KEY);
+  const token = getAuthToken();
 
   if (token) {
     opts.headers = opts.headers || {};
