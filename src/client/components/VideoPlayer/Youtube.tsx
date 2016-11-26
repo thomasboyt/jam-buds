@@ -1,5 +1,5 @@
 // AFAIK this is the only way to import the youtube API type defs
-///<reference path="../../../../node_modules/@types/youtube/index.d.ts" />
+/// <reference types="youtube" />
 
 import * as React from 'react';
 import {findDOMNode} from 'react-dom';
