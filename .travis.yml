@@ -18,8 +18,9 @@ script:
   - npm test
 
 env:
-  - CXX=g++-4.8
-  - DATABASE_URL=postgres://postgres@localhost:5432/jambuds_test
+  global:
+    - CXX=g++-4.8
+    - DATABASE_URL=postgres://postgres@localhost:5432/jambuds_test
 
 cache:
   directories:
