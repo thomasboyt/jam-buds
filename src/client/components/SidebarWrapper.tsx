@@ -2,14 +2,14 @@ import * as React from 'react';
 import {Link} from 'react-router';
 import {observer, inject} from 'mobx-react';
 
-import {AUTH_TOKEN_KEY} from '../constants';
+import {removeAuthToken} from '../util/authToken';
 import UserStore from '../stores/UserStore';
 
 import TwitterAuth from './TwitterAuth';
 import VideoPlayer from './VideoPlayer';
 
 function signOut() {
-  localStorage.removeItem(AUTH_TOKEN_KEY);
+  removeAuthToken();
   document.location.href = '/';
 }
 

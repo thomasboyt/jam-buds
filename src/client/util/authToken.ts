@@ -5,7 +5,11 @@ export function getAuthToken(): string | null {
 }
 
 export function setAuthToken(token: string): void {
-  return localStorage.setItem(AUTH_TOKEN_KEY, token);
+  localStorage.setItem(AUTH_TOKEN_KEY, token);
+}
+
+export function removeAuthToken(): void {
+  localStorage.removeItem(AUTH_TOKEN_KEY);
 }
 
 function setDevUser(name: string) {
