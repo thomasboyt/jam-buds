@@ -1,0 +1,23 @@
+language: node_js
+
+node_js:
+  - "6"
+
+services:
+  - postgresql
+
+before_script:
+  - psql -c 'create database jambuds_test;' -U postgres
+
+script:
+  - npm test
+
+env:
+  - DATABASE_URL=postgres://localhost:5433/jambuds_test
+
+cache:
+  directories:
+    - node_modules
+
+notifications:
+  email: false

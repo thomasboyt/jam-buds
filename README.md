@@ -1,5 +1,7 @@
 # Jam Buds
 
+[![Build Status](https://travis-ci.org/thomasboyt/jam-buds.svg?branch=master)](https://travis-ci.org/thomasboyt/jam-buds)
+
 Jam Buds is a tiny web application that helps you share music with your friends.
 
 In Jam Buds, a user can paste links to songs that like. These links are then put into a playlist for that user that their friends can access and play through at their leisure.
