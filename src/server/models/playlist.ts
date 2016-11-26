@@ -35,3 +35,17 @@ export async function getPlaylistByUserId(id: number): Promise<PlaylistEntry[]> 
 
   return rows.map((row: any) => serializePlaylistEntry(row));
 }
+
+export async function getFeedByUserId(id: number): Promise<PlaylistEntry[]> {
+  // select * from playlist_entries where user_id in (select following_id from following where user_id=1);
+
+  const query =
+    db!('playlist_entries')
+    .whereIn('user_id', function() {
+      this.select('following_id').from('following').where({user_id: id});
+    });
+
+  const rows = await (query as any);
+
+  return rows.map((row: any) => serializePlaylistEntry(row));
+}
