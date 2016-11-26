@@ -13,7 +13,7 @@ script:
   - npm test
 
 env:
-  - DATABASE_URL=postgres://localhost:5433/jambuds_test
+  - DATABASE_URL=postgres://postgres@localhost:5432/jambuds_test
 
 cache:
   directories:
