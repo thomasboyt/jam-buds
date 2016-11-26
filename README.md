@@ -29,6 +29,17 @@ npm run run-client
 npm run run-server
 ```
 
+## Testing
+
+Create a `.env.test` file with a test DATABASE_URL (don't worry about the rest of the values in .env; none of them are used at the moment):
+
+```
+# .env.test
+DATABASE_URL=postgres://tboyt@localhost:5432/jambuds_test
+```
+
+Then run `npm test`.
+
 ## Deploy
 
 ### Backend (Heroku)

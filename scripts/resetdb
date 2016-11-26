@@ -4,3 +4,7 @@ dropdb jambuds
 createdb jambuds
 ./node_modules/.bin/knex migrate:latest
 ./node_modules/.bin/knex seed:run
+
+dropdb jambuds_test
+createdb jambuds_test
+# we don't run migrations here because the tests handle that :>
