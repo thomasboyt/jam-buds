@@ -2,7 +2,7 @@
 exports.up = function(knex, Promise) {
   return knex.schema.createTable('songs', (table) => {
     table.increments('id');
-    table.timestamps(true, true);
+    table.timestamp('created_at').notNullable().defaultTo(knex.fn.now());
 
     table
       .specificType('artists', 'text[]')
@@ -22,7 +22,7 @@ exports.up = function(knex, Promise) {
 
     return knex.schema.createTable('playlist_entries', (table) => {
       table.increments();
-      table.timestamps(true, true);
+      table.timestamp('created_at').notNullable().defaultTo(knex.fn.now());
 
       table.integer('song_id')
         .references('songs.id');
@@ -37,7 +37,7 @@ exports.up = function(knex, Promise) {
   }).then(() => {
     return knex.schema.createTable('songs_users_listened', (table) => {
       table.increments();
-      table.timestamps(true, true);
+      table.timestamp('created_at').notNullable().defaultTo(knex.fn.now());
 
       table.integer('song_id')
         .references('songs.id');
