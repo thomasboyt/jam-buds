@@ -19,6 +19,10 @@ export interface FeedEntry {
   user: PublicUser;
 }
 
+export interface Feed {
+  tracks: FeedEntry[];
+}
+
 export interface PublicUser {
   id: number;
   twitterName: string;

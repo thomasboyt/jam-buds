@@ -13,6 +13,7 @@ import {
 import {
   addSongToPlaylist,
   getPlaylistByUserId,
+  getFeedByUserId,
 } from '../models/playlist';
 
 import {
@@ -23,7 +24,7 @@ import {
 import {getUserFromRequest, isAuthenticated} from '../auth';
 import * as spotify from '../apis/spotify';
 
-import {PublicUser, CurrentUser, Playlist} from '../../universal/resources';
+import {PublicUser, CurrentUser, Playlist, Feed} from '../../universal/resources';
 
 function serializePublicUser(user: User): PublicUser {
   return {
@@ -147,7 +148,19 @@ export default function registerUserEndpoints(app: Express) {
       tracks,
     };
 
-    res.send(resp);
+    res.json(resp);
+  });
+
+  app.get('/feed', isAuthenticated, async (req, res) => {
+    const user: User = res.locals.user;
+
+    const items = await getFeedByUserId(user.id);
+
+    const feed: Feed = {
+      tracks: items,
+    };
+
+    res.json(feed);
   });
 
 }
