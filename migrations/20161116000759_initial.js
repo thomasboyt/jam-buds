@@ -1,7 +1,7 @@
 exports.up = function(knex, Promise) {
   return knex.schema.createTable('users', (table) => {
     table.increments('id');
-    table.timestamps();
+    table.timestamps(true, true);
 
     table.string('auth_token')
       .notNullable()
