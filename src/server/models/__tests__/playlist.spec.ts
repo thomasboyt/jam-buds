@@ -11,8 +11,9 @@ describe('playlist model', () => {
       const items = await playlist.getFeedByUserId(1);
       expect(items.length).toBe(2);
 
-      // TODO: when this function is updated to return the ID of the user who added it,
-      // assert that that is in the user's friends list
+      const userIds = items.map((item) => item.user.id);
+      expect(userIds).toContain(2);
+      expect(userIds).toContain(4);
     });
   });
 });

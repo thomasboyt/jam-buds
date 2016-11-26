@@ -1,6 +1,7 @@
 import {db} from '../db';
 import {decamelizeKeys} from 'humps';
-import {PlaylistEntry} from '../../universal/resources';
+import {PlaylistEntry, FeedEntry} from '../../universal/resources';
+import {serializePublicUser} from './user';
 
 interface PlaylistValues {
   userId: number;
@@ -25,6 +26,16 @@ function serializePlaylistEntry(row: any): PlaylistEntry {
   };
 }
 
+function serializeFeedEntry(row: any): FeedEntry {
+  const playlistEntry = serializePlaylistEntry(row);
+  const user = serializePublicUser(row);
+
+  return {
+    song: playlistEntry,
+    user,
+  };
+}
+
 export async function getPlaylistByUserId(id: number): Promise<PlaylistEntry[]> {
   const query =
     db!('playlist_entries')
@@ -36,16 +47,18 @@ export async function getPlaylistByUserId(id: number): Promise<PlaylistEntry[]> 
   return rows.map((row: any) => serializePlaylistEntry(row));
 }
 
-export async function getFeedByUserId(id: number): Promise<PlaylistEntry[]> {
-  // select * from playlist_entries where user_id in (select following_id from following where user_id=1);
-
+export async function getFeedByUserId(id: number): Promise<FeedEntry[]> {
   const query =
     db!('playlist_entries')
-    .whereIn('user_id', function() {
-      this.select('following_id').from('following').where({user_id: id});
+    .join('following', {
+      'following.following_id': 'playlist_entries.user_id',
+      'following.user_id': db!.raw('?', [id]),
+    })
+    .join('users', {
+      'users.id': 'following.following_id',
     });
 
   const rows = await (query as any);
 
-  return rows.map((row: any) => serializePlaylistEntry(row));
+  return rows.map((row: any) => serializeFeedEntry(row));
 }

@@ -14,6 +14,11 @@ export interface PlaylistEntry {
   albumArt: string;
 }
 
+export interface FeedEntry {
+  song: PlaylistEntry;
+  user: PublicUser;
+}
+
 export interface PublicUser {
   id: number;
   twitterName: string;

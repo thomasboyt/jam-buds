@@ -1,6 +1,7 @@
 import {db} from '../db';
 import genAuthToken from '../util/genAuthToken';
 import {camelizeKeys, decamelizeKeys} from 'humps';
+import {PublicUser} from '../../universal/resources';
 
 export interface User {
   id: number;
@@ -16,6 +17,13 @@ interface CreateUserOptions {
   twitterName: string;
   twitterToken: string;
   twitterSecret: string;
+}
+
+export function serializePublicUser(row: any): PublicUser {
+  return {
+    id: row.id,
+    twitterName: row.twitter_name,
+  };
 }
 
 export async function createUser(opts: CreateUserOptions): Promise<User> {
