@@ -52,4 +52,9 @@ exports.up = function(knex, Promise) {
 };
 
 exports.down = function(knex, Promise) {
+  return knex.schema.dropTable('songs_users_listened').then(() => {
+    return knex.schema.dropTable('playlist_entries');
+  }).then(() => {
+    return knex.schema.dropTable('songs');
+  });
 };
