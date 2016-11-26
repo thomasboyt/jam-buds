@@ -5,6 +5,11 @@ node_js:
 
 addons:
   postgresql: "9.4"
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - g++-4.8
 
 before_script:
   - psql -c 'create database jambuds_test;' -U postgres
@@ -13,6 +18,7 @@ script:
   - npm test
 
 env:
+  - CXX=g++-4.8
   - DATABASE_URL=postgres://postgres@localhost:5432/jambuds_test
 
 cache:
