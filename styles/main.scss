@@ -3,6 +3,7 @@
 @import "~normalize.css/normalize.css";
 @import "./playlist.scss";
 @import "./sidebar.scss";
+@import "./submit-box.scss";
 
 body {
   font-family: 'Open Sans', sans-serif;
@@ -82,47 +83,6 @@ $rainbow-length: 1000px;
 
   .submit-box {
     flex: 1 0 auto;
-    margin-left: 150px;
-
-    height: 50px;
-
-    input {
-      padding: 0 10px;
-    }
-
-    input, button {
-      transform: skew(-15deg) translate3d(0px, 0px, 0px);
-      height: 100%;
-    }
-
-    button {
-      background-color: yellow;
-      color: black;
-      font-weight: bold;
-      font-size: 1.5em;
-      padding: 0px 0px;
-      width: 155px;
-
-      span {
-        display: none;
-      }
-
-      &:disabled {
-        cursor: default;
-      }
-
-      &:after {
-        content: 'is my shit';
-      }
-
-      &:enabled:hover:after {
-        content: 'yeah!!!!';
-      }
-
-      &:active:enabled {
-        transform: skew(-15deg) translate3d(4px, 4px, 0px);
-      }
-    }
   }
 }
 
@@ -161,26 +121,6 @@ $rainbow-length: 1000px;
 /*
  * Sidebar
  */
-
-.submit-box {
-  display: flex;
-
-  margin: 20px 0px;
-
-  .input-container {
-    // 0px here keeps it from getting a weird thing specified by input, I guess?
-    flex: 1 0 0px;
-  }
-
-  input {
-    width: 100%;
-  }
-
-  button {
-    flex: 0 0 auto;
-    margin-left: 10px;
-  }
-}
 
 button {
   -webkit-appearance: none;
