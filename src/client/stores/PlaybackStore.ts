@@ -5,13 +5,25 @@ export default class PlaybackStore {
   @observable nowPlaying: PlaylistEntry | null;
   @observable isPlaying: boolean = false;
   @observable playlistUser: string | null;
+  @observable fromFeed: boolean = false;
 
   @observable queue: PlaylistEntry[] = [];
 
-  @action playItems(entries: PlaylistEntry[], username: string) {
+  @action playFeedItems(entries: PlaylistEntry[]) {
+    this.isPlaying = true;
+    this.queue = entries;
+    this.playlistUser = null;
+    this.fromFeed = true;
+
+    this.nextSong();
+  }
+
+  @action playPlaylistItems(entries: PlaylistEntry[], username: string) {
     this.isPlaying = true;
     this.queue = entries;
     this.playlistUser = username;
+    this.fromFeed = false;
+
     this.nextSong();
   }
 

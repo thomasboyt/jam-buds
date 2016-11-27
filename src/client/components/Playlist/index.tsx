@@ -2,20 +2,23 @@ import * as React from 'react';
 import {observer, inject} from 'mobx-react';
 
 import PlaylistStore from '../../stores/PlaylistStore';
+import PlaybackStore from '../../stores/PlaybackStore';
 import UserStore from '../../stores/UserStore';
 
-import PlaylistItem from './PlaylistItem';
+import PlaylistItem from '../PlaylistItem';
 import FollowStatus from './FollowStatus';
 import SidebarWrapper from '../SidebarWrapper';
 
 interface Props {
   playlistStore?: PlaylistStore;
+  playbackStore?: PlaybackStore;
   userStore?: UserStore;
   params: any;
 }
 
 @inject((allStores) => ({
   playlistStore: allStores.playlistStore as PlaylistStore,
+  playbackStore: allStores.playbackStore as PlaybackStore,
   userStore: allStores.userStore as UserStore,
 })) @observer
 class Playlist extends React.Component<Props, {}> {
@@ -24,9 +27,17 @@ class Playlist extends React.Component<Props, {}> {
     this.props.playlistStore!.getPlaylist(name);
   }
 
+  handleSongClick(trackIndex: number) {
+    const tracks = this.props.playlistStore!.items.slice(trackIndex);
+    const username = this.props.playlistStore!.name;
+
+    this.props.playbackStore!.playPlaylistItems(tracks, username);
+  }
+
   render() {
     const {items, name, userId} = this.props.playlistStore!;
     const isFollowing = this.props.userStore!.isFollowing(userId);
+    const playingTrack = this.props.playbackStore!.nowPlaying;
 
     return (
       <SidebarWrapper>
@@ -36,7 +47,14 @@ class Playlist extends React.Component<Props, {}> {
           <FollowStatus userId={userId} isFollowing={isFollowing} />
 
           <ul className="playlist-entries">
-            {items.map((track, idx) => <PlaylistItem key={track.id} track={track} trackIndex={idx} />)}
+            {items.map((track, idx) =>
+              <li>
+                <PlaylistItem key={track.id}
+                  track={track} trackIndex={idx}
+                  isPlaying={(!!playingTrack && playingTrack.id === track.id)}
+                  onClick={() => this.handleSongClick(idx)} />
+              </li>
+            )}
           </ul>
         </div>
       </SidebarWrapper>

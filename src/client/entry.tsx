@@ -17,12 +17,14 @@ import UserStore from './stores/UserStore';
 import AddSongStore from './stores/AddSongStore';
 import PlaylistStore from './stores/PlaylistStore';
 import PlaybackStore from './stores/PlaybackStore';
+import FeedStore from './stores/FeedStore';
 
 const stores = {
   userStore: new UserStore(),
   addSongStore: new AddSongStore(),
   playlistStore: new PlaylistStore(),
   playbackStore: new PlaybackStore(),
+  feedStore: new FeedStore(),
 };
 
 render((

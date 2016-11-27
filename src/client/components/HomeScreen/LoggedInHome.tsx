@@ -2,32 +2,63 @@ import * as React from 'react';
 import {Link} from 'react-router';
 import {inject, observer} from 'mobx-react';
 
-import UserStore from '../../stores/UserStore';
+import FeedStore from '../../stores/FeedStore';
+import PlaybackStore from '../../stores/PlaybackStore';
+import {FeedEntry} from '../../../universal/resources';
+
+import PlaylistItem from '../PlaylistItem';
 
 interface Props {
-  userStore?: UserStore;
+  feedStore?: FeedStore;
+  playbackStore?: PlaybackStore;
 }
 
 // some day this is going to be a cool feed thingy...
 @inject((allStores) => ({
-  userStore: allStores.userStore,
+  feedStore: allStores.feedStore,
+  playbackStore: allStores.playbackStore,
 })) @observer
 class LoggedInHome extends React.Component<Props, {}> {
-  render() {
-    const {following} = this.props.userStore!;
+  componentWillMount() {
+    this.props.feedStore!.getFeed();
+  }
+
+  handleSongClick(trackIndex: number) {
+    const tracks = this.props.feedStore!.items.slice(trackIndex).map((entry) => entry.song);
+
+    this.props.playbackStore!.playFeedItems(tracks);
+  }
+
+  renderItem(entry: FeedEntry, idx: number) {
+    const playingTrack = this.props.playbackStore!.nowPlaying;
+    const track = entry.song;
 
     return (
-      <div>
-        <h2>your buds</h2>
+      <li key={track.id}>
+        <div className="posted-by">
+          <Link to={`/playlist/${entry.user.twitterName}`}>
+            @{entry.user.twitterName}
+          </Link>
+          {' '} posted
+        </div>
 
-        <ul>
-          {following.map((user) => (
-            <li key={user.id}>
-              <Link to={`/playlist/${user.twitterName}`}>
-                {user.twitterName}
-              </Link>
-            </li>
-          ))}
+        <PlaylistItem
+          track={track} trackIndex={idx}
+          isPlaying={(!!playingTrack && playingTrack.id === track.id)}
+          onClick={() => this.handleSongClick(idx)} />
+      </li>
+    );
+  }
+
+  render() {
+    const {items} = this.props.feedStore!;
+
+    return (
+      <div className="playlist">
+        <h2>your feed</h2>
+
+        <ul className="playlist-entries">
+          {items.map((item, idx) => this.renderItem(item, idx))}
         </ul>
       </div>
     );

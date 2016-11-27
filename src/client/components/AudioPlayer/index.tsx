@@ -29,6 +29,25 @@ export default class VideoPlayer extends React.Component<Props, {}> {
     this.props.playbackStore!.nextSong();
   }
 
+  renderPlaybackSource() {
+    const {fromFeed, playlistUser, nowPlaying} = this.props.playbackStore!;
+
+    if (!nowPlaying) {
+      return null;
+    }
+
+    let source;
+    if (fromFeed) {
+      source = <Link to="/">your feed</Link>;
+    } else {
+      source = <Link to={`/playlist/${playlistUser}`}>@{playlistUser}</Link>;
+    }
+
+    return (
+      <div>playing from {source}</div>
+    );
+  }
+
   render() {
     const {nowPlaying, isPlaying, playlistUser} = this.props.playbackStore!;
 
@@ -62,8 +81,7 @@ export default class VideoPlayer extends React.Component<Props, {}> {
           <div>{title}</div>
           <div>{artist}</div>
 
-          {playlistUser &&
-            <div>playing from <Link to={`/playlists/${playlistUser}`}>@{playlistUser}</Link></div>}
+          {this.renderPlaybackSource()}
         </div>
 
         {art && <img className="audio-player--art" src={art} />}
