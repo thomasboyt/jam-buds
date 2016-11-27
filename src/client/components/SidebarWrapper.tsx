@@ -25,7 +25,11 @@ class SidebarWrapper extends React.Component<Props, {}> {
     const {name, loggedIn} = this.props.userStore!;
 
     if (!loggedIn) {
-      return null;
+      return (
+        <div className="sidebar">
+          <VideoPlayer />
+        </div>
+      );
     }
 
     return (
