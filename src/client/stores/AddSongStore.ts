@@ -12,11 +12,18 @@ export default class AddSongStore {
   @observable loadedShareLink: boolean = false;
   @observable shareTitle: string;
 
+  @observable loadedSearch: boolean = false;
+  @observable searchResults: SearchResult[] = [];
+
   @action async showAddSongScreen(url: string) {
     this.showingAddSong = true;
     this.shareLink = url;
 
     this.loadedShareLink = false;
+    this.shareTitle = '';
+
+    this.loadedSearch = false;
+    this.searchResults = [];
 
     const detail = await getShareLinkDetail(url);
     this.shareTitle = detail.title;
@@ -27,9 +34,6 @@ export default class AddSongStore {
   @action async hideAddSongScreen() {
     this.showingAddSong = false;
   }
-
-  @observable loadedSearch: boolean = false;
-  @observable searchResults: SearchResult[] = [];
 
   @action async search(query: string) {
     this.searchResults = [];
