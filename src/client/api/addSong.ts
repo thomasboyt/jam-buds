@@ -1,12 +1,19 @@
 import apiRequest from '../util/apiRequest';
 
-export default async function addSong(spotifyId: string, youtubeUrl: string): Promise<any> {
+interface Params {
+  spotifyId: string;
+  url: string;
+  tweet: string | null;
+}
+
+export default async function addSong({spotifyId, url, tweet}: Params): Promise<any> {
   await apiRequest({
     url: '/playlist',
     method: 'POST',
     data: {
       spotifyId,
-      youtubeUrl,
+      youtubeUrl: url,
+      tweet,
     },
   });
 }

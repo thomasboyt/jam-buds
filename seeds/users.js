@@ -32,8 +32,10 @@ exports.seed = function(knex, Promise) {
     createUser(knex, 'dan', 2),
     createUser(knex, 'brad', 3),
     createUser(knex, 'vinny', 4),
-
   ]).then(() => {
+    return knex.schema.raw(`SELECT setval('users_id_seq', 5)`)
+
+  }).then(() => {
     // jeff follows dan and vinny
     return Promise.all([
       followUser(knex, 1, 2),

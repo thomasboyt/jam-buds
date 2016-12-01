@@ -14,7 +14,7 @@ interface Props {
 })) @observer
 class SearchResults extends React.Component<Props, {}> {
   render() {
-    const {searchResults} = this.props.addSongStore!;
+    const {searchResults} = this.props.addSongStore!.txn;
 
     return (
       <div>

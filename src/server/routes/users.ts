@@ -23,6 +23,7 @@ import {
 
 import {getUserFromRequest, isAuthenticated} from '../auth';
 import * as spotify from '../apis/spotify';
+import {postSongTweet} from '../apis/twitter';
 
 import {PublicUser, CurrentUser, Playlist, Feed} from '../../universal/resources';
 
@@ -112,6 +113,13 @@ export default function registerUserEndpoints(app: Express) {
       songId: song.id,
       youtubeUrl: req.body.youtubeUrl,
     });
+
+    if (req.body.tweet) {
+      await postSongTweet({
+        text: req.body.tweet,
+        user,
+      });
+    }
 
     res.json({
       success: true,

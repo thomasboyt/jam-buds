@@ -51,6 +51,7 @@
     "@types/react-dom": "^0.14.18",
     "@types/react-modal": "^1.3.5",
     "@types/react-router": "^2.0.39",
+    "@types/twit": "^2.2.4",
     "@types/whatwg-fetch": "0.0.32",
     "@types/youtube": "0.0.28",
     "axios": "^0.15.2",
@@ -74,6 +75,7 @@
     "react-router": "^3.0.0",
     "spotify-web-api-node": "^2.3.6",
     "ts-node": "^1.7.0",
+    "twit": "^2.2.5",
     "typescript": "^2.1.1",
     "whatwg-fetch": "^2.0.0"
   }

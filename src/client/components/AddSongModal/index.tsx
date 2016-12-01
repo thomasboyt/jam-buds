@@ -2,8 +2,9 @@ import * as React from 'react';
 import * as Modal from 'react-modal';
 import {inject, observer} from 'mobx-react';
 
-import AddSongStore from '../../stores/AddSongStore';
-import AddSongScreen from './AddSongScreen';
+import AddSongStore, {AddSongState} from '../../stores/AddSongStore';
+import SearchScreen from './SearchScreen';
+import ConfirmScreen from './ConfirmScreen';
 
 interface Props {
   addSongStore?: AddSongStore;
@@ -17,6 +18,27 @@ class AddSongModal extends React.Component<Props, {}> {
     this.props.addSongStore!.hideAddSongScreen();
   }
 
+  renderInner() {
+    const {state} = this.props.addSongStore!.txn;
+
+    let screen;
+    if (state === AddSongState.searching) {
+      screen = <SearchScreen />;
+    } else if (state === AddSongState.confirm) {
+      screen = <ConfirmScreen />;
+    }
+
+    return (
+      <div className="add-song-screen">
+        <div style={{textAlign: 'center'}}>
+          <h2>share a jam!</h2>
+        </div>
+
+        {screen}
+      </div>
+    );
+  }
+
   render() {
     const {showingAddSong} = this.props.addSongStore!;
 
@@ -27,7 +49,7 @@ class AddSongModal extends React.Component<Props, {}> {
         className="modal-content"
         overlayClassName="modal-overlay"
         closeTimeoutMS={1000}>
-        {showingAddSong ? <AddSongScreen /> : null}
+        {showingAddSong ? this.renderInner() : null}
       </Modal>
     );
   }

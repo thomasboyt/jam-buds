@@ -13,9 +13,9 @@ interface Props {
 @inject((allStores) => ({
   addSongStore: allStores.addSongStore as AddSongStore,
 })) @observer
-class AddSongScreen extends React.Component<Props, {}> {
+class SearchScreen extends React.Component<Props, {}> {
   renderLoaded() {
-    const {shareTitle} = this.props.addSongStore!;
+    const {shareTitle} = this.props.addSongStore!.txn;
 
     return (
       <div>
@@ -34,18 +34,10 @@ class AddSongScreen extends React.Component<Props, {}> {
   }
 
   render() {
-    const {loadedShareLink} = this.props.addSongStore!;
+    const {loadedShareLink} = this.props.addSongStore!.txn;
 
-    return (
-      <div className="add-song-screen">
-        <div style={{textAlign: 'center'}}>
-          <h2>share a jam!</h2>
-        </div>
-
-        {loadedShareLink ? this.renderLoaded() : <div>loading...</div>}
-      </div>
-    );
+    return loadedShareLink ? this.renderLoaded() : <div>loading...</div>;
   }
 }
 
-export default AddSongScreen;
+export default SearchScreen;
