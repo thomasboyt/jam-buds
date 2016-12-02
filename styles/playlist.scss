@@ -24,6 +24,10 @@
       }
     }
 
+    &.is-playing a {
+      background: skyblue;
+    }
+
     img {
       height: 100%;
       flex: 0 0 64px;

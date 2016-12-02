@@ -3,6 +3,7 @@ import {inject, observer} from 'mobx-react';
 import PlaylistStore from '../../stores/PlaylistStore';
 import PlaybackStore from '../../stores/PlaybackStore';
 import {PlaylistEntry} from '../../../universal/resources';
+import * as classNames from 'classnames';
 
 interface Props {
   playlistStore?: PlaylistStore;
@@ -23,11 +24,19 @@ export default class PlaylistItem extends React.Component<Props, {}> {
   }
 
   render() {
-    const {track} = this.props;
+    const {track, playbackStore} = this.props;
+
+    const playingTrack = playbackStore!.nowPlaying;
+    const isPlaying = (!!playingTrack) && playingTrack.id === track.id;
+
+    const className = classNames('playlist-entry', {
+      'is-playing': isPlaying,
+    });
 
     return (
-      <li className="playlist-entry">
-        <a href={track.youtubeUrl} target="_blank" rel="noopener noreferrer" onClick={(e) => this.handleClick(e)}>
+      <li className={className}>
+        <a href={track.youtubeUrl} target="_blank" rel="noopener noreferrer"
+          onClick={(e) => this.handleClick(e)}>
           <img src={track.albumArt} />
           <span className="title">
             {track.artists.join(', ')}
