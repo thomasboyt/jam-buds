@@ -4,12 +4,14 @@ import {PlaylistEntry} from '../../universal/resources';
 export default class PlaybackStore {
   @observable nowPlaying: PlaylistEntry | null;
   @observable isPlaying: boolean = false;
+  @observable playlistUser: string | null;
 
   @observable queue: PlaylistEntry[] = [];
 
-  @action playItems(entries: PlaylistEntry[]) {
+  @action playItems(entries: PlaylistEntry[], username: string) {
     this.isPlaying = true;
     this.queue = entries;
+    this.playlistUser = username;
     this.nextSong();
   }
 

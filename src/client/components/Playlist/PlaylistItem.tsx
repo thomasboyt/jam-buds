@@ -22,7 +22,9 @@ export default class PlaylistItem extends React.Component<Props, {}> {
 
     const trackIndex = this.props.trackIndex;
     const tracks = this.props.playlistStore!.items.slice(trackIndex);
-    this.props.playbackStore!.playItems(tracks);
+    const username = this.props.playlistStore!.name;
+
+    this.props.playbackStore!.playItems(tracks, username);
   }
 
   render() {

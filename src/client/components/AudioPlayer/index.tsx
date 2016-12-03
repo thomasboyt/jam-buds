@@ -1,5 +1,7 @@
 import * as React from 'react';
+import {Link} from 'react-router';
 import {inject, observer} from 'mobx-react';
+
 import PlaybackStore from '../../stores/PlaybackStore';
 import {PlaylistEntry} from '../../../universal/resources';
 import serializeSongLabel from '../../util/serializeSongLabel';
@@ -44,7 +46,7 @@ export default class VideoPlayer extends React.Component<Props, {}> {
   }
 
   render() {
-    const {nowPlaying, isPlaying} = this.props.playbackStore!;
+    const {nowPlaying, isPlaying, playlistUser} = this.props.playbackStore!;
     const url = nowPlaying ? nowPlaying.youtubeUrl : null;
     const songLabel = getLabel(nowPlaying);
     const art = getArt(nowPlaying);
@@ -56,12 +58,17 @@ export default class VideoPlayer extends React.Component<Props, {}> {
         <div className="audio-player--main">
           <span className="song-label">{songLabel}</span>
 
-          <div>{isPlaying ? 'playing' : 'nah'}</div>
+          {playlistUser &&
+            <div>playing from <Link to={`/playlists/${playlistUser}`}>@{playlistUser}</Link></div>}
 
           <div className="audio-player--controls">
-            <button className="play-pause-button" onClick={() => this.handlePlayPauseClick()}>play/pause</button>
+            <button className="play-pause-button" onClick={() => this.handlePlayPauseClick()}>
+              play/pause
+            </button>
 
-            <button className="next-button" onClick={() => this.handleNextClick()}>next</button>
+            <button className="next-button" onClick={() => this.handleNextClick()}>
+              next
+            </button>
           </div>
         </div>
 
