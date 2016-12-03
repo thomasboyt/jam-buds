@@ -13,7 +13,7 @@ interface Props {
 class SearchBox extends React.Component<Props, {}> {
   input: HTMLInputElement;
 
-  handleSubmit(e: React.MouseEvent<any>) {
+  handleSubmit(e: React.FormEvent<any>) {
     e.preventDefault();
 
     const query = this.input.value;
@@ -24,10 +24,13 @@ class SearchBox extends React.Component<Props, {}> {
 
   render() {
     return (
-      <div>
-        <input type="text" ref={(el) => this.input = el} />
-        <button onClick={(e) => this.handleSubmit(e)}>find</button>
-      </div>
+      <form className="submit-box" onSubmit={(e) => this.handleSubmit(e)}>
+        <div className="input-container">
+          <input type="text" ref={(el) => this.input = el} />
+        </div>
+
+        <button type="submit">find</button>
+      </form>
     );
   }
 }

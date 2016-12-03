@@ -17,7 +17,6 @@ interface Props {
   userStore: allStores.userStore,
 })) @observer
 class HomeScreen extends React.Component<Props, {}> {
-
   render() {
     const {loggedIn} = this.props.userStore!;
 

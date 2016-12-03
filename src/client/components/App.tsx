@@ -6,7 +6,7 @@ import {AUTH_TOKEN_KEY} from '../constants';
 import UserStore from '../stores/UserStore';
 
 import TwitterAuth from './TwitterAuth';
-import SubmitBox from './SubmitBox';
+import AudioPlayer from './AudioPlayer';
 import AddSongModal from './AddSongModal';
 import LoadUserWrapper from './LoadUserWrapper';
 
@@ -33,7 +33,7 @@ class App extends React.Component<Props, {}> {
             <h1><Link to="/">jam buds!</Link></h1>
           </header>
 
-          {loggedIn ? <SubmitBox /> : null}
+          <AudioPlayer />
         </div>
 
         <LoadUserWrapper>

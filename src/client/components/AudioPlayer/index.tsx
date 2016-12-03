@@ -12,7 +12,7 @@ interface Props {
 @inject((allStores) => ({
   playbackStore: allStores.playbackStore as PlaybackStore,
 })) @observer
-export default class PlaylistItem extends React.Component<Props, {}> {
+export default class VideoPlayer extends React.Component<Props, {}> {
   handleSongEnd() {
     this.props.playbackStore!.nextSong();
   }

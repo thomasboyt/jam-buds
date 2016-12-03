@@ -1,8 +1,8 @@
 import * as React from 'react';
 import {observer, inject} from 'mobx-react';
 
-import AddSongStore from '../stores/AddSongStore';
-import getSongsSearch from '../api/getSongsSearch';
+import AddSongStore from '../../stores/AddSongStore';
+import getSongsSearch from '../../api/getSongsSearch';
 
 import * as classNames from 'classnames';
 
@@ -48,16 +48,15 @@ class SubmitBox extends React.Component<Props, {}> {
     }
 
     const {addSongStore} = this.props;
-    addSongStore!.showAddSongScreen(url);
-
-    this.setState({
-      value: '',
-    });
+    addSongStore!.submitSongLink(url);
   }
 
   render() {
     const {invalid} = this.state;
     const inputClassName = classNames({
+      invalid,
+    });
+    const buttonClassName = classNames('submit-song', {
       invalid,
     });
 
@@ -74,7 +73,7 @@ class SubmitBox extends React.Component<Props, {}> {
             placeholder="Paste a Youtube link here!!" />
         </div>
 
-        <button type="submit" disabled={buttonDisabled} className={inputClassName}>
+        <button type="submit" disabled={buttonDisabled} className={buttonClassName}>
           <span>is my shit</span>
         </button>
       </form>

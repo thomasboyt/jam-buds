@@ -29,9 +29,9 @@ export default class TwitterShareBox extends React.Component<Props, {}> {
     const remainingChars = 140 - tweetLength;
 
     return (
-      <div>
+      <div className="tweet-box">
         <textarea value={tweetText} onChange={(e) => this.handleChange(e)} />
-        ({remainingChars} left)
+        ({remainingChars} characters left)
       </div>
     );
   }

@@ -6,7 +6,7 @@ import {removeAuthToken} from '../util/authToken';
 import UserStore from '../stores/UserStore';
 
 import TwitterAuth from './TwitterAuth';
-import VideoPlayer from './VideoPlayer';
+import AddSongButton from './AddSongButton';
 
 function signOut() {
   removeAuthToken();
@@ -25,22 +25,16 @@ class SidebarWrapper extends React.Component<Props, {}> {
     const {name, loggedIn} = this.props.userStore!;
 
     if (!loggedIn) {
-      return (
-        <div className="sidebar">
-          <VideoPlayer />
-        </div>
-      );
+      return null;
     }
 
     return (
       <div className="sidebar">
         <p>what up, <Link to={`/playlist/${name}`}>{name}</Link></p>
 
-        <p>hey, post a song! paste a link here and get goin'</p>
+        <AddSongButton />
 
         <p>or <a href="#" onClick={signOut}>sign out</a></p>
-
-        <VideoPlayer />
       </div>
     );
   }

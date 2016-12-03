@@ -3,6 +3,7 @@ import * as Modal from 'react-modal';
 import {inject, observer} from 'mobx-react';
 
 import AddSongStore, {AddSongState} from '../../stores/AddSongStore';
+import InitialScreen from './InitialScreen';
 import SearchScreen from './SearchScreen';
 import ConfirmScreen from './ConfirmScreen';
 
@@ -22,7 +23,9 @@ class AddSongModal extends React.Component<Props, {}> {
     const {state} = this.props.addSongStore!.txn;
 
     let screen;
-    if (state === AddSongState.searching) {
+    if (state === AddSongState.initial) {
+      screen = <InitialScreen />;
+    } else if (state === AddSongState.searching) {
       screen = <SearchScreen />;
     } else if (state === AddSongState.confirm) {
       screen = <ConfirmScreen />;

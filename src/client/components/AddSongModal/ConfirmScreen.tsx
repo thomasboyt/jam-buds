@@ -44,7 +44,7 @@ class ConfirmScreen extends React.Component<Props, {}> {
     const {crossPostEnabled} = this.state;
 
     return (
-      <div>
+      <div className="confirm-screen">
         <p>you're posting <strong>{serializeSongLabel(song)}</strong></p>
 
         <p>
@@ -52,14 +52,14 @@ class ConfirmScreen extends React.Component<Props, {}> {
             <input type="checkbox"
               checked={crossPostEnabled}
               onChange={() => this.handleToggleTwitter()} />
-            cross-post to twitter
+            {' '} cross-post to twitter
           </label>
         </p>
 
         {this.state.crossPostEnabled ? <TwitterShareBox /> : null}
 
-        <button onClick={() => this.handleSubmit()}>
-          add
+        <button onClick={() => this.handleSubmit()} className="submit">
+          post it!!
         </button>
       </div>
     );

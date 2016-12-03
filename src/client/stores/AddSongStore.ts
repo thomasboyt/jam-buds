@@ -7,13 +7,14 @@ import {getTweetLength} from '../util/songTweet';
 import {SearchResult} from '../../universal/resources';
 
 export enum AddSongState {
+  initial,
   searching,
   confirm,
 }
 
 // This class just contains the "transaction" and gets reset when the modal is open/closed
 class AddSongTransaction {
-  @observable state: AddSongState = AddSongState.searching;
+  @observable state: AddSongState = AddSongState.initial;
   @observable shareLink: string;
 
   @observable loadedShareLink: boolean = false;
@@ -44,16 +45,20 @@ export default class AddSongStore {
     this.showingAddSong = true;
 
     this.txn = new AddSongTransaction();
+  }
+
+  @action async hideAddSongScreen() {
+    this.showingAddSong = false;
+  }
+
+  @action async submitSongLink(url: string) {
     this.txn.shareLink = url;
+    this.txn.state = AddSongState.searching;
 
     const detail = await getShareLinkDetail(url);
     this.txn.shareTitle = detail.title;
 
     this.txn.loadedShareLink = true;
-  }
-
-  @action async hideAddSongScreen() {
-    this.showingAddSong = false;
   }
 
   @action async search(query: string) {

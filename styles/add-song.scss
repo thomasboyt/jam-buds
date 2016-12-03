@@ -1,0 +1,187 @@
+/*
+ * Modals
+ */
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+$modal-width: 450px;
+$modal-height: 450px;
+
+/* Remove scroll on the body when react-modal is open */
+.ReactModal__Body--open {
+    overflow: hidden;
+}
+
+.modal-content {
+  overflow: auto;
+
+  background: skyblue;
+  box-shadow: yellow 15px 15px;
+
+  position: absolute;
+  width: $modal-width;
+  height: $modal-height;
+  top: 50%;
+  left: 50%;
+  margin-top: -$modal-height/2 - 20px;
+  margin-left: -$modal-width/2 - 20px;
+
+  padding: 20px;
+
+  outline: none;
+}
+
+.ReactModal__Content--after-open {
+  animation: flyIn ease-in-out 1.5s;
+}
+
+.ReactModal__Content--before-close {
+  animation: flyOut ease-in-out 1s reverse;
+}
+
+@keyframes flyIn {
+  0% {
+    transform: rotate(-180deg) scale(0);
+  }
+
+  100% {
+    transform: rotate(720deg) scale(1);
+  }
+}
+
+@keyframes flyOut {
+  100% {
+    transform: rotate(720deg) scale(1);
+  }
+
+  0% {
+    transform: rotate(-180deg) scale(0);
+  }
+}
+
+.add-song-screen {
+  a, a:visited, a:hover, a:active {
+    color: darkblue;
+  }
+
+  .header-container {
+    text-align: center;
+  }
+
+  h2 {
+    display: inline-block;
+    margin-top: 0;
+    margin-bottom: 25px;
+
+    transform: skew(-15deg);
+
+    font-weight: bold;
+    background: yellow;
+    padding: 10px 20px;
+  }
+
+  .submit-box {
+    display: flex;
+
+    margin: 20px 0px;
+
+    height: 50px;
+
+    .input-container {
+      // 0px here keeps it from getting a weird thing specified by input, I guess?
+      flex: 1 0 0px;
+    }
+
+    input, button {
+      height: 100%;
+    }
+
+    input {
+      width: 100%;
+      padding: 0 10px;
+
+      &.invalid {
+        color: red;
+        border: 2px red solid;
+      }
+    }
+
+    button {
+      margin-left: 10px;
+      padding: 0px 0px;
+      width: 145px;
+
+      &:disabled {
+        cursor: default;
+      }
+
+      &:active:enabled {
+        transform: translate3d(4px, 4px, 0px);
+      }
+    }
+
+    button.submit-song {
+      span {
+        display: none;
+      }
+
+      &:after {
+        content: 'is my shit';
+      }
+
+      &:enabled:hover:after {
+        content: 'yeah!!!!';
+      }
+
+      &.invalid {
+        background-color: red;
+
+        &:after {
+          content: 'invalid url!';
+        }
+      }
+    }
+  }
+
+  button {
+    display: block;
+    background-color: hotpink;
+    color: black;
+    font-weight: bold;
+    font-size: 1.5em;
+    padding: 10px 20px;
+
+    &:disabled {
+      cursor: default;
+    }
+
+    &:active:enabled {
+      transform: translate3d(4px, 4px, 0px);
+    }
+  }
+
+  button.submit {
+    margin: 0 auto;
+  }
+
+  textarea {
+    width: 100%;
+    height: 120px;
+    padding: 20px;
+  }
+
+  .confirm-screen {
+    text-align: center;
+  }
+
+  .tweet-box {
+    margin-bottom: 20px;
+  }
+}

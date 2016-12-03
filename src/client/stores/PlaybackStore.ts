@@ -4,12 +4,11 @@ import {PlaylistEntry} from '../../universal/resources';
 export default class PlaybackStore {
   @observable nowPlaying: PlaylistEntry | null;
 
-  // TODO: populate this
   @observable queue: PlaylistEntry[] = [];
 
   @action playItems(entries: PlaylistEntry[]) {
-    this.nowPlaying = entries[0];
-    this.queue = entries.slice(1);
+    this.queue = entries;
+    this.nextSong();
   }
 
   @action nextSong() {

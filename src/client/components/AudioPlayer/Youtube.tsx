@@ -11,7 +11,7 @@ interface Props {
   onEnded: () => void;
 }
 
-class VideoPlayer extends React.Component<Props, {}> {
+export default class Youtube extends React.Component<Props, {}> {
   player: YT.Player;
 
   componentDidMount() {
@@ -80,5 +80,3 @@ class VideoPlayer extends React.Component<Props, {}> {
     );
   }
 }
-
-export default VideoPlayer;
