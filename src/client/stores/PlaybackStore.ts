@@ -23,6 +23,7 @@ export default class PlaybackStore {
     if (this.queue.length === 0) {
       this.nowPlaying = null;
       this.isPlaying = false;
+      this.playlistUser = null;
       return;
     }
 
