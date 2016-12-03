@@ -4,6 +4,7 @@
 @import "./playlist.scss";
 @import "./sidebar.scss";
 @import "./add-song.scss";
+@import "./audio-player.scss";
 
 body {
   font-family: 'Open Sans', sans-serif;
@@ -79,8 +80,10 @@ html, body, .react-root, .app-container {
     flex: 0 0 auto;
   }
 
-  .submit-box {
-    flex: 1 0 auto;
+  .audio-player {
+    flex: 0 1 500px;
+    height: 80px;
+    margin-left: auto;
   }
 }
 

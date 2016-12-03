@@ -1,0 +1,17 @@
+.audio-player {
+  background: white;
+
+  display: flex;
+
+  .audio-player--main {
+    flex: 1 0 auto;
+
+    .audio-player--controls {
+    }
+  }
+
+  .audio-player--art {
+    flex: 0 0 80px;
+    height: 100%;
+  }
+}

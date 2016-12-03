@@ -6,7 +6,7 @@ import {findDOMNode} from 'react-dom';
 import * as queryString from 'query-string';
 
 interface Props {
-  url: string;
+  url: string | null;
   playing: boolean;
   onEnded: () => void;
 }
@@ -15,12 +15,27 @@ export default class Youtube extends React.Component<Props, {}> {
   player: YT.Player;
 
   componentDidMount() {
+    if (!YT.Player && !(window as any).onYoutubeIframeAPIReady) {
+      this.waitForYoutubeAPI();
+    } else {
+      this.setupYoutube();
+    }
+  }
+
+  waitForYoutubeAPI() {
+    (window as any).onYoutubeIframeAPIReady = () => {
+      this.setupYoutube();
+    };
+  }
+
+  setupYoutube() {
     const tub = findDOMNode(this) as HTMLElement;
+    const videoId = this.props.url ? this.getVideoId(this.props.url) : undefined;
 
     this.player = new YT.Player(tub, {
-      width: '250',
-      height: '250',
-      videoId: this.getVideoId(this.props.url),
+      width: '0',
+      height: '0',
+      videoId: videoId,
 
       events: {
         onReady: (e) => this.onPlayerReady(e),
@@ -32,6 +47,11 @@ export default class Youtube extends React.Component<Props, {}> {
   componentWillReceiveProps(nextProps: Props) {
     if (!this.player) {
       // If the player hasn't loaded yet, don't try to change anything
+      return;
+    }
+
+    if (!nextProps.url) {
+      this.player.stopVideo();
       return;
     }
 
