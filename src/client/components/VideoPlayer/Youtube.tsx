@@ -8,6 +8,7 @@ import * as queryString from 'query-string';
 interface Props {
   url: string;
   playing: boolean;
+  onEnded: () => void;
 }
 
 class VideoPlayer extends React.Component<Props, {}> {
@@ -23,6 +24,7 @@ class VideoPlayer extends React.Component<Props, {}> {
 
       events: {
         onReady: (e) => this.onPlayerReady(e),
+        onStateChange: (e) => this.onStateChange(e),
       }
     });
   }
@@ -57,6 +59,13 @@ class VideoPlayer extends React.Component<Props, {}> {
   onPlayerReady(evt: YT.EventArgs) {
     if (this.props.playing) {
       this.player.playVideo();
+    }
+  }
+
+  onStateChange(evt: YT.EventArgs) {
+    if (evt.data === YT.PlayerState.ENDED) {
+      // cycle to the next song
+      this.props.onEnded();
     }
   }
 

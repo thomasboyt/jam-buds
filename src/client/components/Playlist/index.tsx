@@ -36,7 +36,7 @@ class Playlist extends React.Component<Props, {}> {
           <FollowStatus userId={userId} isFollowing={isFollowing} />
 
           <ul className="playlist-entries">
-            {items.map((track) => <PlaylistItem key={track.id} track={track} />)}
+            {items.map((track, idx) => <PlaylistItem key={track.id} track={track} trackIndex={idx} />)}
           </ul>
         </div>
       </SidebarWrapper>

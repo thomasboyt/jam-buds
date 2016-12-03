@@ -13,6 +13,10 @@ interface Props {
   playbackStore: allStores.playbackStore as PlaybackStore,
 })) @observer
 export default class PlaylistItem extends React.Component<Props, {}> {
+  handleSongEnd() {
+    this.props.playbackStore!.nextSong();
+  }
+
   render() {
     const {nowPlaying} = this.props.playbackStore!;
 
@@ -22,7 +26,7 @@ export default class PlaylistItem extends React.Component<Props, {}> {
 
     return (
       <div className="video-container">
-        <Youtube url={nowPlaying.youtubeUrl} playing />
+        <Youtube url={nowPlaying.youtubeUrl} playing onEnded={() => this.handleSongEnd()} />
       </div>
     );
   }

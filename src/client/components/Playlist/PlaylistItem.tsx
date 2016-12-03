@@ -9,6 +9,7 @@ interface Props {
   playlistStore?: PlaylistStore;
   playbackStore?: PlaybackStore;
   track: PlaylistEntry;
+  trackIndex: number;
 }
 
 @inject((allStores) => ({
@@ -19,8 +20,9 @@ export default class PlaylistItem extends React.Component<Props, {}> {
   handleClick(e: React.MouseEvent<any>) {
     e.preventDefault();
 
-    const {track} = this.props;
-    this.props.playbackStore!.playSong(track);
+    const trackIndex = this.props.trackIndex;
+    const tracks = this.props.playlistStore!.items.slice(trackIndex);
+    this.props.playbackStore!.playItems(tracks);
   }
 
   render() {
