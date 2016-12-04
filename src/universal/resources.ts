@@ -14,6 +14,7 @@ export interface PlaylistEntry {
   albumArt: string;
   note: string | null;
   added: string;
+  spotifyId: string;
 }
 
 export interface FeedEntry {

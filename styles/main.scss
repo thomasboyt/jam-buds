@@ -6,6 +6,10 @@
 @import "./add-song.scss";
 @import "./audio-player.scss";
 
+* {
+  box-sizing: border-box;
+}
+
 body {
   font-family: 'Open Sans', sans-serif;
   background: url('../assets/bg.jpg');
