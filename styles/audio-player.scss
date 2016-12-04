@@ -30,12 +30,15 @@
   }
 
   .audio-player--main {
-    flex: 1 0 auto;
+    flex: 1 1 auto;
     padding: 10px 15px;
     color: white;
+    min-width: 0;
 
-    .song-label {
-
+    > div {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
   }
 

@@ -13,14 +13,6 @@ interface Props {
   playbackStore?: PlaybackStore;
 }
 
-function getLabel(song: PlaylistEntry | null): string {
-  if (!song) {
-    return 'Nothing playing...';
-  }
-
-  return `${song.artists.join(',')} - ${song.title}`;
-}
-
 @inject((allStores) => ({
   playbackStore: allStores.playbackStore as PlaybackStore,
 })) @observer
@@ -39,9 +31,11 @@ export default class VideoPlayer extends React.Component<Props, {}> {
 
   render() {
     const {nowPlaying, isPlaying, playlistUser} = this.props.playbackStore!;
+
     const url = nowPlaying ? nowPlaying.youtubeUrl : null;
-    const songLabel = getLabel(nowPlaying);
     const art = nowPlaying ? nowPlaying.albumArt : null;
+    const artist = nowPlaying ? nowPlaying.artists.join(', ') : null;
+    const title = nowPlaying ? nowPlaying.title : '(nothing playing)';
 
     const playPauseClassName = classNames('fa', {
       'fa-play': !isPlaying,
@@ -65,7 +59,8 @@ export default class VideoPlayer extends React.Component<Props, {}> {
         </div>
 
         <div className="audio-player--main">
-          <span className="song-label">{songLabel}</span>
+          <div>{title}</div>
+          <div>{artist}</div>
 
           {playlistUser &&
             <div>playing from <Link to={`/playlists/${playlistUser}`}>@{playlistUser}</Link></div>}

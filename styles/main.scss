@@ -82,6 +82,7 @@ html, body, .react-root, .app-container {
 
   .audio-player {
     flex: 0 1 500px;
+    max-width: 500px;
     height: 80px;
     margin-left: auto;
   }
