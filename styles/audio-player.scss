@@ -1,12 +1,41 @@
 .audio-player {
-  background: white;
+  background: #333;
+  border: 1px white solid;
 
   display: flex;
+  align-items: center;
+
+  .audio-player--controls {
+    flex: 0 0 auto;
+    display: flex;
+
+    button {
+      flex: 0 0 auto;
+
+      height: 60px;
+      width: 60px;
+      border-radius: 60px;
+
+      display: block;
+      background: none;
+      color: white;
+      font-size: 40px;
+      text-align: center;
+
+      &:hover, &:active {
+        background: white;
+        color: black;
+      }
+    }
+  }
 
   .audio-player--main {
     flex: 1 0 auto;
+    padding: 10px 15px;
+    color: white;
 
-    .audio-player--controls {
+    .song-label {
+
     }
   }
 

@@ -61,23 +61,23 @@ export default class VideoPlayer extends React.Component<Props, {}> {
       <div className="audio-player">
         <Youtube url={url} playing={isPlaying} onEnded={() => this.handleSongEnd()} />
 
+        <div className="audio-player--controls">
+          <button className="play-pause-button" onClick={() => this.handlePlayPauseClick()}
+            disabled={!nowPlaying}>
+            <span className={playPauseClassName} />
+          </button>
+
+          <button className="next-button" onClick={() => this.handleNextClick()}
+            disabled={!nowPlaying}>
+            <span className="fa fa-step-forward" />
+          </button>
+        </div>
+
         <div className="audio-player--main">
           <span className="song-label">{songLabel}</span>
 
           {playlistUser &&
             <div>playing from <Link to={`/playlists/${playlistUser}`}>@{playlistUser}</Link></div>}
-
-          <div className="audio-player--controls">
-            <button className="play-pause-button" onClick={() => this.handlePlayPauseClick()}
-              disabled={!nowPlaying}>
-              <span className={playPauseClassName} />
-            </button>
-
-            <button className="next-button" onClick={() => this.handleNextClick()}
-              disabled={!nowPlaying}>
-              <span className="fa fa-step-forward" />
-            </button>
-          </div>
         </div>
 
         <img className="audio-player--art" src={art} />
