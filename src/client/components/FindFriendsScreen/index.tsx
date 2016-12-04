@@ -19,7 +19,7 @@ export default class FindFriendsScreen extends React.Component<Props, {}> {
   renderLoaded(suggestions: PublicUser[]) {
     if (suggestions.length === 0) {
       return (
-        <div>
+        <div className="main-placeholder">
           No suggestions found! Try inviting your Twitter friends to Jam Buds!
         </div>
       );
@@ -43,8 +43,8 @@ export default class FindFriendsScreen extends React.Component<Props, {}> {
       <SidebarWrapper>
         <h2>Find Friends</h2>
         {suggestionsPromise.case({
-          pending: () => <div>Loading Twitter friends...</div>,
-          rejected: () => <div>Error loading!</div>,
+          pending: () => <div className="main-placeholder">Loading Twitter friends...</div>,
+          rejected: () => <div className="main-placeholder">Error loading!</div>,
           fulfilled: (suggestions) => this.renderLoaded(suggestions),
         })}
       </SidebarWrapper>

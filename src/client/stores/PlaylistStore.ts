@@ -1,4 +1,6 @@
-import {observable, action} from 'mobx';
+import {observable, action, computed} from 'mobx';
+import {fromPromise} from 'mobx-utils';
+
 import getPlaylist from '../api/getPlaylist';
 import {PlaylistEntry} from '../../universal/resources';
 
@@ -8,10 +10,14 @@ export default class PlaylistStore {
 
   @observable items: PlaylistEntry[] = [];
 
-  @action async getPlaylist(name: string) {
+  @action getPlaylist(name: string) {
     this.name = name;
-    const playlist = await getPlaylist(name);
-    this.items = playlist.tracks;
-    this.userId = playlist.user.id;
+  }
+
+  @computed get itemsPromise() {
+    return fromPromise(getPlaylist(this.name).then((resp) => {
+      this.items = resp.tracks;
+      this.userId = resp.user.id;
+    }));
   }
 }

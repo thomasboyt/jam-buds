@@ -9,6 +9,8 @@ import PlaylistItem from '../PlaylistItem';
 import FollowStatus from './FollowStatus';
 import SidebarWrapper from '../SidebarWrapper';
 
+import {PlaylistEntry} from '../../../universal/resources';
+
 interface Props {
   playlistStore?: PlaylistStore;
   playbackStore?: PlaybackStore;
@@ -40,10 +42,37 @@ class Playlist extends React.Component<Props, {}> {
     this.props.playbackStore!.playPlaylistItems(tracks, username);
   }
 
-  render() {
-    const {items, name, userId} = this.props.playlistStore!;
-    const isFollowing = this.props.userStore!.isFollowing(userId);
+  renderLoaded(items: PlaylistEntry[]) {
+    const {userId} = this.props.playlistStore!;
     const playingTrack = this.props.playbackStore!.nowPlaying;
+
+    if (items.length === 0) {
+      return (
+        <div className="main-placeholder">
+          This playlist is empty.
+
+          {userId === this.props.userStore!.userId && ' Post some songs!'}
+        </div>
+      );
+    }
+
+    return (
+      <ul className="playlist-entries">
+        {items.map((track, idx) =>
+          <li key={track.id}>
+            <PlaylistItem
+              track={track} trackIndex={idx}
+              isPlaying={(!!playingTrack && playingTrack.id === track.id)}
+              onClick={() => this.handleSongClick(idx)} />
+          </li>
+        )}
+      </ul>
+    );
+  }
+
+  render() {
+    const {itemsPromise, items, name, userId} = this.props.playlistStore!;
+    const isFollowing = this.props.userStore!.isFollowing(userId);
 
     return (
       <SidebarWrapper>
@@ -52,16 +81,11 @@ class Playlist extends React.Component<Props, {}> {
 
           <FollowStatus userId={userId} isFollowing={isFollowing} />
 
-          <ul className="playlist-entries">
-            {items.map((track, idx) =>
-              <li key={track.id}>
-                <PlaylistItem
-                  track={track} trackIndex={idx}
-                  isPlaying={(!!playingTrack && playingTrack.id === track.id)}
-                  onClick={() => this.handleSongClick(idx)} />
-              </li>
-            )}
-          </ul>
+          {itemsPromise.case({
+            pending: () => <div className="main-placeholder">Loading...</div>,
+            rejected: () => <div className="main-placeholder">Error loading!</div>,
+            fulfilled: () => this.renderLoaded(items),
+          })}
         </div>
       </SidebarWrapper>
     );

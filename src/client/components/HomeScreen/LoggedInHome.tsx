@@ -21,14 +21,26 @@ interface Props {
   playbackStore: allStores.playbackStore,
 })) @observer
 class LoggedInHome extends React.Component<Props, {}> {
-  componentWillMount() {
-    this.props.feedStore!.getFeed();
-  }
-
   handleSongClick(trackIndex: number) {
     const tracks = this.props.feedStore!.items.slice(trackIndex).map((entry) => entry.song);
 
     this.props.playbackStore!.playFeedItems(tracks);
+  }
+
+  renderLoaded(items: FeedEntry[]) {
+    if (items.length === 0) {
+      return (
+        <div className="main-placeholder">
+          Your feed doesn't have any entries yet! <Link to="/find-friends">Find some friends to follow!</Link>
+        </div>
+      );
+    }
+
+    return (
+      <ul className="playlist-entries">
+        {items.map((item, idx) => this.renderItem(item, idx))}
+      </ul>
+    );
   }
 
   renderItem(entry: FeedEntry, idx: number) {
@@ -54,15 +66,17 @@ class LoggedInHome extends React.Component<Props, {}> {
   }
 
   render() {
-    const {items} = this.props.feedStore!;
+    const {items, feedPromise} = this.props.feedStore!;
 
     return (
       <div className="playlist">
         <h2>your feed</h2>
 
-        <ul className="playlist-entries">
-          {items.map((item, idx) => this.renderItem(item, idx))}
-        </ul>
+        {feedPromise.case({
+          pending: () => <div className="main-placeholder">Loading...</div>,
+          rejected: () => <div className="main-placeholder">Error loading!</div>,
+          fulfilled: () => this.renderLoaded(items),
+        })}
       </div>
     );
   }
