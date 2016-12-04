@@ -112,6 +112,7 @@ export default function registerUserEndpoints(app: Express) {
       userId: user.id,
       songId: song.id,
       youtubeUrl: req.body.youtubeUrl,
+      note: req.body.note,
     });
 
     if (req.body.tweet) {

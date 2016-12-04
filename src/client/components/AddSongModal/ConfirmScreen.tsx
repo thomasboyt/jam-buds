@@ -20,6 +20,7 @@ interface Props {
 class ConfirmScreen extends React.Component<Props, {}> {
   state = {
     crossPostEnabled: false,
+    noteText: '',
   }
 
   handleToggleTwitter() {
@@ -35,8 +36,13 @@ class ConfirmScreen extends React.Component<Props, {}> {
     }
   }
 
+  handleNoteChange(e: React.SyntheticEvent<HTMLTextAreaElement>) {
+    const noteText = e.currentTarget.value;
+    this.setState({noteText});
+  }
+
   handleSubmit() {
-    this.props.addSongStore!.addSong();
+    this.props.addSongStore!.addSong(this.state.noteText);
   }
 
   render() {
@@ -46,6 +52,11 @@ class ConfirmScreen extends React.Component<Props, {}> {
     return (
       <div className="confirm-screen">
         <p>you're posting <strong>{serializeSongLabel(song)}</strong></p>
+
+        <div className="note-box">
+          <textarea value={this.state.noteText} onChange={(e) => this.handleNoteChange(e)}
+            placeholder="(optional) Write a note about this song!" />
+        </div>
 
         <p>
           <label>

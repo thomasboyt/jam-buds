@@ -12,6 +12,7 @@ export interface PlaylistEntry {
   title: string;
   youtubeUrl: string;
   albumArt: string;
+  note: string | null;
 }
 
 export interface FeedEntry {

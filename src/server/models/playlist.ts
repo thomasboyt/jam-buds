@@ -7,6 +7,7 @@ interface PlaylistValues {
   userId: number;
   songId: number;
   youtubeUrl: string;
+  note: string;
 }
 
 export async function addSongToPlaylist(values: PlaylistValues) {
@@ -23,6 +24,7 @@ function serializePlaylistEntry(row: any): PlaylistEntry {
     title: row.title,
     youtubeUrl: row.youtube_url,
     albumArt: row.album_art,
+    note: row.note,
   };
 }
 

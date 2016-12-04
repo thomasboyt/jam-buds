@@ -79,17 +79,20 @@ export default class AddSongStore {
     this.txn.state = AddSongState.searching;
   }
 
-  @action async addSong() {
+  @action async addSong(noteText: string) {
     if (this.txn.tweetLength > 140) {
       // lol
       alert('Tweet too long, man!!!');
       return;
     }
 
+    const note = noteText !== '' ? noteText : undefined;
+
     await addSong({
       spotifyId: this.txn.selectedSong!.spotifyId,
       url: this.txn.shareLink,
       tweet: this.txn.tweetText,
+      note,
     });
 
     this.showingAddSong = false;
