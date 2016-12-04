@@ -34,6 +34,8 @@ class SidebarWrapper extends React.Component<Props, {}> {
 
         <AddSongButton />
 
+        <p><Link to="/find-friends">find twitter friends on jam buds!</Link></p>
+
         <p>or <a href="#" onClick={signOut}>sign out</a></p>
       </div>
     );
