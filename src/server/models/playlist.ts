@@ -17,20 +17,23 @@ export async function addSongToPlaylist(values: PlaylistValues) {
 }
 
 function serializePlaylistEntry(row: any): PlaylistEntry {
+  const entry = row.entry;
+  const song = row.song;
+
   return {
-    id: row.id,
-    album: row.album,
-    artists: row.artists,
-    title: row.title,
-    youtubeUrl: row.youtube_url,
-    albumArt: row.album_art,
-    note: row.note,
+    id: entry.id,
+    youtubeUrl: entry.youtube_url,
+    note: entry.note,
+    album: song.album,
+    artists: song.artists,
+    title: song.title,
+    albumArt: song.album_art,
   };
 }
 
 function serializeFeedEntry(row: any): FeedEntry {
   const playlistEntry = serializePlaylistEntry(row);
-  const user = serializePublicUser(row);
+  const user = serializePublicUser(row.user);
 
   return {
     song: playlistEntry,
@@ -38,9 +41,18 @@ function serializeFeedEntry(row: any): FeedEntry {
   };
 }
 
+/*
+ * Note: the db!.raw('to_json') calls are used to "namespace" the results here
+ * https://github.com/tgriesser/knex/issues/61#issuecomment-259176685
+ * This may not be a great idea performance-wise.
+ */
+
 export async function getPlaylistByUserId(id: number): Promise<PlaylistEntry[]> {
   const query =
-    db!('playlist_entries')
+    db!.select([
+      db!.raw('to_json(playlist_entries.*) as entry'),
+      db!.raw('to_json(songs.*) as song'),
+    ])
     .where({user_id: id})
     .join('songs', {'songs.id': 'playlist_entries.song_id'});
 
@@ -51,7 +63,13 @@ export async function getPlaylistByUserId(id: number): Promise<PlaylistEntry[]> 
 
 export async function getFeedByUserId(id: number): Promise<FeedEntry[]> {
   const query =
-    db!('playlist_entries')
+    db!.select([
+      db!.raw('to_json(playlist_entries.*) as entry'),
+      db!.raw('to_json(following.*) as following'),
+      db!.raw('to_json(users.*) as user'),
+      db!.raw('to_json(songs.*) as song'),
+    ])
+    .from('playlist_entries')
     .join('following', {
       'following.following_id': 'playlist_entries.user_id',
       'following.user_id': db!.raw('?', [id]),
