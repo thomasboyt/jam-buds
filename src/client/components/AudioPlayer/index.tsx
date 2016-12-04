@@ -21,15 +21,6 @@ function getLabel(song: PlaylistEntry | null): string {
   return `${song.artists.join(',')} - ${song.title}`;
 }
 
-function getArt(song: PlaylistEntry | null): string {
-  if (!song) {
-    // TODO: add placeholder art here
-    return '';
-  }
-
-  return song.albumArt;
-}
-
 @inject((allStores) => ({
   playbackStore: allStores.playbackStore as PlaybackStore,
 })) @observer
@@ -50,7 +41,7 @@ export default class VideoPlayer extends React.Component<Props, {}> {
     const {nowPlaying, isPlaying, playlistUser} = this.props.playbackStore!;
     const url = nowPlaying ? nowPlaying.youtubeUrl : null;
     const songLabel = getLabel(nowPlaying);
-    const art = getArt(nowPlaying);
+    const art = nowPlaying ? nowPlaying.albumArt : null;
 
     const playPauseClassName = classNames('fa', {
       'fa-play': !isPlaying,
@@ -80,7 +71,7 @@ export default class VideoPlayer extends React.Component<Props, {}> {
             <div>playing from <Link to={`/playlists/${playlistUser}`}>@{playlistUser}</Link></div>}
         </div>
 
-        <img className="audio-player--art" src={art} />
+        {art && <img className="audio-player--art" src={art} />}
       </div>
     );
   }
