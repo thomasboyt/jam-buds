@@ -3,7 +3,7 @@ import {
   User,
   getUserByUserId,
   serializePublicUser,
-  getUsersByTwitterIds,
+  getUnfollowedUsersByTwitterIds,
 } from '../models/user';
 
 import {
@@ -83,7 +83,7 @@ export default function registerUserEndpoints(app: Express) {
     // get a list of twitter IDs!
     const ids = await getTwitterFriendIds(res.locals.user);
 
-    const users = await getUsersByTwitterIds(ids);
+    const users = await getUnfollowedUsersByTwitterIds(res.locals.user.id, ids);
 
     const publicUsers = users.map((row) => serializePublicUser(row));
 

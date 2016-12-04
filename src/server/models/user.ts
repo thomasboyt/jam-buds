@@ -69,8 +69,17 @@ export async function getUserByUserId(id: number): Promise<User | null> {
   return await getUserWhere({id});
 }
 
-export async function getUsersByTwitterIds(ids: string[]): Promise<User[]> {
-  const query = db!.select('*').from('users').whereIn('twitter_id', ids);
+export async function getUnfollowedUsersByTwitterIds(userId: number, twitterIds: string[]): Promise<User[]> {
+  const followQuery = db!.select('following_id')
+    .from('following')
+    .where({user_id: userId})
+    .join('users', {'users.id': 'following.following_id'});
+
+  const query = db!
+    .select('*')
+    .from('users')
+    .whereIn('twitter_id', twitterIds)
+    .where('id', 'not in', followQuery)
 
   const rows = await (query as any);
   const users: User[] = rows.map((row: any) => camelizeKeys(row));
