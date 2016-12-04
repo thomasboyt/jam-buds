@@ -27,6 +27,12 @@ class Playlist extends React.Component<Props, {}> {
     this.props.playlistStore!.getPlaylist(name);
   }
 
+  componentWillReceiveProps(nextProps: Props) {
+    if (nextProps.params.name !== this.props.params.name) {
+      this.props.playlistStore!.getPlaylist(nextProps.params.name);
+    }
+  }
+
   handleSongClick(trackIndex: number) {
     const tracks = this.props.playlistStore!.items.slice(trackIndex);
     const username = this.props.playlistStore!.name;
