@@ -67,6 +67,7 @@
     "microdata-node": "^0.2.1",
     "mobx": "^2.6.2",
     "mobx-react": "^3.5.9",
+    "mobx-utils": "^1.1.2",
     "normalize.css": "^5.0.0",
     "oauth": "^0.9.14",
     "pg": "^6.1.0",
