@@ -1,7 +1,7 @@
 import {db} from '../db';
 import {camelizeKeys, decamelizeKeys} from 'humps';
 import {PlaylistEntry, FeedEntry} from '../../universal/resources';
-import {User, serializePublicUser, serializeUser} from './user';
+import {User, serializePublicUser} from './user';
 
 interface PlaylistValues {
   userId: number;
