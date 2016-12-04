@@ -19,10 +19,10 @@ interface CreateUserOptions {
   twitterSecret: string;
 }
 
-export function serializePublicUser(row: any): PublicUser {
+export function serializePublicUser(user: User): PublicUser {
   return {
-    id: row.id,
-    twitterName: row.twitter_name,
+    id: user.id,
+    twitterName: user.twitterName,
   };
 }
 

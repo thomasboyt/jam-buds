@@ -7,6 +7,7 @@ import {configureDatabase} from './db';
 import registerTwitterEndpoints from './routes/twitter';
 import registerUserEndpoints from './routes/users';
 import registerSearchEndpoints from './routes/search';
+import registerPlaylistEndpoints from './routes/playlists';
 
 if (process.env.NODE_ENV !== 'production') {
   console.log('*** Loading .env file!');
@@ -24,6 +25,7 @@ app.use(cors({
 registerUserEndpoints(app);
 registerTwitterEndpoints(app);
 registerSearchEndpoints(app);
+registerPlaylistEndpoints(app);
 
 const port = process.env.PORT || 3000;
 

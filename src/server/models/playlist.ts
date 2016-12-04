@@ -1,7 +1,7 @@
 import {db} from '../db';
-import {decamelizeKeys} from 'humps';
+import {camelizeKeys, decamelizeKeys} from 'humps';
 import {PlaylistEntry, FeedEntry} from '../../universal/resources';
-import {serializePublicUser} from './user';
+import {User, serializePublicUser, serializeUser} from './user';
 
 interface PlaylistValues {
   userId: number;
@@ -35,7 +35,7 @@ function serializePlaylistEntry(row: any): PlaylistEntry {
 
 function serializeFeedEntry(row: any): FeedEntry {
   const playlistEntry = serializePlaylistEntry(row);
-  const user = serializePublicUser(row.user);
+  const user = serializePublicUser(camelizeKeys(row.user) as User);
 
   return {
     song: playlistEntry,
