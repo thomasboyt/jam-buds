@@ -53,6 +53,7 @@ export async function getPlaylistByUserId(id: number): Promise<PlaylistEntry[]> 
       db!.raw('to_json(playlist_entries.*) as entry'),
       db!.raw('to_json(songs.*) as song'),
     ])
+    .from('playlist_entries')
     .where({user_id: id})
     .join('songs', {'songs.id': 'playlist_entries.song_id'});
 
