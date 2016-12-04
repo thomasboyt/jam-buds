@@ -41,7 +41,7 @@ export default class AddSongStore {
   @observable showingAddSong: boolean = false;
   @observable txn: AddSongTransaction;
 
-  @action async showAddSongScreen(url: string) {
+  @action async showAddSongScreen() {
     this.showingAddSong = true;
 
     this.txn = new AddSongTransaction();
