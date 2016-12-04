@@ -68,3 +68,12 @@ export async function getUserByTwitterName(name: string): Promise<User | null> {
 export async function getUserByUserId(id: number): Promise<User | null> {
   return await getUserWhere({id});
 }
+
+export async function getUsersByTwitterIds(ids: string[]): Promise<User[]> {
+  const query = db!.select('*').from('users').whereIn('twitter_id', ids);
+
+  const rows = await (query as any);
+  const users: User[] = rows.map((row: any) => camelizeKeys(row));
+
+  return users;
+}

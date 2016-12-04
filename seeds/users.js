@@ -1,14 +1,16 @@
 const songData = require('./data/songs');
 
-function createUser(knex, name, userId) {
-  return knex('users').insert({
-    id: userId,
+function createUser(knex, id, name, opts) {
+  opts = opts || {};
+
+  return knex('users').insert(Object.assign({
+    id,
     auth_token: name,
     twitter_name: name,
-    twitter_id: `${userId}`,
-    twitter_token: `${userId}`,
-    twitter_secret: `${userId}`,
-  });
+    twitter_id: `${id}`,
+    twitter_token: `${id}`,
+    twitter_secret: `${id}`,
+  }, opts));
 }
 
 function followUser(knex, userId, followingId) {
@@ -28,10 +30,12 @@ function createEntry(knex, entry) {
 
 exports.seed = function(knex, Promise) {
   return Promise.all([
-    createUser(knex, 'jeff', 1),
-    createUser(knex, 'dan', 2),
-    createUser(knex, 'brad', 3),
-    createUser(knex, 'vinny', 4),
+    createUser(knex, 1, 'jeffgerstmann', {
+      twitter_id: '12223',
+    }),
+    createUser(knex, 2, 'DanRyckert'),
+    createUser(knex, 3, 'bradshoemaker'),
+    createUser(knex, 4, 'VinnyCaravella'),
   ]).then(() => {
     return knex.schema.raw(`SELECT setval('users_id_seq', 5)`)
 
