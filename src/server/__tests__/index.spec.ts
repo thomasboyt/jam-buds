@@ -25,6 +25,6 @@ afterEach(async() => {
 describe('test db configuration', () => {
   it('works', async () => {
     const rows = await (db!('users').where({id: 1}) as any);
-    expect(rows[0].twitter_name).toBe('jeff');
+    expect(rows[0].twitter_name).toBe('jeffgerstmann');
   });
 });
