@@ -8,12 +8,7 @@ In Jam Buds, a user can paste links to songs that like. These links are then put
 
 ## TODOs
 
-- [x] Create frontend app scaffolding (~~Redux~~ Mobx, React-Router, etc)
-- [x] Implement login wall & current user endpoint
-- [ ] Implement post song/search results
-- [ ] Implement playlist
-- [ ] Implement friends list
-- [ ] Implement audio player
+https://trello.com/b/PjYwkDXf/jam-buds
 
 ## Install
 
@@ -59,6 +54,10 @@ heroku config:set STATIC_URL=https://myapp.surge.sh
 # Twitter API key and secret, used for Twitter OAuth.
 heroku config:set TWITTER_API_KEY=foo
 heroku config:set TWITTER_API_SECRET=bar
+
+# Spotify API key and secret, used for Spotify search
+heroku config:set SPOTIFY_CLIENT_ID=foo
+heroku config:set SPOTIFY_CLIENT_SECRET=bar
 ```
 
 You're gonna want a database:
