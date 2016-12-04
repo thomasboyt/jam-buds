@@ -58,6 +58,9 @@ export async function getFeedByUserId(id: number): Promise<FeedEntry[]> {
     })
     .join('users', {
       'users.id': 'following.following_id',
+    })
+    .join('songs', {
+      'songs.id': 'playlist_entries.song_id',
     });
 
   const rows = await (query as any);
