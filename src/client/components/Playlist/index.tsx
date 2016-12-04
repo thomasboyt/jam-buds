@@ -48,8 +48,8 @@ class Playlist extends React.Component<Props, {}> {
 
           <ul className="playlist-entries">
             {items.map((track, idx) =>
-              <li>
-                <PlaylistItem key={track.id}
+              <li key={track.id}>
+                <PlaylistItem
                   track={track} trackIndex={idx}
                   isPlaying={(!!playingTrack && playingTrack.id === track.id)}
                   onClick={() => this.handleSongClick(idx)} />
