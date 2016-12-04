@@ -28,6 +28,7 @@ function serializePlaylistEntry(row: any): PlaylistEntry {
     artists: song.artists,
     title: song.title,
     albumArt: song.album_art,
+    added: entry.created_at,
   };
 }
 

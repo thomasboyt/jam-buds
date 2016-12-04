@@ -8,6 +8,8 @@ import {FeedEntry} from '../../../universal/resources';
 
 import PlaylistItem from '../PlaylistItem';
 
+import {distanceInWords} from 'date-fns';
+
 interface Props {
   feedStore?: FeedStore;
   playbackStore?: PlaybackStore;
@@ -32,6 +34,7 @@ class LoggedInHome extends React.Component<Props, {}> {
   renderItem(entry: FeedEntry, idx: number) {
     const playingTrack = this.props.playbackStore!.nowPlaying;
     const track = entry.song;
+    const timestamp = distanceInWords(new Date(), new Date(entry.song.added));
 
     return (
       <li key={track.id}>
@@ -39,7 +42,7 @@ class LoggedInHome extends React.Component<Props, {}> {
           <Link to={`/playlist/${entry.user.twitterName}`}>
             @{entry.user.twitterName}
           </Link>
-          {' '} posted
+          {' '} posted ({timestamp} ago)
         </div>
 
         <PlaylistItem
