@@ -23,8 +23,11 @@ class AddSongTransaction {
   @observable loadedSearch: boolean = false;
   @observable searchResults: SearchResult[] = [];
 
-  // TODO: Type-check this
   @observable selectedSong: SearchResult | null = null;
+
+  @observable manualEntry: boolean = false;
+  @observable manualArtist?: string;
+  @observable manualTitle?: string;
 
   @observable tweetText: string | null = null;
 
@@ -79,6 +82,12 @@ export default class AddSongStore {
     this.txn.state = AddSongState.searching;
   }
 
+  @action manualEntry(artist: string, title: string) {
+    this.txn.manualArtist = artist;
+    this.txn.manualTitle = title;
+    this.txn.state = AddSongState.confirm;
+  }
+
   @action async addSong(noteText: string) {
     if (this.txn.tweetLength > 140) {
       // lol
@@ -89,8 +98,13 @@ export default class AddSongStore {
     const note = noteText !== '' ? noteText : undefined;
 
     await addSong({
+      manualEntry: this.txn.manualEntry,
+      artist: this.txn.manualArtist,
+      title: this.txn.manualTitle,
       spotifyId: this.txn.selectedSong!.spotifyId,
-      url: this.txn.shareLink,
+
+      youtubeUrl: this.txn.shareLink,
+
       tweet: this.txn.tweetText,
       note,
     });

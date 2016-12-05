@@ -45,13 +45,23 @@ class ConfirmScreen extends React.Component<Props, {}> {
     this.props.addSongStore!.addSong(this.state.noteText);
   }
 
+  renderLabel() {
+    const {manualArtist, manualTitle, manualEntry, selectedSong} = this.props.addSongStore!.txn;
+
+    if (manualEntry) {
+      return `${manualArtist} - ${manualTitle}`;
+    } else {
+      return serializeSongLabel(selectedSong!);
+    }
+  }
+
   render() {
     const song = this.props.addSongStore!.txn.selectedSong!;
     const {crossPostEnabled} = this.state;
 
     return (
       <div className="confirm-screen">
-        <p>you're posting <strong>{serializeSongLabel(song)}</strong></p>
+        <p>you're posting <strong>{this.renderLabel()}</strong></p>
 
         <div className="note-box">
           <textarea value={this.state.noteText} onChange={(e) => this.handleNoteChange(e)}
