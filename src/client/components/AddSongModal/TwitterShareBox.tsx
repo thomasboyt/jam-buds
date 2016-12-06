@@ -13,8 +13,20 @@ interface Props {
 })) @observer
 export default class TwitterShareBox extends React.Component<Props, {}> {
   componentWillMount() {
-    const song = this.props.addSongStore!.txn.selectedSong!;
-    this.props.addSongStore!.updateTweetText(getDefaultTweet(song));
+    const {manualEntry, manualArtist, manualTitle, selectedSong} = this.props.addSongStore!.txn;
+
+    let artist: string;
+    let title: string;
+
+    if (manualEntry) {
+      artist = manualArtist!;
+      title = manualTitle!;
+    } else {
+      artist = selectedSong!.artists[0];
+      title = selectedSong!.name;
+    }
+
+    this.props.addSongStore!.updateTweetText(getDefaultTweet(artist, title));
   }
 
   handleChange(e: React.SyntheticEvent<HTMLTextAreaElement>) {

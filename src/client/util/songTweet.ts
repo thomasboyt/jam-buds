@@ -10,20 +10,20 @@ export function getTweetLength(tweet: string): number {
 }
 
 function defaultTweetTemplate(val: string): string {
-  return `I just posted "${val}" to Jam Buds!`;
+  return `I just posted ${val} to Jam Buds!`;
 }
 
-export function getDefaultTweet(song: SearchResult): string {
-  let label = serializeSongLabel(song);
+export function getDefaultTweet(artist: string, title: string): string {
+  let label = `"${title}" by ${artist}`;
 
   if (getTweetLength(defaultTweetTemplate(label)) > 140) {
     // try the title only first
-    label = song.name;
+    label = `"${title}"`;
 
     if (getTweetLength(defaultTweetTemplate(label)) > 140) {
       // truncate that shit I guess
       const toTruncate = getTweetLength(defaultTweetTemplate(label)) - 140;
-      label = label.slice(0, -(toTruncate + 1)) + '…';
+      label = `"${label.slice(0, -(toTruncate + 1)) + '…'}"`;
     }
   }
 
