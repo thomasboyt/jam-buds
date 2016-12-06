@@ -8,8 +8,10 @@ import {
 } from '../models/user';
 
 import {
+  Song,
   getSongBySpotifyId,
   createSongFromSpotifyResource,
+  createSongFromManualEntry,
 } from '../models/song';
 
 import {
@@ -29,13 +31,24 @@ export default function registerPlaylistEndpoints(app: Express) {
   // post a new song to your playlist
   app.post('/playlist', isAuthenticated, wrapAsyncRoute(async (req, res) => {
     const user: User = res.locals.user;
-    const spotifyId = req.body.spotifyId;
 
-    let song = await getSongBySpotifyId(spotifyId);
+    let song: Song;
 
-    if (!song) {
-      const spotifyResource = await spotify.getTrackById(spotifyId);
-      song = await createSongFromSpotifyResource(spotifyResource);
+    if (req.body.manualEntry) {
+      song = await createSongFromManualEntry(req.body.artist, req.body.title);
+
+    } else {
+      const spotifyId = req.body.spotifyId;
+
+      const maybeSong = await getSongBySpotifyId(spotifyId);
+
+      if (!maybeSong) {
+        const spotifyResource = await spotify.getTrackById(spotifyId);
+        song = await createSongFromSpotifyResource(spotifyResource);
+
+      } else {
+        song = maybeSong;
+      }
     }
 
     await addSongToPlaylist({

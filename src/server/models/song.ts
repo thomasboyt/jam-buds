@@ -51,3 +51,17 @@ export async function createSongFromSpotifyResource(res: SpotifyResource): Promi
 
   return song;
 }
+
+export async function createSongFromManualEntry(artist: string, title: string): Promise<Song> {
+  const values = {
+    artists: [artist],
+    title: title,
+  };
+
+  const query = db!.insert(values).returning('*').into('songs');
+
+  const [row] = await (query as any);
+  const song = camelizeKeys(row) as Song;
+
+  return song;
+}
