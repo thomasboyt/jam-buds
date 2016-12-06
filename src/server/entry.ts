@@ -1,13 +1,6 @@
-import * as express from 'express';
-import * as bodyParser from 'body-parser';
-import * as cors from 'cors';
+import createApp from './createApp';
 
 import {configureDatabase} from './db';
-
-import registerTwitterEndpoints from './routes/twitter';
-import registerUserEndpoints from './routes/users';
-import registerSearchEndpoints from './routes/search';
-import registerPlaylistEndpoints from './routes/playlists';
 
 if (process.env.NODE_ENV !== 'production') {
   console.log('*** Loading .env file!');
@@ -16,16 +9,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 configureDatabase();
 
-const app = express();
-app.use(bodyParser.json());
-app.use(cors({
-  origin: process.env.STATIC_URL,
-}))
-
-registerUserEndpoints(app);
-registerTwitterEndpoints(app);
-registerSearchEndpoints(app);
-registerPlaylistEndpoints(app);
+const app = createApp();
 
 const port = process.env.PORT || 3000;
 
