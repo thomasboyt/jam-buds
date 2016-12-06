@@ -58,10 +58,14 @@ export default class PlaylistItem extends React.Component<Props, {}> {
               <a href={track.youtubeUrl} target="_blank" rel="noopener noreferrer">
                 Youtube
               </a>
-              {' / '}
-              <a href={spotifyUrl(track)} target="_blank" rel="noopener noreferrer">
-                Spotify
-              </a>
+              {track.spotifyId &&
+                <span>
+                  {' / '}
+                  <a href={spotifyUrl(track)} target="_blank" rel="noopener noreferrer">
+                    Spotify
+                  </a>
+                </span>
+              }
             </em>
           </p>
         </div>
