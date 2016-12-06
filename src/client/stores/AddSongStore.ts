@@ -101,7 +101,7 @@ export default class AddSongStore {
       manualEntry: this.txn.manualEntry,
       artist: this.txn.manualArtist,
       title: this.txn.manualTitle,
-      spotifyId: this.txn.selectedSong!.spotifyId,
+      spotifyId: this.txn.selectedSong && this.txn.selectedSong.spotifyId,
 
       youtubeUrl: this.txn.shareLink,
 

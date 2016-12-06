@@ -1,9 +1,9 @@
 import apiRequest from '../util/apiRequest';
 
 interface Params {
-  spotifyId: string;
   youtubeUrl: string;
   tweet: string | null;
+  spotifyId: string | null;
   note?: string,
 
   manualEntry: boolean;
