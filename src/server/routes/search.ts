@@ -36,10 +36,11 @@ export default function registerSearchEndpoints(app: Express) {
       return;
     }
 
-    const title = await youtube.getYoutubeTitle(url);
+    const {title, embeddable} = await youtube.getYoutubeDetails(url);
 
     res.send({
       title,
+      embeddable,
     });
   }));
 

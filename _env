@@ -20,3 +20,6 @@ STATIC_URL=http://localhost:8080
 # Spotify API key and secret
 SPOTIFY_CLIENT_ID=
 SPOTIFY_CLIENT_SECRET=
+
+# A Google API key enabled to use the Youtube Data API
+GOOGLE_API_KEY=

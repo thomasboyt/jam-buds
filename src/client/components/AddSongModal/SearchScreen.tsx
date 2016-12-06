@@ -21,6 +21,12 @@ class SearchScreen extends React.Component<Props, {}> {
     this.props.addSongStore!.txn.manualEntry = !(this.props.addSongStore!.txn.manualEntry);
   }
 
+  handleReturnToInitialScreen(e: React.SyntheticEvent<HTMLAnchorElement>) {
+    e.preventDefault();
+
+    this.props.addSongStore!.showAddSongScreen();
+  }
+
   renderManualEntry() {
     return (
       <div>
@@ -53,8 +59,30 @@ class SearchScreen extends React.Component<Props, {}> {
     );
   }
 
+  renderNotEmbeddable() {
+    const {shareTitle} = this.props.addSongStore!.txn;
+
+    return (
+      <div>
+        <p>
+          You tried to share the video "{shareTitle}" via Youtube, but unfortunately, this video can't be embedded on Jam Buds due to restrictions set by the video's uploader.
+        </p>
+        <p>
+          We recommend trying to find another video for this song!
+        </p>
+        <a onClick={(e) => this.handleReturnToInitialScreen(e)} href="#">
+          Try again
+        </a>
+      </div>
+    );
+  }
+
   renderLoaded() {
-    const {shareTitle, manualEntry} = this.props.addSongStore!.txn;
+    const {shareTitle, manualEntry, shareEmbeddable} = this.props.addSongStore!.txn;
+
+    if (!shareEmbeddable) {
+      return this.renderNotEmbeddable();
+    }
 
     return (
       <div>

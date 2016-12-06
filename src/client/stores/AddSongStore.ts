@@ -19,6 +19,7 @@ class AddSongTransaction {
 
   @observable loadedShareLink: boolean = false;
   @observable shareTitle: string;
+  @observable shareEmbeddable: boolean;
 
   @observable loadedSearch: boolean = false;
   @observable searchResults: SearchResult[] = [];
@@ -60,6 +61,7 @@ export default class AddSongStore {
 
     const detail = await getShareLinkDetail(url);
     this.txn.shareTitle = detail.title;
+    this.txn.shareEmbeddable = detail.embeddable;
 
     this.txn.loadedShareLink = true;
   }

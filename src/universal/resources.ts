@@ -41,3 +41,8 @@ export interface Playlist {
   user: PublicUser;
   tracks: PlaylistEntry[];
 }
+
+export interface ShareLinkDetails {
+  title: string;
+  embeddable: boolean;
+}

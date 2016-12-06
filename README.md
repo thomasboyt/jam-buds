@@ -58,6 +58,10 @@ heroku config:set TWITTER_API_SECRET=bar
 # Spotify API key and secret, used for Spotify search
 heroku config:set SPOTIFY_CLIENT_ID=foo
 heroku config:set SPOTIFY_CLIENT_SECRET=bar
+
+# Google API key used for Youtube Data API
+# (Youtube Data API must be enabled in Google Developer Console)
+heroku config:set GOOGLE_API_KEY=foo
 ```
 
 You're gonna want a database:

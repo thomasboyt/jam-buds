@@ -1,6 +1,8 @@
 import apiRequest from '../util/apiRequest';
 
-export default async function getShareLinkDetails(url: string): Promise<any> {
+import {ShareLinkDetails} from '../../universal/resources';
+
+export default async function getShareLinkDetails(url: string): Promise<ShareLinkDetails> {
   const resp = await apiRequest({
     url: '/share-details',
     method: 'GET',
