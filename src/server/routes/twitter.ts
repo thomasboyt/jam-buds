@@ -1,4 +1,5 @@
 import {Express} from 'express';
+import wrapAsyncRoute from '../util/wrapAsyncRoute';
 import {OAuth} from 'oauth';
 import {createUser, getUserByTwitterId} from '../models/user';
 
@@ -70,7 +71,7 @@ export default function registerTwitterEndpoints(app: Express) {
     });
   });
 
-  app.post('/twitter-auth-token', async (req, res) => {
+  app.post('/twitter-auth-token', wrapAsyncRoute(async (req, res) => {
     const twitterToken = req.body.twitterToken;
     const twitterSecret = req.body.twitterSecret;
 
@@ -97,5 +98,5 @@ export default function registerTwitterEndpoints(app: Express) {
         res.send(200, { authToken: twitterUser.authToken });
       }
     });
-  });
+  }));
 }

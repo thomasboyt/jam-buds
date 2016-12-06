@@ -1,4 +1,5 @@
 import {Express} from 'express';
+import wrapAsyncRoute from '../util/wrapAsyncRoute';
 import {isAuthenticated} from '../auth';
 import * as spotify from '../apis/spotify';
 import * as bandcamp from '../apis/bandcamp';
@@ -24,7 +25,7 @@ function serializeSpotifyResults(results: any[]): SearchResult[] {
 export default function registerSearchEndpoints(app: Express) {
 
   // get the title, etc of a sharable link
-  app.get('/share-details', isAuthenticated, async (req, res) => {
+  app.get('/share-details', isAuthenticated, wrapAsyncRoute(async (req, res) => {
     const url = req.query.url;
 
     if (!YOUTUBE_URL.test(url)) {
@@ -40,10 +41,10 @@ export default function registerSearchEndpoints(app: Express) {
     res.send({
       title,
     });
-  });
+  }));
 
   // search for a song using $whatever_api_i_wrap
-  app.get('/songs', isAuthenticated, async (req, res) => {
+  app.get('/songs', isAuthenticated, wrapAsyncRoute(async (req, res) => {
     let query = req.query.query;
 
     if (!query) {
@@ -72,6 +73,6 @@ export default function registerSearchEndpoints(app: Express) {
     res.send({
       songs: serializeSpotifyResults(results),
     });
-  });
+  }));
 
 }

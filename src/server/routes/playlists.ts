@@ -1,4 +1,5 @@
 import {Express} from 'express';
+import wrapAsyncRoute from '../util/wrapAsyncRoute';
 
 import {
   User,
@@ -26,7 +27,7 @@ import {Playlist, Feed} from '../../universal/resources';
 
 export default function registerPlaylistEndpoints(app: Express) {
   // post a new song to your playlist
-  app.post('/playlist', isAuthenticated, async (req, res) => {
+  app.post('/playlist', isAuthenticated, wrapAsyncRoute(async (req, res) => {
     const user: User = res.locals.user;
     const spotifyId = req.body.spotifyId;
 
@@ -54,18 +55,18 @@ export default function registerPlaylistEndpoints(app: Express) {
     res.json({
       success: true,
     });
-  });
+  }));
 
   // delete a song from your playlist
-  app.delete('/playlist/:songId', isAuthenticated, async (req, res) => {
+  app.delete('/playlist/:songId', isAuthenticated, wrapAsyncRoute(async (req, res) => {
     const user: User = res.locals.user;
     const songId: number = req.params.songId;
 
     // TODO: delete song by ID
-  });
+  }));
 
   // get a user's playlist
-  app.get('/playlists/:userName', async (req, res) => {
+  app.get('/playlists/:userName', wrapAsyncRoute(async (req, res) => {
     const userName = req.params.userName;
     const user = await getUserByTwitterName(userName);
 
@@ -87,9 +88,9 @@ export default function registerPlaylistEndpoints(app: Express) {
     };
 
     res.json(resp);
-  });
+  }));
 
-  app.get('/feed', isAuthenticated, async (req, res) => {
+  app.get('/feed', isAuthenticated, wrapAsyncRoute(async (req, res) => {
     const user: User = res.locals.user;
 
     const items = await getFeedByUserId(user.id);
@@ -99,5 +100,5 @@ export default function registerPlaylistEndpoints(app: Express) {
     };
 
     res.json(feed);
-  });
+  }));
 }

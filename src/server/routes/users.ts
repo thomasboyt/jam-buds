@@ -1,4 +1,6 @@
 import {Express} from 'express';
+import wrapAsyncRoute from '../util/wrapAsyncRoute';
+
 import {
   User,
   getUserByUserId,
@@ -19,7 +21,7 @@ import {PublicUser, CurrentUser, Playlist, Feed} from '../../universal/resources
 export default function registerUserEndpoints(app: Express) {
 
   // get information about the current user
-  app.get('/me', async (req, res) => {
+  app.get('/me', wrapAsyncRoute(async (req, res) => {
     const user = await getUserFromRequest(req);
 
     if (!user) {
@@ -42,10 +44,10 @@ export default function registerUserEndpoints(app: Express) {
         user: currentUser,
       });
     }
-  });
+  }));
 
   // follow a user
-  app.post('/following', isAuthenticated, async (req, res) => {
+  app.post('/following', isAuthenticated, wrapAsyncRoute(async (req, res) => {
     const user: User = res.locals.user;
     const followingId: number = req.body.userId;
 
@@ -72,14 +74,14 @@ export default function registerUserEndpoints(app: Express) {
     res.json({
       user: serializePublicUser(followingUser),
     });
-  });
+  }));
 
   // unfollow a user
-  app.delete('/following/:id', isAuthenticated, async (req, res) => {
-  });
+  app.delete('/following/:id', isAuthenticated, wrapAsyncRoute(async (req, res) => {
+  }));
 
   // get twitter friends who have signed up
-  app.get('/friend-suggestions', isAuthenticated, async (req, res) => {
+  app.get('/friend-suggestions', isAuthenticated, wrapAsyncRoute(async (req, res) => {
     // get a list of twitter IDs!
     const ids = await getTwitterFriendIds(res.locals.user);
 
@@ -90,5 +92,5 @@ export default function registerUserEndpoints(app: Express) {
     res.status(200).send({
       users: users,
     });
-  });
+  }));
 }
