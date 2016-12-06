@@ -15,16 +15,23 @@ interface Props {
   addSongStore: allStores.addSongStore as AddSongStore,
 })) @observer
 class SearchScreen extends React.Component<Props, {}> {
-  handleShowManualEntry(e: React.SyntheticEvent<HTMLAnchorElement>) {
+  handleToggleManualEntry(e: React.SyntheticEvent<HTMLAnchorElement>) {
     e.preventDefault();
 
-    this.props.addSongStore!.txn.manualEntry = true;
+    this.props.addSongStore!.txn.manualEntry = !(this.props.addSongStore!.txn.manualEntry);
   }
 
   renderManualEntry() {
     return (
-      <ManualEntryForm />
-    )
+      <div>
+        <ManualEntryForm />
+
+        Or{' '}
+        <a onClick={(e) => this.handleToggleManualEntry(e)} href="#">
+          search for a song
+        </a>
+      </div>
+    );
   }
 
   renderSearch() {
@@ -39,7 +46,7 @@ class SearchScreen extends React.Component<Props, {}> {
         <SearchResults />
 
         Or{' '}
-        <a onClick={(e) => this.handleShowManualEntry(e)} href="#">
+        <a onClick={(e) => this.handleToggleManualEntry(e)} href="#">
           manually enter a title and artist
         </a>
       </div>
