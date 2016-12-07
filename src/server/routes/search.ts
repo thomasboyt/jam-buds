@@ -45,7 +45,7 @@ export default function registerSearchEndpoints(app: Express) {
   }));
 
   // search for a song using $whatever_api_i_wrap
-  app.get('/songs', isAuthenticated, wrapAsyncRoute(async (req, res) => {
+  app.get('/spotify-search', isAuthenticated, wrapAsyncRoute(async (req, res) => {
     let query = req.query.query;
 
     if (!query) {
@@ -56,20 +56,7 @@ export default function registerSearchEndpoints(app: Express) {
       return;
     }
 
-    let results = [];
-    if (SPOTIFY_URL.test(query)) {
-      const spotifyId = (query.match(SPOTIFY_URL)!)[1];
-      // TODO: look up from database before making request
-      const song = await spotify.getTrackById(spotifyId);
-      results = [song];
-
-    } else {
-      if (BANDCAMP_URL.test(query)) {
-        query = await bandcamp.getSpotifyQuery(query);
-      }
-
-      results = await spotify.search(query);
-    }
+    const results = await spotify.search(query);
 
     res.send({
       songs: serializeSpotifyResults(results),

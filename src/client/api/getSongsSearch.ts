@@ -2,7 +2,7 @@ import apiRequest from '../util/apiRequest';
 
 export default async function getSongsSearch(query: string): Promise<any> {
   const resp = await apiRequest({
-    url: '/songs',
+    url: '/spotify-search',
     method: 'GET',
     params: { query },
   });
