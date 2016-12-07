@@ -46,8 +46,14 @@ exports.seed = function(knex, Promise) {
       followUser(knex, 1, 4),
     ]);
   }).then(() => {
-    return Promise.all(songData.songs.map((s) => createSong(knex, s)));
+    return Promise.all([
+      Promise.all(songData.songs.map((s) => createSong(knex, s))),
+      knex.schema.raw(`SELECT setval('songs_id_seq', ${songData.songs.length + 1})`),
+    ]);
   }).then(() => {
-    return Promise.all(songData.entries.map((e) => createEntry(knex, e)));
+    return Promise.all([
+      Promise.all(songData.entries.map((e) => createEntry(knex, e))),
+      knex.schema.raw(`SELECT setval('playlist_entries_id_seq', ${songData.entries.length + 1})`),
+    ]);
   });
 };
