@@ -62,6 +62,9 @@ heroku config:set SPOTIFY_CLIENT_SECRET=bar
 # Google API key used for Youtube Data API
 # (Youtube Data API must be enabled in Google Developer Console)
 heroku config:set GOOGLE_API_KEY=foo
+
+# Set Sentry (sentry.io) app DSN
+heroku config:set SENTRY_DSN=https://foo:bar@sentry.io/123
 ```
 
 You're gonna want a database:

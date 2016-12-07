@@ -9,7 +9,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 configureDatabase();
 
-const app = createApp();
+const app = createApp(process.env.NODE_ENV);
 
 const port = process.env.PORT || 3000;
 
