@@ -14,7 +14,11 @@ function openTwitterAuth(e: React.MouseEvent<any>) {
 
 const TwitterAuth = () => (
   <div className="twitter-auth">
-    <a href="#" onClick={openTwitterAuth}>Sign in with Twitter</a>
+    <p>want to get started?</p>
+
+    <button onClick={openTwitterAuth}>
+      Sign in with Twitter
+    </button>
   </div>
 );
 
