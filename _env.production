@@ -1,0 +1,14 @@
+###
+# DON'T MODIFY THIS FILE WITH YOUR VARIOUS SECRET THINGS!
+#
+# Copy-paste it to .env.production and add them there
+###
+
+# These are production env variables that get embedded by the FRONTEND build that gets deployed.
+# (backend env vars should just be set on the server!)
+
+# The root origin of the server
+SERVER_URL=https://yourappgoeshere.herokuapp.com
+
+# Your PUBLIC (not private!) Sentry DSN.
+SENTRY_PUBLIC_DSN=https://blah@sentry.io/123

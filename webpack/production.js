@@ -6,13 +6,20 @@ var config = require('./base');
 var execSync = require('child_process').execSync;
 var sha = execSync('git rev-parse --short HEAD', {encoding: 'utf8'}).trim();
 
+const dotenv = require('dotenv');
+
+dotenv.config({
+  path: './.env.production',
+});
+
 module.exports = webpackMerge(config, {
   plugins: [
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: '"production"',
         BUILD_SHA: `"${sha}"`,
-        SERVER_URL: `"${process.env.SERVER_URL || 'https://jambuds.herokuapp.com'}"`,
+        SENTRY_PUBLIC_DSN: `"${process.env.SENTRY_PUBLIC_DSN}"`,
+        SERVER_URL: `"${process.env.SERVER_URL}"`,
       }
     }),
 

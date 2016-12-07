@@ -73,6 +73,7 @@
     "pg": "^6.1.0",
     "query-string": "^4.2.3",
     "raven": "^0.12.3",
+    "raven-js": "^3.8.1",
     "react": "^15.3.2",
     "react-dom": "^15.3.2",
     "react-modal": "^1.5.2",

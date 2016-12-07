@@ -1,0 +1,9 @@
+###
+# DON'T MODIFY THIS FILE WITH YOUR VARIOUS SECRET THINGS!
+#
+# Copy-paste it to .env.test and add them there
+###
+
+# These are environment variables used only in tests
+
+DATABASE_URL=postgres://your_name_here@localhost:5432/jambuds_test
