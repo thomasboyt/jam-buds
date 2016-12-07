@@ -23,8 +23,12 @@ class LoadUserWrapper extends React.Component<Props, {}> {
 
   renderLoading() {
     return (
-      <div className="loading-screen">
-        Loading...
+      <div className="container">
+        <div className="main">
+          <div className="main-placeholder">
+            Loading...
+          </div>
+        </div>
       </div>
     );
   }
