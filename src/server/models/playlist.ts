@@ -57,7 +57,8 @@ export async function getPlaylistByUserId(id: number): Promise<PlaylistEntry[]> 
     ])
     .from('playlist_entries')
     .where({user_id: id})
-    .join('songs', {'songs.id': 'playlist_entries.song_id'});
+    .join('songs', {'songs.id': 'playlist_entries.song_id'})
+    .orderBy('playlist_entries.created_at', 'desc');
 
   const rows = await (query as any);
 
@@ -82,7 +83,8 @@ export async function getFeedByUserId(id: number): Promise<FeedEntry[]> {
     })
     .join('songs', {
       'songs.id': 'playlist_entries.song_id',
-    });
+    })
+    .orderBy('playlist_entries.created_at', 'desc');
 
   const rows = await (query as any);
 
