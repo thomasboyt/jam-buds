@@ -9,7 +9,7 @@
   },
   "scripts": {
     "run-client": "webpack-dev-server --config webpack/dev.js",
-    "run-server": "ts-node --fast src/server/entry.ts",
+    "run-server": "nodemon --watch 'src/**/*.ts' --ignore 'src/client/**/*.ts' --exec 'ts-node --fast' src/server/entry.ts",
     "build": "rm -rf build/ && webpack --config webpack/production.js && cp -r static/* build/",
     "deploy": "npm run build && firebase deploy",
     "resetdb": "./scripts/resetdb",
@@ -28,6 +28,7 @@
     "html-webpack-plugin": "^2.24.1",
     "mocha": "^3.2.0",
     "node-sass": "^3.13.0",
+    "nodemon": "^1.11.0",
     "sass-loader": "^4.0.2",
     "supertest": "^2.0.1",
     "ts-loader": "^1.0.0",
