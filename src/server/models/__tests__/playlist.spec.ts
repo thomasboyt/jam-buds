@@ -25,4 +25,19 @@ describe('playlist model', () => {
       expect(items[1].song.title).toBe('Free Bird');
     });
   });
+
+  describe('getLikedEntriesByUserId', () => {
+    it('returns a user\'s liked entries', async () => {
+      const query = db!('likes').insert({
+        user_id: 1,
+        entry_id: 1,
+      });
+
+      await (query as any);
+
+      const items = await playlist.getLikedEntriesByUserId(1);
+      expect(items.length).toBe(1);
+      expect(items[0].id).toBe(1);
+    });
+  });
 });

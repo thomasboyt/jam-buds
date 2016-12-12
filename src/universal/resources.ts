@@ -5,25 +5,27 @@ export interface SearchResult {
   spotifyId: string;
 }
 
-export interface PlaylistEntry {
-  id: number;
+export interface Song {
   artists: string[];
   album: string;
   title: string;
-  youtubeUrl: string;
   albumArt: string;
-  note: string | null;
-  added: string;
   spotifyId: string;
 }
 
-export interface FeedEntry {
-  song: PlaylistEntry;
+export interface PlaylistEntry {
+  id: number;
+  youtubeUrl: string;
+  note: string | null;
+  added: string;
+  isLiked: boolean;
+
+  song: Song;
   user: PublicUser;
 }
 
 export interface Feed {
-  tracks: FeedEntry[];
+  tracks: PlaylistEntry[];
 }
 
 export interface PublicUser {

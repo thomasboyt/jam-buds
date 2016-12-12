@@ -37,8 +37,8 @@ describe('playlist routes', () => {
       }
 
       const playlist = await getPlaylistByUserId(jeff!.id);
-      expect(playlist[0].artists[0]).toBe('Taeko Onuki');
-      expect(playlist[0].title).toBe('4:00 AM');
+      expect(playlist[0].song.artists[0]).toBe('Taeko Onuki');
+      expect(playlist[0].song.title).toBe('4:00 AM');
     });
   });
 });

@@ -7,6 +7,7 @@ import registerTwitterEndpoints from './routes/twitter';
 import registerUserEndpoints from './routes/users';
 import registerSearchEndpoints from './routes/search';
 import registerPlaylistEndpoints from './routes/playlists';
+import registerLikesEndpoints from './routes/likes';
 
 export default function createApp(env?: string) {
   const app = express();
@@ -24,6 +25,7 @@ export default function createApp(env?: string) {
   registerTwitterEndpoints(app);
   registerSearchEndpoints(app);
   registerPlaylistEndpoints(app);
+  registerLikesEndpoints(app);
 
   if (env === 'production') {
     app.use(raven.middleware.express.errorHandler(process.env.SENTRY_DSN));
