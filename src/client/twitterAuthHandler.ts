@@ -1,6 +1,10 @@
 import {getAuthToken, setAuthToken} from './util/authToken';
 
 window.addEventListener('message', async (event: MessageEvent) => {
+  if (event.origin !== process.env.SERVER_URL) {
+    return;
+  }
+
   const data = JSON.parse(event.data);
 
   if (data.type === 'twitterAuth') {
