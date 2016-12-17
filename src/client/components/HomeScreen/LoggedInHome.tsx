@@ -7,6 +7,7 @@ import PlaybackStore from '../../stores/PlaybackStore';
 import {PlaylistEntry} from '../../../universal/resources';
 
 import PlaylistItem from '../PlaylistItem';
+import SidebarWrapper from '../SidebarWrapper';
 
 import {distanceInWords} from 'date-fns';
 
@@ -68,15 +69,17 @@ class LoggedInHome extends React.Component<Props, {}> {
     const {items, feedPromise} = this.props.feedStore!;
 
     return (
-      <div className="playlist">
-        <h2>your feed</h2>
+      <SidebarWrapper>
+        <div className="playlist">
+          <h2>your feed</h2>
 
-        {feedPromise.case({
-          pending: () => <div className="main-placeholder">Loading...</div>,
-          rejected: () => <div className="main-placeholder">Error loading!</div>,
-          fulfilled: () => this.renderLoaded(items),
-        })}
-      </div>
+          {feedPromise.case({
+            pending: () => <div className="main-placeholder">Loading...</div>,
+            rejected: () => <div className="main-placeholder">Error loading!</div>,
+            fulfilled: () => this.renderLoaded(items),
+          })}
+        </div>
+      </SidebarWrapper>
     );
   }
 }

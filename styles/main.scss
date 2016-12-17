@@ -146,8 +146,23 @@ button:active {
 }
 
 .logged-out-homepage {
+  width: 600px;
+  height: 800px;
+  margin: 0 auto;
+  margin-bottom: 80px;
+  padding: 0 20px;
+
+  background-image: url('../assets/ghettoblaster_corgi.png');
+  background-color: white;
+  background-size: cover;
+  background-repeat: no-repeat;
+  border: 15px hotpink solid;
+
   text-align: center;
-  margin-top: 80px;
+
+  .lower {
+    margin-top: 450px;
+  }
 
   .twitter-auth {
     margin-top: 30px;
@@ -165,6 +180,16 @@ button:active {
 
     &:active {
       transform: translate3d(4px, 4px, 0px);
+    }
+  }
+
+  .attribution {
+    margin-top: 65px;
+
+    font-size: 12px;
+
+    a, a:visited, a:hover, a:active {
+      color: hotpink;
     }
   }
 }

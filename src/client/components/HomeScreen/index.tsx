@@ -7,7 +7,6 @@ import LoadUserWrapper from '../LoadUserWrapper';
 
 import LoggedInHome from './LoggedInHome';
 import LoggedOutHome from './LoggedOutHome';
-import SidebarWrapper from '../SidebarWrapper';
 
 interface Props {
   userStore?: UserStore;
@@ -20,11 +19,7 @@ class HomeScreen extends React.Component<Props, {}> {
   render() {
     const {loggedIn} = this.props.userStore!;
 
-    return (
-      <SidebarWrapper>
-        {loggedIn ? <LoggedInHome /> : <LoggedOutHome />}
-      </SidebarWrapper>
-    );
+    return loggedIn ? <LoggedInHome /> : <LoggedOutHome />;
   }
 }
 
