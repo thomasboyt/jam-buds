@@ -9,7 +9,7 @@ import PlaylistItem from '../PlaylistItem';
 import FollowStatus from './FollowStatus';
 import SidebarWrapper from '../SidebarWrapper';
 
-import {PlaylistEntry} from '../../../universal/resources';
+import PlaylistEntry from '../../stores/PlaylistEntry';
 
 interface Props {
   playlistStore?: PlaylistStore;

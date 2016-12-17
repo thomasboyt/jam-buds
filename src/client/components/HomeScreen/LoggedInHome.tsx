@@ -4,7 +4,7 @@ import {inject, observer} from 'mobx-react';
 
 import FeedStore from '../../stores/FeedStore';
 import PlaybackStore from '../../stores/PlaybackStore';
-import {PlaylistEntry} from '../../../universal/resources';
+import PlaylistEntry from '../../stores/PlaylistEntry';
 
 import PlaylistItem from '../PlaylistItem';
 import SidebarWrapper from '../SidebarWrapper';

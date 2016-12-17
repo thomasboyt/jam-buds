@@ -2,7 +2,8 @@ import {observable, action, computed} from 'mobx';
 import {fromPromise} from 'mobx-utils';
 
 import getPlaylist from '../api/getPlaylist';
-import {PlaylistEntry} from '../../universal/resources';
+import likeEntry from '../api/likeEntry';
+import PlaylistEntry from './PlaylistEntry';
 
 export default class PlaylistStore {
   @observable name: string;
@@ -16,7 +17,7 @@ export default class PlaylistStore {
 
   @computed get itemsPromise() {
     return fromPromise(getPlaylist(this.name).then((resp) => {
-      this.items = resp.tracks;
+      this.items = resp.tracks.map((track) => new PlaylistEntry(track));
       this.userId = resp.user.id;
     }));
   }

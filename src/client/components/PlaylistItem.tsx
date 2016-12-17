@@ -1,6 +1,6 @@
 import * as React from 'react';
-import {inject, observer} from 'mobx-react';
-import {PlaylistEntry} from '../../universal/resources';
+import {observer} from 'mobx-react';
+import PlaylistEntry from '../stores/PlaylistEntry';
 import * as classNames from 'classnames';
 
 function spotifyUrl(track: PlaylistEntry) {
@@ -14,10 +14,48 @@ interface Props {
   onClick: () => void;
 }
 
+@observer
 export default class PlaylistItem extends React.Component<Props, {}> {
   handleClick(e: React.MouseEvent<any>) {
     e.preventDefault();
     this.props.onClick();
+  }
+
+  handleLike(e: React.MouseEvent<any>) {
+    e.preventDefault();
+    this.props.track.likeEntry();
+  }
+
+  handleUnlike(e: React.MouseEvent<any>) {
+    e.preventDefault();
+    this.props.track.unlikeEntry();
+  }
+
+  renderLikeAction() {
+    const {likeRequest, isLiked} = this.props.track;
+
+    if (likeRequest) {
+      return likeRequest.case({
+        pending: () => <span>Pending...</span>,
+        rejected: (err) => <span>Error</span>,
+        fulfilled: () => <span />,  // not actually displayed
+      });
+
+    } else {
+      if (isLiked) {
+        return (
+          <a href="#" onClick={(e) => this.handleUnlike(e)}>
+            Unlike
+          </a>
+        );
+      } else {
+        return (
+          <a href="#" onClick={(e) => this.handleLike(e)}>
+            Like
+          </a>
+        );
+      }
+    }
   }
 
   render() {
@@ -67,6 +105,10 @@ export default class PlaylistItem extends React.Component<Props, {}> {
                 </span>
               }
             </em>
+          </p>
+
+          <p>
+            {this.renderLikeAction()}
           </p>
         </div>
       </div>
