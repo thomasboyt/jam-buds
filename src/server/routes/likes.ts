@@ -7,6 +7,7 @@ import {
 
 import {
   likePlaylistEntry,
+  unlikePlaylistEntry,
   getPlaylistEntryById,
 } from '../models/playlist';
 
@@ -18,7 +19,7 @@ export default function registerLikeEndpoints(app: Express) {
     const entryId = req.params.entryId as number;
     const user = res.locals.user as User;
 
-    const entry = await getPlaylistEntryById(entryId);
+    const entry = await getPlaylistEntryById(entryId, user.id);
 
     if (!entry) {
       return res.status(404).json({
@@ -27,18 +28,43 @@ export default function registerLikeEndpoints(app: Express) {
     }
 
     if (entry.isLiked) {
-      res.status(400).json({
+      return res.status(400).json({
         error: 'Cannot like the same song twice',
       });
     }
 
     if (entry.user.id == user.id) {
-      res.status(400).json({
+      return res.status(400).json({
         error: 'Cannot like your own song',
       });
     }
 
     await likePlaylistEntry(user.id, entryId);
+
+    res.json({
+      success: true,
+    });
+  }));
+
+  app.delete('/likes/:entryId', isAuthenticated, wrapAsyncRoute(async (req, res) => {
+    const entryId = req.params.entryId as number;
+    const user = res.locals.user as User;
+
+    const entry = await getPlaylistEntryById(entryId, user.id);
+
+    if (!entry) {
+      return res.status(404).json({
+        error: `No song found with id ${entryId}`,
+      });
+    }
+
+    if (!entry.isLiked) {
+      return res.status(400).json({
+        error: 'Cannot unlike a song you don\'t like',
+      });
+    }
+
+    await unlikePlaylistEntry(user.id, entryId);
 
     res.json({
       success: true,

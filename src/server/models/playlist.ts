@@ -122,6 +122,15 @@ export async function likePlaylistEntry(userId: number, entryId: number): Promis
   await (query as any);
 }
 
+export async function unlikePlaylistEntry(userId: number, entryId: number): Promise<void> {
+  const query = db!('likes').where({
+    entry_id: entryId,
+    user_id: userId,
+  }).delete();
+
+  await (query as any);
+}
+
 export async function getPlaylistEntryById(id: number, currentUserId?: number): Promise<PlaylistEntry | null> {
   const query = getBasePlaylistQuery(currentUserId)
     .where({'playlist_entries.id': id});
