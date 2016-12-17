@@ -2,10 +2,10 @@ import {observable, action, computed} from 'mobx';
 import {fromPromise} from 'mobx-utils';
 
 import getFeed from '../api/getFeed';
-import {FeedEntry} from '../../universal/resources';
+import {PlaylistEntry} from '../../universal/resources';
 
 export default class FeedStore {
-  @observable items: FeedEntry[] = [];
+  @observable items: PlaylistEntry[] = [];
 
   @computed get feedPromise() {
     return fromPromise(getFeed().then((resp) => {

@@ -4,7 +4,7 @@ import {inject, observer} from 'mobx-react';
 
 import FeedStore from '../../stores/FeedStore';
 import PlaybackStore from '../../stores/PlaybackStore';
-import {FeedEntry} from '../../../universal/resources';
+import {PlaylistEntry} from '../../../universal/resources';
 
 import PlaylistItem from '../PlaylistItem';
 
@@ -22,12 +22,12 @@ interface Props {
 })) @observer
 class LoggedInHome extends React.Component<Props, {}> {
   handleSongClick(trackIndex: number) {
-    const tracks = this.props.feedStore!.items.slice(trackIndex).map((entry) => entry.song);
+    const tracks = this.props.feedStore!.items.slice(trackIndex).map((entry) => entry);
 
     this.props.playbackStore!.playFeedItems(tracks);
   }
 
-  renderLoaded(items: FeedEntry[]) {
+  renderLoaded(items: PlaylistEntry[]) {
     if (items.length === 0) {
       return (
         <div className="main-placeholder">
@@ -43,13 +43,12 @@ class LoggedInHome extends React.Component<Props, {}> {
     );
   }
 
-  renderItem(entry: FeedEntry, idx: number) {
+  renderItem(entry: PlaylistEntry, idx: number) {
     const playingTrack = this.props.playbackStore!.nowPlaying;
-    const track = entry.song;
-    const timestamp = distanceInWords(new Date(), new Date(entry.song.added));
+    const timestamp = distanceInWords(new Date(), new Date(entry.added));
 
     return (
-      <li key={track.id}>
+      <li key={entry.id}>
         <div className="posted-by">
           <Link to={`/playlist/${entry.user.twitterName}`}>
             @{entry.user.twitterName}
@@ -58,8 +57,8 @@ class LoggedInHome extends React.Component<Props, {}> {
         </div>
 
         <PlaylistItem
-          track={track} trackIndex={idx}
-          isPlaying={(!!playingTrack && playingTrack.id === track.id)}
+          track={entry} trackIndex={idx}
+          isPlaying={(!!playingTrack && playingTrack.id === entry.id)}
           onClick={() => this.handleSongClick(idx)} />
       </li>
     );

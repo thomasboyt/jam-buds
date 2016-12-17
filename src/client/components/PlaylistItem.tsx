@@ -4,7 +4,7 @@ import {PlaylistEntry} from '../../universal/resources';
 import * as classNames from 'classnames';
 
 function spotifyUrl(track: PlaylistEntry) {
-  return `https://open.spotify.com/track/${track.spotifyId}`;
+  return `https://open.spotify.com/track/${track.song.spotifyId}`;
 }
 
 interface Props {
@@ -36,12 +36,12 @@ export default class PlaylistItem extends React.Component<Props, {}> {
         <a className="playlist-entry--main"
           href={track.youtubeUrl} target="_blank" rel="noopener noreferrer"
           onClick={(e) => this.handleClick(e)}>
-          <img src={track.albumArt} />
+          <img src={track.song.albumArt} />
 
           <span className="title">
-            {track.artists.join(', ')}
+            {track.song.artists.join(', ')}
             <br/>
-            {track.title}
+            {track.song.title}
           </span>
         </a>
 
@@ -58,7 +58,7 @@ export default class PlaylistItem extends React.Component<Props, {}> {
               <a href={track.youtubeUrl} target="_blank" rel="noopener noreferrer">
                 Youtube
               </a>
-              {track.spotifyId &&
+              {track.song.spotifyId &&
                 <span>
                   {' / '}
                   <a href={spotifyUrl(track)} target="_blank" rel="noopener noreferrer">
