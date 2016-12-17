@@ -21,41 +21,27 @@ export default class PlaylistItem extends React.Component<Props, {}> {
     this.props.onClick();
   }
 
-  handleLike(e: React.MouseEvent<any>) {
+  handleToggleLike(e: React.MouseEvent<any>) {
     e.preventDefault();
-    this.props.track.likeEntry();
-  }
+    e.stopPropagation();
 
-  handleUnlike(e: React.MouseEvent<any>) {
-    e.preventDefault();
-    this.props.track.unlikeEntry();
+    if (this.props.track.isLiked) {
+      this.props.track.unlikeEntry();
+    } else {
+      this.props.track.likeEntry();
+    }
   }
 
   renderLikeAction() {
     const {likeRequest, isLiked} = this.props.track;
 
-    if (likeRequest) {
-      return likeRequest.case({
-        pending: () => <span>Pending...</span>,
-        rejected: (err) => <span>Error</span>,
-        fulfilled: () => <span />,  // not actually displayed
-      });
-
-    } else {
-      if (isLiked) {
-        return (
-          <a href="#" onClick={(e) => this.handleUnlike(e)}>
-            Unlike
-          </a>
-        );
-      } else {
-        return (
-          <a href="#" onClick={(e) => this.handleLike(e)}>
-            Like
-          </a>
-        );
-      }
-    }
+    return (
+      <button onClick={(e) => this.handleToggleLike(e)} disabled={!!likeRequest}>
+        {isLiked ?
+          <span className="fa fa-heart" /> :
+          <span className="fa fa-heart-o" />}
+      </button>
+    );
   }
 
   render() {
@@ -81,6 +67,10 @@ export default class PlaylistItem extends React.Component<Props, {}> {
             <br/>
             {track.song.title}
           </span>
+
+          <span className="playlist-entry--actions">
+            {this.renderLikeAction()}
+          </span>
         </a>
 
         <div className={detailClassName}>
@@ -105,10 +95,6 @@ export default class PlaylistItem extends React.Component<Props, {}> {
                 </span>
               }
             </em>
-          </p>
-
-          <p>
-            {this.renderLikeAction()}
           </p>
         </div>
       </div>
