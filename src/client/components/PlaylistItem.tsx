@@ -1,6 +1,9 @@
 import * as React from 'react';
-import {observer} from 'mobx-react';
+import {observer, inject} from 'mobx-react';
+
 import PlaylistEntry from '../stores/PlaylistEntry';
+import UserStore from '../stores/UserStore';
+
 import * as classNames from 'classnames';
 
 function spotifyUrl(track: PlaylistEntry) {
@@ -12,9 +15,12 @@ interface Props {
   trackIndex: number;
   isPlaying: boolean;
   onClick: () => void;
+  userStore?: UserStore;
 }
 
-@observer
+@inject((allStores) => ({
+  userStore: allStores.userStore,
+})) @observer
 export default class PlaylistItem extends React.Component<Props, {}> {
   state = {
     isOpen: false,
@@ -59,6 +65,16 @@ export default class PlaylistItem extends React.Component<Props, {}> {
   }
 
   renderLikeAction() {
+    if (!this.props.userStore!.loggedIn) {
+      // unauthenticated users can't like songs!
+      return null;
+    }
+
+    if (this.props.track.user.id === this.props.userStore!.userId) {
+      // users can't like their own songs
+      return null;
+    }
+
     const {likeRequest, isLiked} = this.props.track;
 
     return (
