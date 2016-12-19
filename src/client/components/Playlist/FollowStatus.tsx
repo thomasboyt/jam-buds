@@ -22,6 +22,10 @@ class FollowStatus extends React.Component<Props, {}> {
   }
 
   render() {
+    if (!this.props.userStore!.loggedIn) {
+      return null;
+    }
+
     if (this.props.userId === this.props.userStore!.userId) {
       return null;
     }
