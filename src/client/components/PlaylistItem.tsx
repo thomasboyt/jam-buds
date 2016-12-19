@@ -16,9 +16,17 @@ interface Props {
 
 @observer
 export default class PlaylistItem extends React.Component<Props, {}> {
+  state = {
+    isOpen: false,
+  };
+
   handleClick(e: React.MouseEvent<any>) {
     e.preventDefault();
     this.props.onClick();
+
+    this.setState({
+      isOpen: true,
+    });
   }
 
   handleToggleLike(e: React.MouseEvent<any>) {
@@ -30,6 +38,24 @@ export default class PlaylistItem extends React.Component<Props, {}> {
     } else {
       this.props.track.likeEntry();
     }
+  }
+
+  handleToggleOpen(e: React.MouseEvent<any>) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    this.setState({
+      isOpen: !this.state.isOpen,
+    });
+  }
+
+  handleOpenNote(e: React.MouseEvent<any>) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    this.setState({
+      isOpen: true,
+    });
   }
 
   renderLikeAction() {
@@ -44,6 +70,30 @@ export default class PlaylistItem extends React.Component<Props, {}> {
     );
   }
 
+  renderNoteIcon() {
+    if (!this.props.track.note) {
+      return null;
+    }
+
+    return (
+      <button onClick={(e) => this.handleOpenNote(e)}>
+        <span className="fa fa-file-text-o" />
+      </button>
+    );
+  }
+
+  renderToggleOpenAction() {
+    const {isOpen} = this.state;
+
+    return (
+      <button onClick={(e) => this.handleToggleOpen(e)} className="drawer-toggle">
+        {isOpen ?
+          <span className="fa fa-angle-up" /> :
+          <span className="fa fa-angle-down" />}
+      </button>
+    )
+  }
+
   render() {
     const {track, isPlaying} = this.props;
 
@@ -52,7 +102,7 @@ export default class PlaylistItem extends React.Component<Props, {}> {
     });
 
     const detailClassName = classNames('playlist-entry--detail', {
-      'open': isPlaying,
+      'open': this.state.isOpen,
     });
 
     return (
@@ -69,7 +119,9 @@ export default class PlaylistItem extends React.Component<Props, {}> {
           </span>
 
           <span className="playlist-entry--actions">
+            {this.renderNoteIcon()}
             {this.renderLikeAction()}
+            {this.renderToggleOpenAction()}
           </span>
         </a>
 
