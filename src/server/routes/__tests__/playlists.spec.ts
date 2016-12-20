@@ -5,7 +5,6 @@ import * as request from 'supertest';
 import * as Express from 'express';
 
 import {userFactory} from '../../__tests__/factories';
-import {createSongFromManualEntry} from '../../models/song';
 import {getPlaylistByUserId, addSongToPlaylist} from '../../models/playlist';
 
 import createApp from '../../createApp';

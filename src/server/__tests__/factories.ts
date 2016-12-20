@@ -1,4 +1,4 @@
-import {createUser, CreateUserOptions, User} from '../models/user';
+import {createUser, User} from '../models/user';
 import {createSongFromManualEntry, Song} from '../models/song';
 import {addSongToPlaylist} from '../models/playlist';
 import {PlaylistEntry} from '../../universal/resources';
@@ -18,7 +18,7 @@ export async function userFactory(opts: Object = {}): Promise<User> {
     twitterSecret: uniqueString(),
   };
 
-  const finalOpts: CreateUserOptions = {...defaults, ...opts};
+  const finalOpts = {...defaults, ...opts};
 
   const user = await createUser(finalOpts);
   return user;
@@ -27,4 +27,19 @@ export async function userFactory(opts: Object = {}): Promise<User> {
 export async function songFactory(artist: string = uniqueString(), title: string = uniqueString()): Promise<Song> {
   const song = await createSongFromManualEntry(artist, title);
   return song;
+}
+
+export async function entryFactory(opts: Object = {}): Promise<PlaylistEntry> {
+  const defaults = {
+    userId: (await userFactory()).id,
+    songId: (await songFactory()).id,
+    youtubeUrl: uniqueString(),
+    note: uniqueString(),
+  };
+
+  const finalOpts = {...defaults, ...opts};
+
+  const entry = await addSongToPlaylist(finalOpts);
+
+  return entry;
 }

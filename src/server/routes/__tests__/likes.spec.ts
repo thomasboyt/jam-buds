@@ -7,7 +7,6 @@ import * as Express from 'express';
 import createApp from '../../createApp';
 
 import {userFactory, songFactory, uniqueString} from '../../__tests__/factories';
-import {followUser} from '../../models/following';
 
 import {
   addSongToPlaylist,
@@ -22,7 +21,6 @@ describe('playlist routes', () => {
     it('likes an entry by id', async () => {
       const jeff = await userFactory();
       const dan = await userFactory();
-      await followUser(jeff.id, dan.id);
 
       const song = await songFactory();
       await addSongToPlaylist({

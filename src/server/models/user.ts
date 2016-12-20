@@ -12,7 +12,7 @@ export interface User {
   twitterSecret: string;
 }
 
-export interface CreateUserOptions {
+interface CreateUserOptions {
   twitterId: string;
   twitterName: string;
   twitterToken: string;

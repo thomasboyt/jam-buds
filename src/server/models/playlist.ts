@@ -3,17 +3,20 @@ import {camelizeKeys, decamelizeKeys} from 'humps';
 import {PlaylistEntry, Song} from '../../universal/resources';
 import {User, serializePublicUser} from './user';
 
-interface PlaylistValues {
+interface CreateEntryOptions {
   userId: number;
   songId: number;
   youtubeUrl: string;
   note: string;
 }
 
-export async function addSongToPlaylist(values: PlaylistValues) {
-  const query = db!.insert(decamelizeKeys(values)).into('playlist_entries');
+export async function addSongToPlaylist(values: CreateEntryOptions): Promise<PlaylistEntry> {
+  const query = db!.insert(decamelizeKeys(values)).into('playlist_entries').returning('id');
 
-  await (query as any);
+  const [id] = await (query as any);
+  const entry = await getPlaylistEntryById(id);
+
+  return entry!;
 }
 
 function serializeSong(song: any): Song {
