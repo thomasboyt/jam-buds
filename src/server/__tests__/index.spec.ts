@@ -11,9 +11,12 @@ dotenv.config({
 
 import {db, configureDatabase} from '../db';
 
-beforeEach(async () => {
+before(async () => {
   configureDatabase();
   await db!.migrate.rollback();
+});
+
+beforeEach(async () => {
   await db!.migrate.latest();
 });
 
