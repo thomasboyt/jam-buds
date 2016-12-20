@@ -14,12 +14,13 @@ import {db, configureDatabase} from '../db';
 before(async () => {
   configureDatabase();
   await db!.migrate.rollback();
-});
-
-beforeEach(async () => {
   await db!.migrate.latest();
 });
 
+beforeEach(async () => {
+  await (db!.raw('BEGIN') as any);
+});
+
 afterEach(async() => {
-  await db!.migrate.rollback();
+  await (db!.raw('ROLLBACK') as any);
 });

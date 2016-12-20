@@ -11,7 +11,7 @@ import {PlaylistEntry} from '../../../universal/resources';
 
 import {db} from '../../db';
 
-describe('playlist model', () => {
+describe('models/playlist', () => {
   let jeff: User;
   let vinny: User;
   let dan: User;
@@ -28,6 +28,11 @@ describe('playlist model', () => {
 
     jeffEntry = await entryFactory({userId: jeff.id});
     vinnyEntry = await entryFactory({userId: vinny.id});
+
+    await (db!('playlist_entries').where({id: vinnyEntry.id}).update({
+      created_at: '2016-12-01T00:04:03.059656-05:00'
+    }) as any);
+
     danEntry = await entryFactory({userId: dan.id});
   });
 

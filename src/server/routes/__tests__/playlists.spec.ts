@@ -11,7 +11,7 @@ import createApp from '../../createApp';
 
 const app = createApp();
 
-describe('playlist routes', () => {
+describe('routes/playlists', () => {
   describe('POST /playlist', () => {
     it('creates a manually-entered song when manualEntry is true', async () => {
       const jeff = await userFactory();

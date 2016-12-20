@@ -16,14 +16,14 @@ import {
 
 const app = createApp();
 
-describe('playlist routes', () => {
+describe('routes/likes', () => {
   describe('PUT /likes/:id', () => {
     it('likes an entry by id', async () => {
       const jeff = await userFactory();
       const dan = await userFactory();
 
       const song = await songFactory();
-      await addSongToPlaylist({
+      const entry = await addSongToPlaylist({
         songId: song.id,
         userId: dan.id,
         youtubeUrl: uniqueString(),
@@ -31,7 +31,7 @@ describe('playlist routes', () => {
       });
 
       const req = request(app)
-        .put('/likes/1')
+        .put(`/likes/${entry.id}`)
         .set('X-Auth-Token', jeff!.authToken);
 
       const res: request.Response = await (req as any);
@@ -45,7 +45,7 @@ describe('playlist routes', () => {
 
       const likes = await getLikedEntriesByUserId(jeff!.id, jeff!.id);
       expect(likes.length).toBe(1);
-      expect(likes[0].id).toBe(1);
+      expect(likes[0].id).toBe(entry.id);
       expect(likes[0].isLiked).toBe(true);
     });
   });
