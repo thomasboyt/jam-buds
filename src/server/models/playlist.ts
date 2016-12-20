@@ -146,3 +146,9 @@ export async function getPlaylistEntryById(id: number, currentUserId?: number): 
 
   return serializePlaylistEntry(rows[0]);
 }
+
+export async function deletePlaylistEntryById(id: number): Promise<void> {
+  const query = db!('playlist_entries').where({id}).delete();
+
+  await (query as any);
+}

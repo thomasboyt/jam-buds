@@ -33,7 +33,7 @@ export default function registerLikeEndpoints(app: Express) {
       });
     }
 
-    if (entry.user.id == user.id) {
+    if (entry.user.id === user.id) {
       return res.status(400).json({
         error: 'Cannot like your own song',
       });

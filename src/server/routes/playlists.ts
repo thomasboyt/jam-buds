@@ -18,6 +18,8 @@ import {
   addSongToPlaylist,
   getPlaylistByUserId,
   getFeedByUserId,
+  getPlaylistEntryById,
+  deletePlaylistEntryById,
 } from '../models/playlist';
 
 import {isAuthenticated} from '../auth';
@@ -71,11 +73,30 @@ export default function registerPlaylistEndpoints(app: Express) {
   }));
 
   // delete a song from your playlist
-  app.delete('/playlist/:songId', isAuthenticated, wrapAsyncRoute(async (req, res) => {
+  app.delete('/playlist/:entryId', isAuthenticated, wrapAsyncRoute(async (req, res) => {
     const user: User = res.locals.user;
-    const songId: number = req.params.songId;
+    const entryId: number = req.params.entryId;
 
     // TODO: delete song by ID
+    const entry = await getPlaylistEntryById(entryId)
+
+    if (!entry) {
+      return res.status(404).json({
+        error: `No song found with id ${entryId}`,
+      });
+    }
+
+    if (entry.user.id !== user.id) {
+      return res.status(400).json({
+        error: 'Cannot delete someone else\'s song',
+      });
+    }
+
+    await deletePlaylistEntryById(entryId);
+
+    res.json({
+      success: true,
+    });
   }));
 
   // get a user's playlist
