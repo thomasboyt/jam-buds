@@ -17,7 +17,7 @@ export default class PlaylistStore {
 
   @computed get itemsPromise() {
     return fromPromise(getPlaylist(this.name).then((resp) => {
-      this.items = resp.tracks.map((track) => new PlaylistEntry(track));
+      this.items = resp.tracks.map((track) => new PlaylistEntry(track, this));
       this.userId = resp.user.id;
     }));
   }

@@ -35,6 +35,18 @@ export default class PlaylistItem extends React.Component<Props, {}> {
     });
   }
 
+  handleDelete(e: React.MouseEvent<any>) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    // the dream of the 90s is still alive
+    const confirmedDelete = window.confirm('Are you sure you want to delete this entry?')
+
+    if (confirmedDelete) {
+      this.props.track.deleteEntry();
+    }
+  }
+
   handleToggleLike(e: React.MouseEvent<any>) {
     e.preventDefault();
     e.stopPropagation();
@@ -82,6 +94,18 @@ export default class PlaylistItem extends React.Component<Props, {}> {
         {isLiked ?
           <span className="fa fa-heart" /> :
           <span className="fa fa-heart-o" />}
+      </button>
+    );
+  }
+
+  renderRemoveAction() {
+    if (!this.props.userStore!.loggedIn || this.props.track.user.id !== this.props.userStore!.userId) {
+      return null;
+    }
+
+    return (
+      <button onClick={(e) => this.handleDelete(e)}>
+        <span className="fa fa-times" />
       </button>
     );
   }
@@ -137,6 +161,7 @@ export default class PlaylistItem extends React.Component<Props, {}> {
           <span className="playlist-entry--actions">
             {this.renderNoteIcon()}
             {this.renderLikeAction()}
+            {this.renderRemoveAction()}
             {this.renderToggleOpenAction()}
           </span>
         </a>

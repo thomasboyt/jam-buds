@@ -9,7 +9,7 @@ export default class FeedStore {
 
   @computed get feedPromise() {
     return fromPromise(getFeed().then((resp) => {
-      this.items = resp.tracks.map((track) => new PlaylistEntry(track));
+      this.items = resp.tracks.map((track) => new PlaylistEntry(track, this));
     }));
   }
 }
