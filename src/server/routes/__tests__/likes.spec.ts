@@ -6,15 +6,31 @@ import * as Express from 'express';
 
 import createApp from '../../createApp';
 
-import {getUserByTwitterName} from '../../models/user';
-import {getPlaylistByUserId, getLikedEntriesByUserId} from '../../models/playlist';
+import {userFactory, songFactory, uniqueString} from '../../__tests__/factories';
+import {followUser} from '../../models/following';
+
+import {
+  addSongToPlaylist,
+  getPlaylistByUserId,
+  getLikedEntriesByUserId,
+} from '../../models/playlist';
 
 const app = createApp();
 
 describe('playlist routes', () => {
   describe('PUT /likes/:id', () => {
     it('likes an entry by id', async () => {
-      const jeff = await getUserByTwitterName('jeffgerstmann');
+      const jeff = await userFactory();
+      const dan = await userFactory();
+      await followUser(jeff.id, dan.id);
+
+      const song = await songFactory();
+      await addSongToPlaylist({
+        songId: song.id,
+        userId: dan.id,
+        youtubeUrl: uniqueString(),
+        note: uniqueString(),
+      });
 
       const req = request(app)
         .put('/likes/1')

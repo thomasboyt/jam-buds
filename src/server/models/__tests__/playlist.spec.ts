@@ -5,10 +5,15 @@ import * as playlist from '../playlist';
 
 import {db} from '../../db';
 
-// TODO: Instead of relying on seed data, set up data here
-
 describe('playlist model', () => {
+  // TODO: Instead of relying on seed data, set up data here
+
+  beforeEach(async () => {
+    await db!.seed.run();
+  });
+
   describe('getFeedByUserId', () => {
+
     it('only returns items in a user\'s following list', async () => {
       const items = await playlist.getFeedByUserId(1);
       expect(items.length).toBe(2);

@@ -4,8 +4,9 @@ import * as expect from 'expect';
 import * as request from 'supertest';
 import * as Express from 'express';
 
-import {getUserByTwitterName} from '../../models/user';
-import {getPlaylistByUserId} from '../../models/playlist';
+import {userFactory} from '../../__tests__/factories';
+import {createSongFromManualEntry} from '../../models/song';
+import {getPlaylistByUserId, addSongToPlaylist} from '../../models/playlist';
 
 import createApp from '../../createApp';
 
@@ -14,8 +15,7 @@ const app = createApp();
 describe('playlist routes', () => {
   describe('POST /playlist', () => {
     it('creates a manually-entered song when manualEntry is true', async () => {
-      const jeff = await getUserByTwitterName('jeffgerstmann');
-      expect(jeff).toExist();
+      const jeff = await userFactory();
 
       const req = request(app)
         .post('/playlist')
