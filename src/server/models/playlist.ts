@@ -87,13 +87,12 @@ export async function getPlaylistByUserId(id: number, currentUserId?: number): P
 
 export async function getFeedByUserId(id: number): Promise<PlaylistEntry[]> {
   const query = getBasePlaylistQuery(id)
-    .select([
-      db!.raw('to_json(following.*) as following'),
-    ])
-    .join('following', {
-      'following.following_id': 'playlist_entries.user_id',
-      'following.user_id': db!.raw('?', [id]),
+    .whereIn('user_id', function() {
+      this.select('following_id')
+        .from('following')
+        .where({user_id: id});
     })
+    .orWhere({user_id: id})
     .orderBy('playlist_entries.created_at', 'desc');
 
   const rows = await (query as any);

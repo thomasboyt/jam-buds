@@ -15,6 +15,12 @@ import {PlaylistEntry} from '../../../universal/resources';
 
 import {db} from '../../db';
 
+async function setEntryCreated(id: number, createdAt: string) {
+  await (db!('playlist_entries').where({id}).update({
+    created_at: createdAt,
+  }) as any);
+}
+
 describe('models/playlist', () => {
   describe('querying', () => {
     let jeff: User;
@@ -32,29 +38,32 @@ describe('models/playlist', () => {
       await followUser(jeff.id, vinny.id);
 
       jeffEntry = await entryFactory({userId: jeff.id});
-      vinnyEntry = await entryFactory({userId: vinny.id});
+      await setEntryCreated(jeffEntry.id, '2016-11-01T00:04:03.059656-05:00');
 
-      await (db!('playlist_entries').where({id: vinnyEntry.id}).update({
-        created_at: '2016-12-01T00:04:03.059656-05:00'
-      }) as any);
+      vinnyEntry = await entryFactory({userId: vinny.id});
+      await setEntryCreated(vinnyEntry.id, '2016-12-01T00:04:03.059656-05:00');
 
       danEntry = await entryFactory({userId: dan.id});
     });
 
     describe('getFeedByUserId', () => {
-      it('only returns items in a user\'s following list', async () => {
+      it('only returns items in a user\'s following list, plus their own entries', async () => {
         const items = await playlist.getFeedByUserId(jeff.id);
-        expect(items.length).toBe(1);
-        expect(items[0].user.id).toBe(vinny.id);
+        expect(items.length).toBe(2);
+
+        const ids = items.map((item) => item.id);
+        expect(ids).toContain(vinnyEntry.id);
+        expect(ids).toContain(jeffEntry.id);
       });
 
       it('returns items in reverse-chronological order', async () => {
         await followUser(jeff.id, dan.id);
         const items = await playlist.getFeedByUserId(jeff.id);
 
-        expect(items.length).toBe(2);
+        expect(items.length).toBe(3);
         expect(items[0].id).toBe(danEntry.id);
         expect(items[1].id).toBe(vinnyEntry.id);
+        expect(items[2].id).toBe(jeffEntry.id);
       });
     });
 

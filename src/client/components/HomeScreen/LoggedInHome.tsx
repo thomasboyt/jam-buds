@@ -5,6 +5,7 @@ import {inject, observer} from 'mobx-react';
 import FeedStore from '../../stores/FeedStore';
 import PlaybackStore from '../../stores/PlaybackStore';
 import PlaylistEntry from '../../stores/PlaylistEntry';
+import UserStore from '../../stores/UserStore';
 
 import PlaylistItem from '../PlaylistItem';
 import SidebarWrapper from '../SidebarWrapper';
@@ -14,12 +15,14 @@ import {distanceInWords} from 'date-fns';
 interface Props {
   feedStore?: FeedStore;
   playbackStore?: PlaybackStore;
+  userStore?: UserStore;
 }
 
 // some day this is going to be a cool feed thingy...
 @inject((allStores) => ({
   feedStore: allStores.feedStore,
   playbackStore: allStores.playbackStore,
+  userStore: allStores.userStore,
 })) @observer
 class LoggedInHome extends React.Component<Props, {}> {
   handleSongClick(trackIndex: number) {
@@ -48,11 +51,13 @@ class LoggedInHome extends React.Component<Props, {}> {
     const playingTrack = this.props.playbackStore!.nowPlaying;
     const timestamp = distanceInWords(new Date(), new Date(entry.added));
 
+    const displayName = entry.user.id === this.props.userStore!.userId ? 'You' : `@${entry.user.twitterName}`;
+
     return (
       <li key={entry.id}>
         <div className="posted-by">
           <Link to={`/playlist/${entry.user.twitterName}`}>
-            @{entry.user.twitterName}
+            {displayName}
           </Link>
           {' '} posted ({timestamp} ago)
         </div>
