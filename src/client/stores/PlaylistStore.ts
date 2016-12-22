@@ -2,8 +2,8 @@ import {observable, action, computed} from 'mobx';
 import {fromPromise} from 'mobx-utils';
 
 import getPlaylist from '../api/getPlaylist';
-import likeEntry from '../api/likeEntry';
 import PlaylistEntry from './PlaylistEntry';
+import {PlaylistEntry as EntryResource} from '../../universal/resources';
 
 export default class PlaylistStore {
   @observable name: string;
@@ -20,5 +20,9 @@ export default class PlaylistStore {
       this.items = resp.tracks.map((track) => new PlaylistEntry(track, this));
       this.userId = resp.user.id;
     }));
+  }
+
+  @action pushEntry(entry: EntryResource) {
+    this.items.unshift(new PlaylistEntry(entry, this));
   }
 }

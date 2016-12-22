@@ -22,13 +22,15 @@ import PlaybackStore from './stores/PlaybackStore';
 import FeedStore from './stores/FeedStore';
 import FindFriendsStore from './stores/FindFriendsStore';
 
+const userStore = new UserStore();
+const playlistStore = new PlaylistStore();
+const playbackStore = new PlaybackStore();
+const feedStore = new FeedStore();
+const findFriendsStore = new FindFriendsStore();
+const addSongStore = new AddSongStore(feedStore, playlistStore);
+
 const stores = {
-  userStore: new UserStore(),
-  addSongStore: new AddSongStore(),
-  playlistStore: new PlaylistStore(),
-  playbackStore: new PlaybackStore(),
-  feedStore: new FeedStore(),
-  findFriendsStore: new FindFriendsStore(),
+  userStore, addSongStore, playlistStore, playbackStore, feedStore, findFriendsStore,
 };
 
 render((

@@ -3,8 +3,10 @@ import getSongsSearch from '../api/getSongsSearch';
 import getShareLinkDetail from '../api/getShareLinkDetail'
 import addSong from '../api/addSong'
 import {getTweetLength} from '../util/songTweet';
-
 import {SearchResult} from '../../universal/resources';
+
+import FeedStore from './FeedStore';
+import PlaylistStore from './PlaylistStore';
 
 export enum AddSongState {
   initial,
@@ -44,6 +46,14 @@ class AddSongTransaction {
 export default class AddSongStore {
   @observable showingAddSong: boolean = false;
   @observable txn: AddSongTransaction;
+
+  feedStore: FeedStore;
+  playlistStore: PlaylistStore;
+
+  constructor(feedStore: FeedStore, playlistStore: PlaylistStore) {
+    this.feedStore = feedStore;
+    this.playlistStore = playlistStore;
+  }
 
   @action async showAddSongScreen() {
     this.showingAddSong = true;
@@ -99,7 +109,7 @@ export default class AddSongStore {
 
     const note = noteText !== '' ? noteText : undefined;
 
-    await addSong({
+    const entry = await addSong({
       manualEntry: this.txn.manualEntry,
       artist: this.txn.manualArtist,
       title: this.txn.manualTitle,
@@ -112,6 +122,12 @@ export default class AddSongStore {
     });
 
     this.showingAddSong = false;
+
+    this.feedStore.pushEntry(entry);
+
+    if (entry.user.id === this.playlistStore.userId) {
+      this.playlistStore.pushEntry(entry);
+    }
   }
 
   @action updateTweetText(text: string | null) {

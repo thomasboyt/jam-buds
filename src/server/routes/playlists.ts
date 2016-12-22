@@ -53,7 +53,7 @@ export default function registerPlaylistEndpoints(app: Express) {
       }
     }
 
-    await addSongToPlaylist({
+    const entry = await addSongToPlaylist({
       userId: user.id,
       songId: song.id,
       youtubeUrl: req.body.youtubeUrl,
@@ -67,9 +67,7 @@ export default function registerPlaylistEndpoints(app: Express) {
       });
     }
 
-    res.json({
-      success: true,
-    });
+    res.json(entry);
   }));
 
   // delete a song from your playlist
