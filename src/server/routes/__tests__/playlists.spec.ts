@@ -21,6 +21,43 @@ function expectStatus(res: request.Response, status: number) {
 }
 
 describe('routes/playlists', () => {
+
+  describe('GET /playlists/:name', () => {
+    it('supports pagination', async () => {
+      const user = await userFactory();
+
+      for (let i = 0; i < 100; i += 1) {
+        await entryFactory({userId: user.id});
+      }
+
+      const firstPageReq = request(app)
+        .get(`/playlists/${user.twitterName}`)
+        .set('X-Auth-Token', user.authToken);
+
+      // TODO: Assert that these are the newest 20 items
+      const firstPageRes: request.Response = await (firstPageReq as any);
+
+      expectStatus(firstPageRes, 200);
+
+      const previousId = firstPageRes.body.tracks.slice(-1)[0].id;
+
+      const secondPageReq = request(app)
+        .get(`/playlists/${user.twitterName}`)
+        .set('X-Auth-Token', user.authToken)
+        .query({
+          previousId,
+        });
+
+      const secondPageRes: request.Response = await (secondPageReq as any);
+
+      expectStatus(firstPageRes, 200);
+
+      // TODO: Assert that these are the next 20 items
+      const nextId = secondPageRes.body.tracks[0].id;
+      expect(nextId).toBeLessThan(previousId);
+    });
+  });
+
   describe('POST /playlist', () => {
     it('creates a manually-entered song when manualEntry is true', async () => {
       const user = await userFactory();

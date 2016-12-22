@@ -43,7 +43,9 @@ describe('routes/likes', () => {
         throw err;
       }
 
-      const likes = await getLikedEntriesByUserId(jeff!.id, jeff!.id);
+      const likes = await getLikedEntriesByUserId(jeff!.id, {
+        currentUserId: jeff!.id,
+      });
       expect(likes.length).toBe(1);
       expect(likes[0].id).toBe(entry.id);
       expect(likes[0].isLiked).toBe(true);

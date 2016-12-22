@@ -19,7 +19,9 @@ export default function registerLikeEndpoints(app: Express) {
     const entryId = req.params.entryId as number;
     const user = res.locals.user as User;
 
-    const entry = await getPlaylistEntryById(entryId, user.id);
+    const entry = await getPlaylistEntryById(entryId, {
+      currentUserId: user.id,
+    });
 
     if (!entry) {
       return res.status(404).json({
@@ -50,7 +52,9 @@ export default function registerLikeEndpoints(app: Express) {
     const entryId = req.params.entryId as number;
     const user = res.locals.user as User;
 
-    const entry = await getPlaylistEntryById(entryId, user.id);
+    const entry = await getPlaylistEntryById(entryId, {
+      currentUserId: user.id,
+    });
 
     if (!entry) {
       return res.status(404).json({

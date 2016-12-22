@@ -22,7 +22,7 @@ import {
   deletePlaylistEntryById,
 } from '../models/playlist';
 
-import {isAuthenticated} from '../auth';
+import {getUserFromRequest, isAuthenticated} from '../auth';
 
 import * as spotify from '../apis/spotify';
 import {postSongTweet} from '../apis/twitter';
@@ -101,6 +101,7 @@ export default function registerPlaylistEndpoints(app: Express) {
   app.get('/playlists/:userName', wrapAsyncRoute(async (req, res) => {
     const userName = req.params.userName;
     const user = await getUserByTwitterName(userName);
+    const currentUser = await getUserFromRequest(req);
 
     if (!user) {
       res.status(404).json({
@@ -110,7 +111,12 @@ export default function registerPlaylistEndpoints(app: Express) {
       return;
     }
 
-    const tracks = await getPlaylistByUserId(user.id);
+    const previousId = req.query.previousId && parseInt(req.query.previousId, 10);
+
+    const tracks = await getPlaylistByUserId(user.id, {
+      currentUserId: currentUser ? currentUser.id : undefined,
+      previousId,
+    });
 
     const serializedUser = serializePublicUser(user);
 
@@ -125,7 +131,12 @@ export default function registerPlaylistEndpoints(app: Express) {
   app.get('/feed', isAuthenticated, wrapAsyncRoute(async (req, res) => {
     const user: User = res.locals.user;
 
-    const items = await getFeedByUserId(user.id);
+    const previousId = req.query.previousId && parseInt(req.query.previousId, 10);
+
+    const items = await getFeedByUserId(user.id, {
+      currentUserId: user.id,
+      previousId,
+    });
 
     const feed: Feed = {
       tracks: items,

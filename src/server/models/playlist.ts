@@ -45,38 +45,49 @@ function serializePlaylistEntry(row: any): PlaylistEntry {
   };
 }
 
-function getBasePlaylistQuery(currentUserId?: number) {
+interface QueryOptions {
+  currentUserId?: number;
+  previousId?: number;
+}
+
+function getBasePlaylistQuery(opts: QueryOptions) {
+  /*
+  * Note: the db!.raw('to_json') calls are used to "namespace" the results here
+  * https://github.com/tgriesser/knex/issues/61#issuecomment-259176685
+  * This may not be a great idea performance-wise.
+  */
   const select = [
     db!.raw('to_json(playlist_entries.*) as entry'),
     db!.raw('to_json(songs.*) as song'),
     db!.raw('to_json(users.*) as user'),
   ];
 
-  if (currentUserId !== undefined) {
+  if (opts.currentUserId !== undefined) {
     select.push(db!.raw(
       'EXISTS(SELECT 1 FROM likes WHERE user_id=? AND entry_id=playlist_entries.id) AS is_liked',
-      [currentUserId]
+      [opts.currentUserId]
     ));
   }
 
-  return db!.select(select)
+  let query = db!.select(select)
     .from('playlist_entries')
     .join('songs', {
       'songs.id': 'playlist_entries.song_id',
     })
     .join('users', {
       'users.id': 'playlist_entries.user_id',
-    });
+    })
+    .limit(20);
+
+  if (opts.previousId !== undefined) {
+    query = query.where('playlist_entries.id', '<', opts.previousId);
+  }
+
+  return query;
 }
 
-/*
- * Note: the db!.raw('to_json') calls are used to "namespace" the results here
- * https://github.com/tgriesser/knex/issues/61#issuecomment-259176685
- * This may not be a great idea performance-wise.
- */
-
-export async function getPlaylistByUserId(id: number, currentUserId?: number): Promise<PlaylistEntry[]> {
-  const query = getBasePlaylistQuery(currentUserId)
+export async function getPlaylistByUserId(id: number, opts: QueryOptions = {}): Promise<PlaylistEntry[]> {
+  const query = getBasePlaylistQuery(opts)
     .where({user_id: id})
     .orderBy('playlist_entries.created_at', 'desc');
 
@@ -85,8 +96,10 @@ export async function getPlaylistByUserId(id: number, currentUserId?: number): P
   return rows.map((row: any) => serializePlaylistEntry(row));
 }
 
-export async function getFeedByUserId(id: number): Promise<PlaylistEntry[]> {
-  const query = getBasePlaylistQuery(id)
+export async function getFeedByUserId(id: number, opts: QueryOptions = {}): Promise<PlaylistEntry[]> {
+  opts.currentUserId = id;
+
+  const query = getBasePlaylistQuery(opts)
     .whereIn('user_id', function() {
       this.select('following_id')
         .from('following')
@@ -100,8 +113,8 @@ export async function getFeedByUserId(id: number): Promise<PlaylistEntry[]> {
   return rows.map((row: any) => serializePlaylistEntry(row));
 }
 
-export async function getLikedEntriesByUserId(id: number, currentUserId?: number): Promise<PlaylistEntry[]> {
-  const query = getBasePlaylistQuery(currentUserId)
+export async function getLikedEntriesByUserId(id: number, opts: QueryOptions = {}): Promise<PlaylistEntry[]> {
+  const query = getBasePlaylistQuery(opts)
     .select([
       db!.raw('to_json(likes.*) as like'),
     ])
@@ -113,6 +126,19 @@ export async function getLikedEntriesByUserId(id: number, currentUserId?: number
   const rows = await (query as any);
 
   return rows.map((row: any) => serializePlaylistEntry(row));
+}
+
+export async function getPlaylistEntryById(id: number, opts: QueryOptions = {}): Promise<PlaylistEntry | null> {
+  const query = getBasePlaylistQuery(opts)
+    .where({'playlist_entries.id': id});
+
+  const rows = await (query as any);
+
+  if (!rows[0]) {
+    return null;
+  }
+
+  return serializePlaylistEntry(rows[0]);
 }
 
 export async function likePlaylistEntry(userId: number, entryId: number): Promise<void> {
@@ -131,19 +157,6 @@ export async function unlikePlaylistEntry(userId: number, entryId: number): Prom
   }).delete();
 
   await (query as any);
-}
-
-export async function getPlaylistEntryById(id: number, currentUserId?: number): Promise<PlaylistEntry | null> {
-  const query = getBasePlaylistQuery(currentUserId)
-    .where({'playlist_entries.id': id});
-
-  const rows = await (query as any);
-
-  if (!rows[0]) {
-    return null;
-  }
-
-  return serializePlaylistEntry(rows[0]);
 }
 
 export async function deletePlaylistEntryById(id: number): Promise<void> {
