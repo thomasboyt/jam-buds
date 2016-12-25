@@ -100,12 +100,13 @@ export async function getFeedByUserId(id: number, opts: QueryOptions = {}): Prom
   opts.currentUserId = id;
 
   const query = getBasePlaylistQuery(opts)
-    .whereIn('user_id', function() {
-      this.select('following_id')
-        .from('following')
-        .where({user_id: id});
+    .where(function() {
+      this.whereIn('user_id', function() {
+        this.select('following_id')
+          .from('following')
+          .where({user_id: id});
+      }).orWhere({user_id: id})
     })
-    .orWhere({user_id: id})
     .orderBy('playlist_entries.created_at', 'desc');
 
   const rows = await (query as any);
