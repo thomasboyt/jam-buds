@@ -123,10 +123,10 @@ export default class AddSongStore {
 
     this.showingAddSong = false;
 
-    this.feedStore.pushEntry(entry);
+    this.feedStore.entryList.pushEntry(entry);
 
     if (entry.user.id === this.playlistStore.userId) {
-      this.playlistStore.pushEntry(entry);
+      this.playlistStore.entryList.pushEntry(entry);
     }
   }
 

@@ -36,22 +36,25 @@ class Playlist extends React.Component<Props, {}> {
   }
 
   handleSongClick(trackIndex: number) {
-    const tracks = this.props.playlistStore!.items.slice(trackIndex);
+    const tracks = this.props.playlistStore!.entryList.items.slice(trackIndex);
     const username = this.props.playlistStore!.name;
 
     this.props.playbackStore!.playPlaylistItems(tracks, username);
   }
 
-  renderLoaded(items: PlaylistEntry[]) {
+  handleGetNextPage(e: React.MouseEvent<any>) {
+    e.preventDefault();
+    this.props.playlistStore!.entryList.getNextPage();
+  }
+
+  renderItems(items: PlaylistEntry[]) {
     const {userId} = this.props.playlistStore!;
     const playingTrack = this.props.playbackStore!.nowPlaying;
 
     if (items.length === 0) {
       return (
         <div className="main-placeholder">
-          This playlist is empty.
-
-          {userId === this.props.userStore!.userId && ' Post some songs!'}
+          This user hasn't posted any songs yet :(
         </div>
       );
     }
@@ -70,22 +73,45 @@ class Playlist extends React.Component<Props, {}> {
     );
   }
 
+  renderNextPageLoading() {
+    const {nextPageRequest, loadedFirstPage, entriesExhausted} = this.props.playlistStore!.entryList;
+
+    if (!nextPageRequest) {
+      if (entriesExhausted) {
+        return null;
+      }
+
+      return (
+        <a href="#" onClick={(e) => this.handleGetNextPage(e)}>
+          Load next page
+        </a>
+      );
+    }
+
+    let className = '';
+    if (!loadedFirstPage) {
+      className = 'main-placeholder';
+    }
+
+    return nextPageRequest.case({
+      pending: () => <div className={className}>Loading...</div>,
+      rejected: () => <div className={className}>Error loading!</div>,
+      fulfilled: () => <div />,
+    });
+  }
+
   render() {
-    const {itemsPromise, items, name, userId} = this.props.playlistStore!;
+    const {items, nextPageRequest, loadedFirstPage} = this.props.playlistStore!.entryList;
+    const {name, userId} = this.props.playlistStore!;
     const isFollowing = this.props.userStore!.isFollowing(userId);
 
     return (
       <SidebarWrapper>
         <div className="playlist">
           <h2>@{name}'s playlist</h2>
-
           <FollowStatus userId={userId} isFollowing={isFollowing} />
-
-          {itemsPromise.case({
-            pending: () => <div className="main-placeholder">Loading...</div>,
-            rejected: () => <div className="main-placeholder">Error loading!</div>,
-            fulfilled: () => this.renderLoaded(items),
-          })}
+          {loadedFirstPage && this.renderItems(items)}
+          {this.renderNextPageLoading()}
         </div>
       </SidebarWrapper>
     );

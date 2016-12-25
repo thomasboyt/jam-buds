@@ -1,28 +1,36 @@
-import {observable, action, computed} from 'mobx';
-import {fromPromise} from 'mobx-utils';
+import {observable, action} from 'mobx';
 
 import getPlaylist from '../api/getPlaylist';
-import PlaylistEntry from './PlaylistEntry';
 import {PlaylistEntry as EntryResource} from '../../universal/resources';
 
+import PaginatedPlaylistEntriesList from './PaginatedPlaylistEntriesList';
+
+class UserPlaylistEntriesList extends PaginatedPlaylistEntriesList {
+  name: string;
+  store: PlaylistStore;
+
+  constructor(name: string, store: PlaylistStore) {
+    super();
+    this.name = name;
+    this.store = store;
+  }
+
+  fetchNextPage(lastId: number | null): Promise<EntryResource[]> {
+    return getPlaylist(this.name, lastId).then((resp) => {
+      this.store.userId = resp.user.id;
+      return resp.tracks;
+    });
+  }
+}
+
 export default class PlaylistStore {
+  @observable entryList: UserPlaylistEntriesList;
   @observable name: string;
   @observable userId: number;
 
-  @observable items: PlaylistEntry[] = [];
-
   @action getPlaylist(name: string) {
     this.name = name;
-  }
-
-  @computed get itemsPromise() {
-    return fromPromise(getPlaylist(this.name).then((resp) => {
-      this.items = resp.tracks.map((track) => new PlaylistEntry(track, this));
-      this.userId = resp.user.id;
-    }));
-  }
-
-  @action pushEntry(entry: EntryResource) {
-    this.items.unshift(new PlaylistEntry(entry, this));
+    this.entryList = new UserPlaylistEntriesList(name, this);
+    this.entryList.getNextPage();
   }
 }

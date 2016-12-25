@@ -25,26 +25,19 @@ interface Props {
   userStore: allStores.userStore,
 })) @observer
 class LoggedInHome extends React.Component<Props, {}> {
+  componentWillMount() {
+    this.props.feedStore!.reset();
+  }
+
   handleSongClick(trackIndex: number) {
-    const tracks = this.props.feedStore!.items.slice(trackIndex).map((entry) => entry);
+    const tracks = this.props.feedStore!.entryList.items.slice(trackIndex).map((entry) => entry);
 
     this.props.playbackStore!.playFeedItems(tracks);
   }
 
-  renderLoaded(items: PlaylistEntry[]) {
-    if (items.length === 0) {
-      return (
-        <div className="main-placeholder">
-          Your feed doesn't have any entries yet! <Link to="/find-friends">Find some friends to follow!</Link>
-        </div>
-      );
-    }
-
-    return (
-      <ul className="playlist-entries">
-        {items.map((item, idx) => this.renderItem(item, idx))}
-      </ul>
-    );
+  handleGetNextPage(e: React.MouseEvent<any>) {
+    e.preventDefault();
+    this.props.feedStore!.entryList.getNextPage();
   }
 
   renderItem(entry: PlaylistEntry, idx: number) {
@@ -70,19 +63,58 @@ class LoggedInHome extends React.Component<Props, {}> {
     );
   }
 
+  renderItems(items: PlaylistEntry[]) {
+    if (items.length === 0) {
+      return (
+        <div className="main-placeholder">
+          Your feed doesn't have any entries yet! <Link to="/find-friends">Find some friends to follow!</Link>
+        </div>
+      );
+    }
+
+    return (
+      <ul className="playlist-entries">
+        {items.map((item, idx) => this.renderItem(item, idx))}
+      </ul>
+    );
+  }
+
+  renderNextPageLoading() {
+    const {nextPageRequest, loadedFirstPage, entriesExhausted} = this.props.feedStore!.entryList;
+
+    if (!nextPageRequest) {
+      if (entriesExhausted) {
+        return null;
+      }
+
+      return (
+        <a href="#" onClick={(e) => this.handleGetNextPage(e)}>
+          Load next page
+        </a>
+      );
+    }
+
+    let className = '';
+    if (!loadedFirstPage) {
+      className = 'main-placeholder';
+    }
+
+    return nextPageRequest.case({
+      pending: () => <div className={className}>Loading...</div>,
+      rejected: () => <div className={className}>Error loading!</div>,
+      fulfilled: () => <div />,
+    });
+  }
+
   render() {
-    const {items, feedPromise} = this.props.feedStore!;
+    const {items, nextPageRequest, loadedFirstPage} = this.props.feedStore!.entryList;
 
     return (
       <SidebarWrapper>
         <div className="playlist">
           <h2>your feed</h2>
-
-          {feedPromise.case({
-            pending: () => <div className="main-placeholder">Loading...</div>,
-            rejected: () => <div className="main-placeholder">Error loading!</div>,
-            fulfilled: () => this.renderLoaded(items),
-          })}
+          {loadedFirstPage && this.renderItems(items)}
+          {this.renderNextPageLoading()}
         </div>
       </SidebarWrapper>
     );

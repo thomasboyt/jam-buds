@@ -6,8 +6,7 @@ import deleteEntry from '../api/deleteEntry';
 
 import {PlaylistEntry as EntryResource, Song, PublicUser} from '../../universal/resources';
 
-import PlaylistStore from './PlaylistStore';
-import FeedStore from './FeedStore';
+import PaginatedPlaylistEntriesList from './PaginatedPlaylistEntriesList';
 
 export default class PlaylistEntry implements EntryResource {
   @observable id: number;
@@ -19,11 +18,11 @@ export default class PlaylistEntry implements EntryResource {
   @observable song: Song;
   @observable user: PublicUser;
 
-  store: PlaylistStore | FeedStore;
+  list: PaginatedPlaylistEntriesList;
 
-  constructor(entry: EntryResource, store: PlaylistStore | FeedStore) {
+  constructor(entry: EntryResource, list: PaginatedPlaylistEntriesList) {
     Object.assign(this, entry);
-    this.store = store;
+    this.list =list;
   }
 
   @observable likeRequest?: IPromiseBasedObservable<void>;
@@ -58,7 +57,7 @@ export default class PlaylistEntry implements EntryResource {
     const fn = async () => {
       await deleteEntry(this.id);
       runInAction(() => {
-        this.store.items = this.store.items.filter((item) => item.id !== this.id);
+        this.list.items = this.list.items.filter((item) => item.id !== this.id);
       });
     };
 

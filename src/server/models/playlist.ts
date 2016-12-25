@@ -2,6 +2,7 @@ import {db} from '../db';
 import {camelizeKeys, decamelizeKeys} from 'humps';
 import {PlaylistEntry, Song} from '../../universal/resources';
 import {User, serializePublicUser} from './user';
+import {ENTRY_PAGE_LIMIT} from '../../universal/constants';
 
 interface CreateEntryOptions {
   userId: number;
@@ -77,7 +78,7 @@ function getBasePlaylistQuery(opts: QueryOptions) {
     .join('users', {
       'users.id': 'playlist_entries.user_id',
     })
-    .limit(20);
+    .limit(ENTRY_PAGE_LIMIT);
 
   if (opts.previousId !== undefined) {
     query = query.where('playlist_entries.id', '<', opts.previousId);

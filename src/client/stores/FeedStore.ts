@@ -1,20 +1,23 @@
-import {observable, action, computed} from 'mobx';
-import {fromPromise} from 'mobx-utils';
+import {observable, action} from 'mobx';
 
 import getFeed from '../api/getFeed';
-import PlaylistEntry from './PlaylistEntry';
 import {PlaylistEntry as EntryResource} from '../../universal/resources';
 
-export default class FeedStore {
-  @observable items: PlaylistEntry[] = [];
+import PaginatedPlaylistEntriesList from './PaginatedPlaylistEntriesList';
 
-  @computed get feedPromise() {
-    return fromPromise(getFeed().then((resp) => {
-      this.items = resp.tracks.map((track) => new PlaylistEntry(track, this));
-    }));
+class FeedPlaylistEntriesList extends PaginatedPlaylistEntriesList {
+  fetchNextPage(lastId: number | null): Promise<EntryResource[]> {
+    return getFeed(lastId).then((resp) => {
+      return resp.tracks;
+    });
   }
+}
 
-  @action pushEntry(entry: EntryResource) {
-    this.items.unshift(new PlaylistEntry(entry, this));
+export default class FeedStore {
+  @observable entryList: FeedPlaylistEntriesList;
+
+  @action reset() {
+    this.entryList = new FeedPlaylistEntriesList();
+    this.entryList.getNextPage();
   }
 }
