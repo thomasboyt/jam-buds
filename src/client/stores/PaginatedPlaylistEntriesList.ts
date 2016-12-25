@@ -14,16 +14,6 @@ abstract class PaginatedPlaylistEntriesList {
 
   abstract fetchNextPage(lastId: number | null): Promise<EntryResource[]>;
 
-  @action getInitial() {
-    // TODO: Okay, there HAS to be a better pattern for this
-    this.items = [];
-    this.nextPageRequest = undefined;
-    this.loadedFirstPage = false;
-    this.entriesExhausted = false;
-
-    this.getNextPage();
-  }
-
   @action getNextPage() {
     const lastId = this.lastId;
 
