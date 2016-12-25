@@ -3,6 +3,8 @@ import {observer, inject} from 'mobx-react';
 
 import PlaylistEntry from '../stores/PlaylistEntry';
 import UserStore from '../stores/UserStore';
+import PlaybackStore from '../stores/PlaybackStore';
+import PaginatedPlaylistEntryList from '../stores/PaginatedPlaylistEntriesList';
 
 import * as classNames from 'classnames';
 
@@ -14,21 +16,31 @@ interface Props {
   track: PlaylistEntry;
   trackIndex: number;
   isPlaying: boolean;
-  onClick: () => void;
+  entryList: PaginatedPlaylistEntryList;
+  playbackSourcePath: string;
+  playbackSourceName: string;
+
   userStore?: UserStore;
+  playbackStore?: PlaybackStore;
 }
 
 @inject((allStores) => ({
   userStore: allStores.userStore,
+  playbackStore: allStores.playbackStore,
 })) @observer
 export default class PlaylistItem extends React.Component<Props, {}> {
   state = {
     isOpen: false,
   };
 
+  handleRequestPlay() {
+    const {entryList, trackIndex, playbackSourcePath, playbackSourceName} = this.props;
+    this.props.playbackStore!.playFromList(entryList, trackIndex, playbackSourcePath, playbackSourceName);
+  }
+
   handleClick(e: React.MouseEvent<any>) {
     e.preventDefault();
-    this.props.onClick();
+    this.handleRequestPlay();
 
     this.setState({
       isOpen: true,

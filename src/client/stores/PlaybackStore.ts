@@ -1,28 +1,24 @@
 import {observable, action} from 'mobx';
-import {PlaylistEntry} from '../../universal/resources';
+
+import PlaylistEntry from './PlaylistEntry';
+import PaginatedPlaylistEntryList from './PaginatedPlaylistEntriesList';
 
 export default class PlaybackStore {
-  @observable nowPlaying: PlaylistEntry | null;
+  @observable entryList?: PaginatedPlaylistEntryList;
+  @observable nowPlaying?: PlaylistEntry | null;
+  @observable playbackIndex: number;
+
+  @observable playbackSourcePath: string;
+  @observable playbackSourceLabel: string;
+
   @observable isPlaying: boolean = false;
-  @observable playlistUser: string | null;
-  @observable fromFeed: boolean = false;
 
-  @observable queue: PlaylistEntry[] = [];
-
-  @action playFeedItems(entries: PlaylistEntry[]) {
-    this.isPlaying = true;
-    this.queue = entries;
-    this.playlistUser = null;
-    this.fromFeed = true;
-
-    this.nextSong();
-  }
-
-  @action playPlaylistItems(entries: PlaylistEntry[], username: string) {
-    this.isPlaying = true;
-    this.queue = entries;
-    this.playlistUser = username;
-    this.fromFeed = false;
+  @action playFromList(
+    entryList: PaginatedPlaylistEntryList, index: number, playbackSourcePath: string, playbackSourceLabel: string) {
+    this.entryList = entryList;
+    this.playbackIndex = index - 1;  // gets incremented by one on nextSong()
+    this.playbackSourcePath = playbackSourcePath;
+    this.playbackSourceLabel = playbackSourceLabel;
 
     this.nextSong();
   }
@@ -31,16 +27,35 @@ export default class PlaybackStore {
     this.isPlaying = !this.isPlaying;
   }
 
-  @action nextSong() {
-    if (this.queue.length === 0) {
-      this.nowPlaying = null;
-      this.isPlaying = false;
-      this.playlistUser = null;
+  @action stopPlayback() {
+    this.entryList = undefined;
+    this.nowPlaying = undefined;
+    this.isPlaying = false;
+  }
+
+  @action async nextSong() {
+    if (!this.entryList) {
       return;
     }
 
+    const nextIndex = this.playbackIndex + 1;
+
+    if (nextIndex === this.entryList.items.length) {
+      // Out of loaded entries
+      if (this.entryList.entriesExhausted) {
+        // No more entries to play
+        this.stopPlayback();
+        return;
+      }
+
+      // Load more entries and try again
+      await this.entryList.getNextPage();
+      this.nextSong();
+      return;
+    }
+
+    this.playbackIndex = nextIndex;
+    this.nowPlaying = this.entryList.items[this.playbackIndex];
     this.isPlaying = true;
-    this.nowPlaying = this.queue[0];
-    this.queue = this.queue.slice(1);
   }
 }

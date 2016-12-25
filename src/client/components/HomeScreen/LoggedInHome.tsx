@@ -29,12 +29,6 @@ class LoggedInHome extends React.Component<Props, {}> {
     this.props.feedStore!.reset();
   }
 
-  handleSongClick(trackIndex: number) {
-    const tracks = this.props.feedStore!.entryList.items.slice(trackIndex).map((entry) => entry);
-
-    this.props.playbackStore!.playFeedItems(tracks);
-  }
-
   handleGetNextPage(e: React.MouseEvent<any>) {
     e.preventDefault();
     this.props.feedStore!.entryList.getNextPage();
@@ -57,8 +51,10 @@ class LoggedInHome extends React.Component<Props, {}> {
 
         <PlaylistItem
           track={entry} trackIndex={idx}
-          isPlaying={(!!playingTrack && playingTrack.id === entry.id)}
-          onClick={() => this.handleSongClick(idx)} />
+          entryList={this.props.feedStore!.entryList}
+          playbackSourceName="your feed"
+          playbackSourcePath="/"
+          isPlaying={(!!playingTrack && playingTrack.id === entry.id)} />
       </li>
     );
   }

@@ -17,7 +17,7 @@ abstract class PaginatedPlaylistEntriesList {
   @action getNextPage() {
     const lastId = this.lastId;
 
-    this.nextPageRequest = fromPromise(this.fetchNextPage(lastId).then((tracks) => {
+    const promise = this.fetchNextPage(lastId).then((tracks) => {
       const items = tracks.map((track) => new PlaylistEntry(track, this));
       this.items = this.items.concat(items);
       this.loadedFirstPage = true;
@@ -26,7 +26,11 @@ abstract class PaginatedPlaylistEntriesList {
       if (items.length < ENTRY_PAGE_LIMIT) {
         this.entriesExhausted = true;
       }
-    }));
+    });
+
+    this.nextPageRequest = fromPromise(promise);
+
+    return promise;
   }
 
   @computed get lastId() {

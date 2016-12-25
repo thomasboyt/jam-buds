@@ -35,20 +35,13 @@ class Playlist extends React.Component<Props, {}> {
     }
   }
 
-  handleSongClick(trackIndex: number) {
-    const tracks = this.props.playlistStore!.entryList.items.slice(trackIndex);
-    const username = this.props.playlistStore!.name;
-
-    this.props.playbackStore!.playPlaylistItems(tracks, username);
-  }
-
   handleGetNextPage(e: React.MouseEvent<any>) {
     e.preventDefault();
     this.props.playlistStore!.entryList.getNextPage();
   }
 
   renderItems(items: PlaylistEntry[]) {
-    const {userId} = this.props.playlistStore!;
+    const {userId, name} = this.props.playlistStore!;
     const playingTrack = this.props.playbackStore!.nowPlaying;
 
     if (items.length === 0) {
@@ -65,8 +58,10 @@ class Playlist extends React.Component<Props, {}> {
           <li key={track.id}>
             <PlaylistItem
               track={track} trackIndex={idx}
-              isPlaying={(!!playingTrack && playingTrack.id === track.id)}
-              onClick={() => this.handleSongClick(idx)} />
+              entryList={this.props.playlistStore!.entryList}
+              playbackSourceName={`@${name}`}
+              playbackSourcePath={`/playlist/${name}`}
+              isPlaying={(!!playingTrack && playingTrack.id === track.id)} />
           </li>
         )}
       </ul>

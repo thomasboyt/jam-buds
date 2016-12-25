@@ -30,26 +30,19 @@ export default class VideoPlayer extends React.Component<Props, {}> {
   }
 
   renderPlaybackSource() {
-    const {fromFeed, playlistUser, nowPlaying} = this.props.playbackStore!;
+    const {playbackSourcePath, playbackSourceLabel, nowPlaying} = this.props.playbackStore!;
 
     if (!nowPlaying) {
       return null;
     }
 
-    let source;
-    if (fromFeed) {
-      source = <Link to="/">your feed</Link>;
-    } else {
-      source = <Link to={`/playlist/${playlistUser}`}>@{playlistUser}</Link>;
-    }
-
     return (
-      <div>playing from {source}</div>
+      <div>playing from <Link to={playbackSourcePath}>{playbackSourceLabel}</Link></div>
     );
   }
 
   render() {
-    const {nowPlaying, isPlaying, playlistUser} = this.props.playbackStore!;
+    const {nowPlaying, isPlaying} = this.props.playbackStore!;
 
     const url = nowPlaying ? nowPlaying.youtubeUrl : null;
     const art = nowPlaying ? nowPlaying.song.albumArt : null;
