@@ -14,7 +14,7 @@ import App from './components/App';
 import HomeScreen from './components/HomeScreen';
 import ProfileWrapper from './components/Profile';
 import ProfilePostPlaylist from './components/Profile/PostPlaylist';
-// import ProfileLikedPlaylist from './components/Profile/LikedPlaylist';
+import ProfileLikedPlaylist from './components/Profile/LikedPlaylist';
 import FindFriendsScreen from './components/FindFriendsScreen';
 
 import UserStore from './stores/UserStore';
@@ -43,7 +43,7 @@ render((
 
         <Route path="/users/:name" component={ProfileWrapper}>
           <IndexRoute component={ProfilePostPlaylist} />
-          {/*<Route path="/liked" component={ProfileLikedPlaylist} />*/}
+          <Route path="/users/:name/liked" component={ProfileLikedPlaylist} />
         </Route>
 
         <Route path="/find-friends" component={FindFriendsScreen} />

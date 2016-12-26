@@ -13,22 +13,22 @@ interface Props {
 @inject((allStores) => ({
   profileStore: allStores.profileStore as ProfileStore,
 })) @observer
-class ProfilePostsPlaylist extends React.Component<Props, {}> {
+class ProfileLikedPlaylist extends React.Component<Props, {}> {
   componentWillMount() {
     const name: string = this.props.params.name;
-    this.props.profileStore!.getPlaylist(name);
+    this.props.profileStore!.getLikedPlaylist(name);
   }
 
   componentWillReceiveProps(nextProps: Props) {
     if (nextProps.params.name !== this.props.params.name) {
-      this.props.profileStore!.getPlaylist(nextProps.params.name);
+      this.props.profileStore!.getLikedPlaylist(nextProps.params.name);
     }
   }
 
   noItemsPlaceholder() {
     return (
       <div className="main-placeholder">
-        This user has not posted any songs yet :(
+        This user has not liked any songs yet :(
       </div>
     )
   }
@@ -36,10 +36,10 @@ class ProfilePostsPlaylist extends React.Component<Props, {}> {
   render() {
     return (
       <Playlist
-        entryList={this.props.profileStore!.entryList}
+        entryList={this.props.profileStore!.likedEntryList}
         noItemsPlaceholder={this.noItemsPlaceholder} />
     );
   }
 }
 
-export default ProfilePostsPlaylist;
+export default ProfileLikedPlaylist;

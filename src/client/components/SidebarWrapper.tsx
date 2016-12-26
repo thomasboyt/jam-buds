@@ -42,6 +42,9 @@ class SidebarWrapper extends React.Component<Props, {}> {
             <Link to={`/users/${name}`}>your playlist</Link>
           </li>
           <li>
+            <Link to={`/users/${name}/liked`}>your liked tracks</Link>
+          </li>
+          <li>
             <Link to="/find-friends">find twitter friends on jam buds!</Link>
           </li>
         </ul>
