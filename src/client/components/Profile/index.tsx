@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {observer, inject} from 'mobx-react';
 
-import PlaylistStore from '../../stores/PlaylistStore';
+import ProfileStore from '../../stores/ProfileStore';
 import PlaybackStore from '../../stores/PlaybackStore';
 import UserStore from '../../stores/UserStore';
 
@@ -12,36 +12,36 @@ import SidebarWrapper from '../SidebarWrapper';
 import PlaylistEntry from '../../stores/PlaylistEntry';
 
 interface Props {
-  playlistStore?: PlaylistStore;
+  profileStore?: ProfileStore;
   playbackStore?: PlaybackStore;
   userStore?: UserStore;
   params: any;
 }
 
 @inject((allStores) => ({
-  playlistStore: allStores.playlistStore as PlaylistStore,
+  profileStore: allStores.profileStore as ProfileStore,
   playbackStore: allStores.playbackStore as PlaybackStore,
   userStore: allStores.userStore as UserStore,
 })) @observer
 class Playlist extends React.Component<Props, {}> {
   componentWillMount() {
     const name: string = this.props.params.name;
-    this.props.playlistStore!.getPlaylist(name);
+    this.props.profileStore!.getPlaylist(name);
   }
 
   componentWillReceiveProps(nextProps: Props) {
     if (nextProps.params.name !== this.props.params.name) {
-      this.props.playlistStore!.getPlaylist(nextProps.params.name);
+      this.props.profileStore!.getPlaylist(nextProps.params.name);
     }
   }
 
   handleGetNextPage(e: React.MouseEvent<any>) {
     e.preventDefault();
-    this.props.playlistStore!.entryList.getNextPage();
+    this.props.profileStore!.entryList.getNextPage();
   }
 
   renderItems(items: PlaylistEntry[]) {
-    const {userId, name} = this.props.playlistStore!;
+    const {userId, name} = this.props.profileStore!;
     const playingTrack = this.props.playbackStore!.nowPlaying;
 
     if (items.length === 0) {
@@ -58,9 +58,9 @@ class Playlist extends React.Component<Props, {}> {
           <li key={track.id}>
             <PlaylistItem
               track={track} trackIndex={idx}
-              entryList={this.props.playlistStore!.entryList}
+              entryList={this.props.profileStore!.entryList}
               playbackSourceName={`@${name}`}
-              playbackSourcePath={`/playlist/${name}`}
+              playbackSourcePath={`/users/${name}`}
               isPlaying={(!!playingTrack && playingTrack.id === track.id)} />
           </li>
         )}
@@ -69,7 +69,7 @@ class Playlist extends React.Component<Props, {}> {
   }
 
   renderNextPageLoading() {
-    const {nextPageRequest, loadedFirstPage, entriesExhausted} = this.props.playlistStore!.entryList;
+    const {nextPageRequest, loadedFirstPage, entriesExhausted} = this.props.profileStore!.entryList;
 
     if (!nextPageRequest) {
       if (entriesExhausted) {
@@ -96,8 +96,8 @@ class Playlist extends React.Component<Props, {}> {
   }
 
   render() {
-    const {items, nextPageRequest, loadedFirstPage} = this.props.playlistStore!.entryList;
-    const {name, userId} = this.props.playlistStore!;
+    const {items, nextPageRequest, loadedFirstPage} = this.props.profileStore!.entryList;
+    const {name, userId} = this.props.profileStore!;
     const isFollowing = this.props.userStore!.isFollowing(userId);
 
     return (

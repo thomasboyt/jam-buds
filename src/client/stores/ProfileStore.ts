@@ -7,9 +7,9 @@ import PaginatedPlaylistEntriesList from './PaginatedPlaylistEntriesList';
 
 class UserPlaylistEntriesList extends PaginatedPlaylistEntriesList {
   name: string;
-  store: PlaylistStore;
+  store: ProfileStore;
 
-  constructor(name: string, store: PlaylistStore) {
+  constructor(name: string, store: ProfileStore) {
     super();
     this.name = name;
     this.store = store;
@@ -23,8 +23,9 @@ class UserPlaylistEntriesList extends PaginatedPlaylistEntriesList {
   }
 }
 
-export default class PlaylistStore {
+export default class ProfileStore {
   @observable entryList: UserPlaylistEntriesList;
+
   @observable name: string;
   @observable userId: number;
 

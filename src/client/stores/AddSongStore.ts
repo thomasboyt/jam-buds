@@ -6,7 +6,7 @@ import {getTweetLength} from '../util/songTweet';
 import {SearchResult} from '../../universal/resources';
 
 import FeedStore from './FeedStore';
-import PlaylistStore from './PlaylistStore';
+import ProfileStore from './ProfileStore';
 
 export enum AddSongState {
   initial,
@@ -48,11 +48,11 @@ export default class AddSongStore {
   @observable txn: AddSongTransaction;
 
   feedStore: FeedStore;
-  playlistStore: PlaylistStore;
+  profileStore: ProfileStore;
 
-  constructor(feedStore: FeedStore, playlistStore: PlaylistStore) {
+  constructor(feedStore: FeedStore, profileStore: ProfileStore) {
     this.feedStore = feedStore;
-    this.playlistStore = playlistStore;
+    this.profileStore = profileStore;
   }
 
   @action async showAddSongScreen() {
@@ -125,8 +125,8 @@ export default class AddSongStore {
 
     this.feedStore.entryList.pushEntry(entry);
 
-    if (entry.user.id === this.playlistStore.userId) {
-      this.playlistStore.entryList.pushEntry(entry);
+    if (entry.user.id === this.profileStore.userId) {
+      this.profileStore.entryList.pushEntry(entry);
     }
   }
 

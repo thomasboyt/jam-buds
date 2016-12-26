@@ -30,11 +30,21 @@ class SidebarWrapper extends React.Component<Props, {}> {
 
     return (
       <div className="sidebar">
-        <p>what up, <Link to={`/playlist/${name}`}>{name}</Link></p>
+        <p>what up, <Link to={`/users/${name}`}>{name}</Link></p>
 
         <AddSongButton />
 
-        <p><Link to="/find-friends">find twitter friends on jam buds!</Link></p>
+        <ul>
+          <li>
+            <Link to="/">your feed</Link>
+          </li>
+          <li>
+            <Link to={`/users/${name}`}>your playlist</Link>
+          </li>
+          <li>
+            <Link to="/find-friends">find twitter friends on jam buds!</Link>
+          </li>
+        </ul>
 
         <p>or <a href="#" onClick={signOut}>sign out</a></p>
       </div>

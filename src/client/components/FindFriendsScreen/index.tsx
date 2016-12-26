@@ -29,7 +29,7 @@ export default class FindFriendsScreen extends React.Component<Props, {}> {
       <ul>
         {suggestions.map((user) =>
           <li key={user.id}>
-            <Link to={`/playlist/${user.twitterName}`}>@{user.twitterName}</Link>
+            <Link to={`/users/${user.twitterName}`}>@{user.twitterName}</Link>
           </li>)
         }
       </ul>

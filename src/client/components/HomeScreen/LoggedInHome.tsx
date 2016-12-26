@@ -43,7 +43,7 @@ class LoggedInHome extends React.Component<Props, {}> {
     return (
       <li key={entry.id}>
         <div className="posted-by">
-          <Link to={`/playlist/${entry.user.twitterName}`}>
+          <Link to={`/users/${entry.user.twitterName}`}>
             {displayName}
           </Link>
           {' '} posted ({timestamp} ago)

@@ -16,7 +16,7 @@ function getTwitterClient(user: User): Twit {
 }
 
 export async function postSongTweet({text, user}: PostSongTweetParams) {
-  const link = `${process.env.STATIC_URL}/playlist/${user.twitterName}`;
+  const link = `${process.env.STATIC_URL}/users/${user.twitterName}`;
 
   const tweet = `${text} ${link}`;
 
