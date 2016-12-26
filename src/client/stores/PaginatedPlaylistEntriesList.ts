@@ -12,6 +12,10 @@ abstract class PaginatedPlaylistEntriesList {
   @observable loadedFirstPage: boolean = false;
   @observable entriesExhausted: boolean = false;
 
+  // Displayed in the playback widget
+  abstract get playbackSourceName(): string;
+  abstract get playbackSourcePath(): string;
+
   abstract fetchNextPage(lastId: number | null): Promise<EntryResource[]>;
 
   @action getNextPage() {

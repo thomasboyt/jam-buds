@@ -6,6 +6,14 @@ import {PlaylistEntry as EntryResource} from '../../universal/resources';
 import PaginatedPlaylistEntriesList from './PaginatedPlaylistEntriesList';
 
 class FeedPlaylistEntriesList extends PaginatedPlaylistEntriesList {
+  get playbackSourceName() {
+    return 'your feed';
+  }
+
+  get playbackSourcePath() {
+    return '/';
+  }
+
   fetchNextPage(lastId: number | null): Promise<EntryResource[]> {
     return getFeed(lastId).then((resp) => {
       return resp.tracks;

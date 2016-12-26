@@ -17,6 +17,7 @@ import {
 import {
   addSongToPlaylist,
   getPlaylistByUserId,
+  getLikedEntriesByUserId,
   getFeedByUserId,
   getPlaylistEntryById,
   deletePlaylistEntryById,
@@ -114,6 +115,36 @@ export default function registerPlaylistEndpoints(app: Express) {
     const previousId = req.query.previousId && parseInt(req.query.previousId, 10);
 
     const tracks = await getPlaylistByUserId(user.id, {
+      currentUserId: currentUser ? currentUser.id : undefined,
+      previousId,
+    });
+
+    const serializedUser = serializePublicUser(user);
+
+    const resp: Playlist = {
+      user: serializedUser,
+      tracks,
+    };
+
+    res.json(resp);
+  }));
+
+  app.get('/playlists/:userName/liked', wrapAsyncRoute(async (req, res) => {
+    const userName = req.params.userName;
+    const user = await getUserByTwitterName(userName);
+    const currentUser = await getUserFromRequest(req);
+
+    if (!user) {
+      res.status(404).json({
+        error: `No user found with name ${userName}`
+      });
+
+      return;
+    }
+
+    const previousId = req.query.previousId && parseInt(req.query.previousId, 10);
+
+    const tracks = await getLikedEntriesByUserId(user.id, {
       currentUserId: currentUser ? currentUser.id : undefined,
       previousId,
     });

@@ -12,7 +12,9 @@ import {Router, Route, IndexRoute, browserHistory} from 'react-router';
 
 import App from './components/App';
 import HomeScreen from './components/HomeScreen';
-import Profile from './components/Profile';
+import ProfileWrapper from './components/Profile';
+import ProfilePostPlaylist from './components/Profile/PostPlaylist';
+// import ProfileLikedPlaylist from './components/Profile/LikedPlaylist';
 import FindFriendsScreen from './components/FindFriendsScreen';
 
 import UserStore from './stores/UserStore';
@@ -38,7 +40,12 @@ render((
     <Router history={browserHistory}>
       <Route path="/" component={App}>
         <IndexRoute component={HomeScreen} />
-        <Route path="/users/:name" component={Profile} />
+
+        <Route path="/users/:name" component={ProfileWrapper}>
+          <IndexRoute component={ProfilePostPlaylist} />
+          {/*<Route path="/liked" component={ProfileLikedPlaylist} />*/}
+        </Route>
+
         <Route path="/find-friends" component={FindFriendsScreen} />
       </Route>
     </Router>

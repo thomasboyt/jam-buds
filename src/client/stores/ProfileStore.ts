@@ -9,6 +9,14 @@ class UserPlaylistEntriesList extends PaginatedPlaylistEntriesList {
   name: string;
   store: ProfileStore;
 
+  get playbackSourceName() {
+    return `@${this.name}`;
+  }
+
+  get playbackSourcePath() {
+    return `/users/${this.name}`;
+  }
+
   constructor(name: string, store: ProfileStore) {
     super();
     this.name = name;

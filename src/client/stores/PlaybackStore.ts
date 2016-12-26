@@ -13,12 +13,11 @@ export default class PlaybackStore {
 
   @observable isPlaying: boolean = false;
 
-  @action playFromList(
-    entryList: PaginatedPlaylistEntryList, index: number, playbackSourcePath: string, playbackSourceLabel: string) {
+  @action playFromList(entryList: PaginatedPlaylistEntryList, index: number) {
     this.entryList = entryList;
     this.playbackIndex = index - 1;  // gets incremented by one on nextSong()
-    this.playbackSourcePath = playbackSourcePath;
-    this.playbackSourceLabel = playbackSourceLabel;
+    this.playbackSourcePath = entryList.playbackSourcePath;
+    this.playbackSourceLabel = entryList.playbackSourceName;
 
     this.nextSong();
   }

@@ -1,12 +1,14 @@
 import * as React from 'react';
+import {Link} from 'react-router';
 import {observer, inject} from 'mobx-react';
-
-import PlaylistEntry from '../stores/PlaylistEntry';
-import UserStore from '../stores/UserStore';
-import PlaybackStore from '../stores/PlaybackStore';
-import PaginatedPlaylistEntryList from '../stores/PaginatedPlaylistEntriesList';
-
 import * as classNames from 'classnames';
+
+import {distanceInWords} from 'date-fns';
+
+import PlaylistEntry from '../../stores/PlaylistEntry';
+import UserStore from '../../stores/UserStore';
+import PlaybackStore from '../../stores/PlaybackStore';
+import PaginatedPlaylistEntryList from '../../stores/PaginatedPlaylistEntriesList';
 
 function spotifyUrl(track: PlaylistEntry) {
   return `https://open.spotify.com/track/${track.song.spotifyId}`;
@@ -15,10 +17,7 @@ function spotifyUrl(track: PlaylistEntry) {
 interface Props {
   track: PlaylistEntry;
   trackIndex: number;
-  isPlaying: boolean;
   entryList: PaginatedPlaylistEntryList;
-  playbackSourcePath: string;
-  playbackSourceName: string;
 
   userStore?: UserStore;
   playbackStore?: PlaybackStore;
@@ -34,8 +33,8 @@ export default class PlaylistItem extends React.Component<Props, {}> {
   };
 
   handleRequestPlay() {
-    const {entryList, trackIndex, playbackSourcePath, playbackSourceName} = this.props;
-    this.props.playbackStore!.playFromList(entryList, trackIndex, playbackSourcePath, playbackSourceName);
+    const {entryList, trackIndex} = this.props;
+    this.props.playbackStore!.playFromList(entryList, trackIndex);
   }
 
   handleClick(e: React.MouseEvent<any>) {
@@ -146,8 +145,27 @@ export default class PlaylistItem extends React.Component<Props, {}> {
     )
   }
 
+  renderPostedBy() {
+    const {track} = this.props;
+
+    const timestamp = distanceInWords(new Date(), new Date(track.added));
+
+    const displayName = track.user.id === this.props.userStore!.userId ? 'You' : `@${track.user.twitterName}`;
+
+    return (
+      <div className="posted-by">
+        <Link to={`/users/${track.user.twitterName}`}>
+          {displayName}
+        </Link>
+        {' '} posted ({timestamp} ago)
+      </div>
+    );
+  }
+
   render() {
-    const {track, isPlaying} = this.props;
+    const {track} = this.props;
+    const playingTrack = this.props.playbackStore!.nowPlaying;
+    const isPlaying = !!playingTrack && playingTrack.id === track.id;
 
     const className = classNames('playlist-entry', {
       'is-playing': isPlaying,
@@ -158,49 +176,53 @@ export default class PlaylistItem extends React.Component<Props, {}> {
     });
 
     return (
-      <div className={className}>
-        <a className="playlist-entry--main"
-          href={track.youtubeUrl} target="_blank" rel="noopener noreferrer"
-          onClick={(e) => this.handleClick(e)}>
-          <img src={track.song.albumArt} />
+      <div>
+        {this.renderPostedBy()}
 
-          <span className="title">
-            {track.song.artists.join(', ')}
-            <br/>
-            {track.song.title}
-          </span>
+        <div className={className}>
+          <a className="playlist-entry--main"
+            href={track.youtubeUrl} target="_blank" rel="noopener noreferrer"
+            onClick={(e) => this.handleClick(e)}>
+            <img src={track.song.albumArt} />
 
-          <span className="playlist-entry--actions">
-            {this.renderNoteIcon()}
-            {this.renderLikeAction()}
-            {this.renderRemoveAction()}
-            {this.renderToggleOpenAction()}
-          </span>
-        </a>
+            <span className="title">
+              {track.song.artists.join(', ')}
+              <br/>
+              {track.song.title}
+            </span>
 
-        <div className={detailClassName}>
-          {track.note &&
-            <p className="track-note">
-              {track.note}
+            <span className="playlist-entry--actions">
+              {this.renderNoteIcon()}
+              {this.renderLikeAction()}
+              {this.renderRemoveAction()}
+              {this.renderToggleOpenAction()}
+            </span>
+          </a>
+
+          <div className={detailClassName}>
+            {track.note &&
+              <p className="track-note">
+                {track.note}
+              </p>
+            }
+
+            <p>
+              <em>
+                Listen to this song on:{' '}
+                <a href={track.youtubeUrl} target="_blank" rel="noopener noreferrer">
+                  Youtube
+                </a>
+                {track.song.spotifyId &&
+                  <span>
+                    {' / '}
+                    <a href={spotifyUrl(track)} target="_blank" rel="noopener noreferrer">
+                      Spotify
+                    </a>
+                  </span>
+                }
+              </em>
             </p>
-          }
-
-          <p>
-            <em>
-              Listen to this song on:{' '}
-              <a href={track.youtubeUrl} target="_blank" rel="noopener noreferrer">
-                Youtube
-              </a>
-              {track.song.spotifyId &&
-                <span>
-                  {' / '}
-                  <a href={spotifyUrl(track)} target="_blank" rel="noopener noreferrer">
-                    Spotify
-                  </a>
-                </span>
-              }
-            </em>
-          </p>
+          </div>
         </div>
       </div>
     );
