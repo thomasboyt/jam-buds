@@ -4,7 +4,7 @@ import * as expect from 'expect';
 import * as playlist from '../playlist';
 
 import {userFactory, entryFactory} from '../../__tests__/factories';
-import {User} from '../../models/User';
+import {User} from '../../models/user';
 import {
   likePlaylistEntry,
   getPlaylistEntryById,
