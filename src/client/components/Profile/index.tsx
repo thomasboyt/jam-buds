@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {Link} from 'react-router';
 import {observer, inject} from 'mobx-react';
 
 import ProfileStore from '../../stores/ProfileStore';
@@ -26,11 +27,24 @@ class Playlist extends React.Component<Props, {}> {
     return (
       <SidebarWrapper>
         <div className="playlist">
-          <h2>
-            @{name}
-            {' '}
+          <div className="user-header">
+            <h2>
+              @{name}
+            </h2>
+
             <FollowStatus userId={userId} isFollowing={isFollowing} />
-          </h2>
+
+            <div className="user-links">
+              <Link to={`/users/${name}`}>
+                Posts
+              </Link>
+              {' / '}
+              <Link to={`/users/${name}/liked`}>
+                Liked
+              </Link>
+            </div>
+          </div>
+
           {this.props.children}
         </div>
       </SidebarWrapper>

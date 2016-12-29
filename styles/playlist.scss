@@ -95,16 +95,35 @@
   }
 }
 
+.user-header {
+  display: flex;
+  align-items: center;
+
+  h2, button.follow-toggle, .user-links {
+    flex: 0 0 auto;
+  }
+
+  h2 {
+    margin: 0px;
+  }
+
+  .follow-toggle {
+    margin-left: 20px;
+  }
+
+  .user-links {
+    margin-left: auto;
+  }
+
+  margin-bottom: 20px;
+}
+
 .follow-toggle {
   background-color: yellow;
   border: 2px yellow solid;
 
   padding: 5px 10px;
   width: 110px;
-
-  vertical-align: middle;
-  margin-left: 15px;
-  margin-top: -5px;
 
   font-weight: bold;
   font-size: 16px;
