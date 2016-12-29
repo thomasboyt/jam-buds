@@ -10,6 +10,7 @@ import {
 
 import {
   followUser,
+  unfollowUser,
   getFollowingForUserId,
 } from '../models/following';
 
@@ -77,7 +78,14 @@ export default function registerUserEndpoints(app: Express) {
   }));
 
   // unfollow a user
-  app.delete('/following/:id', isAuthenticated, wrapAsyncRoute(async (req, res) => {
+  app.delete('/following/:followingId', isAuthenticated, wrapAsyncRoute(async (req, res) => {
+    const user: User = res.locals.user;
+
+    await unfollowUser(user.id, req.params.followingId);
+
+    res.json({
+      success: true,
+    });
   }));
 
   // get twitter friends who have signed up

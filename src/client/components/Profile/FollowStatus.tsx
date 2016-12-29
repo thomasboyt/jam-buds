@@ -13,12 +13,16 @@ interface Props {
   userStore: allStores.userStore as UserStore,
 })) @observer
 class FollowStatus extends React.Component<Props, {}> {
-  async handleFollow(e: React.MouseEvent<any>) {
-    e.preventDefault();
-
+  handleFollow() {
     const {userId} = this.props;
 
-    await this.props.userStore!.followUser(userId);
+    this.props.userStore!.followUser(userId);
+  }
+
+  handleUnfollow() {
+    const {userId} = this.props;
+
+    this.props.userStore!.unfollowUser(userId);
   }
 
   render() {
@@ -32,16 +36,16 @@ class FollowStatus extends React.Component<Props, {}> {
 
     if (this.props.isFollowing) {
       return (
-        <span>
-          Following
-        </span>
+        <button className="follow-toggle -is-following" aria-label="Unfollow" onClick={() => this.handleUnfollow()}>
+          <span>Following</span>
+        </button>
       );
 
     } else {
       return (
-        <a href="#" onClick={(e) => this.handleFollow(e)}>
+        <button className="follow-toggle" onClick={() => this.handleFollow()}>
           + Follow
-        </a>
+        </button>
       );
     }
   }

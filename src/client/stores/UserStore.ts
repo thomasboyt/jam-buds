@@ -4,6 +4,7 @@ import {PublicUser} from '../../universal/resources';
 
 import getCurrentUser from '../api/getCurrentUser';
 import followUser from '../api/followUser';
+import unfollowUser from '../api/unfollowUser';
 
 export default class UserStore {
   @observable loadedUser: boolean = false;
@@ -33,6 +34,11 @@ export default class UserStore {
   @action async followUser(userId: number) {
     const user = await followUser(userId);
     this.following.push(user);
+  }
+
+  @action async unfollowUser(userId: number) {
+    await unfollowUser(userId);
+    this.following = this.following.filter((user) => user.id !== userId);
   }
 
   isFollowing(userId: number): boolean {

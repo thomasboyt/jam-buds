@@ -11,6 +11,15 @@ export async function followUser(userId: number, followingId: number) {
   await (query as any);
 }
 
+export async function unfollowUser(userId: number, followingId: number) {
+  const query = db!('following').where({
+    user_id: userId,
+    following_id: followingId,
+  }).delete();
+
+  await (query as any);
+}
+
 export async function getFollowingForUserId(userId: number): Promise<User[]> {
   const query =
     db!('following')

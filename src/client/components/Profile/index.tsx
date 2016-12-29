@@ -26,8 +26,11 @@ class Playlist extends React.Component<Props, {}> {
     return (
       <SidebarWrapper>
         <div className="playlist">
-          <h2>@{name}</h2>
-          <FollowStatus userId={userId} isFollowing={isFollowing} />
+          <h2>
+            @{name}
+            {' '}
+            <FollowStatus userId={userId} isFollowing={isFollowing} />
+          </h2>
           {this.props.children}
         </div>
       </SidebarWrapper>

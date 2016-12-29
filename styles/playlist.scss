@@ -94,3 +94,38 @@
     }
   }
 }
+
+.follow-toggle {
+  background-color: yellow;
+  border: 2px yellow solid;
+
+  padding: 5px 10px;
+  width: 110px;
+
+  vertical-align: middle;
+  margin-left: 15px;
+  margin-top: -5px;
+
+  font-weight: bold;
+  font-size: 16px;
+
+  &.-is-following {
+    background-color: inherit;
+
+    span {
+      display: none;
+    }
+
+    &:after {
+      content: "Following";
+    }
+
+    &:hover {
+      background-color: yellow;
+    }
+
+    &:hover:after {
+      content: "- Unfollow";
+    }
+  }
+}
