@@ -12,7 +12,6 @@ import {Router, Route, IndexRoute, browserHistory} from 'react-router';
 
 import App from './components/App';
 import HomeScreen from './components/HomeScreen';
-import ProfileWrapper from './components/Profile';
 import ProfilePostPlaylist from './components/Profile/PostPlaylist';
 import ProfileLikedPlaylist from './components/Profile/LikedPlaylist';
 import FindFriendsScreen from './components/FindFriendsScreen';
@@ -41,10 +40,8 @@ render((
       <Route path="/" component={App}>
         <IndexRoute component={HomeScreen} />
 
-        <Route path="/users/:name" component={ProfileWrapper}>
-          <IndexRoute component={ProfilePostPlaylist} />
-          <Route path="/users/:name/liked" component={ProfileLikedPlaylist} />
-        </Route>
+        <Route path="/users/:name" component={ProfilePostPlaylist} />
+        <Route path="/users/:name/liked" component={ProfileLikedPlaylist} />
 
         <Route path="/find-friends" component={FindFriendsScreen} />
       </Route>

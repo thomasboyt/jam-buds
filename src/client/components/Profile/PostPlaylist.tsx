@@ -3,6 +3,7 @@ import {observer, inject} from 'mobx-react';
 
 import ProfileStore from '../../stores/ProfileStore';
 
+import ProfileWrapper from './ProfileWrapper';
 import Playlist from '../Playlist';
 
 interface Props {
@@ -34,10 +35,14 @@ class ProfilePostsPlaylist extends React.Component<Props, {}> {
   }
 
   render() {
+    const {name} = this.props.profileStore!;
+
     return (
-      <Playlist
-        entryList={this.props.profileStore!.entryList}
-        noItemsPlaceholder={this.noItemsPlaceholder} />
+      <ProfileWrapper title={`@${name}'s playlist`}>
+        <Playlist
+          entryList={this.props.profileStore!.entryList}
+          noItemsPlaceholder={this.noItemsPlaceholder} />
+      </ProfileWrapper>
     );
   }
 }

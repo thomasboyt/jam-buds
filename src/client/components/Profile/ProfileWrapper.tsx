@@ -11,6 +11,7 @@ import SidebarWrapper from '../SidebarWrapper';
 import PlaylistEntry from '../../stores/PlaylistEntry';
 
 interface Props {
+  title: string;
   profileStore?: ProfileStore;
   userStore?: UserStore;
 }
@@ -19,7 +20,7 @@ interface Props {
   profileStore: allStores.profileStore as ProfileStore,
   userStore: allStores.userStore as UserStore,
 })) @observer
-class Playlist extends React.Component<Props, {}> {
+class ProfileWrapper extends React.Component<Props, {}> {
   render() {
     const {userId, name} = this.props.profileStore!;
     const isFollowing = this.props.userStore!.isFollowing(userId);
@@ -29,7 +30,7 @@ class Playlist extends React.Component<Props, {}> {
         <div className="playlist">
           <div className="user-header">
             <h2>
-              @{name}
+              {this.props.title}
             </h2>
 
             <FollowStatus userId={userId} isFollowing={isFollowing} />
@@ -52,4 +53,4 @@ class Playlist extends React.Component<Props, {}> {
   }
 }
 
-export default Playlist;
+export default ProfileWrapper;

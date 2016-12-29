@@ -3,6 +3,7 @@ import {observer, inject} from 'mobx-react';
 
 import ProfileStore from '../../stores/ProfileStore';
 
+import ProfileWrapper from './ProfileWrapper';
 import Playlist from '../Playlist';
 
 interface Props {
@@ -34,10 +35,14 @@ class ProfileLikedPlaylist extends React.Component<Props, {}> {
   }
 
   render() {
+    const {name} = this.props.profileStore!;
+
     return (
-      <Playlist
-        entryList={this.props.profileStore!.likedEntryList}
-        noItemsPlaceholder={this.noItemsPlaceholder} />
+      <ProfileWrapper title={`@${name}'s liked tracks`}>
+        <Playlist
+          entryList={this.props.profileStore!.likedEntryList}
+          noItemsPlaceholder={this.noItemsPlaceholder} />
+      </ProfileWrapper>
     );
   }
 }
