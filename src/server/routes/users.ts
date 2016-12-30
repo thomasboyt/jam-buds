@@ -113,4 +113,48 @@ export default function registerUserEndpoints(app: Express) {
       users: users,
     });
   }));
+
+  app.get('/users/:userName/following', isAuthenticated, wrapAsyncRoute(async (req, res) => {
+    const userName: string = req.params.userName;
+
+    const user = await getUserByTwitterName(userName);
+
+    if (!user) {
+      res.status(400).json({
+        error: `Could not find user with name ${userName}`
+      });
+
+      return;
+    }
+
+    const following = await getFollowingForUserId(user.id);
+
+    const publicUsers = following.map((row) => serializePublicUser(row));
+
+    res.json({
+      users: publicUsers,
+    });
+  }));
+
+  app.get('/users/:userName/followers', isAuthenticated, wrapAsyncRoute(async (req, res) => {
+    const userName: string = req.params.userName;
+
+    const user = await getUserByTwitterName(userName);
+
+    if (!user) {
+      res.status(400).json({
+        error: `Could not find user with name ${userName}`
+      });
+
+      return;
+    }
+
+    const followers = await getFollowersForUserId(user.id);
+
+    const publicUsers = followers.map((row) => serializePublicUser(row));
+
+    res.json({
+      users: publicUsers,
+    });
+  }));
 }

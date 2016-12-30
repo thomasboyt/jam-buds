@@ -96,23 +96,27 @@
 }
 
 .user-header {
-  display: flex;
-  align-items: center;
+  .user-header-top {
+    display: flex;
+    align-items: center;
 
-  h2, button.follow-toggle, .user-links {
-    flex: 0 0 auto;
+    margin-bottom: 10px;
+
+    h2, button.follow-toggle {
+      flex: 0 0 auto;
+    }
+
+    h2 {
+      margin: 0px;
+    }
+
+    .follow-toggle {
+      margin-left: auto;
+    }
   }
 
-  h2 {
-    margin: 0px;
-  }
-
-  .follow-toggle {
-    margin-left: 20px;
-  }
-
-  .user-links {
-    margin-left: auto;
+  .user-links a.active {
+    font-weight: bold;
   }
 
   margin-bottom: 20px;

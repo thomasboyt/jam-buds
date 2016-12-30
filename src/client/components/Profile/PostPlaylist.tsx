@@ -17,12 +17,14 @@ interface Props {
 class ProfilePostsPlaylist extends React.Component<Props, {}> {
   componentWillMount() {
     const name: string = this.props.params.name;
-    this.props.profileStore!.getPlaylist(name);
+    this.props.profileStore!.setUser(name);
+    this.props.profileStore!.getPlaylist();
   }
 
   componentWillReceiveProps(nextProps: Props) {
     if (nextProps.params.name !== this.props.params.name) {
-      this.props.profileStore!.getPlaylist(nextProps.params.name);
+      this.props.profileStore!.setUser(name);
+      this.props.profileStore!.getPlaylist();
     }
   }
 

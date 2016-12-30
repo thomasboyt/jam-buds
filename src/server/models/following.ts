@@ -32,3 +32,16 @@ export async function getFollowingForUserId(userId: number): Promise<User[]> {
 
   return users;
 }
+
+export async function getFollowersForUserId(userId: number): Promise<User[]> {
+  const query =
+    db!('following')
+    .where({following_id: userId})
+    .join('users', {'users.id': 'following.user_id'});
+
+  const rows = await (query as any);
+
+  const users = rows.map((row: any) => camelizeKeys(row) as User);
+
+  return users;
+}
