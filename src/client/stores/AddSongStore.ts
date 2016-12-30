@@ -125,7 +125,7 @@ export default class AddSongStore {
 
     this.feedStore.entryList.pushEntry(entry);
 
-    if (entry.user.id === this.profileStore.userId) {
+    if (entry.user.twitterName === this.profileStore.name) {
       this.profileStore.entryList.pushEntry(entry);
     }
   }
