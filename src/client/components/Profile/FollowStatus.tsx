@@ -6,7 +6,7 @@ import UserStore from '../../stores/UserStore';
 interface Props {
   userStore?: UserStore;
   isFollowing: boolean;
-  userId: number;
+  name: string;
 }
 
 @inject((allStores) => ({
@@ -14,15 +14,15 @@ interface Props {
 })) @observer
 class FollowStatus extends React.Component<Props, {}> {
   handleFollow() {
-    const {userId} = this.props;
+    const {name} = this.props;
 
-    this.props.userStore!.followUser(userId);
+    this.props.userStore!.followUser(name);
   }
 
   handleUnfollow() {
-    const {userId} = this.props;
+    const {name} = this.props;
 
-    this.props.userStore!.unfollowUser(userId);
+    this.props.userStore!.unfollowUser(name);
   }
 
   render() {
@@ -30,7 +30,7 @@ class FollowStatus extends React.Component<Props, {}> {
       return null;
     }
 
-    if (this.props.userId === this.props.userStore!.userId) {
+    if (this.props.name === this.props.userStore!.name) {
       return null;
     }
 

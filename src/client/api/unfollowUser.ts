@@ -1,8 +1,8 @@
 import apiRequest from '../util/apiRequest';
 
-export default async function unfollowUser(userId: number): Promise<void> {
+export default async function unfollowUser(userName: string): Promise<void> {
   await apiRequest({
-    url: `/following/${userId}`,
+    url: `/following/${userName}`,
     method: 'DELETE',
   });
 }

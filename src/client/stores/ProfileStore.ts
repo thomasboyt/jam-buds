@@ -26,7 +26,6 @@ class UserPlaylistEntriesList extends PaginatedPlaylistEntriesList {
 
   fetchNextPage(lastId: number | null): Promise<EntryResource[]> {
     return getPlaylist(this.name, lastId).then((resp) => {
-      this.store.userId = resp.user.id;
       return resp.tracks;
     });
   }
@@ -52,7 +51,6 @@ class UserLikedEntriesList extends PaginatedPlaylistEntriesList {
 
   fetchNextPage(lastId: number | null): Promise<EntryResource[]> {
     return getLikedPlaylist(this.name, lastId).then((resp) => {
-      this.store.userId = resp.user.id;
       return resp.tracks;
     });
   }
@@ -63,7 +61,6 @@ export default class ProfileStore {
   @observable likedEntryList: UserLikedEntriesList;
 
   @observable name: string;
-  @observable userId: number;
 
   @action getPlaylist(name: string) {
     this.name = name;

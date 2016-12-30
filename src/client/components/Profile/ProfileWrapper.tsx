@@ -33,7 +33,7 @@ class ProfileWrapper extends React.Component<Props, {}> {
               {this.props.title}
             </h2>
 
-            <FollowStatus userId={userId} isFollowing={isFollowing} />
+            <FollowStatus name={name} isFollowing={isFollowing} />
 
             <div className="user-links">
               <Link to={`/users/${name}`}>

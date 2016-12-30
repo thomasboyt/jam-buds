@@ -3,7 +3,7 @@ import wrapAsyncRoute from '../util/wrapAsyncRoute';
 
 import {
   User,
-  getUserByUserId,
+  getUserByTwitterName,
   serializePublicUser,
   getUnfollowedUsersByTwitterIds,
 } from '../models/user';
@@ -12,6 +12,7 @@ import {
   followUser,
   unfollowUser,
   getFollowingForUserId,
+  getFollowersForUserId,
 } from '../models/following';
 
 import {getUserFromRequest, isAuthenticated} from '../auth';
@@ -50,27 +51,27 @@ export default function registerUserEndpoints(app: Express) {
   // follow a user
   app.post('/following', isAuthenticated, wrapAsyncRoute(async (req, res) => {
     const user: User = res.locals.user;
-    const followingId: number = req.body.userId;
+    const followingName: string = req.body.userName;
 
-    if (!followingId) {
+    if (!followingName) {
       res.status(400).json({
-        error: 'Missing userId parameter in body'
+        error: 'Missing userName parameter in body'
       });
 
       return;
     }
 
-    const followingUser = await getUserByUserId(followingId);
+    const followingUser = await getUserByTwitterName(followingName);
 
     if (!followingUser) {
       res.status(400).json({
-        error: `Could not find user with ID ${followingId}`
+        error: `Could not find user with name ${followingName}`
       });
 
       return;
     }
 
-    await followUser(user.id, followingId);
+    await followUser(user.id, followingUser.id);
 
     res.json({
       user: serializePublicUser(followingUser),
@@ -78,10 +79,21 @@ export default function registerUserEndpoints(app: Express) {
   }));
 
   // unfollow a user
-  app.delete('/following/:followingId', isAuthenticated, wrapAsyncRoute(async (req, res) => {
+  app.delete('/following/:followingName', isAuthenticated, wrapAsyncRoute(async (req, res) => {
     const user: User = res.locals.user;
+    const followingName: string = req.params.followingName;
 
-    await unfollowUser(user.id, req.params.followingId);
+    const followingUser = await getUserByTwitterName(followingName);
+
+    if (!followingUser) {
+      res.status(400).json({
+        error: `Could not find user with name ${followingName}`
+      });
+
+      return;
+    }
+
+    await unfollowUser(user.id, followingUser.id);
 
     res.json({
       success: true,

@@ -31,17 +31,17 @@ export default class UserStore {
     this.loadedUser = true;
   }
 
-  @action async followUser(userId: number) {
-    const user = await followUser(userId);
+  @action async followUser(userName: string) {
+    const user = await followUser(userName);
     this.following.push(user);
   }
 
-  @action async unfollowUser(userId: number) {
-    await unfollowUser(userId);
-    this.following = this.following.filter((user) => user.id !== userId);
+  @action async unfollowUser(userName: string) {
+    await unfollowUser(userName);
+    this.following = this.following.filter((user) => user.twitterName !== userName);
   }
 
-  isFollowing(userId: number): boolean {
-    return this.following.find((user) => user.id === userId) ? true : false;
+  isFollowing(userName: string): boolean {
+    return this.following.find((user) => user.twitterName === userName) ? true : false;
   }
 }
