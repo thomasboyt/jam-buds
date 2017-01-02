@@ -28,17 +28,21 @@ class App extends React.Component<Props, {}> {
 
     return (
       <div className="app-container">
-        <div className="top-container">
-          <header>
-            <h1><Link to="/">jam buds!</Link></h1>
-          </header>
+        <div className="site-header">
+          <div className="header-content">
+            <h1>
+              <Link to="/">jam buds!</Link>
+            </h1>
 
-          <AudioPlayer />
+            <AudioPlayer />
+          </div>
         </div>
 
-        <LoadUserWrapper>
-          {this.props.children}
-        </LoadUserWrapper>
+        <div className="page-container">
+          <LoadUserWrapper>
+            {this.props.children}
+          </LoadUserWrapper>
+        </div>
 
         {loggedIn ? <AddSongModal /> : null}
       </div>

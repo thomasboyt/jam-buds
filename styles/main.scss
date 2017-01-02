@@ -3,8 +3,11 @@
 @import "~normalize.css/normalize.css";
 @import "./playlist.scss";
 @import "./sidebar.scss";
+@import "./header.scss";
 @import "./add-song.scss";
 @import "./audio-player.scss";
+
+@import './mixins';
 
 * {
   box-sizing: border-box;
@@ -13,42 +16,6 @@
 body {
   font-family: 'Open Sans', sans-serif;
   background: url('../assets/bg.jpg');
-}
-
-header {
-  margin: 1em 0;
-}
-
-@mixin box {
-  background: hotpink;
-  box-shadow: yellow 15px 15px;
-}
-
-h1 {
-  @include box;
-  color: yellow;
-  display: inline-block;
-  padding: 10px;
-  font-weight: bold;
-  transform: skewY(-5deg);
-
-  a { text-decoration: none; }
-}
-
-h1:hover {
-  animation: throb 0.7s ease-in-out infinite alternate;
-  cursor: pointer;
-}
-
-@keyframes throb {
-  0% {
-    transform: scale(1) skewY(-5deg) rotate(0deg);
-  }
-
-  100% {
-    background: purple;
-    transform: scale(1.5) skewY(-5deg) rotate(5deg);
-  }
 }
 
 h2 {
@@ -72,31 +39,17 @@ a:hover, a:active {
  * Page positioning
  */
 
-html, body, .react-root, .app-container {
+html, body, .react-root, .app-container, .page-container {
   min-height: 100%;
 }
 
-.top-container {
-  display: flex;
-  align-items: center;
-
-  header {
-    flex: 0 0 auto;
-  }
-
-  .audio-player {
-    flex: 0 1 500px;
-    max-width: 500px;
-    height: 80px;
-    margin-left: auto;
-  }
-}
-
-.app-container {
+.page-container {
   display: flex;
   flex-flow: column;
-  max-width: 1000px;
+  max-width: $max-width;
+
   margin: 0 auto;
+  padding-top: $header-height + 20px;
 }
 
 .main, .sidebar {

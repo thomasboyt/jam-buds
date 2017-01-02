@@ -1,0 +1,7 @@
+@mixin box {
+  background: hotpink;
+  box-shadow: yellow 15px 15px;
+}
+
+$header-height: 80px;
+$max-width: 1000px;
