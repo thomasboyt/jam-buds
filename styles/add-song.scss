@@ -3,6 +3,8 @@
  */
 
 .modal-overlay {
+  z-index: $z-modal-overlay;
+
   position: fixed;
   top: 0;
   left: 0;
@@ -20,6 +22,8 @@ $modal-height: 450px;
 }
 
 .modal-content {
+  z-index: $z-modal;
+
   overflow: auto;
 
   background: skyblue;
