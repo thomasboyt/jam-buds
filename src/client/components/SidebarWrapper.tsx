@@ -60,7 +60,9 @@ class SidebarWrapper extends React.Component<Props, {}> {
         {this.renderSidebar()}
 
         <div className="main">
-          {this.props.children}
+          <div className="main-inner">
+            {this.props.children}
+          </div>
         </div>
       </div>
     );

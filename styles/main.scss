@@ -54,6 +54,7 @@ html, body, .react-root, .app-container, .page-container {
 
 .main, .sidebar {
   padding: 10px;
+  padding-top: 20px;
 }
 
 .sidebar {
@@ -67,6 +68,11 @@ html, body, .react-root, .app-container, .page-container {
   a, a:visited {
     color: $darkblue;
   }
+}
+
+.main-inner {
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 .container {
