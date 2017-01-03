@@ -8,14 +8,13 @@
   width: 100%;
   height: $header-height;
 
-  background: #333;
+  background: $black;
 
   padding: 0 20px;
 
   .header-content {
     display: flex;
     align-items: center;
-    max-width: $max-width;
     margin: 0 auto;
 
     h1 {

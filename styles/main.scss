@@ -1,13 +1,13 @@
 @import url('https://fonts.googleapis.com/css?family=Open+Sans:400,700');
 
+@import './mixins';
+
 @import "~normalize.css/normalize.css";
 @import "./playlist.scss";
 @import "./sidebar.scss";
 @import "./header.scss";
 @import "./add-song.scss";
 @import "./audio-player.scss";
-
-@import './mixins';
 
 * {
   box-sizing: border-box;
@@ -46,27 +46,36 @@ html, body, .react-root, .app-container, .page-container {
 .page-container {
   display: flex;
   flex-flow: column;
-  max-width: $max-width;
 
   margin: 0 auto;
-  padding-top: $header-height + 20px;
+  padding-top: $header-height;
 }
 
 .main, .sidebar {
-  @include box;
   padding: 10px;
+}
+
+.sidebar {
+  background: lighten($black, 15%);
+  color: white;
+}
+
+.main {
+  background: $thenicestgreen;
+
+  a, a:visited {
+    color: $darkblue;
+  }
 }
 
 .container {
   flex: 1 0 auto;
   display: flex;
   align-items: stretch;
-  margin-bottom: 50px;
 }
 
 .sidebar {
   flex: 0 0 250px;
-  margin-right: 30px;
 }
 
 .main {

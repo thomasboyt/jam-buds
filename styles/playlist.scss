@@ -12,15 +12,19 @@
     margin-bottom: 20px;
 
     display: block;
-    background: yellow;
+    background: $yellow;
 
     &.is-playing {
-      background: skyblue;
+      background: darken($yellow, 30%);
     }
 
     &.is-playing:hover {
       transform: none;
     }
+  }
+
+  a.playlist-entry--main, a:visited.playlist-entry--main {
+    color: black;
   }
 
   .playlist-entry--main {
@@ -123,8 +127,8 @@
 }
 
 .follow-toggle {
-  background-color: yellow;
-  border: 2px yellow solid;
+  background-color: $yellow;
+  border: 2px $yellow solid;
 
   padding: 5px 10px;
   width: 110px;
@@ -144,7 +148,7 @@
     }
 
     &:hover {
-      background-color: yellow;
+      background-color: $yellow;
     }
 
     &:hover:after {
