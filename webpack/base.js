@@ -56,6 +56,13 @@ module.exports = {
       {
         test: /\.jpg$|\.png$/,
         loader: 'file',
+      },
+
+      {
+        test: /\.svg$/,
+        loader: 'svg-sprite?' + JSON.stringify({
+          name: '[name]_[hash]',
+        })
       }
     ]
   },

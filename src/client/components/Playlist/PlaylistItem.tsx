@@ -10,6 +10,10 @@ import UserStore from '../../stores/UserStore';
 import PlaybackStore from '../../stores/PlaybackStore';
 import PaginatedPlaylistEntryList from '../../stores/PaginatedPlaylistEntriesList';
 
+import Icon from '../Icon';
+
+const albumPlaceholderIcon = require('../../../../assets/record.svg');
+
 function spotifyUrl(track: PlaylistEntry) {
   return `https://open.spotify.com/track/${track.song.spotifyId}`;
 }
@@ -162,6 +166,22 @@ export default class PlaylistItem extends React.Component<Props, {}> {
     );
   }
 
+  renderAlbumArt() {
+    const {track} = this.props;
+
+    if (track.song.albumArt) {
+      return (
+        <img className="playlist-entry--album-art" src={track.song.albumArt} />
+      );
+
+    } else {
+      return (
+        <Icon className="playlist-entry--album-art -placeholder" glyph={albumPlaceholderIcon} />
+      );
+    }
+
+  }
+
   render() {
     const {track} = this.props;
     const playingTrack = this.props.playbackStore!.nowPlaying;
@@ -183,7 +203,7 @@ export default class PlaylistItem extends React.Component<Props, {}> {
           <a className="playlist-entry--main"
             href={track.youtubeUrl} target="_blank" rel="noopener noreferrer"
             onClick={(e) => this.handleClick(e)}>
-            <img src={track.song.albumArt} />
+            {this.renderAlbumArt()}
 
             <span className="title">
               {track.song.artists.join(', ')}

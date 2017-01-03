@@ -8,6 +8,12 @@ import {PlaylistEntry} from '../../../universal/resources';
 import serializeSongLabel from '../../util/serializeSongLabel';
 
 import Youtube from './Youtube';
+import Icon from '../Icon';
+
+const playIcon = require('../../../../assets/play.svg');
+const pauseIcon = require('../../../../assets/pause.svg');
+const nextIcon = require('../../../../assets/next.svg');
+const albumPlaceholderIcon = require('../../../../assets/record.svg');
 
 interface Props {
   playbackStore?: PlaybackStore;
@@ -41,11 +47,26 @@ export default class VideoPlayer extends React.Component<Props, {}> {
     );
   }
 
+  renderArt() {
+    const {nowPlaying} = this.props.playbackStore!;
+
+    let art = null;
+
+    if (nowPlaying && nowPlaying.song.albumArt) {
+      art = nowPlaying.song.albumArt;
+    }
+
+    if (art) {
+      return <img className="audio-player--art" src={art} />;
+    } else {
+      return <Icon className="audio-player--art -placeholder" glyph={albumPlaceholderIcon} />;
+    }
+  }
+
   render() {
     const {nowPlaying, isPlaying} = this.props.playbackStore!;
 
     const url = nowPlaying ? nowPlaying.youtubeUrl : null;
-    const art = nowPlaying ? nowPlaying.song.albumArt : null;
     const artist = nowPlaying ? nowPlaying.song.artists.join(', ') : null;
     const title = nowPlaying ? nowPlaying.song.title : '(nothing playing)';
 
@@ -54,6 +75,8 @@ export default class VideoPlayer extends React.Component<Props, {}> {
       'fa-pause': isPlaying,
     });
 
+    const playPauseIcon = isPlaying ? pauseIcon : playIcon;
+
     return (
       <div className="audio-player">
         <Youtube url={url} playing={isPlaying} onEnded={() => this.handleSongEnd()} />
@@ -61,12 +84,12 @@ export default class VideoPlayer extends React.Component<Props, {}> {
         <div className="audio-player--controls">
           <button className="play-pause-button" onClick={() => this.handlePlayPauseClick()}
             disabled={!nowPlaying}>
-            <span className={playPauseClassName} />
+            <Icon glyph={playPauseIcon} />
           </button>
 
           <button className="next-button" onClick={() => this.handleNextClick()}
             disabled={!nowPlaying}>
-            <span className="fa fa-step-forward" />
+            <Icon glyph={nextIcon} />
           </button>
         </div>
 
@@ -77,7 +100,7 @@ export default class VideoPlayer extends React.Component<Props, {}> {
           {this.renderPlaybackSource()}
         </div>
 
-        {art && <img className="audio-player--art" src={art} />}
+        {this.renderArt()}
       </div>
     );
   }
