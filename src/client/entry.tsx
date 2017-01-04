@@ -17,6 +17,7 @@ import ProfileLikedPlaylist from './components/Profile/LikedPlaylist';
 import ProfileFollowing from './components/Profile/Following';
 import ProfileFollowers from './components/Profile/Followers';
 import FindFriendsScreen from './components/FindFriendsScreen';
+import AboutScreen from './components/AboutScreen';
 
 import UserStore from './stores/UserStore';
 import AddSongStore from './stores/AddSongStore';
@@ -41,6 +42,8 @@ render((
     <Router history={browserHistory}>
       <Route path="/" component={App}>
         <IndexRoute component={HomeScreen} />
+
+        <Route path="/about" component={AboutScreen} />
 
         <Route path="/users/:name" component={ProfilePostPlaylist} />
         <Route path="/users/:name/liked" component={ProfileLikedPlaylist} />

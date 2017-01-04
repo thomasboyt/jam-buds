@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {Link} from 'react-router';
 import TwitterAuth from '../TwitterAuth';
 
 class LoggedOutHome extends React.Component<{}, {}> {
@@ -21,6 +22,8 @@ class LoggedOutHome extends React.Component<{}, {}> {
           site by <a href="https://twitter.com/thomasABoyt">thomas</a>
           {' '}&middot;{' '}
           good doggo by <a href="http://twitter.com/rainbowfission">@rainbowfission</a>
+          {' '}&middot;{' '}
+          <Link to="/about">about jam buds</Link>
         </div>
       </div>
     );

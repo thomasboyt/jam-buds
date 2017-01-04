@@ -204,14 +204,3 @@ some potentially useful things:
 
 - react audio (youtube) player widget from loudplaces.disco.zone https://github.com/thomasboyt/loudplaces.disco.zone/tree/master/app/components/audio
 - how to do a social feed http://stackoverflow.com/questions/1443960/how-to-implement-the-activity-stream-in-a-social-network
-
-### Icons
-
-- Record by Clayton Meador from the Noun Project
-- play by Alex Fuller from the Noun Project
-- pause by Alex Fuller from the Noun Project
-- Skip Forward by Alex Fuller from the Noun Project
-- down by Matthias Van Wambeke from the Noun Project
-- Close by Viktor Vorobyev from the Noun Project
-- Heart by Alfa Design from the Noun Project
-- Note by Bernar Novalyi from the Noun Project
