@@ -13,6 +13,11 @@ import PaginatedPlaylistEntryList from '../../stores/PaginatedPlaylistEntriesLis
 import Icon from '../Icon';
 
 const albumPlaceholderIcon = require('../../../../assets/record.svg');
+const closeIcon = require('../../../../assets/close.svg');
+const arrowIcon = require('../../../../assets/arrow.svg');
+const heartOpenIcon = require('../../../../assets/heart_open.svg');
+const heartFilledIcon = require('../../../../assets/heart_filled.svg');
+const noteIcon = require('../../../../assets/note.svg');
 
 function spotifyUrl(track: PlaylistEntry) {
   return `https://open.spotify.com/track/${track.song.spotifyId}`;
@@ -107,8 +112,8 @@ export default class PlaylistItem extends React.Component<Props, {}> {
     return (
       <button onClick={(e) => this.handleToggleLike(e)} disabled={!!likeRequest}>
         {isLiked ?
-          <span className="fa fa-heart" /> :
-          <span className="fa fa-heart-o" />}
+          <Icon glyph={heartFilledIcon} /> :
+          <Icon glyph={heartOpenIcon} /> }
       </button>
     );
   }
@@ -120,7 +125,7 @@ export default class PlaylistItem extends React.Component<Props, {}> {
 
     return (
       <button onClick={(e) => this.handleDelete(e)}>
-        <span className="fa fa-times" />
+        <Icon glyph={closeIcon} />
       </button>
     );
   }
@@ -132,7 +137,7 @@ export default class PlaylistItem extends React.Component<Props, {}> {
 
     return (
       <button onClick={(e) => this.handleOpenNote(e)}>
-        <span className="fa fa-file-text-o" />
+        <Icon glyph={noteIcon} />
       </button>
     );
   }
@@ -140,11 +145,11 @@ export default class PlaylistItem extends React.Component<Props, {}> {
   renderToggleOpenAction() {
     const {isOpen} = this.state;
 
+    const className = isOpen ? 'arrow-up' : 'arrow-down';
+
     return (
       <button onClick={(e) => this.handleToggleOpen(e)} className="drawer-toggle">
-        {isOpen ?
-          <span className="fa fa-angle-up" /> :
-          <span className="fa fa-angle-down" />}
+        <Icon glyph={arrowIcon} className={className} />
       </button>
     )
   }

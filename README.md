@@ -211,3 +211,7 @@ some potentially useful things:
 - play by Alex Fuller from the Noun Project
 - pause by Alex Fuller from the Noun Project
 - Skip Forward by Alex Fuller from the Noun Project
+- down by Matthias Van Wambeke from the Noun Project
+- Close by Viktor Vorobyev from the Noun Project
+- Heart by Alfa Design from the Noun Project
+- Note by Bernar Novalyi from the Noun Project

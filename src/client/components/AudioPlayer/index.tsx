@@ -70,11 +70,6 @@ export default class VideoPlayer extends React.Component<Props, {}> {
     const artist = nowPlaying ? nowPlaying.song.artists.join(', ') : null;
     const title = nowPlaying ? nowPlaying.song.title : '(nothing playing)';
 
-    const playPauseClassName = classNames('fa', {
-      'fa-play': !isPlaying,
-      'fa-pause': isPlaying,
-    });
-
     const playPauseIcon = isPlaying ? pauseIcon : playIcon;
 
     return (
