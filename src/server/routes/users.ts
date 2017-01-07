@@ -114,7 +114,7 @@ export default function registerUserEndpoints(app: Express) {
     });
   }));
 
-  app.get('/users/:userName/following', isAuthenticated, wrapAsyncRoute(async (req, res) => {
+  app.get('/users/:userName/following', wrapAsyncRoute(async (req, res) => {
     const userName: string = req.params.userName;
 
     const user = await getUserByTwitterName(userName);
@@ -136,7 +136,7 @@ export default function registerUserEndpoints(app: Express) {
     });
   }));
 
-  app.get('/users/:userName/followers', isAuthenticated, wrapAsyncRoute(async (req, res) => {
+  app.get('/users/:userName/followers', wrapAsyncRoute(async (req, res) => {
     const userName: string = req.params.userName;
 
     const user = await getUserByTwitterName(userName);
