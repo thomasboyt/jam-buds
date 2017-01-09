@@ -5,6 +5,7 @@ import {
   User,
   getUserByTwitterName,
   serializePublicUser,
+  getUserProfileForUser,
 } from '../models/user';
 
 import {
@@ -119,10 +120,8 @@ export default function registerPlaylistEndpoints(app: Express) {
       previousId,
     });
 
-    const serializedUser = serializePublicUser(user);
-
     const resp: Playlist = {
-      user: serializedUser,
+      userProfile: await getUserProfileForUser(user),
       tracks,
     };
 
@@ -149,10 +148,8 @@ export default function registerPlaylistEndpoints(app: Express) {
       previousId,
     });
 
-    const serializedUser = serializePublicUser(user);
-
     const resp: Playlist = {
-      user: serializedUser,
+      userProfile: await getUserProfileForUser(user),
       tracks,
     };
 

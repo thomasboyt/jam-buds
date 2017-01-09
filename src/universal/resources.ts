@@ -33,18 +33,41 @@ export interface PublicUser {
   twitterName: string;
 }
 
+export interface UserProfile {
+  id: number;
+  twitterName: string;
+  colorScheme: ColorScheme;
+}
+
 export interface CurrentUser {
   id: number;
   name: string;
   following: PublicUser[];
+  colorScheme: ColorScheme;
 }
 
 export interface Playlist {
-  user: PublicUser;
+  userProfile: UserProfile;
   tracks: PlaylistEntry[];
 }
+
+export interface Followers {
+  userProfile: UserProfile;
+  users: PublicUser[];
+}
+
+export interface Following extends Followers {}
 
 export interface ShareLinkDetails {
   title: string;
   embeddable: boolean;
+}
+
+export interface ColorScheme {
+  backgroundColor: string;
+  textColor: string;
+  linkColor: string;
+  entryBackgroundColor: string;
+  entryTextColor: string;
+  entryLinkColor: string;
 }

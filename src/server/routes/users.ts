@@ -1,11 +1,15 @@
 import {Express} from 'express';
 import wrapAsyncRoute from '../util/wrapAsyncRoute';
+import * as _ from 'lodash';
 
 import {
   User,
   getUserByTwitterName,
   serializePublicUser,
   getUnfollowedUsersByTwitterIds,
+  getColorSchemeForUserId,
+  getUserProfileForUser,
+  setColorSchemeForUserId,
 } from '../models/user';
 
 import {
@@ -18,7 +22,7 @@ import {
 import {getUserFromRequest, isAuthenticated} from '../auth';
 import {getTwitterFriendIds} from '../apis/twitter';
 
-import {PublicUser, CurrentUser, Playlist, Feed} from '../../universal/resources';
+import {PublicUser, CurrentUser, Playlist, Feed, Followers, Following, ColorScheme} from '../../universal/resources';
 
 export default function registerUserEndpoints(app: Express) {
 
@@ -27,25 +31,27 @@ export default function registerUserEndpoints(app: Express) {
     const user = await getUserFromRequest(req);
 
     if (!user) {
-      res.json({
+      return res.json({
         user: null,
       });
-
-    } else {
-      const followingUsers = await getFollowingForUserId(user.id);
-
-      const serializedUsers: PublicUser[] = followingUsers.map(serializePublicUser);
-
-      const currentUser: CurrentUser = {
-        id: user.id,
-        name: user.twitterName,
-        following: serializedUsers,
-      };
-
-      res.json({
-        user: currentUser,
-      });
     }
+
+    const colorScheme = await getColorSchemeForUserId(user.id);
+
+    const followingUsers = await getFollowingForUserId(user.id);
+
+    const serializedUsers: PublicUser[] = followingUsers.map(serializePublicUser);
+
+    const currentUser: CurrentUser = {
+      id: user.id,
+      name: user.twitterName,
+      following: serializedUsers,
+      colorScheme,
+    };
+
+    res.json({
+      user: currentUser,
+    });
   }));
 
   // follow a user
@@ -131,9 +137,12 @@ export default function registerUserEndpoints(app: Express) {
 
     const publicUsers = following.map((row) => serializePublicUser(row));
 
-    res.json({
+    const resp: Following = {
+      userProfile: await getUserProfileForUser(user),
       users: publicUsers,
-    });
+    };
+
+    res.json(resp);
   }));
 
   app.get('/users/:userName/followers', wrapAsyncRoute(async (req, res) => {
@@ -153,8 +162,52 @@ export default function registerUserEndpoints(app: Express) {
 
     const publicUsers = followers.map((row) => serializePublicUser(row));
 
-    res.json({
+    const resp: Followers = {
+      userProfile: await getUserProfileForUser(user),
       users: publicUsers,
+    };
+
+    res.json(resp);
+  }));
+
+  app.post('/settings/color-scheme', isAuthenticated, wrapAsyncRoute(async (req, res) => {
+    const user: User = res.locals.user;
+
+    const colorScheme = getColorSchemeFromBody(req.body);
+
+    if (!colorScheme) {
+      return res.status(400).json({
+        error: 'Incorrect format for color scheme',
+      });
+    }
+
+    await setColorSchemeForUserId(user.id, colorScheme);
+
+    res.json({
+      success: true,
     });
   }));
+}
+
+function getColorSchemeFromBody(reqBody: any): ColorScheme | null {
+  if (!reqBody) {
+    return null;
+  }
+
+  const required = [
+    'backgroundColor',
+    'textColor',
+    'linkColor',
+    'entryBackgroundColor',
+    'entryTextColor',
+    'entryLinkColor',
+  ];
+
+  for (let key of required) {
+    if (!reqBody[key]) {
+      return null;
+    }
+  }
+
+  return _.pick(reqBody, required) as ColorScheme;
 }
