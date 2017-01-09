@@ -9,6 +9,7 @@
 @import "./header.scss";
 @import "./add-song.scss";
 @import "./audio-player.scss";
+@import "./settings.scss";
 
 * {
   box-sizing: border-box;
@@ -60,14 +61,6 @@ html, body, .react-root, .app-container, .page-container {
 .sidebar {
   background: lighten($black, 15%);
   color: white;
-}
-
-.main {
-  background: $thenicestgreen;
-
-  a, a:visited {
-    color: $darkblue;
-  }
 }
 
 .main-inner {

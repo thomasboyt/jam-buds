@@ -1,5 +1,6 @@
 import * as React from 'react';
-import {Link, withRouter} from 'react-router';
+import {withRouter} from 'react-router';
+import Link from '../Link';
 import {observer, inject} from 'mobx-react';
 
 import ProfileStore from '../../stores/ProfileStore';
@@ -7,6 +8,7 @@ import UserStore from '../../stores/UserStore';
 
 import FollowStatus from './FollowStatus';
 import SidebarWrapper from '../SidebarWrapper';
+import {defaultColorScheme} from '../../../universal/constants';
 
 import PlaylistEntry from '../../stores/PlaylistEntry';
 
@@ -33,12 +35,22 @@ class ProfileWrapper extends React.Component<Props, {}> {
     }
   }
 
+  renderLink(url: string, label: string) {
+    const colorScheme = this.props.profileStore!.colorScheme || defaultColorScheme;
+
+    return (
+      <Link to={url} activeClassName="active" style={{color: colorScheme.linkColor}}>
+        {label}
+      </Link>
+    );
+  }
+
   render() {
-    const {name} = this.props.profileStore!;
+    const {name, colorScheme} = this.props.profileStore!;
     const isFollowing = this.props.userStore!.isFollowing(name);
 
     return (
-      <SidebarWrapper>
+      <SidebarWrapper colorScheme={colorScheme!}>
         <div className="playlist">
           <div className="user-header">
             <div className="user-header-top">
@@ -50,21 +62,13 @@ class ProfileWrapper extends React.Component<Props, {}> {
             </div>
 
             <div className="user-links">
-              <Link to={`/users/${name}`} activeClassName="active">
-                Posts
-              </Link>
+              {this.renderLink(`/users/${name}`, 'Posts')}
               {' / '}
-              <Link to={`/users/${name}/liked`} activeClassName="active">
-                Liked
-              </Link>
+              {this.renderLink(`/users/${name}/liked`, 'Liked')}
               {' / '}
-              <Link to={`/users/${name}/followers`} activeClassName="active">
-                Followers
-              </Link>
+              {this.renderLink(`/users/${name}/followers`, 'Followers')}
               {' / '}
-              <Link to={`/users/${name}/following`} activeClassName="active">
-                Following
-              </Link>
+              {this.renderLink(`/users/${name}/following`, 'Following')}
             </div>
           </div>
 

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Link} from 'react-router';
+import Link from '../Link';
 
 import SidebarWrapper from '../SidebarWrapper';
 
@@ -18,7 +18,7 @@ export default class AboutScreen extends React.Component<{}, {}> {
         <h2>who's responsible for this mess</h2>
 
         <p>
-          this site was built by <a href="https://thomasboyt.com/">thomas</a>. if you want to yell at him, you can do so on <a href="https://twitter.com/thomasABoyt">twitter</a>. you can also <Link to="/users/thomasABoyt">follow him on here</Link> if you'd like.
+          this site was built by <Link href="https://thomasboyt.com/">thomas</Link>. if you want to yell at him, you can do so on <Link href="https://twitter.com/thomasABoyt">twitter</Link>. you can also <Link to="/users/thomasABoyt">follow him on here</Link> if you'd like.
         </p>
 
         <p>
@@ -28,11 +28,11 @@ export default class AboutScreen extends React.Component<{}, {}> {
         <h3>images</h3>
 
         <ul>
-          <li>very good dog by <a href="http://twitter.com/rainbowfission">@rainbowfission</a></li>
+          <li>very good dog by <Link href="http://twitter.com/rainbowfission">@rainbowfission</Link></li>
         </ul>
 
         <h3>icons</h3>
-          
+
         <ul>
           <li>Record by Clayton Meador from the Noun Project</li>
           <li>play by Alex Fuller from the Noun Project</li>
@@ -47,7 +47,7 @@ export default class AboutScreen extends React.Component<{}, {}> {
         <h2>nerd things</h2>
 
         <p>
-          the code for jam buds is open source and viewable <a href="https://github.com/thomasboyt/jam-buds">on github</a>
+          the code for jam buds is open source and viewable <Link href="https://github.com/thomasboyt/jam-buds">on github</Link>
         </p>
 
         {process.env.BUILD_SHA && (

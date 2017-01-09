@@ -1,10 +1,11 @@
 import {observable, action} from 'mobx';
 import {getAuthToken} from '../util/authToken';
-import {PublicUser} from '../../universal/resources';
+import {PublicUser, ColorScheme} from '../../universal/resources';
 
 import getCurrentUser from '../api/getCurrentUser';
 import followUser from '../api/followUser';
 import unfollowUser from '../api/unfollowUser';
+import changeColorScheme from '../api/changeColorScheme';
 
 export default class UserStore {
   @observable loadedUser: boolean = false;
@@ -12,6 +13,7 @@ export default class UserStore {
   @observable name: string | null = null;
   @observable userId: number | null = null;
   @observable following: PublicUser[] = [];
+  @observable colorScheme: ColorScheme | null = null;
 
   @action async logIn() {
     this.loadedUser = false;
@@ -25,6 +27,7 @@ export default class UserStore {
         this.name = user.name;
         this.following = user.following;
         this.userId = user.id;
+        this.colorScheme = user.colorScheme;
       }
     }
 
@@ -43,5 +46,10 @@ export default class UserStore {
 
   isFollowing(userName: string): boolean {
     return this.following.find((user) => user.twitterName === userName) ? true : false;
+  }
+
+  @action async changeColorScheme(colorScheme: ColorScheme) {
+    await changeColorScheme(colorScheme);
+    this.colorScheme = colorScheme;
   }
 }

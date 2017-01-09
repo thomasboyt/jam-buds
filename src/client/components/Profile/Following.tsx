@@ -23,7 +23,7 @@ class Following extends React.Component<Props, {}> {
       <ProfileWrapper title={`@${profileStore!.name}'s followed users`}>
         <Loader startLoading={() => profileStore!.getFollowing()}
           request={profileStore!.followingRequest}>
-          {() => <UsersList users={profileStore!.following} />}
+          {() => <UsersList users={profileStore!.following} colorScheme={profileStore!.colorScheme} />}
         </Loader>
       </ProfileWrapper>
     );

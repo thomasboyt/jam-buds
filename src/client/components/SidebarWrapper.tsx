@@ -7,6 +7,10 @@ import UserStore from '../stores/UserStore';
 
 import TwitterAuth from './TwitterAuth';
 import AddSongButton from './AddSongButton';
+import ColorSchemeProvider from './ColorSchemeProvider';
+import MainWrapper from './MainWrapper';
+
+import {ColorScheme} from '../../universal/resources';
 
 function signOut() {
   removeAuthToken();
@@ -15,6 +19,7 @@ function signOut() {
 
 interface Props {
   userStore?: UserStore;
+  colorScheme?: ColorScheme | null;
 }
 
 @inject((allStores) => ({
@@ -48,6 +53,9 @@ class SidebarWrapper extends React.Component<Props, {}> {
             <Link to="/find-friends">find twitter friends on jam buds!</Link>
           </li>
           <li>
+            <Link to="/settings">your settings</Link>
+          </li>
+          <li>
             <Link to="/about">about jam buds</Link>
           </li>
         </ul>
@@ -62,11 +70,11 @@ class SidebarWrapper extends React.Component<Props, {}> {
       <div className="container">
         {this.renderSidebar()}
 
-        <div className="main">
-          <div className="main-inner">
+        <ColorSchemeProvider colorScheme={this.props.colorScheme || this.props.userStore!.colorScheme}>
+          <MainWrapper>
             {this.props.children}
-          </div>
-        </div>
+          </MainWrapper>
+        </ColorSchemeProvider>
       </div>
     );
   }

@@ -3,16 +3,19 @@ import {Link} from 'react-router';
 import {inject, observer} from 'mobx-react';
 
 import FeedStore from '../../stores/FeedStore';
+import UserStore from '../../stores/UserStore';
 
 import Playlist from '../Playlist';
 import SidebarWrapper from '../SidebarWrapper';
 
 interface Props {
   feedStore?: FeedStore;
+  userStore?: UserStore,
 }
 
 @inject((allStores) => ({
   feedStore: allStores.feedStore,
+  userStore: allStores.userStore,
 })) @observer
 class LoggedInHome extends React.Component<Props, {}> {
   componentWillMount() {

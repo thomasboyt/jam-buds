@@ -5,12 +5,14 @@ import * as classNames from 'classnames';
 
 import {distanceInWords} from 'date-fns';
 
+import withColorScheme from '../withColorScheme';
+import {ColorScheme} from '../../../universal/resources';
+import Icon from '../Icon';
+
 import PlaylistEntry from '../../stores/PlaylistEntry';
 import UserStore from '../../stores/UserStore';
 import PlaybackStore from '../../stores/PlaybackStore';
 import PaginatedPlaylistEntryList from '../../stores/PaginatedPlaylistEntriesList';
-
-import Icon from '../Icon';
 
 const albumPlaceholderIcon = require('../../../../assets/record.svg');
 const closeIcon = require('../../../../assets/close.svg');
@@ -30,8 +32,10 @@ interface Props {
 
   userStore?: UserStore;
   playbackStore?: PlaybackStore;
+  colorScheme?: ColorScheme;
 }
 
+@withColorScheme
 @inject((allStores) => ({
   userStore: allStores.userStore,
   playbackStore: allStores.playbackStore,
@@ -155,7 +159,7 @@ export default class PlaylistItem extends React.Component<Props, {}> {
   }
 
   renderPostedBy() {
-    const {track} = this.props;
+    const {track, colorScheme} = this.props;
 
     const timestamp = distanceInWords(new Date(), new Date(track.added));
 
@@ -163,7 +167,7 @@ export default class PlaylistItem extends React.Component<Props, {}> {
 
     return (
       <div className="posted-by">
-        <Link to={`/users/${track.user.twitterName}`}>
+        <Link to={`/users/${track.user.twitterName}`} style={{color: colorScheme!.linkColor}}>
           {displayName}
         </Link>
         {' '} posted ({timestamp} ago)
@@ -188,7 +192,7 @@ export default class PlaylistItem extends React.Component<Props, {}> {
   }
 
   render() {
-    const {track} = this.props;
+    const {track, colorScheme} = this.props;
     const playingTrack = this.props.playbackStore!.nowPlaying;
     const isPlaying = !!playingTrack && playingTrack.id === track.id;
 
@@ -200,11 +204,16 @@ export default class PlaylistItem extends React.Component<Props, {}> {
       'open': this.state.isOpen,
     });
 
+    const entryStyle = {
+      backgroundColor: colorScheme!.entryBackgroundColor,
+      color: colorScheme!.entryTextColor,
+    };
+
     return (
       <div>
         {this.renderPostedBy()}
 
-        <div className={className}>
+        <div className={className} style={entryStyle}>
           <a className="playlist-entry--main"
             href={track.youtubeUrl} target="_blank" rel="noopener noreferrer"
             onClick={(e) => this.handleClick(e)}>
@@ -234,13 +243,15 @@ export default class PlaylistItem extends React.Component<Props, {}> {
             <p>
               <em>
                 Listen to this song on:{' '}
-                <a href={track.youtubeUrl} target="_blank" rel="noopener noreferrer">
+                <a href={track.youtubeUrl} target="_blank" rel="noopener noreferrer"
+                  style={{color: colorScheme!.entryLinkColor}}>
                   Youtube
                 </a>
                 {track.song.spotifyId &&
                   <span>
                     {' / '}
-                    <a href={spotifyUrl(track)} target="_blank" rel="noopener noreferrer">
+                    <a href={spotifyUrl(track)} target="_blank" rel="noopener noreferrer"
+                      style={{color: colorScheme!.entryLinkColor}}>
                       Spotify
                     </a>
                   </span>

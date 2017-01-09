@@ -5,7 +5,7 @@ import getPlaylist from '../api/getPlaylist';
 import getLikedPlaylist from '../api/getLikedPlaylist';
 import getFollowers from '../api/getFollowers';
 import getFollowing from '../api/getFollowing';
-import {PlaylistEntry as EntryResource, PublicUser} from '../../universal/resources';
+import {PlaylistEntry as EntryResource, PublicUser, ColorScheme} from '../../universal/resources';
 
 import PaginatedPlaylistEntriesList from './PaginatedPlaylistEntriesList';
 
@@ -29,6 +29,7 @@ class UserPlaylistEntriesList extends PaginatedPlaylistEntriesList {
 
   fetchNextPage(lastId: number | null): Promise<EntryResource[]> {
     return getPlaylist(this.name, lastId).then((resp) => {
+      this.store.colorScheme = resp.userProfile.colorScheme;
       return resp.tracks;
     });
   }
@@ -54,6 +55,7 @@ class UserLikedEntriesList extends PaginatedPlaylistEntriesList {
 
   fetchNextPage(lastId: number | null): Promise<EntryResource[]> {
     return getLikedPlaylist(this.name, lastId).then((resp) => {
+      this.store.colorScheme = resp.userProfile.colorScheme;
       return resp.tracks;
     });
   }
@@ -64,6 +66,7 @@ export default class ProfileStore {
   @observable likedEntryList: UserLikedEntriesList;
 
   @observable name: string;
+  @observable colorScheme: ColorScheme | null;
 
   @observable following: PublicUser[];
   @observable followingRequest: IPromiseBasedObservable<any>;
@@ -73,6 +76,7 @@ export default class ProfileStore {
 
   @action setUser(name: string) {
     this.name = name;
+    this.colorScheme = null;
   }
 
   @action getPlaylist() {
@@ -86,16 +90,18 @@ export default class ProfileStore {
   }
 
   @action getFollowing() {
-    const promise = getFollowing(this.name).then((users) => {
-      this.following = users;
+    const promise = getFollowing(this.name).then((resp) => {
+      this.colorScheme = resp.userProfile.colorScheme;
+      this.following = resp.users;
     });
 
     this.followingRequest = fromPromise(promise);
   }
 
   @action getFollowers() {
-    const promise = getFollowers(this.name).then((users) => {
-      this.followers = users;
+    const promise = getFollowers(this.name).then((resp) => {
+      this.colorScheme = resp.userProfile.colorScheme;
+      this.followers = resp.users;
     });
 
     this.followersRequest = fromPromise(promise);

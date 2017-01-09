@@ -2,15 +2,20 @@ import * as React from 'react';
 import {observer} from 'mobx-react';
 
 import PlaylistItem from './PlaylistItem';
+import withColorScheme from '../withColorScheme';
 
 import PlaylistEntry from '../../stores/PlaylistEntry';
 import PaginatedPlaylistEntriesList from '../../stores/PaginatedPlaylistEntriesList';
 
+import {ColorScheme} from '../../../universal/resources';
+
 interface Props {
   entryList: PaginatedPlaylistEntriesList;
   noItemsPlaceholder: () => JSX.Element;
+  colorScheme?: ColorScheme;
 }
 
+@withColorScheme
 @observer
 class Playlist extends React.Component<Props, {}> {
   handleGetNextPage(e: React.MouseEvent<any>) {

@@ -18,6 +18,7 @@ import ProfileFollowing from './components/Profile/Following';
 import ProfileFollowers from './components/Profile/Followers';
 import FindFriendsScreen from './components/FindFriendsScreen';
 import AboutScreen from './components/AboutScreen';
+import SettingsScreen from './components/SettingsScreen';
 
 import UserStore from './stores/UserStore';
 import AddSongStore from './stores/AddSongStore';
@@ -51,6 +52,8 @@ render((
         <Route path="/users/:name/followers" component={ProfileFollowers} />
 
         <Route path="/find-friends" component={FindFriendsScreen} />
+
+        <Route path="/settings" component={SettingsScreen} />
       </Route>
     </Router>
   </Provider>

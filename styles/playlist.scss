@@ -12,15 +12,6 @@
     margin-bottom: 20px;
 
     display: block;
-    background: $yellow;
-
-    &.is-playing {
-      background: darken($yellow, 30%);
-    }
-
-    &.is-playing:hover {
-      transform: none;
-    }
   }
 
   a.playlist-entry--main, a:visited.playlist-entry--main {
@@ -101,10 +92,6 @@
     overflow: hidden;
 
     transition: max-height 0.5s ease;
-
-    a, a:visited, a:hover, a:active {
-      color: darkblue;
-    }
 
     &.open {
       max-height: 300px;

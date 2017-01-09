@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Link} from 'react-router';
+import Link from '../Link';
 import {inject, observer} from 'mobx-react';
 
 import FindFriendsStore from '../../stores/FindFriendsStore';

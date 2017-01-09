@@ -1,0 +1,60 @@
+.color-scheme-list {
+  list-style-type: none;
+  padding-left: 0;
+  display: flex;
+  flex-wrap: wrap;
+
+  .color-preview {
+    flex: 0 0 auto;
+    margin-right: 20px;
+    margin-bottom: 20px;
+  }
+}
+
+.color-preview {
+  width: 200px;
+  height: 200px;
+  outline: 1px black solid;
+  position: relative;
+  padding: 10px;
+  padding-bottom: 0px;
+  cursor: pointer;
+
+  &.-active {
+    outline-width: 5px;
+  }
+}
+
+.color-preview--header {
+  width: 100px;
+  height: 25px;
+}
+
+.color-preview--links {
+  width: 100px;
+  height: 15px;
+  margin-top: 10px;
+}
+
+.color-preview--entry {
+  width: 100%;
+  height: 50px;
+
+  margin-top: 10px;
+
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  padding: 0 10px;
+}
+
+.color-preview--entry-text {
+  flex: 0 0 auto;
+  width: 70px;
+  height: 10px;
+  margin-top: 10px;
+
+  &:first-child {
+    margin-top: 0px;
+  }
+}
