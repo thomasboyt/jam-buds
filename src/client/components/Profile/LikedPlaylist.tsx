@@ -16,14 +16,13 @@ interface Props {
 })) @observer
 class ProfileLikedPlaylist extends React.Component<Props, {}> {
   componentWillMount() {
-    const name: string = this.props.params.name;
-    this.props.profileStore!.setUser(name);
+    this.props.profileStore!.setUser(this.props.params.name);
     this.props.profileStore!.getLikedPlaylist();
   }
 
   componentWillReceiveProps(nextProps: Props) {
     if (nextProps.params.name !== this.props.params.name) {
-      this.props.profileStore!.setUser(name);
+      this.props.profileStore!.setUser(nextProps.params.name);
       this.props.profileStore!.getLikedPlaylist();
     }
   }
@@ -39,11 +38,18 @@ class ProfileLikedPlaylist extends React.Component<Props, {}> {
   render() {
     const {name} = this.props.profileStore!;
 
+    const loaderConfig = {
+      startLoading: () => this.props.profileStore!.getLikedPlaylist(),
+      request: this.props.profileStore!.initialLoadProfileRequest,
+    };
+
     return (
-      <ProfileWrapper title={`@${name}'s liked tracks`}>
-        <Playlist
-          entryList={this.props.profileStore!.likedEntryList}
-          noItemsPlaceholder={this.noItemsPlaceholder} />
+      <ProfileWrapper title={`@${name}'s liked tracks`} loaderConfig={loaderConfig}>
+        {() => (
+          <Playlist
+            entryList={this.props.profileStore!.likedEntryList}
+            noItemsPlaceholder={this.noItemsPlaceholder} />
+        )}
       </ProfileWrapper>
     );
   }

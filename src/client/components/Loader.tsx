@@ -2,14 +2,14 @@ import * as React from 'react';
 import {IPromiseBasedObservable} from 'mobx-utils';
 import {observer} from 'mobx-react';
 
-interface Props {
+export interface LoaderProps {
   startLoading: () => void;
   request: IPromiseBasedObservable<any>;
   children?: () => JSX.Element;
 }
 
 @observer
-class Loader extends React.Component<Props, {}> {
+class Loader extends React.Component<LoaderProps, {}> {
   componentWillMount() {
     this.props.startLoading();
   }

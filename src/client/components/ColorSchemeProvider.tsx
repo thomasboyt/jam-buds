@@ -1,17 +1,16 @@
 import * as React from 'react';
 
-import {defaultColorScheme} from '../../universal/constants';
 import {ColorScheme} from '../../universal/resources';
 
 interface Props {
   colorScheme: ColorScheme | null;
 }
 
-let lastColorScheme: ColorScheme = defaultColorScheme;
+let lastColorScheme: ColorScheme | null = null;
 
 export default class ColorSchemeProvider extends React.Component<Props, {}> {
   static childContextTypes = {
-    colorScheme: React.PropTypes.object.isRequired,
+    colorScheme: React.PropTypes.object,
   };
 
   componentDidUpdate(props: Props) {

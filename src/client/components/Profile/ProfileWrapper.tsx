@@ -1,28 +1,27 @@
 import * as React from 'react';
 import {withRouter} from 'react-router';
-import Link from '../Link';
 import {observer, inject} from 'mobx-react';
 
 import ProfileStore from '../../stores/ProfileStore';
 import UserStore from '../../stores/UserStore';
 
-import FollowStatus from './FollowStatus';
 import SidebarWrapper from '../SidebarWrapper';
-import {defaultColorScheme} from '../../../universal/constants';
-
-import PlaylistEntry from '../../stores/PlaylistEntry';
+import MainWrapper from '../MainWrapper';
+import ColorSchemeProvider from '../ColorSchemeProvider';
+import Loader, {LoaderProps} from '../Loader';
+import ProfileNav from './ProfileNav';
 
 interface Props {
   title: string;
   profileStore?: ProfileStore;
-  userStore?: UserStore;
   params?: any;
+  loaderConfig: LoaderProps
+  children?: () => JSX.Element;
 }
 
 @withRouter
 @inject((allStores) => ({
   profileStore: allStores.profileStore as ProfileStore,
-  userStore: allStores.userStore as UserStore,
 })) @observer
 class ProfileWrapper extends React.Component<Props, {}> {
   componentWillMount() {
@@ -35,45 +34,28 @@ class ProfileWrapper extends React.Component<Props, {}> {
     }
   }
 
-  renderLink(url: string, label: string) {
-    const colorScheme = this.props.profileStore!.colorScheme || defaultColorScheme;
-
-    return (
-      <Link to={url} activeClassName="active" style={{color: colorScheme.linkColor}}>
-        {label}
-      </Link>
-    );
-  }
-
   render() {
-    const {name, colorScheme} = this.props.profileStore!;
-    const isFollowing = this.props.userStore!.isFollowing(name);
+    const {loaderConfig, children} = this.props;
+
+    if (!children || typeof children !== 'function') {
+      throw new Error('child of <ProfileWrapper /> should be a function');
+    }
 
     return (
-      <SidebarWrapper colorScheme={colorScheme!}>
-        <div className="playlist">
-          <div className="user-header">
-            <div className="user-header-top">
-              <h2>
-                {this.props.title}
-              </h2>
+      <SidebarWrapper>
+        <Loader {...loaderConfig}>
+          {() => (
+            <ColorSchemeProvider colorScheme={this.props.profileStore!.colorScheme}>
+              <MainWrapper>
+                <div className="playlist">
+                  <ProfileNav title={this.props.title} />
 
-              <FollowStatus name={name} isFollowing={isFollowing} />
-            </div>
-
-            <div className="user-links">
-              {this.renderLink(`/users/${name}`, 'Posts')}
-              {' / '}
-              {this.renderLink(`/users/${name}/liked`, 'Liked')}
-              {' / '}
-              {this.renderLink(`/users/${name}/followers`, 'Followers')}
-              {' / '}
-              {this.renderLink(`/users/${name}/following`, 'Following')}
-            </div>
-          </div>
-
-          {this.props.children}
-        </div>
+                  {children()}
+                </div>
+              </MainWrapper>
+            </ColorSchemeProvider>
+          )}
+        </Loader>
       </SidebarWrapper>
     );
   }

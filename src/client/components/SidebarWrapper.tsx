@@ -8,7 +8,6 @@ import UserStore from '../stores/UserStore';
 import TwitterAuth from './TwitterAuth';
 import AddSongButton from './AddSongButton';
 import ColorSchemeProvider from './ColorSchemeProvider';
-import MainWrapper from './MainWrapper';
 
 import {ColorScheme} from '../../universal/resources';
 
@@ -20,6 +19,7 @@ function signOut() {
 interface Props {
   userStore?: UserStore;
   colorScheme?: ColorScheme | null;
+  useUserColorScheme?: boolean;
 }
 
 @inject((allStores) => ({
@@ -66,14 +66,14 @@ class SidebarWrapper extends React.Component<Props, {}> {
   }
 
   render() {
+    const colorScheme = this.props.useUserColorScheme ? this.props.userStore!.colorScheme : this.props.colorScheme;
+
     return (
       <div className="container">
         {this.renderSidebar()}
 
-        <ColorSchemeProvider colorScheme={this.props.colorScheme || this.props.userStore!.colorScheme}>
-          <MainWrapper>
-            {this.props.children}
-          </MainWrapper>
+        <ColorSchemeProvider colorScheme={colorScheme}>
+          {this.props.children}
         </ColorSchemeProvider>
       </div>
     );

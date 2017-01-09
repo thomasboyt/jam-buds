@@ -14,11 +14,12 @@ export default function withColorScheme<C extends React.ComponentClass<any>>(Com
     context: Context;
 
     static contextTypes = {
-      colorScheme: React.PropTypes.object.isRequired,
+      colorScheme: React.PropTypes.object,
     };
 
     render() {
       const {colorScheme} = this.context;
+
       return <Component {...this.props} colorScheme={colorScheme} />;
     }
   } as any;

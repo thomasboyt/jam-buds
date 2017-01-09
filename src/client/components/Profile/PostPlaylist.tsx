@@ -16,14 +16,13 @@ interface Props {
 })) @observer
 class ProfilePostsPlaylist extends React.Component<Props, {}> {
   componentWillMount() {
-    const name: string = this.props.params.name;
-    this.props.profileStore!.setUser(name);
+    this.props.profileStore!.setUser(this.props.params.name);
     this.props.profileStore!.getPlaylist();
   }
 
   componentWillReceiveProps(nextProps: Props) {
     if (nextProps.params.name !== this.props.params.name) {
-      this.props.profileStore!.setUser(name);
+      this.props.profileStore!.setUser(nextProps.params.name);
       this.props.profileStore!.getPlaylist();
     }
   }
@@ -39,11 +38,18 @@ class ProfilePostsPlaylist extends React.Component<Props, {}> {
   render() {
     const {name} = this.props.profileStore!;
 
+    const loaderConfig = {
+      startLoading: () => this.props.profileStore!.getPlaylist(),
+      request: this.props.profileStore!.initialLoadProfileRequest,
+    };
+
     return (
-      <ProfileWrapper title={`@${name}'s playlist`}>
-        <Playlist
-          entryList={this.props.profileStore!.entryList}
-          noItemsPlaceholder={this.noItemsPlaceholder} />
+      <ProfileWrapper title={`@${name}'s playlist`} loaderConfig={loaderConfig}>
+        {() => (
+          <Playlist
+            entryList={this.props.profileStore!.entryList}
+            noItemsPlaceholder={this.noItemsPlaceholder} />
+        )}
       </ProfileWrapper>
     );
   }

@@ -74,6 +74,8 @@ export default class ProfileStore {
   @observable followers: PublicUser[];
   @observable followersRequest: IPromiseBasedObservable<any>;
 
+  @observable initialLoadProfileRequest: IPromiseBasedObservable<any>;
+
   @action setUser(name: string) {
     this.name = name;
     this.colorScheme = null;
@@ -81,12 +83,14 @@ export default class ProfileStore {
 
   @action getPlaylist() {
     this.entryList = new UserPlaylistEntriesList(this.name, this);
-    this.entryList.getNextPage();
+    const promise = this.entryList.getNextPage();
+    this.initialLoadProfileRequest = fromPromise(promise);
   }
 
   @action getLikedPlaylist() {
     this.likedEntryList = new UserLikedEntriesList(this.name, this);
-    this.likedEntryList.getNextPage();
+    const promise = this.likedEntryList.getNextPage();
+    this.initialLoadProfileRequest = fromPromise(promise);
   }
 
   @action getFollowing() {
