@@ -134,7 +134,6 @@
 }
 
 .follow-toggle {
-  background-color: $yellow;
   border: 2px $yellow solid;
 
   padding: 5px 10px;
@@ -144,18 +143,12 @@
   font-size: 16px;
 
   &.-is-following {
-    background-color: inherit;
-
     span {
       display: none;
     }
 
     &:after {
       content: "Following";
-    }
-
-    &:hover {
-      background-color: $yellow;
     }
 
     &:hover:after {

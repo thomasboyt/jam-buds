@@ -2,13 +2,17 @@ import * as React from 'react';
 import {observer, inject} from 'mobx-react';
 
 import UserStore from '../../stores/UserStore';
+import {ColorScheme} from '../../../universal/resources';
+import withColorScheme from '../withColorScheme';
 
 interface Props {
   userStore?: UserStore;
   isFollowing: boolean;
   name: string;
+  colorScheme?: ColorScheme;
 }
 
+@withColorScheme
 @inject((allStores) => ({
   userStore: allStores.userStore as UserStore,
 })) @observer
@@ -34,16 +38,30 @@ class FollowStatus extends React.Component<Props, {}> {
       return null;
     }
 
+    const {colorScheme} = this.props;
+
+    const style = {
+      backgroundColor: colorScheme!.entryBackgroundColor,
+      color: colorScheme!.entryTextColor,
+    }
+
     if (this.props.isFollowing) {
       return (
-        <button className="follow-toggle -is-following" aria-label="Unfollow" onClick={() => this.handleUnfollow()}>
+        <button
+          style={style}
+          className="follow-toggle -is-following"
+          aria-label="Unfollow"
+          onClick={() => this.handleUnfollow()}>
           <span>Following</span>
         </button>
       );
 
     } else {
       return (
-        <button className="follow-toggle" onClick={() => this.handleFollow()}>
+        <button
+          style={style}
+          className="follow-toggle"
+          onClick={() => this.handleFollow()}>
           + Follow
         </button>
       );
