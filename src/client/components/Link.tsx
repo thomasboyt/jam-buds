@@ -18,7 +18,6 @@ interface Props {
 @withColorScheme
 export default class StyledLink extends React.Component<Props, {}> {
   render() {
-    console.log(this.props.colorScheme!.linkColor);
     const style = {
       color: this.props.colorScheme!.linkColor,
     };
