@@ -6,7 +6,7 @@ import FeedStore from '../../stores/FeedStore';
 import UserStore from '../../stores/UserStore';
 
 import Playlist from '../Playlist';
-import SidebarWrapper from '../SidebarWrapper';
+import UserColorSchemeWrapper from '../UserColorSchemeWrapper';
 
 interface Props {
   feedStore?: FeedStore;
@@ -34,13 +34,13 @@ class LoggedInHome extends React.Component<Props, {}> {
     const {items, nextPageRequest, loadedFirstPage} = this.props.feedStore!.entryList;
 
     return (
-      <SidebarWrapper>
+      <UserColorSchemeWrapper>
         <div className="playlist">
           <h2>your feed</h2>
           <Playlist entryList={this.props.feedStore!.entryList}
             noItemsPlaceholder={() => this.renderNoItemsPlaceholder()} />
         </div>
-      </SidebarWrapper>
+      </UserColorSchemeWrapper>
     );
   }
 }

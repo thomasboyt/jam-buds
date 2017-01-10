@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {inject, observer} from 'mobx-react'
 
-import SidebarWrapper from '../SidebarWrapper';
+import UserColorSchemeWrapper from '../UserColorSchemeWrapper';
 import ColorSchemeOption from './ColorSchemeOption';
 
 import UserStore from '../../stores/UserStore';
@@ -18,7 +18,7 @@ interface Props {
 export default class SettingsScreen extends React.Component<Props, {}> {
   render() {
     return (
-      <SidebarWrapper>
+      <UserColorSchemeWrapper>
         <h2>settings</h2>
 
         <p>
@@ -30,7 +30,7 @@ export default class SettingsScreen extends React.Component<Props, {}> {
             (colorScheme, idx) => <ColorSchemeOption key={idx} colorScheme={colorScheme} />)}
         </ul>
 
-      </SidebarWrapper>
+      </UserColorSchemeWrapper>
     );
   }
 }

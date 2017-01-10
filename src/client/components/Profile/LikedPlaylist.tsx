@@ -15,18 +15,6 @@ interface Props {
   profileStore: allStores.profileStore as ProfileStore,
 })) @observer
 class ProfileLikedPlaylist extends React.Component<Props, {}> {
-  componentWillMount() {
-    this.props.profileStore!.setUser(this.props.params.name);
-    this.props.profileStore!.getLikedPlaylist();
-  }
-
-  componentWillReceiveProps(nextProps: Props) {
-    if (nextProps.params.name !== this.props.params.name) {
-      this.props.profileStore!.setUser(nextProps.params.name);
-      this.props.profileStore!.getLikedPlaylist();
-    }
-  }
-
   noItemsPlaceholder() {
     return (
       <div className="main-placeholder">

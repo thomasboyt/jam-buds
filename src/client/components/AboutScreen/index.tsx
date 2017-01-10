@@ -1,12 +1,12 @@
 import * as React from 'react';
 import Link from '../Link';
 
-import SidebarWrapper from '../SidebarWrapper';
+import UserColorSchemeWrapper from '../UserColorSchemeWrapper';
 
 export default class AboutScreen extends React.Component<{}, {}> {
   render() {
     return (
-      <SidebarWrapper>
+      <UserColorSchemeWrapper>
         <h2>what is this thing</h2>
 
         <p>this is <strong>jam buds</strong>, a site to share music with friends</p>
@@ -55,7 +55,7 @@ export default class AboutScreen extends React.Component<{}, {}> {
             running client version {process.env.BUILD_SHA}
           </p>
         )}
-      </SidebarWrapper>
+      </UserColorSchemeWrapper>
     );
   }
 }

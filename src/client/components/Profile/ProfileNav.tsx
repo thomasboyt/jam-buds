@@ -27,12 +27,8 @@ export default class ProfileNav extends React.Component<Props, {}> {
   }
 
   render() {
-    const {name, colorScheme} = this.props.profileStore!;
+    const {name} = this.props.profileStore!;
     const isFollowing = this.props.userStore!.isFollowing(name);
-
-    if (!colorScheme) {
-      return null;
-    }
 
     return (
       <div className="user-header">

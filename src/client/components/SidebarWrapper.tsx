@@ -18,8 +18,6 @@ function signOut() {
 
 interface Props {
   userStore?: UserStore;
-  colorScheme?: ColorScheme | null;
-  useUserColorScheme?: boolean;
 }
 
 @inject((allStores) => ({
@@ -66,15 +64,10 @@ class SidebarWrapper extends React.Component<Props, {}> {
   }
 
   render() {
-    const colorScheme = this.props.useUserColorScheme ? this.props.userStore!.colorScheme : this.props.colorScheme;
-
     return (
       <div className="container">
         {this.renderSidebar()}
-
-        <ColorSchemeProvider colorScheme={colorScheme}>
-          {this.props.children}
-        </ColorSchemeProvider>
+        {this.props.children}
       </div>
     );
   }

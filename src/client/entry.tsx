@@ -26,6 +26,7 @@ import ProfileStore from './stores/ProfileStore';
 import PlaybackStore from './stores/PlaybackStore';
 import FeedStore from './stores/FeedStore';
 import FindFriendsStore from './stores/FindFriendsStore';
+import ColorSchemeStore from './stores/ColorSchemeStore';
 
 const userStore = new UserStore();
 const profileStore = new ProfileStore();
@@ -33,10 +34,13 @@ const playbackStore = new PlaybackStore();
 const feedStore = new FeedStore();
 const findFriendsStore = new FindFriendsStore();
 const addSongStore = new AddSongStore(feedStore, profileStore);
+const colorSchemeStore = new ColorSchemeStore();
 
 const stores = {
-  userStore, addSongStore, profileStore, playbackStore, feedStore, findFriendsStore,
+  userStore, addSongStore, profileStore, playbackStore, feedStore, findFriendsStore, colorSchemeStore,
 };
+
+(window as any).stores = stores;
 
 render((
   <Provider {...stores}>

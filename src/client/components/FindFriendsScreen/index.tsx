@@ -5,7 +5,7 @@ import {inject, observer} from 'mobx-react';
 import FindFriendsStore from '../../stores/FindFriendsStore';
 import {PublicUser} from '../../../universal/resources';
 
-import SidebarWrapper from '../SidebarWrapper';
+import UserColorSchemeWrapper from '../UserColorSchemeWrapper';
 import getFriendSuggestions from '../../api/getFriendSuggestions';
 
 interface Props {
@@ -40,14 +40,14 @@ export default class FindFriendsScreen extends React.Component<Props, {}> {
     const {suggestionsPromise} = this.props.findFriendsStore!;
 
     return (
-      <SidebarWrapper>
+      <UserColorSchemeWrapper>
         <h2>Find Friends</h2>
         {suggestionsPromise.case({
           pending: () => <div className="main-placeholder">Loading Twitter friends...</div>,
           rejected: () => <div className="main-placeholder">Error loading!</div>,
           fulfilled: (suggestions) => this.renderLoaded(suggestions),
         })}
-      </SidebarWrapper>
+      </UserColorSchemeWrapper>
     );
   }
 }

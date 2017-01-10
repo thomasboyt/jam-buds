@@ -1,6 +1,7 @@
 import {observable, action} from 'mobx';
 import {getAuthToken} from '../util/authToken';
 import {PublicUser, ColorScheme} from '../../universal/resources';
+import {defaultColorScheme} from '../../universal/constants';
 
 import getCurrentUser from '../api/getCurrentUser';
 import followUser from '../api/followUser';
@@ -29,6 +30,10 @@ export default class UserStore {
         this.userId = user.id;
         this.colorScheme = user.colorScheme;
       }
+    }
+
+    if (!this.colorScheme) {
+      this.colorScheme = defaultColorScheme;
     }
 
     this.loadedUser = true;
