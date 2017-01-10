@@ -1,4 +1,4 @@
-import {ColorScheme} from './resources';
+import { ColorScheme } from './resources';
 
 /**
  * The number of playlist entries loaded on each page. The frontend has knowledge of this so it can display a
@@ -13,6 +13,7 @@ export const colorSchemes: ColorScheme[] = [{
   entryBackgroundColor: 'rgb(255, 255, 166)',
   entryTextColor: 'black',
   entryLinkColor: 'darkblue',
+
 }, {
   backgroundColor: 'black',
   textColor: 'white',
@@ -20,6 +21,7 @@ export const colorSchemes: ColorScheme[] = [{
   entryBackgroundColor: 'white',
   entryTextColor: 'black',
   entryLinkColor: 'black',
+
 }, {
   backgroundColor: 'hotpink',
   textColor: 'black',
@@ -27,6 +29,7 @@ export const colorSchemes: ColorScheme[] = [{
   entryBackgroundColor: 'yellow',
   entryTextColor: 'black',
   entryLinkColor: 'black',
+
 }, {
   backgroundColor: 'skyblue',
   textColor: 'black',
@@ -34,6 +37,30 @@ export const colorSchemes: ColorScheme[] = [{
   entryBackgroundColor: 'beige',
   entryTextColor: 'black',
   entryLinkColor: 'black',
+
+}, {
+  "backgroundColor": "#742365",
+  "textColor": "#FEB89F",
+  "linkColor": "#FEB89F",
+  "entryBackgroundColor": "#FDCFBF",
+  "entryTextColor": "#E23D75",
+  "entryLinkColor": "#E23D75"
+
+}, {
+  "backgroundColor":"#2D2D29",
+  "textColor":"#92C7A3",
+  "linkColor":"#92C7A3",
+  "entryBackgroundColor":"#DFECE6",
+  "entryTextColor":"#215A6D",
+  "entryLinkColor":"#215A6D"
+
+}, {
+  "backgroundColor":"#000000",
+  "textColor":"#4DBCE9",
+  "linkColor":"#FFFFFF",
+  "entryBackgroundColor":"#26ADE4",
+  "entryTextColor":"#000000",
+  "entryLinkColor":"#000000"
 }];
 
 export const defaultColorScheme = colorSchemes[0];
