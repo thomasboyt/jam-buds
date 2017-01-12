@@ -58,7 +58,7 @@ export async function getBandcampInformation(url: string): Promise<BandcampTrack
 }
 
 export async function getBandcampStreamingUrl(trackId: string): Promise<string> {
-  // this is a public key that fell off the back of a track so it's cool that it's hardcoded, don't worry about it~
+  // this is a public key that fell off the back of a truck so it's cool that it's hardcoded, don't worry about it~
   const resp = await axios.get(
     `http://api.bandcamp.com/api/track/1/info?key=anamannthrotiuppburdreinbreidr&track_id=${trackId}
   `);
