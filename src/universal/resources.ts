@@ -1,3 +1,5 @@
+export type PlaybackSource = 'youtube' | 'bandcamp';
+
 export interface SearchResult {
   artists: string[];
   album: string;
@@ -15,13 +17,17 @@ export interface Song {
 
 export interface PlaylistEntry {
   id: number;
-  youtubeUrl: string;
   note: string | null;
   added: string;
   isLiked: boolean;
 
   song: Song;
   user: PublicUser;
+
+  source: PlaybackSource;
+  youtubeUrl?: string;
+  bandcampStreamingUrl?: string;
+  bandcampUrl?: string;
 }
 
 export interface Feed {
@@ -58,9 +64,19 @@ export interface Followers {
 
 export interface Following extends Followers {}
 
-export interface ShareLinkDetails {
+export interface ManualEntrySuggestion {
   title: string;
+  artist: string;
+}
+
+export interface ShareLinkDetails {
   embeddable: boolean;
+  source: PlaybackSource;
+  title: string;
+
+  bandcampTrackId?: string;
+  spotify?: SearchResult | null;
+  manualEntrySuggestion?: ManualEntrySuggestion;
 }
 
 export interface ColorScheme {

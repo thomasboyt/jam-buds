@@ -8,7 +8,7 @@ const spotifyApi = new SpotifyWebApi({
 /**
  * Look up a Spotify track by a given Spotify track ID.
  */
-export async function getTrackById(id: string) {
+export async function getTrackById(id: string): Promise<any> {
   const res = await spotifyApi.getTrack(id);
   const track = res.body;
   return track;
@@ -17,7 +17,7 @@ export async function getTrackById(id: string) {
 /**
  * Get a list of Spotify search results for a specific query.
  */
-export async function search(query: string) {
+export async function search(query: string): Promise<any[]> {
   const res = await spotifyApi.searchTracks(query);
   const tracks = res.body.tracks.items;
   return tracks;

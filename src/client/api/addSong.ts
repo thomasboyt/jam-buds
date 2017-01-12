@@ -1,8 +1,7 @@
 import apiRequest from '../util/apiRequest';
-import {PlaylistEntry} from '../../universal/resources';
+import {PlaylistEntry, PlaybackSource} from '../../universal/resources';
 
 interface Params {
-  youtubeUrl: string;
   tweet: string | null;
   spotifyId: string | null;
   note?: string,
@@ -10,6 +9,11 @@ interface Params {
   manualEntry: boolean;
   artist?: string;
   title?: string;
+
+  source: PlaybackSource,
+  youtubeUrl?: string;
+  bandcampTrackId?: string;
+  bandcampUrl?: string;
 }
 
 export default async function addSong(params: Params): Promise<PlaylistEntry> {

@@ -1,14 +1,20 @@
 import {db} from '../db';
 import {camelizeKeys, decamelizeKeys} from 'humps';
-import {PlaylistEntry, Song} from '../../universal/resources';
 import {User, serializePublicUser} from './user';
+import {PlaylistEntry, Song, PlaybackSource} from '../../universal/resources';
 import {ENTRY_PAGE_LIMIT} from '../../universal/constants';
 
 interface CreateEntryOptions {
   userId: number;
   songId: number;
-  youtubeUrl: string;
   note: string;
+
+  source: PlaybackSource;
+
+  youtubeUrl?: string;
+  bandcampTrackId?: string;
+  bandcampStreamingUrl?: string;
+  bandcampTrackUrl?: string;
 }
 
 export async function addSongToPlaylist(values: CreateEntryOptions): Promise<PlaylistEntry> {
@@ -36,7 +42,13 @@ function serializePlaylistEntry(row: any): PlaylistEntry {
 
   return {
     id: entry.id,
+
+    source: entry.source,
+
     youtubeUrl: entry.youtube_url,
+    bandcampStreamingUrl: entry.bandcamp_streaming_url,
+    bandcampUrl: entry.bandcamp_url,
+
     note: entry.note,
     added: entry.created_at,
     isLiked: row.is_liked,

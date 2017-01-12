@@ -8,6 +8,7 @@ import {PlaylistEntry} from '../../../universal/resources';
 import serializeSongLabel from '../../util/serializeSongLabel';
 
 import Youtube from './Youtube';
+import Bandcamp from './Bandcamp';
 import Icon from '../Icon';
 
 const playIcon = require('../../../../assets/play.svg');
@@ -63,10 +64,32 @@ export default class VideoPlayer extends React.Component<Props, {}> {
     }
   }
 
+  renderEmbed() {
+    const {nowPlaying, isPlaying} = this.props.playbackStore!;
+
+    if (!nowPlaying) {
+      return null;
+    }
+
+    const commonProps = {
+      playing: isPlaying,
+      onEnded: () => this.handleSongEnd()
+    };
+
+    if (nowPlaying.source === 'bandcamp') {
+      return (
+        <Bandcamp url={nowPlaying.bandcampStreamingUrl} {...commonProps} />
+      );
+    } else {
+      return (
+        <Youtube url={nowPlaying.youtubeUrl} {...commonProps} />
+      );
+    }
+  }
+
   render() {
     const {nowPlaying, isPlaying} = this.props.playbackStore!;
 
-    const url = nowPlaying ? nowPlaying.youtubeUrl : null;
     const artist = nowPlaying ? nowPlaying.song.artists.join(', ') : null;
     const title = nowPlaying ? nowPlaying.song.title : '(nothing playing)';
 
@@ -74,7 +97,7 @@ export default class VideoPlayer extends React.Component<Props, {}> {
 
     return (
       <div className="audio-player">
-        <Youtube url={url} playing={isPlaying} onEnded={() => this.handleSongEnd()} />
+        {this.renderEmbed()}
 
         <div className="audio-player--controls">
           <button className="play-pause-button" onClick={() => this.handlePlayPauseClick()}

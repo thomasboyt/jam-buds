@@ -4,7 +4,7 @@ import {ShareLinkDetails} from '../../universal/resources';
 
 const YOUTUBE_URL = /https:\/\/www\.youtube\.com\/watch\?v=(.*)/;
 
-export async function getYoutubeDetails(url: string): Promise<ShareLinkDetails> {
+export async function getYoutubeDetails(url: string) {
   const id = url.match(YOUTUBE_URL)![1];
 
   const params = qs.stringify({

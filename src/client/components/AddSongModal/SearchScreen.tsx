@@ -60,12 +60,12 @@ class SearchScreen extends React.Component<Props, {}> {
   }
 
   renderNotEmbeddable() {
-    const {shareTitle} = this.props.addSongStore!.txn;
+    const {shareTitle, shareSourceName} = this.props.addSongStore!.txn;
 
     return (
       <div>
         <p>
-          You tried to share the video "{shareTitle}" via Youtube, but unfortunately, this video can't be embedded on Jam Buds due to restrictions set by the video's uploader.
+          You tried to share the video "{shareTitle}" via {shareSourceName}, but unfortunately, this video can't be embedded on Jam Buds due to restrictions set by the video's uploader.
         </p>
         <p>
           We recommend trying to find another video for this song!
@@ -78,7 +78,7 @@ class SearchScreen extends React.Component<Props, {}> {
   }
 
   renderLoaded() {
-    const {shareTitle, manualEntry, shareEmbeddable} = this.props.addSongStore!.txn;
+    const {shareTitle, manualEntry, shareEmbeddable, shareSourceName} = this.props.addSongStore!.txn;
 
     if (!shareEmbeddable) {
       return this.renderNotEmbeddable();
@@ -87,7 +87,7 @@ class SearchScreen extends React.Component<Props, {}> {
     return (
       <div>
         <p>
-          You're sharing the video "{shareTitle}" via YouTube.
+          You're sharing the video "{shareTitle}" via {shareSourceName}.
         </p>
 
         {manualEntry ? this.renderManualEntry() : this.renderSearch()}

@@ -5,15 +5,14 @@ import AddSongStore from '../../stores/AddSongStore';
 import getSongsSearch from '../../api/getSongsSearch';
 
 import * as classNames from 'classnames';
+import {getPlaybackSourceForUrl} from '../../../universal/playbackSources';
 
 interface Props {
   addSongStore?: AddSongStore
 }
 
-const YOUTUBE_RE = /https:\/\/www\.youtube\.com\/watch\?v=(.*)/;
-
-function validYoutubeAddress(url: string): boolean {
-  return YOUTUBE_RE.test(url);
+function isValidUrl(url: string): boolean {
+  return getPlaybackSourceForUrl(url) !== null;
 }
 
 @inject((allStores) => ({
@@ -39,7 +38,7 @@ class SubmitBox extends React.Component<Props, {}> {
 
     const url = this.state.value;
 
-    if (!validYoutubeAddress(url)) {
+    if (!isValidUrl(url)) {
       this.setState({
         invalid: true,
       });

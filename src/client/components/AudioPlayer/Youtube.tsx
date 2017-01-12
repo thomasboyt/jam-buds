@@ -6,58 +6,75 @@ import {findDOMNode} from 'react-dom';
 import * as queryString from 'query-string';
 
 interface Props {
-  url: string | null;
+  url: string;
   playing: boolean;
   onEnded: () => void;
 }
 
-export default class Youtube extends React.Component<Props, {}> {
-  player: YT.Player;
+// yes this is a singleton
+// no idgaf
+let ytPlayer: YT.Player | null = null;
+let ytPlayerReady = false;
 
-  componentDidMount() {
-    if (!YT.Player && !(window as any).onYoutubeIframeAPIReady) {
-      this.waitForYoutubeAPI();
-    } else {
-      this.setupYoutube();
-    }
-  }
-
-  waitForYoutubeAPI() {
+function setupYoutube() {
+  if (!YT.Player && !(window as any).onYoutubeIframeAPIReady) {
+    // wait for youtube to load and try again
     (window as any).onYoutubeIframeAPIReady = () => {
-      this.setupYoutube();
+      setupYoutube();
     };
+    return;
   }
 
-  setupYoutube() {
-    const tub = findDOMNode(this) as HTMLElement;
-    const videoId = this.props.url ? this.getVideoId(this.props.url) : undefined;
+  const tub = document.createElement('div');
+  document.body.appendChild(tub);
 
-    this.player = new YT.Player(tub, {
-      width: '0',
-      height: '0',
-      videoId: videoId,
+  ytPlayer = new YT.Player(tub, {
+    width: '0',
+    height: '0',
 
-      events: {
-        onReady: (e) => this.onPlayerReady(e),
-        onStateChange: (e) => this.onStateChange(e),
-      }
-    });
+    events: {
+      onReady: (e) => ytPlayerReady = true,
+    },
+  });
+}
+
+setupYoutube();
+
+export default class Youtube extends React.Component<Props, {}> {
+  componentDidMount() {
+    if (!ytPlayer || !ytPlayerReady) {
+      // TODO: Handle Youtube player not being loaded yet!!
+      throw new Error('no player present');
+    }
+
+    const id = this.getVideoId(this.props.url);
+    ytPlayer.loadVideoById(id);
+
+    if (this.props.playing) {
+      ytPlayer.playVideo();
+    }
+
+    ytPlayer.addEventListener('onStateChange', this.onStateChange);
   }
 
-  componentWillReceiveProps(nextProps: Props) {
-    if (!this.player) {
-      // If the player hasn't loaded yet, don't try to change anything
+  componentWillUnmount() {
+    if (!ytPlayer) {
       return;
     }
 
-    if (!nextProps.url) {
-      this.player.stopVideo();
+    ytPlayer.stopVideo();
+    (ytPlayer as any).removeEventListener('onStateChange', this.onStateChange);
+  }
+
+  componentWillReceiveProps(nextProps: Props) {
+    if (!ytPlayer) {
+      // If the player hasn't loaded yet, don't try to change anything
       return;
     }
 
     if (nextProps.url !== this.props.url) {
       const id = this.getVideoId(nextProps.url);
-      this.player.loadVideoById(id);
+      ytPlayer.loadVideoById(id);
     }
 
     if (nextProps.playing !== this.props.playing) {
@@ -69,20 +86,14 @@ export default class Youtube extends React.Component<Props, {}> {
       }
 
       if (!nextProps.playing) {
-        this.player.pauseVideo();
+        ytPlayer.pauseVideo();
       } else {
-        this.player.playVideo();
+        ytPlayer.playVideo();
       }
     }
   }
 
-  onPlayerReady(evt: YT.EventArgs) {
-    if (this.props.playing) {
-      this.player.playVideo();
-    }
-  }
-
-  onStateChange(evt: YT.EventArgs) {
+  onStateChange = (evt: YT.EventArgs) => {
     if (evt.data === YT.PlayerState.ENDED) {
       // cycle to the next song
       this.props.onEnded();

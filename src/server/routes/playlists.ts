@@ -27,9 +27,10 @@ import {
 import {getUserFromRequest, isAuthenticated} from '../auth';
 
 import * as spotify from '../apis/spotify';
+import * as bandcamp from '../apis/bandcamp';
 import {postSongTweet} from '../apis/twitter';
 
-import {Playlist, Feed} from '../../universal/resources';
+import {Playlist, Feed, PlaybackSource} from '../../universal/resources';
 
 export default function registerPlaylistEndpoints(app: Express) {
   // post a new song to your playlist
@@ -55,12 +56,40 @@ export default function registerPlaylistEndpoints(app: Express) {
       }
     }
 
-    const entry = await addSongToPlaylist({
+    if (!req.body.bandcampTrackId && !req.body.youtubeUrl) {
+      return res.status(400).json({
+        error: 'No playback source given',
+      });
+    }
+
+    const source: PlaybackSource = req.body.source;
+
+    let params = {
+      source,
       userId: user.id,
       songId: song.id,
-      youtubeUrl: req.body.youtubeUrl,
       note: req.body.note,
-    });
+      youtubeUrl: req.body.youtubeUrl,
+    };
+
+    if (source === 'bandcamp') {
+      const bandcampTrackId = req.body.bandcampTrackId;
+
+      params = {
+        bandcampTrackId,
+        bandcampStreamingUrl: await bandcamp.getBandcampStreamingUrl(bandcampTrackId),
+        bandcampUrl: req.body.bandcampUrl,
+        ...params,
+      };
+
+    } else if (source === 'youtube') {
+      params = {
+        youtubeUrl: req.body.youtubeUrl,
+        ...params
+      };
+    }
+
+    const entry = await addSongToPlaylist(params);
 
     if (req.body.tweet) {
       await postSongTweet({

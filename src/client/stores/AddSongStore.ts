@@ -3,7 +3,9 @@ import getSongsSearch from '../api/getSongsSearch';
 import getShareLinkDetail from '../api/getShareLinkDetail'
 import addSong from '../api/addSong'
 import {getTweetLength} from '../util/songTweet';
-import {SearchResult} from '../../universal/resources';
+
+import {SearchResult, ManualEntrySuggestion, PlaybackSource} from '../../universal/resources';
+import {getPlaybackSourceName} from '../../universal/playbackSources';
 
 import FeedStore from './FeedStore';
 import ProfileStore from './ProfileStore';
@@ -18,6 +20,8 @@ export enum AddSongState {
 class AddSongTransaction {
   @observable state: AddSongState = AddSongState.initial;
   @observable shareLink: string;
+  @observable shareSource: PlaybackSource;
+  @observable shareSourceName: string;
 
   @observable loadedShareLink: boolean = false;
   @observable shareTitle: string;
@@ -28,7 +32,10 @@ class AddSongTransaction {
 
   @observable selectedSong: SearchResult | null = null;
 
+  @observable bandcampTrackId?: string;
+
   @observable manualEntry: boolean = false;
+  @observable manualEntrySuggestion?: ManualEntrySuggestion;
   @observable manualArtist?: string;
   @observable manualTitle?: string;
 
@@ -70,8 +77,29 @@ export default class AddSongStore {
     this.txn.state = AddSongState.searching;
 
     const detail = await getShareLinkDetail(url);
-    this.txn.shareTitle = detail.title;
+
     this.txn.shareEmbeddable = detail.embeddable;
+    this.txn.shareTitle = detail.title;
+    this.txn.shareSource = detail.source;
+    this.txn.shareSourceName = getPlaybackSourceName(detail.source);
+
+    if (detail.spotify) {
+      // go ahead and advance to the last screen
+      this.txn.selectedSong = detail.spotify;
+      this.txn.state = AddSongState.confirm;
+    }
+
+    if (detail.manualEntrySuggestion) {
+      this.txn.manualEntrySuggestion = detail.manualEntrySuggestion;
+
+      if (!detail.spotify) {
+        this.txn.manualEntry = true;
+      }
+    }
+
+    if (detail.source === 'bandcamp') {
+      this.txn.bandcampTrackId = detail.bandcampTrackId!;
+    }
 
     this.txn.loadedShareLink = true;
   }
@@ -109,13 +137,19 @@ export default class AddSongStore {
 
     const note = noteText !== '' ? noteText : undefined;
 
+    const source = this.txn.shareSource;
+
     const entry = await addSong({
+      source: this.txn.shareSource,
+
       manualEntry: this.txn.manualEntry,
       artist: this.txn.manualArtist,
       title: this.txn.manualTitle,
       spotifyId: this.txn.selectedSong && this.txn.selectedSong.spotifyId,
 
-      youtubeUrl: this.txn.shareLink,
+      youtubeUrl: source === 'youtube' ? this.txn.shareLink : undefined,
+      bandcampTrackId: source === 'bandcamp' ? this.txn.bandcampTrackId! : undefined,
+      bandcampUrl: source === 'bandcamp' ? this.txn.shareLink : undefined,
 
       tweet: this.txn.tweetText,
       note,

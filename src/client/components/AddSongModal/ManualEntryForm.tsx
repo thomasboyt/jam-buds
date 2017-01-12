@@ -11,9 +11,15 @@ interface Props {
   addSongStore: allStores.addSongStore as AddSongStore,
 })) @observer
 export default class ManualEntryForm extends React.Component<Props, {}> {
-  state = {
-    artist: '',
-    title: '',
+  state = this.getDefaultState();
+
+  getDefaultState() {
+    const {manualEntrySuggestion} = this.props.addSongStore!.txn;
+
+    return {
+      artist: manualEntrySuggestion ? manualEntrySuggestion.artist : '',
+      title: manualEntrySuggestion ? manualEntrySuggestion.title : '',
+    };
   }
 
   handleChange(e: React.SyntheticEvent<HTMLInputElement>) {

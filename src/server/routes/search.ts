@@ -5,21 +5,21 @@ import * as spotify from '../apis/spotify';
 import * as bandcamp from '../apis/bandcamp';
 import * as youtube from '../apis/youtube';
 
-import {SearchResult} from '../../universal/resources';
+import {getPlaybackSourceForUrl} from '../../universal/playbackSources';
 
-const SPOTIFY_URL = /https:\/\/open\.spotify\.com\/track\/(.*)/;
-const BANDCAMP_URL = /https:\/\/(.*)\.bandcamp\.com\/track\/(.*)/;
-const YOUTUBE_URL = /https:\/\/www\.youtube\.com\/watch\?v=(.*)/;
+import {SearchResult, PlaybackSource} from '../../universal/resources';
+
+function serializeSpotifyResult(result: any): SearchResult {
+  return {
+    name: result.name,
+    album: result.album.name,
+    artists: result.artists.map((artist: any) => artist.name),
+    spotifyId: result.id,
+  };
+}
 
 function serializeSpotifyResults(results: any[]): SearchResult[] {
-  return results.map((result) => {
-    return {
-      name: result.name,
-      album: result.album.name,
-      artists: result.artists.map((artist: any) => artist.name),
-      spotifyId: result.id,
-    };
-  });
+  return results.map((result) => serializeSpotifyResult(result));
 }
 
 export default function registerSearchEndpoints(app: Express) {
@@ -28,20 +28,43 @@ export default function registerSearchEndpoints(app: Express) {
   app.get('/share-details', isAuthenticated, wrapAsyncRoute(async (req, res) => {
     const url = req.query.url;
 
-    if (!YOUTUBE_URL.test(url)) {
-      res.status(400).send({
-        error: 'Invalid URL given: must be a Youtube video'
-      });
+    const source = getPlaybackSourceForUrl(url);
 
-      return;
+    if (source === null) {
+      return res.status(400).send({
+        error: 'Invalid URL',
+      });
     }
 
-    const {title, embeddable} = await youtube.getYoutubeDetails(url);
+    if (source === 'youtube') {
+      const {title, embeddable} = await youtube.getYoutubeDetails(url);
 
-    res.send({
-      title,
-      embeddable,
-    });
+      return res.send({
+        source: 'youtube',
+        title,
+        embeddable,
+      });
+
+    } else if (source === 'bandcamp') {
+      const {title, artist, trackId, embeddable, spotifyQuery} = await bandcamp.getBandcampInformation(url);
+
+      const spotifyResults = await spotify.search(spotifyQuery);
+
+      let spotifyInfo = null;
+      if (spotifyResults.length > 0) {
+        spotifyInfo = serializeSpotifyResult(spotifyResults[0]);
+      }
+
+      return res.send({
+        source: 'bandcamp',
+        title: `${title} - ${artist}`,
+        bandcampTrackId: trackId,
+        embeddable,
+        spotify: spotifyInfo,
+        manualEntrySuggestion: {title, artist},
+      });
+    }
+
   }));
 
   // search for a song using $whatever_api_i_wrap

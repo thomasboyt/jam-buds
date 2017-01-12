@@ -188,7 +188,42 @@ export default class PlaylistItem extends React.Component<Props, {}> {
         <Icon className="playlist-entry--album-art -placeholder" glyph={albumPlaceholderIcon} />
       );
     }
+  }
 
+  renderSources() {
+    const {track, colorScheme} = this.props;
+
+    const playbackSourceLink = {
+      youtube: (
+        <a href={track.youtubeUrl} target="_blank" rel="noopener noreferrer"
+          style={{color: colorScheme!.entryLinkColor}}>
+          Youtube
+        </a>
+      ),
+      bandcamp: (
+        <a href={track.bandcampUrl} target="_blank" rel="noopener noreferrer"
+          style={{color: colorScheme!.entryLinkColor}}>
+          Bandcamp
+        </a>
+      )
+    }[track.source];
+
+    const spotifyLink = track.song.spotifyId && (
+      <span>
+        {' / '}
+        <a href={spotifyUrl(track)} target="_blank" rel="noopener noreferrer"
+          style={{color: colorScheme!.entryLinkColor}}>
+          Spotify
+        </a>
+      </span>
+    );
+
+    return (
+      <span>
+        {playbackSourceLink}
+        {spotifyLink}
+      </span>
+    )
   }
 
   render() {
@@ -242,20 +277,9 @@ export default class PlaylistItem extends React.Component<Props, {}> {
 
             <p>
               <em>
-                Listen to this song on:{' '}
-                <a href={track.youtubeUrl} target="_blank" rel="noopener noreferrer"
-                  style={{color: colorScheme!.entryLinkColor}}>
-                  Youtube
-                </a>
-                {track.song.spotifyId &&
-                  <span>
-                    {' / '}
-                    <a href={spotifyUrl(track)} target="_blank" rel="noopener noreferrer"
-                      style={{color: colorScheme!.entryLinkColor}}>
-                      Spotify
-                    </a>
-                  </span>
-                }
+                Listen to this song on:
+                {' '}
+                {this.renderSources()}
               </em>
             </p>
           </div>

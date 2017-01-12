@@ -4,13 +4,18 @@ import likeEntry from '../api/likeEntry';
 import unlikeEntry from '../api/unlikeEntry';
 import deleteEntry from '../api/deleteEntry';
 
-import {PlaylistEntry as EntryResource, Song, PublicUser} from '../../universal/resources';
+import {PlaylistEntry as EntryResource, Song, PublicUser, PlaybackSource} from '../../universal/resources';
 
 import PaginatedPlaylistEntriesList from './PaginatedPlaylistEntriesList';
 
 export default class PlaylistEntry implements EntryResource {
   @observable id: number;
+
+  @observable source: PlaybackSource;
   @observable youtubeUrl: string;
+  @observable bandcampStreamingUrl: string;
+  @observable bandcampUrl: string;
+
   @observable note: string | null;
   @observable added: string;
   @observable isLiked: boolean;
@@ -22,7 +27,7 @@ export default class PlaylistEntry implements EntryResource {
 
   constructor(entry: EntryResource, list: PaginatedPlaylistEntriesList) {
     Object.assign(this, entry);
-    this.list =list;
+    this.list = list;
   }
 
   @observable likeRequest?: IPromiseBasedObservable<void>;
