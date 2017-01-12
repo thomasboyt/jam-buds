@@ -28,6 +28,7 @@ describe('routes/likes', () => {
         userId: dan.id,
         youtubeUrl: uniqueString(),
         note: uniqueString(),
+        source: 'youtube',
       });
 
       const req = request(app)

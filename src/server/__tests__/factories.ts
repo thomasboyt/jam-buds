@@ -1,7 +1,7 @@
 import {createUser, User} from '../models/user';
 import {createSongFromManualEntry, Song} from '../models/song';
 import {addSongToPlaylist} from '../models/playlist';
-import {PlaylistEntry} from '../../universal/resources';
+import {PlaylistEntry, PlaybackSource} from '../../universal/resources';
 
 // SHRUG
 let uniqueCounter = 0;
@@ -30,11 +30,14 @@ export async function songFactory(artist: string = uniqueString(), title: string
 }
 
 export async function entryFactory(opts: Object = {}): Promise<PlaylistEntry> {
+  const source: PlaybackSource = 'youtube';
+
   const defaults = {
     userId: (await userFactory()).id,
     songId: (await songFactory()).id,
     youtubeUrl: uniqueString(),
     note: uniqueString(),
+    source,
   };
 
   const finalOpts = {...defaults, ...opts};

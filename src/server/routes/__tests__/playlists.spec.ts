@@ -69,7 +69,8 @@ describe('routes/playlists', () => {
           manualEntry: true,
           artist: 'Taeko Onuki',
           title: '4:00 AM',
-          youtubeUrl: 'https://www.youtube.com/watch?v=YixAD9GIAuY'
+          youtubeUrl: 'https://www.youtube.com/watch?v=YixAD9GIAuY',
+          source: 'youtube',
         });
 
       const res: request.Response = await (req as any);
