@@ -2,9 +2,19 @@ import createApp from './createApp';
 
 import {configureDatabase} from './db';
 
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV !== 'production' && !process.env.CI) {
   console.log('*** Loading .env file!');
-  require('dotenv').config();
+
+  const dotenv = require('dotenv');
+
+  if (process.env.NODE_ENV === 'test') {
+    console.log('*** Loading .env.test file!');
+    dotenv.config({
+      path: './.env.test',
+    });
+  }
+
+  dotenv.config();
 }
 
 configureDatabase();

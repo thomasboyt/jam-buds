@@ -5,6 +5,10 @@ node_js:
 
 addons:
   postgresql: "9.4"
+
+  # this is the last version that supports the selenium extension used I guess??
+  firefox: "45.0"
+
   apt:
     sources:
       - ubuntu-toolchain-r-test
@@ -13,14 +17,30 @@ addons:
 
 before_script:
   - psql -c 'create database jambuds_test;' -U postgres
+  # enable firefox
+  - export DISPLAY=:99.0
+  - sh -e /etc/init.d/xvfb start
+  # start server
+  - npm run run-server &
+  - npm run run-client &
+  # a little padding time for things to start up
+  - sleep 5
 
 script:
   - npm test
+  - npm run features
 
 env:
   global:
     - CXX=g++-4.8
+    - NODE_ENV=test
+
+    # In addition to these, API keys for feature tests are included in Travis's settings page
     - DATABASE_URL=postgres://postgres@localhost:5432/jambuds_test
+    - PORT=3001
+    - SERVER_URL=http://localhost:3001
+    - DEV_SERVER_PORT=8081
+    - STATIC_URL=http://localhost:8081
 
 cache:
   directories:

@@ -7,3 +7,10 @@
 # These are environment variables used only in tests
 
 DATABASE_URL=postgres://your_name_here@localhost:5432/jambuds_test
+
+# Values used for feature testing, so feature test servers can run alongside dev servers
+PORT=3001
+SERVER_URL=http://localhost:3001
+
+DEV_SERVER_PORT=8081
+STATIC_URL=http://localhost:8081

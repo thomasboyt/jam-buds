@@ -2,6 +2,22 @@ var createVendorChunk = require('webpack-create-vendor-chunk');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 
+const dotenv = require('dotenv');
+
+if (!process.env.CI) {
+  if (process.env.NODE_ENV === 'test') {
+    dotenv.config({
+      path: '.env.test',
+    });
+  } else if (process.env.NODE_ENV === 'production') {
+    dotenv.config({
+      path: '.env.production',
+    });
+  } else {
+    dotenv.config();
+  }
+}
+
 module.exports = {
   entry: {
     app: './src/client/entry.tsx',
@@ -70,5 +86,6 @@ module.exports = {
   devServer: {
     contentBase: 'static',
     historyApiFallback: true,
+    port: process.env.DEV_SERVER_PORT || 8080,
   },
 };

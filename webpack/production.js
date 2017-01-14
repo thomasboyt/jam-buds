@@ -6,12 +6,6 @@ var config = require('./base');
 var execSync = require('child_process').execSync;
 var sha = execSync('git rev-parse --short HEAD', {encoding: 'utf8'}).trim();
 
-const dotenv = require('dotenv');
-
-dotenv.config({
-  path: './.env.production',
-});
-
 module.exports = webpackMerge(config, {
   plugins: [
     new webpack.DefinePlugin({
