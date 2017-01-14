@@ -17,7 +17,7 @@ export default class AddSongButton extends React.Component<Props, {}> {
 
   render() {
     return (
-      <button className="add-song" onClick={() => this.handleClick()}>
+      <button className="add-song" onClick={() => this.handleClick()} data-test="add-song">
         + Post a song!
       </button>
     )

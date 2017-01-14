@@ -66,6 +66,7 @@ class SubmitBox extends React.Component<Props, {}> {
 
         <div className="input-container">
           <input type="text"
+            data-test="song-url-field"
             className={inputClassName}
             onChange={(e) => this.handleChange(e)}
             value={this.state.value}

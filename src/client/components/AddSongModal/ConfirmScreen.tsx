@@ -79,7 +79,7 @@ class ConfirmScreen extends React.Component<Props, {}> {
 
         {this.state.crossPostEnabled ? <TwitterShareBox /> : null}
 
-        <button onClick={() => this.handleSubmit()} className="submit">
+        <button onClick={() => this.handleSubmit()} className="submit" data-test="add-song-confirm">
           post it!!
         </button>
       </div>
