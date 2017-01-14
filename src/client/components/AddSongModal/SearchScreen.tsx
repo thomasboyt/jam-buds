@@ -52,7 +52,7 @@ class SearchScreen extends React.Component<Props, {}> {
         <SearchResults />
 
         Or{' '}
-        <a onClick={(e) => this.handleToggleManualEntry(e)} href="#">
+        <a onClick={(e) => this.handleToggleManualEntry(e)} href="#" data-test="use-manual-entry">
           manually enter a title and artist
         </a>
       </div>
