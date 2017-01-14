@@ -31,5 +31,12 @@ export default function createApp(env?: string) {
     app.use(raven.middleware.express.errorHandler(process.env.SENTRY_DSN));
   }
 
+  const errorLogger: express.ErrorRequestHandler = (err, req, res, next) => {
+    console.error(err.stack);
+    next(err);
+  };
+
+  app.use(errorLogger);
+
   return app;
 }

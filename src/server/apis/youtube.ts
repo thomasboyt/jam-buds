@@ -13,7 +13,7 @@ export async function getYoutubeDetails(url: string) {
     key: process.env.GOOGLE_API_KEY,
   });
 
-  const resp = await axios.get(`https://www.googleapis.com/youtube/v3/videos?${params}`)
+  const resp = await axios.get(`https://www.googleapis.com/youtube/v3/videos?${params}`);
 
   const video = resp.data.items[0];
   const embeddable = video.status.embeddable;
