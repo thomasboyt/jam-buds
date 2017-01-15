@@ -61,6 +61,21 @@ html, body, .react-root, .app-container, .page-container {
 .sidebar {
   background: lighten($black, 15%);
   color: white;
+
+  @media (max-width: $breakpoint-small) {
+    position: fixed;
+    width: 300px;
+    height: 100%;
+    top: $header-height;
+    left: -300px;
+    z-index: 2;
+
+    transition: 0.2s left ease-in;
+
+    &.-open {
+      left: 0;
+    }
+  }
 }
 
 .main-inner {
@@ -74,12 +89,24 @@ html, body, .react-root, .app-container, .page-container {
   align-items: stretch;
 }
 
+.container-overlay {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.2);
+}
+
 .sidebar {
   flex: 0 0 250px;
 }
 
 .main {
   flex: 1;
+
+  // this rule allows this to properly shrink/apply overflow to playlist items on mobile
+  min-width: 0;
 
   h2 {
     margin-top: 0px;

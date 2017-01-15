@@ -42,6 +42,7 @@ export default class AboutScreen extends React.Component<{}, {}> {
           <li>Close by Viktor Vorobyev from the Noun Project</li>
           <li>Heart by Alfa Design from the Noun Project</li>
           <li>Note by Bernar Novalyi from the Noun Project</li>
+          <li>menu by Ismael Ruiz from the Noun Project</li>
         </ul>
 
         <h2>nerd things</h2>

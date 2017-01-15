@@ -27,6 +27,7 @@ import PlaybackStore from './stores/PlaybackStore';
 import FeedStore from './stores/FeedStore';
 import FindFriendsStore from './stores/FindFriendsStore';
 import ColorSchemeStore from './stores/ColorSchemeStore';
+import UIStore from './stores/UIStore';
 
 const userStore = new UserStore();
 const profileStore = new ProfileStore();
@@ -35,9 +36,10 @@ const feedStore = new FeedStore();
 const findFriendsStore = new FindFriendsStore();
 const addSongStore = new AddSongStore(feedStore, profileStore);
 const colorSchemeStore = new ColorSchemeStore();
+const uiStore = new UIStore();
 
 const stores = {
-  userStore, addSongStore, profileStore, playbackStore, feedStore, findFriendsStore, colorSchemeStore,
+  userStore, addSongStore, profileStore, playbackStore, feedStore, findFriendsStore, colorSchemeStore, uiStore,
 };
 
 (window as any).stores = stores;

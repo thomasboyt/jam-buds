@@ -14,18 +14,51 @@
     display: flex;
     align-items: center;
     margin: 0 auto;
+    height: $header-height;
+
+    .sidebar-toggle {
+      flex: 0 0 auto;
+      // position: absolute;
+      // left: 0;
+      // padding: 0 0px;
+      // height: 100%;
+      // width: 70px;
+
+      color: white;
+
+      display: none;
+
+      .icon {
+        fill: white;
+        width: 40px;
+        height: 40px;
+      }
+
+      @media (max-width: $breakpoint-small) {
+        display: block;
+      }
+    }
+
+    .header-logo {
+      flex: 0 0 auto;
+    }
 
     h1 {
-      flex: 0 0 auto;
       margin: 0;
       margin-top: -8px;
+
+      @media (max-width: $breakpoint-small) {
+        margin: 0 auto;
+        margin-top: -10px;
+      }
     }
 
     .audio-player {
-      flex: 0 1 500px;
-      max-width: 500px;
+      flex: 0 1 auto;
+      min-width: 0;
       height: 80px;
       margin-left: auto;
+      height: $header-height;
     }
   }
 }

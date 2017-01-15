@@ -260,11 +260,13 @@ export default class PlaylistItem extends React.Component<Props, {}> {
             onClick={(e) => this.handleClick(e)}>
             {this.renderAlbumArt()}
 
-            <span className="title">
-              {track.song.artists.join(', ')}
-              <br/>
-              {track.song.title}
-            </span>
+            <div className="title">
+              <div className="title-content">
+                {track.song.artists.join(', ')}
+                <br/>
+                {track.song.title}
+              </div>
+            </div>
 
             <span className="playlist-entry--actions">
               {this.renderNoteIcon()}

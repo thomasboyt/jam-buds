@@ -5,6 +5,7 @@
   .audio-player--controls {
     flex: 0 0 auto;
     display: flex;
+    margin-left: auto;
 
     button {
       flex: 0 0 auto;
@@ -37,6 +38,10 @@
     padding: 10px 15px;
     color: white;
     min-width: 0;
+
+    @media (max-width: $breakpoint-small) {
+      display: none;
+    }
 
     > div {
       white-space: nowrap;

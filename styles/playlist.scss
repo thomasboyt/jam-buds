@@ -36,14 +36,29 @@
     }
 
     .title {
-      flex: 1 0 auto;
+      > .title-content {
+        display: inline-block;
+        width: 100%;
+
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      flex-shrink: 1;
+      flex-grow: 1;
+      max-width: 100%;
+      min-width: 0;
+
       padding: 0 20px;
       line-height: 24px;
     }
   }
 
   .playlist-entry--actions {
-    flex: 0 0 auto;
+    flex-grow: 0;
+    flex-shrink: 0;
+
     margin-left: auto;
     margin-right: 10px;
 
