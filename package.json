@@ -12,7 +12,7 @@
     "run-server": "nodemon --watch 'src/**/*.ts' --ignore 'src/client/**/*.ts' --exec 'ts-node --fast' src/server/entry.ts",
     "run-server-production": "ts-node --fast 'src/server/entry.ts'",
     "build": "rm -rf build/ && webpack --config webpack/production.js && cp -r static/* build/",
-    "deploy": "npm run build && firebase deploy",
+    "deploy": "NODE_ENV=production npm run build && firebase deploy",
     "resetdb": "./scripts/resetdb",
     "test": "NODE_ENV=test mocha --require ts-node/register 'src/server/**/*.spec.ts'",
     "features": "wdio"
