@@ -32,6 +32,10 @@ function setupYoutube() {
     width: '0',
     height: '0',
 
+    playerVars: {
+      playsinline: '1',
+    } as any,
+
     events: {
       onReady: (e) => ytPlayerReady = true,
     },
