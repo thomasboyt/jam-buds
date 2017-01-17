@@ -136,7 +136,9 @@ button:active {
 }
 
 .logged-out-homepage {
-  width: 600px;
+  position: relative;
+
+  max-width: 600px;
   height: 800px;
   margin: 0 auto;
   margin-bottom: 80px;
@@ -145,6 +147,7 @@ button:active {
   background-image: url('../assets/ghettoblaster_corgi.png');
   background-color: white;
   background-size: cover;
+  background-position: center;
   background-repeat: no-repeat;
   border: 15px hotpink solid;
 
@@ -174,7 +177,11 @@ button:active {
   }
 
   .attribution {
-    margin-top: 65px;
+    position: absolute;
+    text-align: center;
+    left: 0;
+    right: 0;
+    bottom: 15px;
 
     font-size: 12px;
 
