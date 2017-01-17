@@ -4,6 +4,7 @@ import {isAuthenticated} from '../auth';
 import * as spotify from '../apis/spotify';
 import * as bandcamp from '../apis/bandcamp';
 import * as youtube from '../apis/youtube';
+import * as soundcloud from '../apis/soundcloud';
 
 import {getPlaybackSourceForUrl} from '../../universal/playbackSources';
 
@@ -62,6 +63,15 @@ export default function registerSearchEndpoints(app: Express) {
         embeddable,
         spotify: spotifyInfo,
         manualEntrySuggestion: {title, artist},
+      });
+    } else if (source === 'soundcloud') {
+      const {streamable, trackId, title} = await soundcloud.getDetailsFromUrl(url);
+
+      return res.send({
+        source: 'soundcloud',
+        title,
+        soundcloudTrackId: trackId,
+        embeddable: streamable,
       });
     }
 

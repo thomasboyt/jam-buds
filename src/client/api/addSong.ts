@@ -12,8 +12,12 @@ interface Params {
 
   source: PlaybackSource,
   youtubeUrl?: string;
+
   bandcampTrackId?: string;
   bandcampUrl?: string;
+
+  soundcloudTrackId?: string;
+  soundcloudUrl?: string;
 }
 
 export default async function addSong(params: Params): Promise<PlaylistEntry> {

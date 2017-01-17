@@ -1,4 +1,4 @@
-export type PlaybackSource = 'youtube' | 'bandcamp';
+export type PlaybackSource = 'youtube' | 'bandcamp' | 'soundcloud';
 
 export interface SearchResult {
   artists: string[];
@@ -26,8 +26,12 @@ export interface PlaylistEntry {
 
   source: PlaybackSource;
   youtubeUrl?: string;
+
   bandcampStreamingUrl?: string;
   bandcampUrl?: string;
+
+  soundcloudStreamingUrl?: string;
+  soundcloudUrl?: string;
 }
 
 export interface Feed {
@@ -75,6 +79,7 @@ export interface ShareLinkDetails {
   title: string;
 
   bandcampTrackId?: string;
+  soundcloudTrackId?: string;
   spotify?: SearchResult | null;
   manualEntrySuggestion?: ManualEntrySuggestion;
 }

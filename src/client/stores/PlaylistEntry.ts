@@ -12,9 +12,14 @@ export default class PlaylistEntry implements EntryResource {
   @observable id: number;
 
   @observable source: PlaybackSource;
+
   @observable youtubeUrl: string;
+
   @observable bandcampStreamingUrl: string;
   @observable bandcampUrl: string;
+
+  @observable soundcloudStreamingUrl: string;
+  @observable soundcloudUrl: string;
 
   @observable note: string | null;
   @observable added: string;
@@ -22,6 +27,16 @@ export default class PlaylistEntry implements EntryResource {
 
   @observable song: Song;
   @observable user: PublicUser;
+
+  @computed get sourceUrl(): string {
+    const urls = {
+      youtube: this.youtubeUrl,
+      bandcamp: this.bandcampUrl,
+      soundcloud: this.soundcloudUrl,
+    };
+
+    return urls[this.source];
+  }
 
   list: PaginatedPlaylistEntriesList;
 

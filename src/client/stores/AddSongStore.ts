@@ -33,6 +33,7 @@ class AddSongTransaction {
   @observable selectedSong: SearchResult | null = null;
 
   @observable bandcampTrackId?: string;
+  @observable soundcloudTrackId?: string;
 
   @observable manualEntry: boolean = false;
   @observable manualEntrySuggestion?: ManualEntrySuggestion;
@@ -99,6 +100,9 @@ export default class AddSongStore {
 
     if (detail.source === 'bandcamp') {
       this.txn.bandcampTrackId = detail.bandcampTrackId!;
+
+    } else if (detail.source === 'soundcloud') {
+      this.txn.soundcloudTrackId = detail.soundcloudTrackId!;
     }
 
     this.txn.loadedShareLink = true;
@@ -140,7 +144,7 @@ export default class AddSongStore {
     const source = this.txn.shareSource;
 
     const entry = await addSong({
-      source: this.txn.shareSource,
+      source,
 
       manualEntry: this.txn.manualEntry,
       artist: this.txn.manualArtist,
@@ -150,6 +154,9 @@ export default class AddSongStore {
       youtubeUrl: source === 'youtube' ? this.txn.shareLink : undefined,
       bandcampTrackId: source === 'bandcamp' ? this.txn.bandcampTrackId! : undefined,
       bandcampUrl: source === 'bandcamp' ? this.txn.shareLink : undefined,
+
+      soundcloudTrackId: source === 'soundcloud' ? this.txn.soundcloudTrackId! : undefined,
+      soundcloudUrl: source === 'soundcloud' ? this.txn.shareLink : undefined,
 
       tweet: this.txn.tweetText,
       note,

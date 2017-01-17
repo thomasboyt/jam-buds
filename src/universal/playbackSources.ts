@@ -2,6 +2,7 @@ import {PlaybackSource} from './resources';
 
 const BANDCAMP_URL = /https:\/\/(.*)\.bandcamp\.com\/track\/(.*)/;
 const YOUTUBE_URL = /https:\/\/www\.youtube\.com\/watch\?v=(.*)/;
+const SOUNDCLOUD_URL = /https:\/\/soundcloud\.com\/(.*)/;
 
 interface Source {
   value: PlaybackSource;
@@ -17,6 +18,10 @@ const sources: Source[] = [{
   value: 'bandcamp',
   name: 'Bandcamp',
   regex: BANDCAMP_URL,
+}, {
+  value: 'soundcloud',
+  name: 'SoundCloud',
+  regex: SOUNDCLOUD_URL,
 }];
 
 export function getPlaybackSourceName(sourceId: PlaybackSource): string {

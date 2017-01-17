@@ -10,7 +10,8 @@ const songs = [
     "title": "Diamond Girls",
     "spotify_id": "4sxikSNTEKjvpdupyxxjGL",
     "album_art": "https://i.scdn.co/image/327c4479345a3db7d0f3fbd5352e778473eea4eb",
-  }
+  },
+  {"id":6,"created_at":"2017-01-17T16:43:09.414925-05:00","artists":["Buscabulla","Helado Negro"],"album":"Frío (feat. Helado Negro)","title":"Frío (feat. Helado Negro)","spotify_id":"3hjBsjNmm2fFCggCtP5hJx","album_art":"https://i.scdn.co/image/e9ee68a74f3930e18237b3a53953820f1a2d9a5f"}
 ];
 
 const entries = [
@@ -44,6 +45,8 @@ const entries = [
     "bandcamp_streaming_url": "http://popplers5.bandcamp.com/download/track?enc=mp3-128&fsig=051a8b8c4e779eb7379f93eb38dffdf3&id=1196536009&stream=1&ts=1484257467.0",
     "bandcamp_url": "https://guerillatoss.bandcamp.com/track/diamond-girls",
   },
+
+  {"id":6,"created_at":"2017-01-17T16:43:09.421355-05:00","song_id":6,"user_id":1,"youtube_url":null,"note":null,"source":"soundcloud","bandcamp_track_id":null,"bandcamp_url":null,"bandcamp_streaming_url":null,"soundcloud_track_id":"302435398","soundcloud_url":"https://soundcloud.com/buscabulla/frio-feat-helado-negro","soundcloud_streaming_url":"https://api.soundcloud.com/tracks/302435398/stream?&consumer_key=3ae6bc27002808463649550a768cca8f"}
 ];
 
 module.exports = {

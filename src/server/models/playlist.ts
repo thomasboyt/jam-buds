@@ -12,9 +12,14 @@ interface CreateEntryOptions {
   source: PlaybackSource;
 
   youtubeUrl?: string;
+
   bandcampTrackId?: string;
   bandcampStreamingUrl?: string;
   bandcampTrackUrl?: string;
+
+  soundcloudTrackId?: string;
+  soundcloudStreamingUrl?: string;
+  soundcloudTrackUrl?: string;
 }
 
 export async function addSongToPlaylist(values: CreateEntryOptions): Promise<PlaylistEntry> {
@@ -48,6 +53,9 @@ function serializePlaylistEntry(row: any): PlaylistEntry {
     youtubeUrl: entry.youtube_url,
     bandcampStreamingUrl: entry.bandcamp_streaming_url,
     bandcampUrl: entry.bandcamp_url,
+
+    soundcloudStreamingUrl: entry.soundcloud_streaming_url,
+    soundcloudUrl: entry.soundcloud_url,
 
     note: entry.note,
     added: entry.created_at,

@@ -6,7 +6,7 @@ interface Props {
   onEnded: () => void;
 }
 
-export default class Bandcamp extends React.Component<Props, {}> {
+export default class AudioStream extends React.Component<Props, {}> {
   player: HTMLAudioElement;
 
   componentDidMount() {

@@ -28,6 +28,7 @@ import {getUserFromRequest, isAuthenticated} from '../auth';
 
 import * as spotify from '../apis/spotify';
 import * as bandcamp from '../apis/bandcamp';
+import * as soundcloud from '../apis/soundcloud';
 import {postSongTweet} from '../apis/twitter';
 
 import {Playlist, Feed, PlaybackSource} from '../../universal/resources';
@@ -56,7 +57,7 @@ export default function registerPlaylistEndpoints(app: Express) {
       }
     }
 
-    if (!req.body.bandcampTrackId && !req.body.youtubeUrl) {
+    if (!req.body.bandcampTrackId && !req.body.youtubeUrl && !req.body.soundcloudTrackId) {
       return res.status(400).json({
         error: 'No playback source given',
       });
@@ -79,6 +80,16 @@ export default function registerPlaylistEndpoints(app: Express) {
         bandcampTrackId,
         bandcampStreamingUrl: await bandcamp.getBandcampStreamingUrl(bandcampTrackId),
         bandcampUrl: req.body.bandcampUrl,
+        ...params,
+      };
+
+    } else if (source === 'soundcloud') {
+      const soundcloudTrackId = req.body.soundcloudTrackId;
+
+      params = {
+        soundcloudTrackId,
+        soundcloudStreamingUrl: soundcloud.getSoundcloudStreamingUrl(soundcloudTrackId),
+        soundcloudUrl: req.body.soundcloudUrl,
         ...params,
       };
 

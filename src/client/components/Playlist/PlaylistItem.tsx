@@ -205,6 +205,12 @@ export default class PlaylistItem extends React.Component<Props, {}> {
           style={{color: colorScheme!.entryLinkColor}}>
           Bandcamp
         </a>
+      ),
+      soundcloud: (
+        <a href={track.soundcloudUrl} target="_blank" rel="noopener noreferrer"
+          style={{color: colorScheme!.entryLinkColor}}>
+          Soundcloud
+        </a>
       )
     }[track.source];
 
@@ -223,7 +229,7 @@ export default class PlaylistItem extends React.Component<Props, {}> {
         {playbackSourceLink}
         {spotifyLink}
       </span>
-    )
+    );
   }
 
   render() {
@@ -250,7 +256,7 @@ export default class PlaylistItem extends React.Component<Props, {}> {
 
         <div className={className} style={entryStyle}>
           <a className="playlist-entry--main"
-            href={track.youtubeUrl} target="_blank" rel="noopener noreferrer"
+            href={track.sourceUrl} target="_blank" rel="noopener noreferrer"
             onClick={(e) => this.handleClick(e)}>
             {this.renderAlbumArt()}
 

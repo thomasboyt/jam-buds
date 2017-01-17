@@ -8,7 +8,7 @@ import {PlaylistEntry} from '../../../universal/resources';
 import serializeSongLabel from '../../util/serializeSongLabel';
 
 import Youtube from './Youtube';
-import Bandcamp from './Bandcamp';
+import AudioStream from './AudioStream';
 import Icon from '../Icon';
 
 const playIcon = require('../../../../assets/play.svg');
@@ -78,8 +78,14 @@ export default class VideoPlayer extends React.Component<Props, {}> {
 
     if (nowPlaying.source === 'bandcamp') {
       return (
-        <Bandcamp url={nowPlaying.bandcampStreamingUrl} {...commonProps} />
+        <AudioStream url={nowPlaying.bandcampStreamingUrl} {...commonProps} />
       );
+
+    } else if (nowPlaying.source === 'soundcloud') {
+      return (
+        <AudioStream url={nowPlaying.soundcloudStreamingUrl} {...commonProps} />
+      );
+
     } else {
       return (
         <Youtube url={nowPlaying.youtubeUrl} {...commonProps} />
