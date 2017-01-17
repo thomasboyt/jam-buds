@@ -50,7 +50,7 @@ class Playlist extends React.Component<Props, {}> {
       }
 
       return (
-        <a href="#" onClick={(e) => this.handleGetNextPage(e)}>
+        <a href="#" onClick={(e) => this.handleGetNextPage(e)} style={{color: this.props.colorScheme!.linkColor}}>
           Load next page
         </a>
       );
