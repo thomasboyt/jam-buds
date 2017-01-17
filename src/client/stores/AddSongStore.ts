@@ -164,7 +164,10 @@ export default class AddSongStore {
 
     this.showingAddSong = false;
 
-    this.feedStore.entryList.pushEntry(entry);
+    // this is not always instantiated...
+    if (this.feedStore.entryList) {
+      this.feedStore.entryList.pushEntry(entry);
+    }
 
     if (entry.user.twitterName === this.profileStore.name) {
       this.profileStore.entryList.pushEntry(entry);
