@@ -87,5 +87,6 @@ module.exports = {
     contentBase: 'static',
     historyApiFallback: true,
     port: process.env.DEV_SERVER_PORT || 8080,
+    host: '0.0.0.0',
   },
 };
