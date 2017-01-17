@@ -34,6 +34,12 @@ class App extends React.Component<Props, {}> {
   }
 
   renderSidebarToggle() {
+    const {loggedIn} = this.props.userStore!;
+
+    if (!loggedIn) {
+      return null;
+    }
+
     return (
       <button className="sidebar-toggle" onClick={() => this.handleToggleSidebar()}>
         <Icon glyph={menuIcon} />
