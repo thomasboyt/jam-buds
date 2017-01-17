@@ -1,4 +1,5 @@
 import * as React from 'react';
+import Link from '../Link';
 import {inject, observer} from 'mobx-react'
 
 import UserColorSchemeWrapper from '../UserColorSchemeWrapper';
@@ -29,6 +30,10 @@ export default class SettingsScreen extends React.Component<Props, {}> {
           {colorSchemes.map(
             (colorScheme, idx) => <ColorSchemeOption key={idx} colorScheme={colorScheme} />)}
         </ul>
+
+        <p>
+          <em>(psst: if you've got a set of colors you'd like to use that's not here, feel free to <Link href="https://twitter.com/thomasABoyt">shoot me a tweet</Link>! I'll probably just add it as a preset here)</em>
+        </p>
 
       </UserColorSchemeWrapper>
     );
