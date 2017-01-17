@@ -70,7 +70,7 @@ class SubmitBox extends React.Component<Props, {}> {
             className={inputClassName}
             onChange={(e) => this.handleChange(e)}
             value={this.state.value}
-            placeholder="Paste a Youtube link here!!" />
+            placeholder="Paste a link here!!" />
         </div>
 
         <button type="submit" disabled={buttonDisabled} className={buttonClassName}>

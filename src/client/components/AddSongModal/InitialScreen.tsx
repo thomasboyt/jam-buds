@@ -16,7 +16,7 @@ export default class InitialScreen extends React.Component<Props, {}> {
   render() {
     return (
       <div>
-        <p>Paste a Youtube URL to share in the box below to get started!</p>
+        <p>Paste a <strong>Youtube, Bandcamp, or Soundcloud</strong> song URL to share in the box below to get started!</p>
         <SubmitBox />
       </div>
     );
