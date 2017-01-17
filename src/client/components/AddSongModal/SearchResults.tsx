@@ -14,7 +14,15 @@ interface Props {
 })) @observer
 class SearchResults extends React.Component<Props, {}> {
   render() {
-    const {searchResults} = this.props.addSongStore!.txn;
+    const {searchResults, loadedSearch} = this.props.addSongStore!.txn;
+
+    if (loadedSearch && searchResults.length === 0) {
+      return (
+        <div style={{textAlign: 'center', padding: '50px'}}>
+          No results found!
+        </div>
+      );
+    }
 
     return (
       <div>
