@@ -31,7 +31,7 @@ describe('routes/playlists', () => {
       }
 
       const firstPageReq = request(app)
-        .get(`/playlists/${user.twitterName}`)
+        .get(`/api/playlists/${user.twitterName}`)
         .set('X-Auth-Token', user.authToken);
 
       // TODO: Assert that these are the newest 20 items
@@ -42,7 +42,7 @@ describe('routes/playlists', () => {
       const previousId = firstPageRes.body.tracks.slice(-1)[0].id;
 
       const secondPageReq = request(app)
-        .get(`/playlists/${user.twitterName}`)
+        .get(`/api/playlists/${user.twitterName}`)
         .set('X-Auth-Token', user.authToken)
         .query({
           previousId,
@@ -63,7 +63,7 @@ describe('routes/playlists', () => {
       const user = await userFactory();
 
       const req = request(app)
-        .post('/playlist')
+        .post('/api/playlist')
         .set('X-Auth-Token', user.authToken)
         .send({
           manualEntry: true,
@@ -94,7 +94,7 @@ describe('routes/playlists', () => {
       expect(beforePlaylist.length).toBe(1);
 
       const req = request(app)
-        .delete(`/playlist/${entry.id}`)
+        .delete(`/api/playlist/${entry.id}`)
         .set('X-Auth-Token', user.authToken);
 
       const res: request.Response = await (req as any);
@@ -110,7 +110,7 @@ describe('routes/playlists', () => {
       const entry = await entryFactory();
 
       const req = request(app)
-        .delete(`/playlist/${entry.id}`)
+        .delete(`/api/playlist/${entry.id}`)
         .set('X-Auth-Token', user.authToken);
 
       const res: request.Response = await (req as any);
@@ -122,7 +122,7 @@ describe('routes/playlists', () => {
       const user = await userFactory();
 
       const req = request(app)
-        .delete('/playlist/42069')
+        .delete('/api/playlist/42069')
         .set('X-Auth-Token', user.authToken);
 
       const res: request.Response = await (req as any);

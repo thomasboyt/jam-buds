@@ -1,6 +1,6 @@
 var createVendorChunk = require('webpack-create-vendor-chunk');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
+var StatsPlugin = require('stats-webpack-plugin');
 
 const dotenv = require('dotenv');
 
@@ -32,12 +32,13 @@ module.exports = {
   plugins: [
     createVendorChunk(),
     new ExtractTextPlugin('[name].[chunkhash].css'),
-
-    new HtmlWebpackPlugin({
-      template: './templates/index.html',
-      filename: 'index.html',
-      inject: 'body',
-      chunks: ['vendor', 'app'],
+    new StatsPlugin('manifest.json', {
+      // We only need assetsByChunkName
+      chunkModules: false,
+      source: false,
+      chunks: false,
+      modules: false,
+      assets: true
     }),
   ],
 

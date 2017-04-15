@@ -32,7 +32,7 @@ describe('routes/likes', () => {
       });
 
       const req = request(app)
-        .put(`/likes/${entry.id}`)
+        .put(`/api/likes/${entry.id}`)
         .set('X-Auth-Token', jeff!.authToken);
 
       const res: request.Response = await (req as any);

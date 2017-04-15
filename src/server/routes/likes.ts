@@ -1,4 +1,4 @@
-import {Express} from 'express';
+import {Router} from 'express';
 import wrapAsyncRoute from '../util/wrapAsyncRoute';
 
 import {
@@ -13,9 +13,9 @@ import {
 
 import {isAuthenticated} from '../auth';
 
-export default function registerLikeEndpoints(app: Express) {
+export default function registerLikeEndpoints(router: Router) {
   // Like a song
-  app.put('/likes/:entryId', isAuthenticated, wrapAsyncRoute(async (req, res) => {
+  router.put('/likes/:entryId', isAuthenticated, wrapAsyncRoute(async (req, res) => {
     const entryId = req.params.entryId as number;
     const user = res.locals.user as User;
 
@@ -48,7 +48,7 @@ export default function registerLikeEndpoints(app: Express) {
     });
   }));
 
-  app.delete('/likes/:entryId', isAuthenticated, wrapAsyncRoute(async (req, res) => {
+  router.delete('/likes/:entryId', isAuthenticated, wrapAsyncRoute(async (req, res) => {
     const entryId = req.params.entryId as number;
     const user = res.locals.user as User;
 

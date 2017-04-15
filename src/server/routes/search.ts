@@ -1,4 +1,4 @@
-import {Express} from 'express';
+import {Router} from 'express';
 import wrapAsyncRoute from '../util/wrapAsyncRoute';
 import {isAuthenticated} from '../auth';
 import * as spotify from '../apis/spotify';
@@ -23,10 +23,10 @@ function serializeSpotifyResults(results: any[]): SearchResult[] {
   return results.map((result) => serializeSpotifyResult(result));
 }
 
-export default function registerSearchEndpoints(app: Express) {
+export default function registerSearchEndpoints(router: Router) {
 
   // get the title, etc of a sharable link
-  app.get('/share-details', isAuthenticated, wrapAsyncRoute(async (req, res) => {
+  router.get('/share-details', isAuthenticated, wrapAsyncRoute(async (req, res) => {
     const url = req.query.url;
 
     const source = getPlaybackSourceForUrl(url);
@@ -78,7 +78,7 @@ export default function registerSearchEndpoints(app: Express) {
   }));
 
   // search for a song using $whatever_api_i_wrap
-  app.get('/spotify-search', isAuthenticated, wrapAsyncRoute(async (req, res) => {
+  router.get('/spotify-search', isAuthenticated, wrapAsyncRoute(async (req, res) => {
     let query = req.query.query;
 
     if (!query) {

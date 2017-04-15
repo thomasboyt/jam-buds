@@ -1,4 +1,4 @@
-import {Express} from 'express';
+import {Router} from 'express';
 import wrapAsyncRoute from '../util/wrapAsyncRoute';
 import {OAuth} from 'oauth';
 import {createUser, getUserByTwitterId} from '../models/user';
@@ -18,7 +18,7 @@ import {createUser, getUserByTwitterId} from '../models/user';
  *    The client sets this auth token and refreshes.
  */
 
-export default function registerTwitterEndpoints(app: Express) {
+export default function registerTwitterEndpoints(router: Router) {
   const oa = new OAuth(
     'https://api.twitter.com/oauth/request_token',
     'https://api.twitter.com/oauth/access_token',
@@ -29,7 +29,7 @@ export default function registerTwitterEndpoints(app: Express) {
     'HMAC-SHA1'
   );
 
-  app.get('/twitter-sign-in', (req, res) => {
+  router.get('/twitter-sign-in', (req, res) => {
     oa.getOAuthRequestToken((err: any, token: string) => {
       if (err) {
         console.error(`Twitter request token error`);
@@ -44,7 +44,7 @@ export default function registerTwitterEndpoints(app: Express) {
     });
   });
 
-  app.get('/twitter-sign-in-callback', (req, res) => {
+  router.get('/twitter-sign-in-callback', (req, res) => {
     oa.getOAuthAccessToken(req.query.oauth_token, '', req.query.oauth_verifier, (err: any, token: string, secret: string, authorizeUrl: string) => {
       if (err) {
         console.error(`Twitter access token error`);
@@ -61,7 +61,7 @@ export default function registerTwitterEndpoints(app: Express) {
               type: 'twitterAuth',
               token: "${token}",
               secret: "${secret}",
-            }), "${process.env.STATIC_URL}");
+            }), "${process.env.SERVER_URL}");
             window.close();
           </script>
         </head>
@@ -71,7 +71,7 @@ export default function registerTwitterEndpoints(app: Express) {
     });
   });
 
-  app.post('/twitter-auth-token', wrapAsyncRoute(async (req, res) => {
+  router.post('/twitter-auth-token', wrapAsyncRoute(async (req, res) => {
     const twitterToken = req.body.twitterToken;
     const twitterSecret = req.body.twitterSecret;
 

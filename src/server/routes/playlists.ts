@@ -1,4 +1,4 @@
-import {Express} from 'express';
+import {Router} from 'express';
 import wrapAsyncRoute from '../util/wrapAsyncRoute';
 
 import {
@@ -33,9 +33,9 @@ import {postSongTweet} from '../apis/twitter';
 
 import {Playlist, Feed, PlaybackSource} from '../../universal/resources';
 
-export default function registerPlaylistEndpoints(app: Express) {
+export default function registerPlaylistEndpoints(router: Router) {
   // post a new song to your playlist
-  app.post('/playlist', isAuthenticated, wrapAsyncRoute(async (req, res) => {
+  router.post('/playlist', isAuthenticated, wrapAsyncRoute(async (req, res) => {
     const user: User = res.locals.user;
 
     let song: Song;
@@ -113,7 +113,7 @@ export default function registerPlaylistEndpoints(app: Express) {
   }));
 
   // delete a song from your playlist
-  app.delete('/playlist/:entryId', isAuthenticated, wrapAsyncRoute(async (req, res) => {
+  router.delete('/playlist/:entryId', isAuthenticated, wrapAsyncRoute(async (req, res) => {
     const user: User = res.locals.user;
     const entryId: number = req.params.entryId;
 
@@ -140,7 +140,7 @@ export default function registerPlaylistEndpoints(app: Express) {
   }));
 
   // get a user's playlist
-  app.get('/playlists/:userName', wrapAsyncRoute(async (req, res) => {
+  router.get('/playlists/:userName', wrapAsyncRoute(async (req, res) => {
     const userName = req.params.userName;
     const user = await getUserByTwitterName(userName);
     const currentUser = await getUserFromRequest(req);
@@ -168,7 +168,7 @@ export default function registerPlaylistEndpoints(app: Express) {
     res.json(resp);
   }));
 
-  app.get('/playlists/:userName/liked', wrapAsyncRoute(async (req, res) => {
+  router.get('/playlists/:userName/liked', wrapAsyncRoute(async (req, res) => {
     const userName = req.params.userName;
     const user = await getUserByTwitterName(userName);
     const currentUser = await getUserFromRequest(req);
@@ -196,7 +196,7 @@ export default function registerPlaylistEndpoints(app: Express) {
     res.json(resp);
   }));
 
-  app.get('/feed', isAuthenticated, wrapAsyncRoute(async (req, res) => {
+  router.get('/feed', isAuthenticated, wrapAsyncRoute(async (req, res) => {
     const user: User = res.locals.user;
 
     const previousId = req.query.previousId && parseInt(req.query.previousId, 10);

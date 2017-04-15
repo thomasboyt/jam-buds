@@ -1,4 +1,4 @@
-import {Express} from 'express';
+import {Router} from 'express';
 import wrapAsyncRoute from '../util/wrapAsyncRoute';
 import * as _ from 'lodash';
 
@@ -24,10 +24,10 @@ import {getTwitterFriendIds} from '../apis/twitter';
 
 import {PublicUser, CurrentUser, Playlist, Feed, Followers, Following, ColorScheme} from '../../universal/resources';
 
-export default function registerUserEndpoints(app: Express) {
+export default function registerUserEndpoints(router: Router) {
 
   // get information about the current user
-  app.get('/me', wrapAsyncRoute(async (req, res) => {
+  router.get('/me', wrapAsyncRoute(async (req, res) => {
     const user = await getUserFromRequest(req);
 
     if (!user) {
@@ -55,7 +55,7 @@ export default function registerUserEndpoints(app: Express) {
   }));
 
   // follow a user
-  app.post('/following', isAuthenticated, wrapAsyncRoute(async (req, res) => {
+  router.post('/following', isAuthenticated, wrapAsyncRoute(async (req, res) => {
     const user: User = res.locals.user;
     const followingName: string = req.body.userName;
 
@@ -85,7 +85,7 @@ export default function registerUserEndpoints(app: Express) {
   }));
 
   // unfollow a user
-  app.delete('/following/:followingName', isAuthenticated, wrapAsyncRoute(async (req, res) => {
+  router.delete('/following/:followingName', isAuthenticated, wrapAsyncRoute(async (req, res) => {
     const user: User = res.locals.user;
     const followingName: string = req.params.followingName;
 
@@ -107,7 +107,7 @@ export default function registerUserEndpoints(app: Express) {
   }));
 
   // get twitter friends who have signed up
-  app.get('/friend-suggestions', isAuthenticated, wrapAsyncRoute(async (req, res) => {
+  router.get('/friend-suggestions', isAuthenticated, wrapAsyncRoute(async (req, res) => {
     // get a list of twitter IDs!
     const ids = await getTwitterFriendIds(res.locals.user);
 
@@ -120,7 +120,7 @@ export default function registerUserEndpoints(app: Express) {
     });
   }));
 
-  app.get('/users/:userName/following', wrapAsyncRoute(async (req, res) => {
+  router.get('/users/:userName/following', wrapAsyncRoute(async (req, res) => {
     const userName: string = req.params.userName;
 
     const user = await getUserByTwitterName(userName);
@@ -145,7 +145,7 @@ export default function registerUserEndpoints(app: Express) {
     res.json(resp);
   }));
 
-  app.get('/users/:userName/followers', wrapAsyncRoute(async (req, res) => {
+  router.get('/users/:userName/followers', wrapAsyncRoute(async (req, res) => {
     const userName: string = req.params.userName;
 
     const user = await getUserByTwitterName(userName);
@@ -170,7 +170,7 @@ export default function registerUserEndpoints(app: Express) {
     res.json(resp);
   }));
 
-  app.post('/settings/color-scheme', isAuthenticated, wrapAsyncRoute(async (req, res) => {
+  router.post('/settings/color-scheme', isAuthenticated, wrapAsyncRoute(async (req, res) => {
     const user: User = res.locals.user;
 
     const colorScheme = getColorSchemeFromBody(req.body);
