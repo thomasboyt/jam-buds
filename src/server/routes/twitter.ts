@@ -1,5 +1,6 @@
 import {Router} from 'express';
 import wrapAsyncRoute from '../util/wrapAsyncRoute';
+import {AUTH_TOKEN_COOKIE} from '../../universal/constants';
 import {OAuth} from 'oauth';
 import {createUser, getUserByTwitterId} from '../models/user';
 
@@ -53,50 +54,29 @@ export default function registerTwitterEndpoints(router: Router) {
         return;
       }
 
-      const resp = `
-      <html>
-        <head>
-          <script>
-            window.opener.postMessage(JSON.stringify({
-              type: 'twitterAuth',
-              token: "${token}",
-              secret: "${secret}",
-            }), "${process.env.SERVER_URL}");
-            window.close();
-          </script>
-        </head>
-      </html>`;
+      oa.get('https://api.twitter.com/1.1/account/verify_credentials.json', token, secret, async (err: any, data: any) => {
+        if (err) {
+          console.error(`Twitter user fetch error`);
+          console.error(err);
+          res.sendStatus(500);
+          return;
+        }
 
-      res.send(200, resp);
+        const twitterData = JSON.parse(data);
+        const twitterId = twitterData.id_str;
+        const twitterName = twitterData.screen_name;
+
+        let user = await getUserByTwitterId(twitterId);
+
+        if (!user) {
+          user = await createUser({
+            twitterId, twitterName, twitterToken: token, twitterSecret: secret
+          });
+        }
+
+        res.cookie(AUTH_TOKEN_COOKIE, user.authToken);
+        res.redirect('/');
+      });
     });
   });
-
-  router.post('/twitter-auth-token', wrapAsyncRoute(async (req, res) => {
-    const twitterToken = req.body.twitterToken;
-    const twitterSecret = req.body.twitterSecret;
-
-    oa.get('https://api.twitter.com/1.1/account/verify_credentials.json', twitterToken, twitterSecret, async (err: any, data: any) => {
-      if (err) {
-        console.error(`Twitter user fetch error`);
-        console.error(err);
-        res.sendStatus(500);
-        return;
-      }
-
-      const twitterData = JSON.parse(data);
-      const twitterId = twitterData.id_str;
-      const twitterName = twitterData.screen_name;
-
-      const twitterUser = await getUserByTwitterId(twitterId);
-
-      if (!twitterUser) {
-        const newUser = await createUser({twitterId, twitterName, twitterToken, twitterSecret});
-        res.send(200, { authToken: newUser.authToken });
-
-      } else {
-        // TODO: if the user's twitter name changed, update it here
-        res.send(200, { authToken: twitterUser.authToken });
-      }
-    });
-  }));
 }

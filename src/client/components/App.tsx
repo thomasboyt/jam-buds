@@ -2,22 +2,15 @@ import * as React from 'react';
 import {Link} from 'react-router';
 import {observer, inject} from 'mobx-react';
 
-import {AUTH_TOKEN_KEY} from '../constants';
 import UserStore from '../stores/UserStore';
 import UIStore from '../stores/UIStore';
 
 import TwitterAuth from './TwitterAuth';
 import AudioPlayer from './AudioPlayer';
 import AddSongModal from './AddSongModal';
-import LoadUserWrapper from './LoadUserWrapper';
 
 import Icon from './Icon';
 const menuIcon = require('../../../assets/menu.svg');
-
-function signOut() {
-  localStorage.removeItem(AUTH_TOKEN_KEY);
-  document.location.href = '/';
-}
 
 interface Props {
   userStore?: UserStore;
@@ -67,9 +60,7 @@ class App extends React.Component<Props, {}> {
         </div>
 
         <div className="page-container">
-          <LoadUserWrapper>
-            {this.props.children}
-          </LoadUserWrapper>
+          {this.props.children}
         </div>
 
         {loggedIn ? <AddSongModal /> : null}

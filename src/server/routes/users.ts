@@ -1,5 +1,4 @@
 import {Router} from 'express';
-import wrapAsyncRoute from '../util/wrapAsyncRoute';
 import * as _ from 'lodash';
 
 import {
@@ -19,39 +18,18 @@ import {
   getFollowersForUserId,
 } from '../models/following';
 
-import {getUserFromRequest, isAuthenticated} from '../auth';
+import {isAuthenticated} from '../auth';
 import {getTwitterFriendIds} from '../apis/twitter';
 
-import {PublicUser, CurrentUser, Playlist, Feed, Followers, Following, ColorScheme} from '../../universal/resources';
+import {PublicUser, Playlist, Feed, Followers, Following, ColorScheme} from '../../universal/resources';
+import wrapAsyncRoute from '../util/wrapAsyncRoute';
+import {AUTH_TOKEN_COOKIE} from '../../universal/constants';
 
 export default function registerUserEndpoints(router: Router) {
-
-  // get information about the current user
-  router.get('/me', wrapAsyncRoute(async (req, res) => {
-    const user = await getUserFromRequest(req);
-
-    if (!user) {
-      return res.json({
-        user: null,
-      });
-    }
-
-    const colorScheme = await getColorSchemeForUserId(user.id);
-
-    const followingUsers = await getFollowingForUserId(user.id);
-
-    const serializedUsers: PublicUser[] = followingUsers.map(serializePublicUser);
-
-    const currentUser: CurrentUser = {
-      id: user.id,
-      name: user.twitterName,
-      following: serializedUsers,
-      colorScheme,
-    };
-
-    res.json({
-      user: currentUser,
-    });
+  router.delete('/session', isAuthenticated, wrapAsyncRoute(async (req, res) => {
+    // TODO: This should delete the auth token from the database!
+    res.clearCookie(AUTH_TOKEN_COOKIE);
+    res.send(200);
   }));
 
   // follow a user

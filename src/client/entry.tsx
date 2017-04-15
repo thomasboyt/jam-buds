@@ -1,7 +1,6 @@
 require('../../styles/main.scss');
 
 import 'whatwg-fetch';
-import './twitterAuthHandler';
 import './registerSentry';
 
 import * as React from 'react';

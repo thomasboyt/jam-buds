@@ -1,19 +1,12 @@
-import {AUTH_TOKEN_KEY} from '../constants';
+import * as Cookies from 'js-cookie';
+import {AUTH_TOKEN_COOKIE} from '../../universal/constants';
 
 export function getAuthToken(): string | null {
-  return localStorage.getItem(AUTH_TOKEN_KEY);
-}
-
-export function setAuthToken(token: string): void {
-  localStorage.setItem(AUTH_TOKEN_KEY, token);
-}
-
-export function removeAuthToken(): void {
-  localStorage.removeItem(AUTH_TOKEN_KEY);
+  return Cookies.get(AUTH_TOKEN_COOKIE);
 }
 
 function setDevUser(name: string) {
-  setAuthToken(name);
+  Cookies.set(AUTH_TOKEN_COOKIE, name);
   document.location.reload();
 }
 

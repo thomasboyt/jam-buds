@@ -122,7 +122,7 @@ html, body, .react-root, .app-container, .page-container {
  * Sidebar
  */
 
-button {
+button, .button {
   -webkit-appearance: none;
   border: none;
   outline: none;
@@ -130,7 +130,7 @@ button {
   background: none;
 }
 
-button:active {
+button:active, .button:active {
   box-shadow: none;
   transform: translate(2px, 2px);
 }
@@ -161,10 +161,11 @@ button:active {
     margin-top: 30px;
   }
 
-  .twitter-auth button {
-    display: block;
+  .twitter-auth .button {
+    display: inline-block;
     margin: 10px auto;
     padding: 10px;
+    text-decoration: none;
 
     background-color: yellow;
     color: black;

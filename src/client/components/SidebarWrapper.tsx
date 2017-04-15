@@ -3,7 +3,6 @@ import {Link} from 'react-router';
 import {observer, inject} from 'mobx-react';
 import * as classNames from 'classnames';
 
-import {removeAuthToken} from '../util/authToken';
 import UserStore from '../stores/UserStore';
 import UIStore from '../stores/UIStore';
 
@@ -12,11 +11,6 @@ import AddSongButton from './AddSongButton';
 import ColorSchemeProvider from './ColorSchemeProvider';
 
 import {ColorScheme} from '../../universal/resources';
-
-function signOut() {
-  removeAuthToken();
-  document.location.href = '/';
-}
 
 interface Props {
   userStore?: UserStore;
@@ -28,6 +22,11 @@ interface Props {
   uiStore: allStores.uiStore,
 })) @observer
 class SidebarWrapper extends React.Component<Props, {}> {
+  async handleSignOut() {
+    await this.props.userStore!.signOut();
+    document.location.href = '/';
+  }
+
   handleNavLinkClick() {
     this.props.uiStore!.isSidebarOpen = false;
   }
@@ -76,7 +75,7 @@ class SidebarWrapper extends React.Component<Props, {}> {
           </li>
         </ul>
 
-        <p>or <a href="#" onClick={signOut}>sign out</a></p>
+        <p>or <a href="#" onClick={() => this.handleSignOut()}>sign out</a></p>
       </div>
     );
   }

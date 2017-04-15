@@ -1,6 +1,8 @@
 import {Router} from 'express';
 import axios from 'axios';
 import wrapAsyncRoute from '../util/wrapAsyncRoute';
+import {AUTH_TOKEN_COOKIE} from '../../universal/constants';
+import {getUserByAuthToken, serializeCurrentUser} from '../models/user';
 
 async function loadManifest(): Promise<any> {
   // TODO: cache manifest here if in production mode, since it won't change!!
@@ -25,6 +27,22 @@ export default function registerPagesEndpoints(router: Router) {
   router.get('*', wrapAsyncRoute(async (req, res) => {
     const manifest = await loadManifest();
 
+    const token = req.cookies[AUTH_TOKEN_COOKIE];
+
+    let currentUser = null;
+
+    if (token) {
+      const user = await getUserByAuthToken(token);
+
+      if (user) {
+        currentUser = await serializeCurrentUser(user);
+      }
+    }
+
+    const pageData = JSON.stringify({
+      currentUser,
+    });
+
     res.send(`
       <html>
         <head>
@@ -36,6 +54,7 @@ export default function registerPagesEndpoints(router: Router) {
 
         <body>
           <div class="react-root"></div>
+          <script>window.__PAGE_DATA__ = ${pageData}</script>
           ${scriptForChunk(manifest, 'vendor')}
           ${scriptForChunk(manifest, 'app')}
         </body>

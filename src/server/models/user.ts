@@ -1,8 +1,9 @@
 import {db} from '../db';
 import genAuthToken from '../util/genAuthToken';
 import {camelizeKeys, decamelizeKeys} from 'humps';
-import {PublicUser, ColorScheme, UserProfile} from '../../universal/resources';
+import {PublicUser, ColorScheme, UserProfile, CurrentUser} from '../../universal/resources';
 import {defaultColorScheme} from '../../universal/constants';
+import {getFollowingForUserId} from './following';
 
 export interface User {
   id: number;
@@ -126,4 +127,17 @@ export async function setColorSchemeForUserId(userId: number, colorScheme: Color
   });
 
   await (query as any);
+}
+
+export async function serializeCurrentUser(user: User): Promise<CurrentUser> {
+  const colorScheme = await getColorSchemeForUserId(user.id);
+  const followingUsers = await getFollowingForUserId(user.id);
+  const serializedUsers: PublicUser[] = followingUsers.map(serializePublicUser);
+
+  return {
+    id: user.id,
+    name: user.twitterName,
+    following: serializedUsers,
+    colorScheme,
+  };
 }

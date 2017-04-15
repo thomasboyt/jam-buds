@@ -1,42 +1,39 @@
 import {observable, action} from 'mobx';
 import {getAuthToken} from '../util/authToken';
-import {PublicUser, ColorScheme} from '../../universal/resources';
+import {CurrentUser, PublicUser, ColorScheme} from '../../universal/resources';
 import {defaultColorScheme} from '../../universal/constants';
 
-import getCurrentUser from '../api/getCurrentUser';
+import signOut from '../api/signOut';
 import followUser from '../api/followUser';
 import unfollowUser from '../api/unfollowUser';
 import changeColorScheme from '../api/changeColorScheme';
 
 export default class UserStore {
-  @observable loadedUser: boolean = false;
   @observable loggedIn: boolean = false;
   @observable name: string | null = null;
   @observable userId: number | null = null;
   @observable following: PublicUser[] = [];
   @observable colorScheme: ColorScheme | null = null;
 
-  @action async logIn() {
-    this.loadedUser = false;
-    const token = getAuthToken();
+  constructor() {
+    const pageData = (window as any).__PAGE_DATA__ || {};
+    const user: CurrentUser | undefined = pageData.currentUser;
 
-    if (token) {
-      const user = await getCurrentUser();
-
-      if (user) {
-        this.loggedIn = true;
-        this.name = user.name;
-        this.following = user.following;
-        this.userId = user.id;
-        this.colorScheme = user.colorScheme;
-      }
+    if (user) {
+      this.loggedIn = true;
+      this.name = user.name;
+      this.following = user.following;
+      this.userId = user.id;
+      this.colorScheme = user.colorScheme;
     }
 
     if (!this.colorScheme) {
       this.colorScheme = defaultColorScheme;
     }
+  }
 
-    this.loadedUser = true;
+  async signOut() {
+    await signOut();
   }
 
   @action async followUser(userName: string) {
