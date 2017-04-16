@@ -36,7 +36,6 @@
     "supertest": "^2.0.1",
     "svg-sprite-loader": "^0.1.2",
     "ts-loader": "^1.0.0",
-    "tslint": "^3.15.1",
     "wdio": "^0.3.3",
     "wdio-dot-reporter": "0.0.7",
     "wdio-mocha-framework": "^0.5.8",
