@@ -4,7 +4,6 @@ import * as path from 'path';
 import * as childProcess from 'child_process';
 
 import * as dotenv from 'dotenv';
-import * as psTree from 'ps-tree';
 
 function resetDb() {
   // THIS IS SO WACKY
