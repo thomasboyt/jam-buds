@@ -24,7 +24,15 @@ function resetDb() {
   });
 }
 
-before(async () => {
+function waitForStart(ms: number): Promise<any> {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => resolve(), ms);
+  });
+}
+
+before(async function() {
+  this.timeout(0);
+
   // this uses a node entry point instead of ts-node cuz i couldn't easily clean up after ts-node
   // exited
   const child = childProcess.spawn('node', ['src/server/entry.js'], {
@@ -34,6 +42,9 @@ before(async () => {
   process.on('exit', () => {
     child.kill();
   });
+
+  console.log('Waiting 10 seconds for server start...')
+  await waitForStart(10 * 1000);
 });
 
 beforeEach(async () => {

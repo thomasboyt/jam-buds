@@ -82,7 +82,7 @@ exports.config = {
     baseUrl: process.env.SERVER_URL,
     //
     // Default timeout for all waitFor* commands.
-    waitforTimeout: 10000,
+    waitforTimeout: 15000,
     //
     // Default timeout in milliseconds for request
     // if Selenium Grid doesn't send response
@@ -156,7 +156,7 @@ exports.config = {
     // Gets executed before test execution begins. At this point you can access all global
     // variables, such as `browser`. It is the perfect place to define custom commands.
     before: function (capabilities, specs) {
-        browser.timeouts('implicit', 5000);
+        browser.timeouts('implicit', 15000);
     },
     //
     // Hook that gets executed before the suite starts
