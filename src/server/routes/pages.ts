@@ -4,11 +4,17 @@ import wrapAsyncRoute from '../util/wrapAsyncRoute';
 import {AUTH_TOKEN_COOKIE} from '../../universal/constants';
 import {getUserByAuthToken, serializeCurrentUser} from '../models/user';
 
+// The manifest is cached here if in production mode, since it won't change!!
+let manifest: any = null;
 async function loadManifest(): Promise<any> {
-  // TODO: cache manifest here if in production mode, since it won't change!!
+  if (process.env.NODE_ENV === 'production' && manifest) {
+    return manifest;
+  }
+
   const url = `${process.env.STATIC_URL}/manifest.json`;
   const resp = await axios.get(url);
-  return resp.data;
+  manifest = resp.data;
+  return manifest;
 }
 
 function scriptForChunk(manifest: any, name: string): string {
