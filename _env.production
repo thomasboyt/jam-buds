@@ -9,3 +9,6 @@
 
 # Your PUBLIC (not private!) Sentry DSN.
 SENTRY_PUBLIC_DSN=https://blah@sentry.io/123
+
+# The root path of your deployed static assets
+STATIC_URL=
