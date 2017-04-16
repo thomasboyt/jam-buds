@@ -191,3 +191,16 @@ button:active, .button:active {
     }
   }
 }
+
+.not-found-page {
+  max-width: 800px;
+  margin: 0px auto;
+  margin-top: 40px;
+  margin-bottom: 40px;
+  background: hotpink;
+  padding: 20px;
+
+  img {
+    max-width: 100%;
+  }
+}
