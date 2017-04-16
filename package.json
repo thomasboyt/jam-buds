@@ -66,7 +66,6 @@
     "@types/react-router": "^2.0.39",
     "@types/tinycolor2": "^1.1.0",
     "@types/twit": "^2.2.4",
-    "@types/whatwg-fetch": "0.0.32",
     "@types/youtube": "0.0.28",
     "axios": "^0.15.2",
     "body-parser": "^1.15.2",
@@ -100,7 +99,7 @@
     "tinycolor2": "^1.4.1",
     "ts-node": "^1.7.0",
     "twit": "^2.2.5",
-    "typescript": "^2.1.4",
+    "typescript": "^2.2.2",
     "whatwg-fetch": "^2.0.0"
   }
 }
