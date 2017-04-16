@@ -20,8 +20,7 @@ before_script:
   # enable firefox
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
-  # start server
-  - npm run run-server &
+  # run webpack
   - npm run run-client &
   # a little padding time for things to start up
   - sleep 5
