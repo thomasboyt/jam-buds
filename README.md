@@ -39,11 +39,8 @@ Then run `npm test`.
 
 ### Feature Tests
 
-Feature tests are kind of a pain:
-
 ```
-NODE_ENV=test npm run run-server
-NODE_ENV=test npm run run-client
+npm run run-client
 npm run features
 # or for a specific spec
 ./node_modules/.bin/wdio --spec features/addingNewSong.spec.ts

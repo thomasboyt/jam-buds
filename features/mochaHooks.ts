@@ -4,6 +4,7 @@ import * as path from 'path';
 import * as childProcess from 'child_process';
 
 import * as dotenv from 'dotenv';
+import * as psTree from 'ps-tree';
 
 function resetDb() {
   // THIS IS SO WACKY
@@ -23,6 +24,18 @@ function resetDb() {
     resetProcess.stderr.pipe(process.stderr);
   });
 }
+
+before(async () => {
+  // this uses a node entry point instead of ts-node cuz i couldn't easily clean up after ts-node
+  // exited
+  const child = childProcess.spawn('node', ['src/server/entry.js'], {
+    stdio: 'inherit',
+  });
+
+  process.on('exit', () => {
+    child.kill();
+  });
+});
 
 beforeEach(async () => {
   await resetDb();

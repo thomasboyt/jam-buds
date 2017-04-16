@@ -13,7 +13,6 @@ module.exports = webpackMerge(config, {
         NODE_ENV: '"production"',
         BUILD_SHA: `"${sha}"`,
         SENTRY_PUBLIC_DSN: `"${process.env.SENTRY_PUBLIC_DSN}"`,
-        SERVER_URL: `"${process.env.SERVER_URL}"`,
       }
     }),
 
