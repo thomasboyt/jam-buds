@@ -26,7 +26,7 @@ module.exports = {
   output: {
     path: './build',
     filename: '[name].[chunkhash].js',
-    publicPath: '/',
+    publicPath: process.env.STATIC_URL + '/',
   },
 
   plugins: [
