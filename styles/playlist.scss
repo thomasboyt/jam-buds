@@ -79,26 +79,25 @@
       margin-right: 10px;
     }
 
-    button:disabled .icon {
+    button:disabled .icon svg {
       stroke: grey;
       fill: grey;
     }
 
-    .icon {
+    .icon svg {
       width: 30px;
       height: 30px;
 
-      &.heart-filled path {
-        fill: black;
-      }
-
       transform: rotate(0deg);
       transition: transform 0.3s ease-in-out;
+    }
 
-      &.arrow-up {
-        transform: rotate(-180deg);
-      }
+    .icon.heart-filled path {
+      fill: black;
+    }
 
+    .icon.arrow-up svg {
+      transform: rotate(-180deg);
     }
   }
 

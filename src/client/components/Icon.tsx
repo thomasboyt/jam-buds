@@ -14,8 +14,8 @@ export default class Icon extends React.Component<Props, {}> {
     const {glyph, className} = this.props;
 
     return (
-      <svg className={`icon ${className}`}
-        dangerouslySetInnerHTML={{ __html: `<use xlink:href=${glyph}></use>` }} />
+      <span className={`icon ${className}`}
+        dangerouslySetInnerHTML={{__html: glyph }} />
     );
   }
 }
