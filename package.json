@@ -94,6 +94,7 @@
     "react-dom": "^15.3.2",
     "react-modal": "^1.5.2",
     "react-router": "^3.0.0",
+    "serializr": "^1.1.11",
     "spotify-web-api-node": "^2.3.6",
     "stats-webpack-plugin": "^0.6.0",
     "tinycolor2": "^1.4.1",

@@ -26,6 +26,6 @@ export default class FeedStore {
 
   @action reset() {
     this.entryList = new FeedPlaylistEntriesList();
-    this.entryList.getNextPage();
+    return this.entryList.getNextPage();
   }
 }

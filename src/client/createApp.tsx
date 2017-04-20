@@ -44,7 +44,10 @@ export function createStores() {
 export function createRoutes() {
   return (
     <Route path="/" component={App}>
-      <IndexRoute component={HomeScreen} />
+      <IndexRoute component={HomeScreen}
+        fetchData={(stores, props) => {
+          return stores.feedStore.reset();
+        }} />
 
       <Route path="/about" component={AboutScreen} />
 
