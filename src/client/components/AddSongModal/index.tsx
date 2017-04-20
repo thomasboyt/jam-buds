@@ -47,6 +47,7 @@ class AddSongModal extends React.Component<Props, {}> {
 
     return (
       <Modal
+        contentLabel="Add song popup"
         isOpen={showingAddSong}
         onRequestClose={() => this.handleClose()}
         className="modal-content"
