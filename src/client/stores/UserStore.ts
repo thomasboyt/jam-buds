@@ -13,23 +13,32 @@ export default class UserStore {
   @observable name: string | null = null;
   @observable userId: number | null = null;
   @observable following: PublicUser[] = [];
-  @observable colorScheme: ColorScheme | null = null;
+  @observable _colorScheme: ColorScheme | null = null;
 
-  constructor() {
-    const pageData = (window as any).__PAGE_DATA__ || {};
-    const user: CurrentUser | undefined = pageData.currentUser;
+  // TODO: Move me to entry.tsx
+  // constructor() {
+  //   const pageData = (window as any).__PAGE_DATA__ || {};
+  //   const user: CurrentUser | undefined = pageData.currentUser;
 
-    if (user) {
-      this.loggedIn = true;
-      this.name = user.name;
-      this.following = user.following;
-      this.userId = user.id;
-      this.colorScheme = user.colorScheme;
+  //   if (user) {
+  //     this.loadUser(user);
+  //   }
+  // }
+
+  loadUser(user: CurrentUser) {
+    this.loggedIn = true;
+    this.name = user.name;
+    this.following = user.following;
+    this.userId = user.id;
+    this._colorScheme = user.colorScheme;
+  }
+
+  get colorScheme() {
+    if (!this._colorScheme) {
+      return defaultColorScheme;
     }
 
-    if (!this.colorScheme) {
-      this.colorScheme = defaultColorScheme;
-    }
+    return this._colorScheme;
   }
 
   async signOut() {
@@ -52,6 +61,6 @@ export default class UserStore {
 
   @action async changeColorScheme(colorScheme: ColorScheme) {
     await changeColorScheme(colorScheme);
-    this.colorScheme = colorScheme;
+    this._colorScheme = colorScheme;
   }
 }
