@@ -1,0 +1,38 @@
+#!/usr/bin/env node
+
+"use strict";
+
+const path = require('path');
+const nodemon = require('nodemon');
+const webpack = require('webpack');
+const config = require('../webpack/server');
+
+function onBuild(err, stats) {
+  if (err) {
+    console.log('*** Webpack error:', err);
+  } else {
+    console.log(stats.toString());
+  }
+}
+
+nodemon({
+  script: path.join(__dirname, '../build/server/server.bundle.js'),
+
+  // we're just using nodemon to restart the process
+  ignore: ['*'],
+  watch: ['fake-folder/'],
+  ext: 'noop'
+});
+
+webpack(config).watch(100, (err, stats) => {
+  onBuild(err, stats);
+
+  if (!err) {
+    nodemon.restart();
+  }
+});
+
+// Without this, an error is raised when you ctrl-c after a watch-reload
+process.once('SIGINT', function(){
+  process.exit(0);
+});
