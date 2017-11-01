@@ -4,7 +4,7 @@ import {User, serializePublicUser} from './user';
 import {PlaylistEntry, Song, PlaybackSource} from '../../universal/resources';
 import {ENTRY_PAGE_LIMIT} from '../../universal/constants';
 
-interface CreateEntryOptions {
+export interface CreateEntryOptions {
   userId: number;
   songId: number;
   note: string;
@@ -15,11 +15,11 @@ interface CreateEntryOptions {
 
   bandcampTrackId?: string;
   bandcampStreamingUrl?: string;
-  bandcampTrackUrl?: string;
+  bandcampUrl?: string;
 
   soundcloudTrackId?: string;
   soundcloudStreamingUrl?: string;
-  soundcloudTrackUrl?: string;
+  soundcloudUrl?: string;
 }
 
 export async function addSongToPlaylist(values: CreateEntryOptions): Promise<PlaylistEntry> {
