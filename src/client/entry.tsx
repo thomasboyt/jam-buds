@@ -44,25 +44,30 @@ const stores = {
 
 (window as any).stores = stores;
 
+import {ApolloProvider} from 'react-apollo';
+import {client} from './apolloClient';
+
 render((
-  <Provider {...stores}>
-    <Router history={browserHistory}>
-      <Route path="/" component={App}>
-        <IndexRoute component={HomeScreen} />
+  <ApolloProvider client={client}>
+    <Provider {...stores}>
+      <Router history={browserHistory}>
+        <Route path="/" component={App}>
+          <IndexRoute component={HomeScreen} />
 
-        <Route path="/about" component={AboutScreen} />
+          <Route path="/about" component={AboutScreen} />
 
-        <Route path="/users/:name" component={ProfilePostPlaylist} />
-        <Route path="/users/:name/liked" component={ProfileLikedPlaylist} />
-        <Route path="/users/:name/following" component={ProfileFollowing} />
-        <Route path="/users/:name/followers" component={ProfileFollowers} />
+          <Route path="/users/:name" component={ProfilePostPlaylist} />
+          <Route path="/users/:name/liked" component={ProfileLikedPlaylist} />
+          <Route path="/users/:name/following" component={ProfileFollowing} />
+          <Route path="/users/:name/followers" component={ProfileFollowers} />
 
-        <Route path="/find-friends" component={FindFriendsScreen} />
+          <Route path="/find-friends" component={FindFriendsScreen} />
 
-        <Route path="/settings" component={SettingsScreen} />
+          <Route path="/settings" component={SettingsScreen} />
 
-        <Route path="*" component={NotFoundScreen} />
-      </Route>
-    </Router>
-  </Provider>
+          <Route path="*" component={NotFoundScreen} />
+        </Route>
+      </Router>
+    </Provider>
+  </ApolloProvider>
 ), document.querySelector('.react-root'));

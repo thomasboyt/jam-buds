@@ -1,22 +1,30 @@
 import * as React from 'react';
+import gql from 'graphql-tag';
+import {graphql} from 'react-apollo';
 import Link from '../Link';
-import {inject, observer} from 'mobx-react';
-
-import FindFriendsStore from '../../stores/FindFriendsStore';
-import {PublicUser} from '../../../universal/resources';
 
 import UserColorSchemeWrapper from '../UserColorSchemeWrapper';
-import getFriendSuggestions from '../../api/getFriendSuggestions';
 
-interface Props {
-  findFriendsStore?: FindFriendsStore;
-}
+const friendSuggestionsQuery = gql`
+  query FriendSuggestions {
+    friendSuggestions {
+      twitterName
+    }
+  }
+`;
 
-@inject((allStores) => ({
-  findFriendsStore: allStores.findFriendsStore,
-})) @observer
-export default class FindFriendsScreen extends React.Component<Props, {}> {
-  renderLoaded(suggestions: PublicUser[]) {
+export class FindFriendsScreen extends React.Component<any, any> {
+  renderInner() {
+    if (this.props.data.loading) {
+      return <div className="main-placeholder">Loading Twitter friends...</div>;
+    }
+
+    if (this.props.data.error) {
+      return <div className="main-placeholder">Error loading!</div>;
+    }
+
+    const suggestions = this.props.data.friendSuggestions;
+
     if (suggestions.length === 0) {
       return (
         <div className="main-placeholder">
@@ -27,7 +35,7 @@ export default class FindFriendsScreen extends React.Component<Props, {}> {
 
     return (
       <ul>
-        {suggestions.map((user) =>
+        {suggestions.map((user: any) =>
           <li key={user.id}>
             <Link to={`/users/${user.twitterName}`}>@{user.twitterName}</Link>
           </li>)
@@ -37,17 +45,13 @@ export default class FindFriendsScreen extends React.Component<Props, {}> {
   }
 
   render() {
-    const {suggestionsPromise} = this.props.findFriendsStore!;
-
     return (
       <UserColorSchemeWrapper>
         <h2>Find Friends</h2>
-        {suggestionsPromise.case({
-          pending: () => <div className="main-placeholder">Loading Twitter friends...</div>,
-          rejected: () => <div className="main-placeholder">Error loading!</div>,
-          fulfilled: (suggestions) => this.renderLoaded(suggestions),
-        })}
+        {this.renderInner()}
       </UserColorSchemeWrapper>
     );
   }
 }
+
+export default graphql(friendSuggestionsQuery)(FindFriendsScreen);
