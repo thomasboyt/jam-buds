@@ -1,7 +1,8 @@
 import * as React from 'react';
 import gql from 'graphql-tag';
-import {graphql} from 'react-apollo';
+import {graphql, ChildProps} from 'react-apollo';
 import Link from '../Link';
+import {FriendSuggestionsQuery} from '../../../schema/operationResultTypes';
 
 import UserColorSchemeWrapper from '../UserColorSchemeWrapper';
 
@@ -13,17 +14,21 @@ const friendSuggestionsQuery = gql`
   }
 `;
 
-export class FindFriendsScreen extends React.Component<any, any> {
+const withFriendSuggestions = graphql<FriendSuggestionsQuery>(friendSuggestionsQuery);
+
+export class FindFriendsScreen extends React.Component<ChildProps<{}, FriendSuggestionsQuery>, any> {
   renderInner() {
-    if (this.props.data.loading) {
+    const data = this.props.data!;
+
+    if (data.loading) {
       return <div className="main-placeholder">Loading Twitter friends...</div>;
     }
 
-    if (this.props.data.error) {
+    if (data.error) {
       return <div className="main-placeholder">Error loading!</div>;
     }
 
-    const suggestions = this.props.data.friendSuggestions;
+    const suggestions = data.friendSuggestions!;
 
     if (suggestions.length === 0) {
       return (
@@ -54,4 +59,4 @@ export class FindFriendsScreen extends React.Component<any, any> {
   }
 }
 
-export default graphql(friendSuggestionsQuery)(FindFriendsScreen);
+export default withFriendSuggestions(FindFriendsScreen);

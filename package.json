@@ -15,7 +15,8 @@
     "deploy": "NODE_ENV=production npm run build && firebase deploy && heroku restart",
     "resetdb": "./scripts/resetdb",
     "test": "NODE_ENV=test mocha --require ts-node/register 'src/server/**/*.spec.ts'",
-    "features": "wdio"
+    "features": "wdio",
+    "apollo-codegen": "apollo-codegen generate src/client/components/**/*.tsx --schema schema.json --target typescript --addTypename --output src/schema/operationResultTypes.ts"
   },
   "author": "Thomas Boyt <me@thomasboyt.com>",
   "license": "MIT",
