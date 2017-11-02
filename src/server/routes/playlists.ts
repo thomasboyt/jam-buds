@@ -22,6 +22,7 @@ import {
   getFeedByUserId,
   getPlaylistEntryById,
   deletePlaylistEntryById,
+  CreateEntryOptions,
 } from '../models/playlist';
 
 import {getUserFromRequest, isAuthenticated} from '../auth';
@@ -65,7 +66,7 @@ export default function registerPlaylistEndpoints(router: Router) {
 
     const source: PlaybackSource = req.body.source;
 
-    let params = {
+    let params: CreateEntryOptions = {
       source,
       userId: user.id,
       songId: song.id,

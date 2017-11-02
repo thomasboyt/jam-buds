@@ -10,6 +10,10 @@ import registerSearchEndpoints from './routes/search';
 import registerPlaylistEndpoints from './routes/playlists';
 import registerLikesEndpoints from './routes/likes';
 import registerPagesEndpoints from './routes/pages';
+import {getUserFromRequest} from './auth';
+
+import {graphqlExpress, graphiqlExpress} from 'apollo-server-express';
+import schema from '../schema';
 
 export default function createApp(env?: string) {
   const app = express();
@@ -20,6 +24,22 @@ export default function createApp(env?: string) {
 
   app.use(bodyParser.json());
   app.use(cookieParser());
+
+  async function buildOptions(req: express.Request) {
+    const user = await getUserFromRequest(req);
+    return {
+      context: {user},
+      schema,
+    }
+  }
+
+  app.use('/graphql', bodyParser.json(), graphqlExpress(buildOptions));
+
+  if (env !== 'production') {
+    app.use('/graphiql', graphiqlExpress({
+      endpointURL: '/graphql',
+    }));
+  }
 
   const apiRouter = express.Router();
 
