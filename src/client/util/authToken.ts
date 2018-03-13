@@ -1,7 +1,7 @@
 import * as Cookies from 'js-cookie';
 import {AUTH_TOKEN_COOKIE} from '../../universal/constants';
 
-export function getAuthToken(): string | null {
+export function getAuthToken(): string | undefined {
   return Cookies.get(AUTH_TOKEN_COOKIE);
 }
 
