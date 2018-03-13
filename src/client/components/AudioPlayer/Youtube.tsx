@@ -17,6 +17,11 @@ let ytPlayer: YT.Player | null = null;
 let ytPlayerReady = false;
 
 function setupYoutube() {
+  if (typeof YT === 'undefined') {
+    // hello server-side rendering~
+    return;
+  }
+
   if (!YT.Player && !(window as any).onYoutubeIframeAPIReady) {
     // wait for youtube to load and try again
     (window as any).onYoutubeIframeAPIReady = () => {

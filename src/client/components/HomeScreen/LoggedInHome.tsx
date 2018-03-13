@@ -18,9 +18,9 @@ interface Props {
   userStore: allStores.userStore,
 })) @observer
 class LoggedInHome extends React.Component<Props, {}> {
-  componentWillMount() {
-    this.props.feedStore!.reset();
-  }
+  // componentWillMount() {
+  //   this.props.feedStore!.reset();
+  // }
 
   renderNoItemsPlaceholder() {
     return (
@@ -31,7 +31,7 @@ class LoggedInHome extends React.Component<Props, {}> {
   }
 
   render() {
-    const {items, nextPageRequest, loadedFirstPage} = this.props.feedStore!.entryList;
+    console.log(this.props.feedStore!.entryList)
 
     return (
       <UserColorSchemeWrapper>

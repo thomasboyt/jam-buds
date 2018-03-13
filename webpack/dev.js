@@ -8,6 +8,7 @@ module.exports = webpackMerge(config, {
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: '"development"',
+        SERVER_URL: `"${process.env.SERVER_URL}"`,
       }
     }),
   ],

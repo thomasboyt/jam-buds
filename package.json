@@ -9,8 +9,8 @@
   },
   "scripts": {
     "run-client": "webpack-dev-server --config webpack/dev.js",
-    "run-server": "nodemon --watch 'src/**/*.ts' --ignore 'src/client/**/*.ts' --exec 'ts-node --fast' src/server/entry.ts",
-    "run-server-production": "ts-node --fast 'src/server/entry.ts'",
+    "run-server": "./scripts/server-watch",
+    "run-server-production": "echo TODO && exit 1",
     "build": "rm -rf build/ && webpack --config webpack/production.js && cp -r static/* build/",
     "deploy": "NODE_ENV=production npm run build && firebase deploy && heroku restart",
     "resetdb": "./scripts/resetdb",
@@ -95,6 +95,7 @@
     "react-dom": "^15.3.2",
     "react-modal": "^1.5.2",
     "react-router": "^3.0.0",
+    "serializr": "^1.1.11",
     "spotify-web-api-node": "^2.3.6",
     "stats-webpack-plugin": "^0.6.0",
     "tinycolor2": "^1.4.1",
