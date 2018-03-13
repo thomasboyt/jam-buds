@@ -4,10 +4,12 @@
     "lib": ["dom", "es6", "es2015.promise", "es2015.iterable", "scripthost"],
     "module": "commonjs",
     "sourceMap": true,
-    "strictNullChecks": true,
-    "noImplicitAny": true,
     "typeRoots": ["node_modules/@types", "typings"],
     "jsx": "react",
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+
+    "strictNullChecks": true,
+    "noImplicitAny": true,
+    "noImplicitThis": true
   }
 }
