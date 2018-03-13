@@ -1,6 +1,6 @@
-var createVendorChunk = require('webpack-create-vendor-chunk');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var StatsPlugin = require('stats-webpack-plugin');
+var path = require('path');
 
 const dotenv = require('dotenv');
 
@@ -19,18 +19,33 @@ if (!process.env.CI) {
 }
 
 module.exports = {
+  mode: 'development',
+
   entry: {
     app: './src/client/entry.tsx',
   },
 
   output: {
-    path: './build',
+    path: path.resolve(__dirname, '../build'),
     filename: '[name].[chunkhash].js',
     publicPath: process.env.STATIC_URL + '/',
   },
 
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        vendor: {
+          test: /node_modules/,
+          chunks: 'initial',
+          name: 'vendor',
+          priority: 10,
+          enforce: true,
+        }
+      }
+    }
+  },
+
   plugins: [
-    createVendorChunk(),
     new ExtractTextPlugin('[name].[chunkhash].css'),
     new StatsPlugin('manifest.json', {
       // We only need assetsByChunkName
@@ -43,41 +58,34 @@ module.exports = {
   ],
 
   resolve: {
-    extensions: ['', '.jsx', '.js', '.tsx', '.ts'],
-
-    alias: {
-      '__root': process.cwd(),
-    },
+    extensions: ['.jsx', '.js', '.tsx', '.ts'],
   },
 
   devtool: 'source-map',
 
-  ts: {
-    compilerOptions: {
-      noEmit: false,
-    },
-  },
-
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.tsx?$/,
-        loader: 'ts',
+        loader: 'ts-loader',
       },
 
       {
         test: /\.scss$/,
-        loader: ExtractTextPlugin.extract(['css', 'sass']),
+        use: ExtractTextPlugin.extract([
+          'css-loader',
+          'sass-loader'
+        ]),
       },
 
       {
         test: /\.jpg$|\.png$/,
-        loader: 'file',
+        loader: 'file-loader',
       },
 
       {
         test: /\.svg$/,
-        loader: 'raw',
+        loader: 'raw-loader',
       }
     ]
   },

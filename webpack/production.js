@@ -7,6 +7,8 @@ var execSync = require('child_process').execSync;
 var sha = execSync('git rev-parse --short HEAD', {encoding: 'utf8'}).trim();
 
 module.exports = webpackMerge(config, {
+  mode: 'production',
+
   plugins: [
     new webpack.DefinePlugin({
       'process.env': {
@@ -15,7 +17,5 @@ module.exports = webpackMerge(config, {
         SENTRY_PUBLIC_DSN: `"${process.env.SENTRY_PUBLIC_DSN}"`,
       }
     }),
-
-    new webpack.optimize.UglifyJsPlugin()
   ],
 });
