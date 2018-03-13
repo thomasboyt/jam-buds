@@ -1,5 +1,3 @@
-require('ts-node').register({
-  fast: true,
-});
+require('ts-node').register();
 
 require('./entry.ts');
