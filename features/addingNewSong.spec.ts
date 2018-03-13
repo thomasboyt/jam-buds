@@ -1,6 +1,3 @@
-/// <reference types="mocha" />
-/// <reference types="webdriverio" />
-
 import * as expect from 'expect';
 
 import './mochaHooks';
