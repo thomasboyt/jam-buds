@@ -29,6 +29,6 @@ export default class AudioStream extends React.Component<Props, {}> {
 
   render() {
     const {url} = this.props;
-    return <audio src={url} autoPlay ref={(el) => this.player = el} />;
+    return <audio src={url} autoPlay ref={(el) => this.player = el!} />;
   }
 }

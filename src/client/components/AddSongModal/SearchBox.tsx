@@ -26,7 +26,7 @@ class SearchBox extends React.Component<Props, {}> {
     return (
       <form className="submit-box" onSubmit={(e) => this.handleSubmit(e)}>
         <div className="input-container">
-          <input type="text" ref={(el) => this.input = el} data-test="song-search-field" />
+          <input type="text" ref={(el) => this.input = el!} data-test="song-search-field" />
         </div>
 
         <button type="submit">find</button>
