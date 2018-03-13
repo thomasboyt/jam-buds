@@ -7,6 +7,11 @@ interface PostSongTweetParams {
 }
 
 function getTwitterClient(user: User): Twit {
+  // TODO: This should probably be raised up out of this getter thingy
+  if (!process.env.TWITTER_API_KEY || !process.env.TWITTER_API_SECRET) {
+    throw new Error('missing TWITTER_API_KEY and/or TWITTER_API_SECRET env variable')
+  }
+
   return new Twit({
     consumer_key: process.env.TWITTER_API_KEY,
     consumer_secret: process.env.TWITTER_API_SECRET,
