@@ -16,10 +16,6 @@ module.exports = {
 
   resolve: {
     extensions: ['.jsx', '.js', '.tsx', '.ts'],
-
-    alias: {
-      'vue$': 'vue/dist/vue.esm.js'
-    },
   },
 
   devtool: 'source-map',
@@ -36,6 +32,13 @@ module.exports = {
             }
           }
         }],
+      },
+
+      {
+        test: /\.vue$/,
+        rules: [{
+          loader: 'vue-loader',
+        }]
       },
 
       {
