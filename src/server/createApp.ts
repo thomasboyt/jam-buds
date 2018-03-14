@@ -1,6 +1,5 @@
 import * as express from 'express';
 import * as bodyParser from 'body-parser';
-import * as cookieParser from 'cookie-parser';
 import * as cors from 'cors';
 const raven = require('raven');
 
@@ -18,7 +17,6 @@ export default function createApp(env?: string) {
   }
 
   app.use(bodyParser.json());
-  app.use(cookieParser());
 
   const apiRouter = express.Router();
 

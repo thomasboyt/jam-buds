@@ -1,6 +1,9 @@
 const express = require('express');
+const cookieParser = require('cookie-parser');
 const {createBundleRenderer} = require('vue-server-renderer');
 const setupDevServer = require('./devServer');
+
+const AUTH_TOKEN_COOKIE = 'jamBudsAuthToken';
 
 const app = express();
 
@@ -66,7 +69,14 @@ function render(req, res) {
     }
   }
 
-  renderer.renderToString({url: req.url}, (err, html) => {
+  const authToken = req.cookies[AUTH_TOKEN_COOKIE];
+
+  const context = {
+    url: req.url,
+    authToken,
+  };
+
+  renderer.renderToString(context, (err, html) => {
     if (err) {
       return handleError(err);
     }
@@ -75,6 +85,8 @@ function render(req, res) {
 }
 
 const port = process.env.PORT || 8080;
+
+app.use(cookieParser());
 
 app.get('*', (req, res) => {
   if (isProd) {
