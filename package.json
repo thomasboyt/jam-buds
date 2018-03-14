@@ -9,7 +9,7 @@
   },
   "scripts": {
     "run-client": "webpack-dev-server --config webpack/dev.js",
-    "run-server": "nodemon --watch 'src/**/*.ts' --ignore 'src/client/**/*.ts' --exec 'ts-node' src/server/entry.ts",
+    "run-server": "nodemon --watch 'src/**/*.ts' --ignore 'src/vue-client/**/*.ts' --exec 'ts-node' src/server/entry.ts",
     "run-server-production": "ts-node 'src/server/entry.ts'",
     "build": "rm -rf build/ && webpack --config webpack/production.js && cp -r static/* build/",
     "deploy": "NODE_ENV=production npm run build && firebase deploy && heroku restart",
@@ -42,7 +42,8 @@
     "webpack": "^4.1.1",
     "webpack-cli": "^2.0.11",
     "webpack-dev-server": "^3.1.1",
-    "webpack-merge": "^4.1.2"
+    "webpack-merge": "^4.1.2",
+    "webpack-node-externals": "^1.6.0"
   },
   "dependencies": {
     "@types/body-parser": "0.0.33",
@@ -58,6 +59,7 @@
     "@types/js-cookie": "^2.0.28",
     "@types/knex": "^0.14.8",
     "@types/lodash": "^4.14.47",
+    "@types/memory-fs": "^0.3.0",
     "@types/query-string": "^3.0.30",
     "@types/react": "^15.3.2",
     "@types/react-dom": "^15.3.2",
@@ -65,6 +67,8 @@
     "@types/react-router": "^2.0.39",
     "@types/tinycolor2": "^1.1.0",
     "@types/twit": "^2.2.4",
+    "@types/webpack": "^4.1.0",
+    "@types/webpack-dev-middleware": "^2.0.1",
     "@types/youtube": "0.0.28",
     "axios": "^0.15.2",
     "body-parser": "^1.15.2",
@@ -79,6 +83,7 @@
     "js-cookie": "^2.1.4",
     "knex": "^0.14.4",
     "lodash": "^4.17.4",
+    "memory-fs": "^0.4.1",
     "microdata-node": "^0.2.1",
     "mobx": "^2.6.2",
     "mobx-react": "^3.5.9",
@@ -100,6 +105,9 @@
     "ts-node": "^5.0.1",
     "twit": "^2.2.5",
     "typescript": "^2.7.2",
+    "vue": "^2.5.16",
+    "vue-server-renderer": "^2.5.16",
+    "webpack-dev-middleware": "^3.0.1",
     "whatwg-fetch": "^2.0.0"
   }
 }

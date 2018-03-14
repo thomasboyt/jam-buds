@@ -1,28 +1,11 @@
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
-var StatsPlugin = require('stats-webpack-plugin');
 var path = require('path');
-
-const dotenv = require('dotenv');
-
-if (!process.env.CI) {
-  if (process.env.NODE_ENV === 'test') {
-    dotenv.config({
-      path: '.env.test',
-    });
-  } else if (process.env.NODE_ENV === 'production') {
-    dotenv.config({
-      path: '.env.production',
-    });
-  } else {
-    dotenv.config();
-  }
-}
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = {
   mode: 'development',
 
   entry: {
-    app: './src/client/entry.tsx',
+    app: './src/vue-client/entry.ts',
   },
 
   output: {
@@ -31,34 +14,12 @@ module.exports = {
     publicPath: process.env.STATIC_URL + '/',
   },
 
-  optimization: {
-    splitChunks: {
-      cacheGroups: {
-        vendor: {
-          test: /node_modules/,
-          chunks: 'initial',
-          name: 'vendor',
-          priority: 10,
-          enforce: true,
-        }
-      }
-    }
-  },
-
-  plugins: [
-    new ExtractTextPlugin('[name].[chunkhash].css'),
-    new StatsPlugin('manifest.json', {
-      // We only need assetsByChunkName
-      chunkModules: false,
-      source: false,
-      chunks: false,
-      modules: false,
-      assets: true
-    }),
-  ],
-
   resolve: {
     extensions: ['.jsx', '.js', '.tsx', '.ts'],
+
+    alias: {
+      'vue$': 'vue/dist/vue.esm.js'
+    },
   },
 
   devtool: 'source-map',
@@ -67,7 +28,14 @@ module.exports = {
     rules: [
       {
         test: /\.tsx?$/,
-        loader: 'ts-loader',
+        rules: [{
+          loader: 'ts-loader',
+          options: {
+            compilerOptions: {
+              module: 'es2015',
+            }
+          }
+        }],
       },
 
       {
@@ -96,4 +64,8 @@ module.exports = {
     port: process.env.DEV_SERVER_PORT || 8080,
     host: '0.0.0.0',
   },
+
+  plugins: [
+    new ExtractTextPlugin('[name].[chunkhash].css'),
+  ],
 };

@@ -4,6 +4,17 @@ import wrapAsyncRoute from '../util/wrapAsyncRoute';
 import {AUTH_TOKEN_COOKIE} from '../../universal/constants';
 import {getUserByAuthToken, serializeCurrentUser} from '../models/user';
 
+import {createBundleRenderer} from 'vue-server-renderer';
+
+const serverBundle = require('../../../build/vue-ssr-server-bundle.json');
+const clientManifest = require('../../../build/vue-ssr-client-manifest.json');
+
+const renderer = createBundleRenderer(serverBundle, {
+  runInNewContext: 'once', // recommended
+  // template, // (optional) page template
+  clientManifest // (optional) client build manifest
+})
+
 // The manifest is cached here if in production mode, since it won't change!!
 let manifest: any = null;
 async function loadManifest(): Promise<any> {
@@ -31,7 +42,7 @@ function styleForChunk(manifest: any, name: string): string {
 
 export default function registerPagesEndpoints(router: Router) {
   router.get('*', wrapAsyncRoute(async (req, res) => {
-    const manifest = await loadManifest();
+    // const manifest = await loadManifest();
 
     const token = req.cookies[AUTH_TOKEN_COOKIE];
 
@@ -49,22 +60,28 @@ export default function registerPagesEndpoints(router: Router) {
       currentUser,
     });
 
-    res.send(`
-      <html>
-        <head>
-          <title>Jam Buds</title>
-          <script src="https://www.youtube.com/iframe_api"></script>
-          <meta name="viewport" content="width=device-width, initial-scale=1">
-          ${styleForChunk(manifest, 'app')}
-        </head>
+    const html = await renderer.renderToString();
 
-        <body>
-          <div class="react-root"></div>
-          <script>window.__PAGE_DATA__ = ${pageData}</script>
-          ${scriptForChunk(manifest, 'vendor')}
-          ${scriptForChunk(manifest, 'app')}
-        </body>
-      </html>
-    `);
+    res.send(html);
+
+    // res.send(`
+    //   <html>
+    //     <head>
+    //       <title>Jam Buds</title>
+    //       <script src="https://www.youtube.com/iframe_api"></script>
+    //       <meta name="viewport" content="width=device-width, initial-scale=1">
+    //       ${styleForChunk(manifest, 'app')}
+    //     </head>
+
+    //     <body>
+    //       <div class="app">
+    //         ${html}
+    //       </div>
+    //       <script>window.__PAGE_DATA__ = ${pageData}</script>
+    //       ${scriptForChunk(manifest, 'vendor')}
+    //       ${scriptForChunk(manifest, 'app')}
+    //     </body>
+    //   </html>
+    // `);
   }));
 }
