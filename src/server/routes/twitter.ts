@@ -26,7 +26,7 @@ export default function registerTwitterEndpoints(router: Router) {
     process.env.TWITTER_API_KEY,
     process.env.TWITTER_API_SECRET,
     '1.0A',
-    `${process.env.SERVER_URL}/twitter-sign-in-callback`,
+    `${process.env.API_URL}/twitter-sign-in-callback`,
     'HMAC-SHA1'
   );
 
