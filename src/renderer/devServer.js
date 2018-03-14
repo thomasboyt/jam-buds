@@ -1,24 +1,23 @@
-import * as fs from 'fs';
-import * as path from 'path';
-import * as webpack from 'webpack';
-import * as createDevMiddleware from 'webpack-dev-middleware';
-import {Express} from 'express';
-const MFS = require('memory-fs');  // the type def for this is bad or somethin, idk
+const fs = require('fs');
+const path = require('path');
+const webpack = require('webpack');
+const createDevMiddleware = require('webpack-dev-middleware');
+const MFS = require('memory-fs');
 
-import * as clientConfig from '../../../webpack/client';
-import * as serverConfig from '../../../webpack/server';
+const clientConfig = require('../../webpack/client');
+const serverConfig = require('../../webpack/server');
 
-const readFile = (fs: any, file: any) => {
+const readFile = (fs, file) => {
   try {
     return fs.readFileSync(path.join(clientConfig.output.path, file), 'utf-8')
   } catch (e) {}
 }
 
-export default function setupDevServer(app: Express, cb: (bundle: any, clientManifest: any) => void) {
-  let bundle: any
-  let clientManifest: any
+module.exports = function setupDevServer(app, cb) {
+  let bundle;
+  let clientManifest;
 
-  let readyPromiseResolve: (value?: {} | PromiseLike<{}>) => void;
+  let readyPromiseResolve;
   const readyPromise = new Promise(r => { readyPromiseResolve = r })
 
   const update = () => {
@@ -52,10 +51,10 @@ export default function setupDevServer(app: Express, cb: (bundle: any, clientMan
 
   app.use(devMiddleware)
 
-  clientCompiler.plugin('done', (webpackStats: webpack.Stats) => {
+  clientCompiler.plugin('done', (webpackStats) => {
     const stats = webpackStats.toJson()
-    stats.errors.forEach((err: any) => console.error(err))
-    stats.warnings.forEach((err : any) => console.warn(err))
+    stats.errors.forEach((err) => console.error(err))
+    stats.warnings.forEach((err ) => console.warn(err))
 
     if (stats.errors.length) {
       return
@@ -74,7 +73,7 @@ export default function setupDevServer(app: Express, cb: (bundle: any, clientMan
   const mfs = new MFS()
   serverCompiler.outputFileSystem = mfs
 
-  serverCompiler.watch({}, (err, webpackStats: webpack.Stats) => {
+  serverCompiler.watch({}, (err, webpackStats) => {
     if (err) {
       throw err
     }

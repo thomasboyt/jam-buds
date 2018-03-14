@@ -7,7 +7,7 @@ const baseConfig = require('./base.js')
 const conf = merge(baseConfig, {
   target: 'node',
 
-  entry: './src/vue-client/server-entry.ts',
+  entry: './src/vue-client/entry-server.ts',
 
   output: {
     libraryTarget: 'commonjs2',

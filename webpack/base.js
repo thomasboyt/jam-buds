@@ -5,7 +5,7 @@ module.exports = {
   mode: 'development',
 
   entry: {
-    app: './src/vue-client/entry.ts',
+    app: './src/vue-client/entry-client.ts',
   },
 
   output: {
