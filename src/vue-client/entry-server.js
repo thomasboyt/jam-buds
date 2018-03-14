@@ -1,6 +1,6 @@
 import createApp from './createApp';
 
-export default function(context: any) {
+export default function(context) {
   return new Promise((resolve, reject) => {
     const {app, router, store} = createApp();
     const {url} = context;
@@ -20,7 +20,7 @@ export default function(context: any) {
       // A preFetch hook dispatches a store action and returns a Promise,
       // which is resolved when the action is complete and store state has been
       // updated.
-      Promise.all(matchedComponents.map(({ asyncData }: any) => asyncData && asyncData({
+      Promise.all(matchedComponents.map(({ asyncData }) => asyncData && asyncData({
         store,
         route: router.currentRoute
       }))).then(() => {

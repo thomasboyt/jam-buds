@@ -3,11 +3,11 @@ import createApp from './createApp';
 
 Vue.mixin({
   beforeRouteUpdate (to, from, next) {
-    const { asyncData } = (this as any).$options;
+    const { asyncData } = this.$options;
 
     if (asyncData) {
       asyncData({
-        store: (this as any).$store,
+        store: this.$store,
         route: to
       }).then(next).catch(next)
     } else {
@@ -20,7 +20,7 @@ const {app, router, store} = createApp();
 
 // prime the store with server-initialized state.
 // the state is determined during SSR and inlined in the page markup.
-const initialState = (window as any).__INITIAL_STATE__;
+const initialState = window.__INITIAL_STATE__;
 if (initialState) {
   store.replaceState(initialState)
 }
@@ -39,7 +39,7 @@ router.onReady(() => {
     const activated = matched.filter((c, i) => {
       return diffed || (diffed = (prevMatched[i] !== c))
     })
-    const asyncDataHooks = activated.map(c => (c as any).asyncData).filter(_ => _)
+    const asyncDataHooks = activated.map(c => c.asyncData).filter(_ => _)
     if (!asyncDataHooks.length) {
       return next()
     }

@@ -5,7 +5,7 @@ module.exports = {
   mode: 'development',
 
   entry: {
-    app: './src/vue-client/entry-client.ts',
+    app: './src/vue-client/entry-client.js',
   },
 
   output: {
@@ -15,25 +15,13 @@ module.exports = {
   },
 
   resolve: {
-    extensions: ['.jsx', '.js', '.tsx', '.ts'],
+    extensions: ['.jsx', '.js'],
   },
 
   devtool: 'source-map',
 
   module: {
     rules: [
-      {
-        test: /\.tsx?$/,
-        rules: [{
-          loader: 'ts-loader',
-          options: {
-            compilerOptions: {
-              module: 'es2015',
-            }
-          }
-        }],
-      },
-
       {
         test: /\.vue$/,
         rules: [{
@@ -59,13 +47,6 @@ module.exports = {
         loader: 'raw-loader',
       }
     ]
-  },
-
-  devServer: {
-    contentBase: 'static',
-    historyApiFallback: true,
-    port: process.env.DEV_SERVER_PORT || 8080,
-    host: '0.0.0.0',
   },
 
   plugins: [
