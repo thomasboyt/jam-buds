@@ -7,11 +7,12 @@ Vue.use(Vuex);
 export default function createStore() {
   return new Vuex.Store({
     state: {
-      // populated by /me lookup -> true/false
-      authenticated: null,
-
       // populated by cookie, see entry-client/entry-server
       authToken: null,
+
+      // populated by /me lookup
+      authenticated: false,
+      currentUser: null,
 
       feed: null,
     },
@@ -20,34 +21,34 @@ export default function createStore() {
       setAuthToken(state, token) {
         state.authToken = token;
       },
-      fetchedCurrentUser(state, user) {
-        state.authenticated = true;
-      },
       setFeed(state, feed) {
         state.feed = feed;
       },
+      setCurrentUser(state, user) {
+        state.authenticated = true;
+        state.user = user;
+      }
     },
 
     actions: {
-      fetchCurrentUser(context) {
-        /*
-         * TODO: Unstub this duh~~~
-         */
+      async fetchCurrentUser(context) {
+        if (!context.state.authToken) {
+          return;
+        }
 
-        const token = context.state.authToken;
-
-        return new Promise((resolve, reject) => {
-          if (!token) {
-            console.log('no token present')
-            return resolve();
-          }
-
-          setTimeout(() => {
-            const fakeUser = {};
-            context.commit('fetchedCurrentUser', fakeUser);
-            resolve();
-          }, 50);
+        const resp = await apiRequest(context, {
+          url: '/me',
+          method: 'GET',
         });
+
+        const user = resp.data.user;
+
+        if (!user) {
+          // TODO: auth token is bad so we should unset it here, I guess?
+          return;
+        }
+
+        context.commit('setCurrentUser', user);
       },
 
       async fetchFeed(context) {
@@ -56,8 +57,6 @@ export default function createStore() {
           method: 'GET',
           // params: {previousId},
         });
-
-        console.log(feed.data);
 
         context.commit('setFeed', feed.data);
       },

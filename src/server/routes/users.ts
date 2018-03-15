@@ -9,6 +9,7 @@ import {
   getColorSchemeForUserId,
   getUserProfileForUser,
   setColorSchemeForUserId,
+  serializeCurrentUser,
 } from '../models/user';
 
 import {
@@ -18,7 +19,7 @@ import {
   getFollowersForUserId,
 } from '../models/following';
 
-import {isAuthenticated} from '../auth';
+import {getUserFromRequest, isAuthenticated} from '../auth';
 import {getTwitterFriendIds} from '../apis/twitter';
 
 import {PublicUser, Playlist, Feed, Followers, Following, ColorScheme} from '../../universal/resources';
@@ -30,6 +31,21 @@ export default function registerUserEndpoints(router: Router) {
     // TODO: This should delete the auth token from the database!
     res.clearCookie(AUTH_TOKEN_COOKIE);
     res.send(200);
+  }));
+
+  // get information about the current user
+  router.get('/me', wrapAsyncRoute(async (req, res) => {
+    const userModel = await getUserFromRequest(req);
+
+    if (!userModel) {
+      return res.json({
+        user: null,
+      });
+    }
+
+    res.json({
+      user: await serializeCurrentUser(userModel),
+    });
   }));
 
   // follow a user
