@@ -1,19 +1,20 @@
 import createApp from './createApp';
 
-export default function(context) {
-  return new Promise(async (resolve, reject) => {
-    const {app, router, store} = createApp();
-    const {url, authToken} = context;
+export default async function(context) {
+  const {app, router, store} = createApp();
+  const {url, authToken} = context;
 
-    const fullPath = router.resolve(url).route;
+  const fullPath = router.resolve(url).route;
 
-    store.commit('setAuthToken', authToken);
-    if (authToken) {
-      // fetch current user
-      await store.dispatch('fetchCurrentUser');
-    }
+  store.commit('setAuthToken', authToken);
+  if (authToken) {
+    // fetch current user
+    await store.dispatch('fetchCurrentUser');
+  }
 
-    router.push(url);
+  router.push(url);
+
+  return new Promise((resolve, reject) => {
 
     // wait until router has resolved possible async hooks
     router.onReady(() => {

@@ -20,13 +20,15 @@
 
   export default {
     async asyncData({store, route}) {
-      if (store.state.authenticated) {
+      if (store.state.auth.authenticated) {
         // fetch initial feed data here
         await store.dispatch('fetchFeed');
       }
     },
 
-    computed: mapState(['authenticated', 'authToken']),
+    computed: mapState({
+      authenticated: (state) => state.auth.authenticated,
+    }),
 
     components: {Feed},
   };

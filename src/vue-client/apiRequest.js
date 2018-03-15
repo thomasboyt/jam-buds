@@ -9,7 +9,7 @@ import _ from 'lodash';
  * https://github.com/vuejs/vue-ssr-docs/blob/master/en/structure.md#avoid-stateful-singletons
  */
 export default async function apiRequest(context, opts) {
-  const authToken = _.get(context, 'state.authToken');
+  const authToken = _.get(context, 'rootState.auth.authToken');
 
   // runtime type checking here because I am a Known Idiot who is definitely gonna forget to pass
   // context as the first arg
