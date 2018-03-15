@@ -16,6 +16,28 @@ export default function createStore() {
     mutations: {
       setAuthToken(state, token) {
         state.authToken = token;
+      },
+      fetchedCurrentUser(state, user) {
+        state.authenticated = true;
+      }
+    },
+
+    actions: {
+      fetchCurrentUser(context) {
+        const token = context.state.authToken;
+
+        return new Promise((resolve, reject) => {
+          if (!token) {
+            console.log('no token present')
+            return resolve();
+          }
+
+          setTimeout(() => {
+            const fakeUser = {};
+            context.commit('fetchedCurrentUser', fakeUser);
+            resolve();
+          }, 50);
+        });
       }
     }
   });
