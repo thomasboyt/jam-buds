@@ -62,4 +62,14 @@ router.onReady(() => {
 
   // actually mount to DOM
   app.$mount('#app')
+
+  function setDevUser(name) {
+    Cookies.set(AUTH_TOKEN_COOKIE, name);
+    document.location.reload();
+  }
+
+  // global this for ease of debugging
+  if (process.env.NODE_ENV === 'development') {
+    window.setDevUser = setDevUser;
+  }
 });
