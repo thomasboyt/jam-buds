@@ -2,12 +2,9 @@
   <div>
     <p>Hi! This is the homepage.</p>
 
-    <p v-if="authenticated">
-      Authenticated. Token: {{authToken}}
-
-      <button v-on:click="signOut()">
-      </button>
-    </p>
+    <div v-if="authenticated">
+      <feed></feed>
+    </div>
 
     <p v-else>
       <a href="/auth/twitter-sign-in">
@@ -19,11 +16,20 @@
 
 <script>
   import {mapState} from 'vuex';
+  import Feed from '../components/Feed.vue';
 
   export default {
-    asyncData({store, route}) {
-      return store.dispatch('fetchCurrentUser');
+    async asyncData({store, route}) {
+      await store.dispatch('fetchCurrentUser');
+
+      if (store.state.authenticated) {
+        // fetch initial feed data here
+        await store.dispatch('fetchFeed');
+      }
     },
+
     computed: mapState(['authenticated', 'authToken']),
-  }
+
+    components: {Feed},
+  };
 </script>

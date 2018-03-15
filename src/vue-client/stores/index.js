@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import apiRequest from '../apiRequest';
 
 Vue.use(Vuex);
 
@@ -11,6 +12,8 @@ export default function createStore() {
 
       // populated by cookie, see entry-client/entry-server
       authToken: null,
+
+      feed: null,
     },
 
     mutations: {
@@ -19,11 +22,18 @@ export default function createStore() {
       },
       fetchedCurrentUser(state, user) {
         state.authenticated = true;
-      }
+      },
+      setFeed(state, feed) {
+        state.feed = feed;
+      },
     },
 
     actions: {
       fetchCurrentUser(context) {
+        /*
+         * TODO: Unstub this duh~~~
+         */
+
         const token = context.state.authToken;
 
         return new Promise((resolve, reject) => {
@@ -38,7 +48,19 @@ export default function createStore() {
             resolve();
           }, 50);
         });
-      }
+      },
+
+      async fetchFeed(context) {
+        const feed = await apiRequest(context, {
+          url: '/feed',
+          method: 'GET',
+          // params: {previousId},
+        });
+
+        console.log(feed.data);
+
+        context.commit('setFeed', feed.data);
+      },
     }
   });
 }
