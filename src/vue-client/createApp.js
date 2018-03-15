@@ -5,6 +5,8 @@ import App from './App.vue';
 import createStore from './stores';
 import createRouter from './router';
 
+import '../../styles/main.scss';
+
 export default function createApp() {
   const store = createStore();
   const router = createRouter();

@@ -1,22 +1,26 @@
 <template>
-  <div>
-    <p>Hi! This is the homepage.</p>
-
-    <div v-if="authenticated">
-      <feed></feed>
-    </div>
+  <app-container>
+    <sidebar-wrapper v-if="authenticated">
+      <main-wrapper>
+        <feed></feed>
+      </main-wrapper>
+    </sidebar-wrapper>
 
     <p v-else>
       <a href="/auth/twitter-sign-in">
         Click me to authenticate
       </a>
     </p>
-  </div>
+  </app-container>
 </template>
 
 <script>
   import {mapState} from 'vuex';
   import Feed from '../components/Feed.vue';
+
+  import AppContainer from '../components/AppContainer.vue';
+  import MainWrapper from '../components/MainWrapper.vue';
+  import SidebarWrapper from '../components/SidebarWrapper.vue';
 
   export default {
     async asyncData({store, route}) {
@@ -30,6 +34,11 @@
       authenticated: (state) => state.auth.authenticated,
     }),
 
-    components: {Feed},
+    components: {
+      Feed,
+      AppContainer,
+      MainWrapper,
+      SidebarWrapper,
+    },
   };
 </script>
