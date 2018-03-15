@@ -4,10 +4,6 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 module.exports = {
   mode: 'development',
 
-  entry: {
-    app: './src/vue-client/entry-client.js',
-  },
-
   output: {
     path: path.resolve(__dirname, '../build'),
     filename: '[name].[chunkhash].js',
@@ -24,9 +20,12 @@ module.exports = {
     rules: [
       {
         test: /\.vue$/,
-        rules: [{
-          loader: 'vue-loader',
-        }]
+        loader: 'vue-loader',
+      },
+
+      {
+        test: /\.js$/,
+        loader: 'babel-loader',
       },
 
       {

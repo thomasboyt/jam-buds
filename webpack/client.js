@@ -20,6 +20,10 @@ if (!process.env.CI) {
 }
 
 module.exports = merge(baseConfig, {
+  entry: {
+    app: ['babel-polyfill', './src/vue-client/entry-client.js'],
+  },
+
   output: {
     // TODO: Toggle this based on production/not prod
     publicPath: '/assets/',
