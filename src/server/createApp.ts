@@ -3,7 +3,7 @@ import * as bodyParser from 'body-parser';
 import * as cors from 'cors';
 const raven = require('raven');
 
-import registerTwitterEndpoints from './routes/twitter';
+import registerTwitterAuthEndpoints from './routes/auth';
 import registerUserEndpoints from './routes/users';
 import registerSearchEndpoints from './routes/search';
 import registerPlaylistEndpoints from './routes/playlists';
@@ -26,10 +26,10 @@ export default function createApp(env?: string) {
   registerLikesEndpoints(apiRouter);
   app.use('/api', apiRouter);
 
-  const appRouter = express.Router();
+  const authRouter = express.Router();
 
-  registerTwitterEndpoints(appRouter);
-  app.use(appRouter);
+  registerTwitterAuthEndpoints(authRouter);
+  app.use('/auth', authRouter);
 
   if (env === 'production') {
     app.use(raven.middleware.express.errorHandler(process.env.SENTRY_DSN));

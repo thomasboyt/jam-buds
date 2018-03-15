@@ -1,6 +1,10 @@
 import Vue from 'vue';
 import createApp from './createApp';
 
+import Cookies from 'js-cookie';
+
+const AUTH_TOKEN_COOKIE = 'jamBudsAuthToken';
+
 Vue.mixin({
   beforeRouteUpdate (to, from, next) {
     const { asyncData } = this.$options;
@@ -17,6 +21,8 @@ Vue.mixin({
 })
 
 const {app, router, store} = createApp();
+
+const authToken = Cookies.get(AUTH_TOKEN_COOKIE);
 
 // prime the store with server-initialized state.
 // the state is determined during SSR and inlined in the page markup.

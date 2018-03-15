@@ -6,27 +6,27 @@ import {createUser, getUserByTwitterId} from '../models/user';
 
 /*
  * Here's how Twitter auth works:
- * 1. Visit /twitter-sign-in in a new window. This gets a request token and sends you to
- *    twitter.com/oauth/authenticate to do the Twitter OAuth flow.
  *
- * 2. Get redirected to /twitter-sign-in-callback. This page gets an access token, and then
- *    sends it back to the original page using window.opener.postMessage.
+ * 1. The app server *proxies* /auth to the API server /auth, so that cookies can be set on the app
+ *    server's host, and the user never sees the API server address in links, etc.
  *
- * 3. Original page then sends the Twitter token+secret to POST /twitter-auth-token, along with
- *    their Jam Buds auth token. This endpoint either fetches the account already associated with
- *    this Twitter ID, or creates a new account and auth token.
- *    Either way, an auth token is returned that is the new Jam Buds auth token for the client.
- *    The client sets this auth token and refreshes.
+ * 2. User vists /auth/twitter-sign-in. This gets a request token and redirects you to
+ *    twitter.com/oauth/authenticate?oauth_token=${token} to do the Twitter OAuth flow.
+ *
+ * 3. Twitter redirects to api/twitter-sign-in-callback (as defined in OAuth app config).
+ *
+ * 4. This endpoint looks for a user by Twitter ID, creating the user if they do not exist,
+ *    and sets a cookie with the auth token.
  */
 
-export default function registerTwitterEndpoints(router: Router) {
+export default function registerTwitterAuthEndpoints(router: Router) {
   const oa = new OAuth(
     'https://api.twitter.com/oauth/request_token',
     'https://api.twitter.com/oauth/access_token',
     process.env.TWITTER_API_KEY,
     process.env.TWITTER_API_SECRET,
     '1.0A',
-    `${process.env.API_URL}/twitter-sign-in-callback`,
+    `${process.env.STATIC_URL}/auth/twitter-sign-in-callback`,
     'HMAC-SHA1'
   );
 
@@ -74,8 +74,8 @@ export default function registerTwitterEndpoints(router: Router) {
           });
         }
 
-        res.cookie(AUTH_TOKEN_COOKIE, user.authToken);
-        res.redirect('/');
+-        res.cookie(AUTH_TOKEN_COOKIE, user.authToken);
+-        res.redirect(process.env.STATIC_URL!);
       });
     });
   });

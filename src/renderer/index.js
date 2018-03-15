@@ -1,5 +1,6 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
+const proxy = require('http-proxy-middleware');
 const {createBundleRenderer} = require('vue-server-renderer');
 const setupDevServer = require('./devServer');
 
@@ -87,6 +88,12 @@ function render(req, res) {
 const port = process.env.PORT || 8080;
 
 app.use(cookieParser());
+
+app.use('/auth', proxy({
+  target: process.env.API_URL,
+  changeOrigin: true,
+  cookieDomainRewrite: process.env.STATIC_URL,
+}));
 
 app.get('*', (req, res) => {
   if (isProd) {
