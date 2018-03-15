@@ -9,7 +9,7 @@
   },
   "scripts": {
     "run-api": "nodemon --watch 'src/**/*.ts' --ignore 'src/vue-client/**/*.ts' --exec 'ts-node' src/server/entry.ts",
-    "run-renderer": "nodemon --watch 'src/renderer/**/*.ts' src/renderer/index.js",
+    "run-renderer": "nodemon --watch 'src/renderer/**/*.js' src/renderer/index.js",
     "run-server-production": "ts-node 'src/server/entry.ts'",
     "build": "rm -rf build/ && webpack --config webpack/production.js && cp -r static/* build/",
     "deploy": "NODE_ENV=production npm run build && firebase deploy && heroku restart",
