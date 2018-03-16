@@ -33,7 +33,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
   a {
     color: rgb(1, 162, 166);
   }

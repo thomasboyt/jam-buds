@@ -1,6 +1,6 @@
 <template>
   <div :class="['playlist-entry', {'is-playing': isPlaying}]">
-    <a class="playlist-entry--main" :href="entry.sourceUrl" target="_blank" rel="noopener noreferrer" :click="handleClick">
+    <a class="playlist-entry--main" :href="entry.sourceUrl" target="_blank" rel="noopener noreferrer" @click="handleClick">
       <!-- <album-art :song="entry.song"></album-art> -->
       <div class="title">
         <div class="title-content">

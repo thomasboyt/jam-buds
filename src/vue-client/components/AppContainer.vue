@@ -2,7 +2,7 @@
   <div class="app-container">
     <div class="site-header">
       <div class="header-content">
-        <!-- TODO: Render <sidebar-toggle /> here -->
+        <sidebar-toggle></sidebar-toggle>
 
         <div class="header-logo">
           <h1>
@@ -26,8 +26,11 @@
 
 <script>
   import {mapState} from 'vuex';
+  import SidebarToggle from './SidebarToggle.vue';
 
   export default {
     computed: mapState(['authenticated']),
+
+    components: {SidebarToggle},
   }
 </script>

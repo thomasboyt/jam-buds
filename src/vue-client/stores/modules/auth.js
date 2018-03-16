@@ -8,7 +8,6 @@ const auth = {
 
       // populated by /me lookup
       authenticated: false,
-      currentUser: null,
     };
   },
 
@@ -41,7 +40,6 @@ const auth = {
 
       context.commit('setCurrentUser', user);
     },
-
   },
 };
 

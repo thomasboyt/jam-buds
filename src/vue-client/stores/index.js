@@ -17,12 +17,19 @@ const root = {
   state() {
     return {
       feed: null,
+      isSidebarOpen: false,
     }
   },
 
   mutations: {
     setFeed(state, feed) {
       state.feed = feed;
+    },
+    openSidebar(state) {
+      state.isSidebarOpen = true;
+    },
+    closeSidebar(state) {
+      state.isSidebarOpen = false;
     },
   },
 
