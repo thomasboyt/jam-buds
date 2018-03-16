@@ -1,16 +1,26 @@
 <template>
-  <ul>
-    <li v-for="entry in feed.tracks" :key="entry.id">
-      {{entry.song.artists[0]}} - {{entry.song.title}}
-    </li>
-  </ul>
+  <div class="playlist">
+
+    <h2>your feed</h2>
+    <ul class="playlist-entries">
+      <li v-for="entry in feed.tracks" :key="entry.id">
+        <feed-posted-by :entry="entry"></feed-posted-by>
+        <playlist-entry :entry="entry"></playlist-entry>
+      </li>
+    </ul>
+  </div>
 </template>
 
 <script>
   import {mapState} from 'vuex';
+  import PlaylistEntry from './playlist/PlaylistEntry.vue';
+  import FeedPostedBy from './playlist/FeedPostedBy.vue';
 
   export default {
-    computed: mapState(['feed']),
+    components: {PlaylistEntry, FeedPostedBy},
+
+    computed: {
+      ...mapState(['feed']),
+    },
   }
 </script>
-
