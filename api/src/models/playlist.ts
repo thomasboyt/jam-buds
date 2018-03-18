@@ -1,8 +1,8 @@
 import {db} from '../db';
 import {camelizeKeys, decamelizeKeys} from 'humps';
 import {User, serializePublicUser} from './user';
-import {PlaylistEntry, Song, PlaybackSource} from '../../universal/resources';
-import {ENTRY_PAGE_LIMIT} from '../../universal/constants';
+import {PlaylistEntry, Song, PlaybackSource} from '../resources';
+import {ENTRY_PAGE_LIMIT} from '../constants';
 
 export interface CreateEntryParams {
   userId: number;

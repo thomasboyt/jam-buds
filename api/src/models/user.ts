@@ -1,8 +1,8 @@
 import {db} from '../db';
 import genAuthToken from '../util/genAuthToken';
 import {camelizeKeys, decamelizeKeys} from 'humps';
-import {PublicUser, ColorScheme, UserProfile, CurrentUser} from '../../universal/resources';
-import {defaultColorScheme} from '../../universal/constants';
+import {PublicUser, ColorScheme, UserProfile, CurrentUser} from '../resources';
+import {defaultColorScheme} from '../constants';
 import {getFollowingForUserId} from './following';
 
 export interface User {

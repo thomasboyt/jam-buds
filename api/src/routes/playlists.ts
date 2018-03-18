@@ -25,7 +25,7 @@ import {
   CreateEntryParams,
 } from '../models/playlist';
 
-import {ENTRY_PAGE_LIMIT} from '../../universal/constants';
+import {ENTRY_PAGE_LIMIT} from '../constants';
 
 import {getUserFromRequest, isAuthenticated} from '../auth';
 
@@ -34,7 +34,7 @@ import * as bandcamp from '../apis/bandcamp';
 import * as soundcloud from '../apis/soundcloud';
 import {postSongTweet} from '../apis/twitter';
 
-import {Playlist, Feed, PlaybackSource} from '../../universal/resources';
+import {Playlist, Feed, PlaybackSource} from '../resources';
 
 export default function registerPlaylistEndpoints(router: Router) {
   // post a new song to your playlist

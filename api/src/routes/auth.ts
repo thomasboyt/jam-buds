@@ -1,6 +1,6 @@
 import {Router} from 'express';
 import wrapAsyncRoute from '../util/wrapAsyncRoute';
-import {AUTH_TOKEN_COOKIE} from '../../universal/constants';
+import {AUTH_TOKEN_COOKIE} from '../constants';
 import {OAuth} from 'oauth';
 import {createUser, getUserByTwitterId} from '../models/user';
 import {isAuthenticated} from '../auth';

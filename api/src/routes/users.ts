@@ -22,9 +22,9 @@ import {
 import {getUserFromRequest, isAuthenticated} from '../auth';
 import {getTwitterFriendIds} from '../apis/twitter';
 
-import {PublicUser, Playlist, Feed, Followers, Following, ColorScheme} from '../../universal/resources';
+import {PublicUser, Playlist, Feed, Followers, Following, ColorScheme} from '../resources';
 import wrapAsyncRoute from '../util/wrapAsyncRoute';
-import {AUTH_TOKEN_COOKIE} from '../../universal/constants';
+import {AUTH_TOKEN_COOKIE} from '../constants';
 
 export default function registerUserEndpoints(router: Router) {
   // get information about the current user

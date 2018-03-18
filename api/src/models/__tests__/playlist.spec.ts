@@ -11,7 +11,7 @@ import {
   deletePlaylistEntryById,
 } from '../../models/playlist';
 import {followUser} from '../../models/following';
-import {PlaylistEntry} from '../../../universal/resources';
+import {PlaylistEntry} from '../../resources';
 
 import {db} from '../../db';
 

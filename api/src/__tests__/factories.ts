@@ -1,7 +1,7 @@
 import {createUser, User} from '../models/user';
 import {createSongFromManualEntry, Song} from '../models/song';
 import {addSongToPlaylist} from '../models/playlist';
-import {PlaylistEntry, PlaybackSource} from '../../universal/resources';
+import {PlaylistEntry, PlaybackSource} from '../resources';
 
 // SHRUG
 let uniqueCounter = 0;

@@ -6,9 +6,9 @@ import * as bandcamp from '../apis/bandcamp';
 import * as youtube from '../apis/youtube';
 import * as soundcloud from '../apis/soundcloud';
 
-import {getPlaybackSourceForUrl} from '../../universal/playbackSources';
+import {getPlaybackSourceForUrl} from '../playbackSources';
 
-import {SearchResult, PlaybackSource} from '../../universal/resources';
+import {SearchResult, PlaybackSource} from '../resources';
 
 function serializeSpotifyResult(result: any): SearchResult {
   return {
