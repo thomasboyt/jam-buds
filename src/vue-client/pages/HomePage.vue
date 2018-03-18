@@ -20,8 +20,7 @@
   export default {
     async asyncData({store, route}) {
       if (store.state.auth.authenticated) {
-        // fetch initial feed data here
-        await store.dispatch('fetchFeed');
+        await store.dispatch('loadFeedPage', {initial: true});
       }
     },
 

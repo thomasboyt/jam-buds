@@ -1,26 +1,54 @@
 <template>
   <div class="playlist">
-
     <h2>your feed</h2>
-    <ul class="playlist-entries">
-      <li v-for="entry in feedEntries" :key="entry.id">
-        <feed-posted-by :entry="entry"></feed-posted-by>
-        <playlist-entry :entry="entry"></playlist-entry>
-      </li>
-    </ul>
+
+    <playlist
+      :entries="feedEntries"
+      :entriesExhausted="feedEntriesExhausted"
+      :loadingNextPage="loadingNextPage"
+      playbackSourceName="your feed"
+      playbackSourcePath="/"
+      @requestNextPage="handleRequestNextPage">
+      <p slot="placeholder">
+        Your feed doesn't have any entries yet! <router-link to="/find-friends">Find some friends to follow!</router-link>
+      </p>
+    </playlist>
   </div>
 </template>
 
 <script>
-  import {mapGetters} from 'vuex';
-  import PlaylistEntry from './playlist/PlaylistEntry.vue';
-  import FeedPostedBy from './playlist/FeedPostedBy.vue';
+  import {mapGetters, mapState} from 'vuex';
+  import Playlist from './playlist/Playlist.vue';
 
   export default {
-    components: {PlaylistEntry, FeedPostedBy},
+    components: {Playlist},
 
     computed: {
       ...mapGetters(['feedEntries']),
+      ...mapState({
+        feedEntriesExhausted: (state) => state.feed.entriesExhausted,
+      }),
     },
+
+    data() {
+      return {
+        loadingNextPage: false,
+      };
+    },
+
+    methods: {
+      async handleRequestNextPage() {
+        this.loadingNextPage = true;
+
+        try {
+          await this.$store.dispatch('loadFeedPage');
+        } catch(err) {
+          console.log('request error');
+          console.log(err);
+        } finally {
+          this.loadingNextPage = false;
+        }
+      }
+    }
   }
 </script>
