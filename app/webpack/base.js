@@ -6,19 +6,21 @@ const dotenv = require('dotenv');
 // XXX:
 // In development, the SSR/renderer server relies on this block to load some env vars it uses.
 // This maybe should be more explicit somehow
-if (!process.env.CI) {
-  if (process.env.NODE_ENV === 'test') {
-    dotenv.config({
-      path: '../.env.test',
-    });
-  } else if (process.env.NODE_ENV === 'production') {
-    dotenv.config({
-      path: '../.env.production',
-    });
-  } else {
-    dotenv.config({
-      path: '../.env',
-    });
+if (!process.env.SKIP_DOTENV) {
+  if (!process.env.CI) {
+    if (process.env.NODE_ENV === 'test') {
+      dotenv.config({
+        path: '../.env.test',
+      });
+    } else if (process.env.NODE_ENV === 'production') {
+      dotenv.config({
+        path: '../.env.production',
+      });
+    } else {
+      dotenv.config({
+        path: '../.env',
+      });
+    }
   }
 }
 
