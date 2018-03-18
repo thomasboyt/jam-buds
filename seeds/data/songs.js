@@ -46,7 +46,7 @@ const entries = [
     "bandcamp_url": "https://guerillatoss.bandcamp.com/track/diamond-girls",
   },
 
-  {"id":6,"created_at":"2017-01-17T16:43:09.421355-05:00","song_id":6,"user_id":1,"youtube_url":null,"note":null,"source":"soundcloud","bandcamp_track_id":null,"bandcamp_url":null,"bandcamp_streaming_url":null,"soundcloud_track_id":"302435398","soundcloud_url":"https://soundcloud.com/buscabulla/frio-feat-helado-negro","soundcloud_streaming_url":"https://api.soundcloud.com/tracks/302435398/stream?&consumer_key=3ae6bc27002808463649550a768cca8f"}
+  {"id":6,"created_at":"2017-01-17T16:43:09.421355-05:00","song_id":6,"user_id":1,"youtube_url":null,"note":"Here is a test note","source":"soundcloud","bandcamp_track_id":null,"bandcamp_url":null,"bandcamp_streaming_url":null,"soundcloud_track_id":"302435398","soundcloud_url":"https://soundcloud.com/buscabulla/frio-feat-helado-negro","soundcloud_streaming_url":"https://api.soundcloud.com/tracks/302435398/stream?&consumer_key=3ae6bc27002808463649550a768cca8f"}
 ];
 
 module.exports = {
