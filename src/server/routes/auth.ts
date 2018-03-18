@@ -27,7 +27,7 @@ export default function registerTwitterAuthEndpoints(router: Router) {
     process.env.TWITTER_API_KEY,
     process.env.TWITTER_API_SECRET,
     '1.0A',
-    `${process.env.STATIC_URL}/auth/twitter-sign-in-callback`,
+    `${process.env.APP_URL}/auth/twitter-sign-in-callback`,
     'HMAC-SHA1'
   );
 
@@ -76,7 +76,7 @@ export default function registerTwitterAuthEndpoints(router: Router) {
         }
 
 -        res.cookie(AUTH_TOKEN_COOKIE, user.authToken);
--        res.redirect(process.env.STATIC_URL!);
+-        res.redirect(process.env.APP_URL!);
       });
     });
   });

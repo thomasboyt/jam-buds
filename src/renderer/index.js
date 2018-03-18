@@ -108,7 +108,7 @@ app.use(cookieParser());
 app.use('/auth', proxy({
   target: process.env.API_URL,
   changeOrigin: true,
-  cookieDomainRewrite: process.env.STATIC_URL,
+  cookieDomainRewrite: process.env.APP_URL,
 }));
 
 app.get('*', (req, res) => {
