@@ -18,6 +18,10 @@ export default function createApp(env?: string) {
 
   app.use(bodyParser.json());
 
+  app.use(cors({
+    origin: process.env.STATIC_URL,
+  }));
+
   const apiRouter = express.Router();
 
   registerUserEndpoints(apiRouter);
