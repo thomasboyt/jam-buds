@@ -6,24 +6,34 @@ Jam Buds is a tiny web application that helps you share music with your friends.
 
 In Jam Buds, a user can paste links to songs that like. These links are then put into a playlist for that user that their friends can access and play through at their leisure.
 
-## TODOs
-
-https://trello.com/b/PjYwkDXf/jam-buds
-
 ## Install
 
+### API Server
+
 ```
+cd api
 npm install
 createdb jambuds
 ./node_modules/.bin/knex init
 npm run resetdb
 ```
 
+### App Server
+
+```
+cd app
+npm install
+```
+
+## Run in development
+
+First, copy over `_env` to `.env` and fill it out. You'll need to provision Twitter, Spotify, and Youtube API apps, but they're all pretty easy to set up. The Google one just needs Youtube API access, btw.
+
 To start the app, in two separate sessions, run:
 
 ```
-npm run run-client
-npm run run-server
+cd api && npm run dev
+cd app && npm run dev
 ```
 
 ## Testing
@@ -35,7 +45,7 @@ Create a `.env.test` file with a test DATABASE_URL (don't worry about the rest o
 DATABASE_URL=postgres://tboyt@localhost:5432/jambuds_test
 ```
 
-Then run `npm test`.
+Then run `cd api && npm test`.
 
 ### Feature Tests
 
