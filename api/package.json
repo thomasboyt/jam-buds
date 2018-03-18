@@ -1,10 +1,10 @@
 {
-  "name": "jam-buds",
+  "name": "jam-buds-api",
   "private": true,
   "version": "1.0.0",
   "description": "",
   "engines": {
-    "node": "6.x"
+    "node": "8.x"
   },
   "scripts": {
     "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/entry.ts",

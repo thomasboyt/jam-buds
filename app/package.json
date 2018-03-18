@@ -1,10 +1,10 @@
 {
-  "name": "jam-buds-api",
+  "name": "jam-buds-app",
   "private": true,
   "version": "1.0.0",
   "description": "",
   "engines": {
-    "node": "6.x"
+    "node": "8.x"
   },
   "scripts": {
     "start": "webpack --mode production --config webpack/client.js && webpack --mode production --config webpack/server.js && ./server/index.js",
