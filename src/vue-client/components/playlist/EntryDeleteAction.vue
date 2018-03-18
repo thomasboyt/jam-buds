@@ -15,23 +15,28 @@ export default {
   data() {
     return {
       closeIcon,
+      requestInFlight: false,
     };
   },
 
-  computed: {
-    // TODO: unstub this
-    requestInFlight() { return false; },
-  },
-
   methods: {
-    handleDelete(e) {
+    async handleDelete(e) {
       e.preventDefault();
       e.stopPropagation();
 
       const confirmedDelete = window.confirm('Are you sure you want to delete this entry?')
 
       if (confirmedDelete) {
-        // TODO
+        this.requestInFlight = true;
+
+        try {
+          await this.$store.dispatch('deletePlaylistEntry', {id: this.entry.id});
+        } catch(err) {
+          console.log('request error');
+          console.log(err);
+        } finally {
+          this.requestInFlight = false;
+        }
       }
     },
   },

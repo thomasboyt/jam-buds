@@ -3,7 +3,7 @@
 
     <h2>your feed</h2>
     <ul class="playlist-entries">
-      <li v-for="entry in feed.tracks" :key="entry.id">
+      <li v-for="entry in feedEntries" :key="entry.id">
         <feed-posted-by :entry="entry"></feed-posted-by>
         <playlist-entry :entry="entry"></playlist-entry>
       </li>
@@ -12,7 +12,7 @@
 </template>
 
 <script>
-  import {mapState} from 'vuex';
+  import {mapGetters} from 'vuex';
   import PlaylistEntry from './playlist/PlaylistEntry.vue';
   import FeedPostedBy from './playlist/FeedPostedBy.vue';
 
@@ -20,7 +20,7 @@
     components: {PlaylistEntry, FeedPostedBy},
 
     computed: {
-      ...mapState(['feed']),
+      ...mapGetters(['feedEntries']),
     },
   }
 </script>

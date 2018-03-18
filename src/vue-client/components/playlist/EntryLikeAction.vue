@@ -18,23 +18,26 @@ export default {
     return {
       heartOpenIcon,
       heartFilledIcon,
+      requestInFlight: false,
     };
   },
 
-  computed: {
-    // TODO: unstub this
-    requestInFlight() { return false; },
-  },
-
   methods: {
-    handleToggleLike(e) {
+    async handleToggleLike(e) {
       e.preventDefault();
       e.stopPropagation();
 
-      if (this.entry.isLiked) {
-        // TODO
-      } else {
-        // TODO
+      const action = this.entry.isLiked ? 'unlikePlaylistEntry' : 'likePlaylistEntry';
+
+      this.requestInFlight = true;
+
+      try {
+        await this.$store.dispatch(`${action}`, {id: this.entry.id});
+      } catch(err) {
+        console.log('request error');
+        console.log(err);
+      } finally {
+        this.requestInFlight = false;
       }
     },
   },
