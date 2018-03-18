@@ -22,13 +22,17 @@ Vue.mixin({
 
 const {app, router, store} = createApp();
 
-const authToken = Cookies.get(AUTH_TOKEN_COOKIE);
-
 // prime the store with server-initialized state.
 // the state is determined during SSR and inlined in the page markup.
 const initialState = window.__INITIAL_STATE__;
 if (initialState) {
   store.replaceState(initialState)
+}
+
+const authToken = Cookies.get(AUTH_TOKEN_COOKIE);
+
+if (authToken) {
+  store.commit('setAuthToken', authToken);
 }
 
 // wait until router has resolved all async before hooks
