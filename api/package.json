@@ -10,7 +10,7 @@
     "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/entry.ts",
     "start": "ts-node 'src/entry.ts'",
     "resetdb": "./scripts/resetdb",
-    "test": "NODE_ENV=test mocha --require ts-node/register 'src/server/**/*.spec.ts'"
+    "test": "NODE_ENV=test mocha --require ts-node/register 'src/**/*.spec.ts'"
   },
   "author": "Thomas Boyt <me@thomasboyt.com>",
   "license": "MIT",

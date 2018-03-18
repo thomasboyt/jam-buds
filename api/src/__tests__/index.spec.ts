@@ -6,7 +6,7 @@ import * as dotenv from 'dotenv';
 // (this is only used for local testing, and doesn't exist in CI)
 dotenv.config({
   silent: true,
-  path: './.env.test',
+  path: '../.env.test',
 });
 
 import {db, configureDatabase} from '../db';
