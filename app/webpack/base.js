@@ -26,10 +26,11 @@ if (!process.env.SKIP_DOTENV) {
 
 const mode = process.env.NODE_ENV || 'development';
 
-function gitSha() {
-  const execSync = require('child_process').execSync;
-  return execSync('git rev-parse --short HEAD', {encoding: 'utf8'}).trim();
-}
+// TODO: this is broken on heroku cuz it's not a real git repo :(
+// function gitSha() {
+//   const execSync = require('child_process').execSync;
+//   return execSync('git rev-parse --short HEAD', {encoding: 'utf8'}).trim();
+// }
 
 let envVars = {
   API_URL: `"${process.env.API_URL}"`,
@@ -39,7 +40,6 @@ let envVars = {
 if (mode === 'production') {
   envVars = {
     ...envVars,
-    BUILD_SHA: `"${gitSha()}"`,
     SENTRY_PUBLIC_DSN: `"${process.env.SENTRY_PUBLIC_DSN}"`,
   };
 }

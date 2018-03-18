@@ -45,9 +45,9 @@
         the code for jam buds is open source and viewable <a href="https://github.com/thomasboyt/jam-buds">on github</a>
       </p>
 
-      <p v-if="buildSha">
+      <!-- <p v-if="buildSha">
         running client version {{buildSha}}
-      </p>
+      </p> -->
     </main-wrapper>
   </sidebar-wrapper>
 </template>
@@ -61,7 +61,7 @@
 
     data() {
       return {
-        buildSha: process.env.BUILD_SHA,
+        // buildSha: process.env.BUILD_SHA,
       };
     }
   };
