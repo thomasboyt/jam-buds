@@ -4,7 +4,10 @@
       <h2>
         {{title}}
       </h2>
+
+      <follow-toggle v-if="showFollowToggle" :name="name"></follow-toggle>
     </div>
+
     <div class="user-links">
       <router-link :to="`/users/${name}`" exact-active-class="active">
         Posts
@@ -27,13 +30,20 @@
 
 <script>
 import {mapState} from 'vuex';
+import FollowToggle from './FollowToggle.vue';
 
 export default {
+  components: {FollowToggle},
+
   props: ['title'],
 
   computed: {
     ...mapState({
       name: (state) => state.profile.user.twitterName,
+      showFollowToggle: (state) => (
+        state.auth.authenticated &&
+        state.profile.user.twitterName !== state.currentUser.name
+      ),
     }),
   },
 };
