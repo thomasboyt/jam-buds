@@ -7,7 +7,7 @@
     "node": "8.x"
   },
   "scripts": {
-    "start": "./server/index.js",
+    "start": "node server/index.js",
     "postinstall": "webpack --mode production --config webpack/client.js && webpack --mode production --config webpack/server.js",
     "dev": "nodemon --watch 'server/**/*.js' server/index.js",
     "build": "rm -rf build/ && webpack --mode production --config webpack/client.js && cp -r static/* build/",
