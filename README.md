@@ -119,3 +119,7 @@ Create a new Firebase hosting project. Then add a `.firebaserc`:
 ```
 
 ### Deploy
+
+```
+./deploy.sh
+```
