@@ -5,15 +5,21 @@ const profile = {
   state() {
     return {
       user: null,
-      followers: [],
-      following: [],
+      followers: null,
+      following: null,
     }
   },
 
   mutations: {
     setViewedProfile(state, userProfile) {
       Vue.set(state, 'user', userProfile);
-    }
+    },
+    setFollowing(state, following) {
+      Vue.set(state, 'following', following);
+    },
+    setFollowers(state, followers) {
+      Vue.set(state, 'followers', followers);
+    },
   },
 
   actions: {
@@ -36,6 +42,30 @@ const profile = {
 
       this.commit('setViewedProfile', data.userProfile);
     },
+
+    async loadProfileFollowing(context, userName) {
+      const resp = await apiRequest(context, {
+        url: `/users/${userName}/following`,
+        method: 'GET',
+      });
+      const userProfile = resp.data.userProfile;
+      const following = resp.data.users;
+
+      this.commit('setViewedProfile', userProfile);
+      this.commit('setFollowing', following);
+    },
+
+    async loadProfileFollowers(context, userName) {
+      const resp = await apiRequest(context, {
+        url: `/users/${userName}/followers`,
+        method: 'GET',
+      });
+      const userProfile = resp.data.userProfile;
+      const followers = resp.data.users;
+
+      this.commit('setViewedProfile', userProfile);
+      this.commit('setFollowers', followers);
+    }
   }
 };
 

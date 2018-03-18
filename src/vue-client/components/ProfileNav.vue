@@ -13,6 +13,14 @@
       <router-link :to="`/users/${name}/liked`" active-class="active">
         Liked
       </router-link>
+      /
+      <router-link :to="`/users/${name}/following`" active-class="active">
+        Following
+      </router-link>
+      /
+      <router-link :to="`/users/${name}/followers`" active-class="active">
+        Followers
+      </router-link>
     </div>
   </div>
 </template>

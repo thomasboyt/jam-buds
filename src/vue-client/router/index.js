@@ -7,8 +7,8 @@ import AboutPage from '../pages/AboutPage.vue';
 import UserPageWrapper from '../pages/UserPageWrapper.vue';
 import UserPlaylistPage from '../pages/users/UserPlaylistPage.vue';
 import UserLikedPage from '../pages/users/UserLikedPage.vue';
-// import UserFollowingPage from '../pages/users/UserFollowingPage.vue';
-// import UserFollowersPage from '../pages/users/UserFollowersPage.vue';
+import UserFollowingPage from '../pages/users/UserFollowingPage.vue';
+import UserFollowersPage from '../pages/users/UserFollowersPage.vue';
 
 // import FindFriendsPage from '../pages/FindFriendsPage.vue';
 // import SettingsPage from '../pages/SettingsPage.vue';
@@ -28,8 +28,8 @@ export default function createRouter() {
       {path: '/users/:id', component: UserPageWrapper, children: [
         {path: '/', component: UserPlaylistPage},
         {path: 'liked', component: UserLikedPage},
-      //   {path: 'following', component: UserFollowingPage},
-      //   {path: 'followers', component: UserFollowersPage},
+        {path: 'following', component: UserFollowingPage},
+        {path: 'followers', component: UserFollowersPage},
       ]},
       // {path: '/find-friends', component: FindFriendsPage},
       // {path: '/settings', component: SettingsPage},
