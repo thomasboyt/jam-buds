@@ -10,7 +10,7 @@ import UserLikedPage from '../pages/users/UserLikedPage.vue';
 import UserFollowingPage from '../pages/users/UserFollowingPage.vue';
 import UserFollowersPage from '../pages/users/UserFollowersPage.vue';
 
-// import FindFriendsPage from '../pages/FindFriendsPage.vue';
+import FindFriendsPage from '../pages/FindFriendsPage.vue';
 // import SettingsPage from '../pages/SettingsPage.vue';
 
 // import NotFoundPage from '../pages/NotFoundPage.vue';
@@ -31,7 +31,7 @@ export default function createRouter() {
         {path: 'following', component: UserFollowingPage},
         {path: 'followers', component: UserFollowersPage},
       ]},
-      // {path: '/find-friends', component: FindFriendsPage},
+      {path: '/find-friends', component: FindFriendsPage},
       // {path: '/settings', component: SettingsPage},
       // {path: '*', component: NotFoundPage},
     ],

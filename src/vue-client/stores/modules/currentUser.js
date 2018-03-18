@@ -1,3 +1,4 @@
+import Vue from 'vue';
 import apiRequest from '../../apiRequest';
 
 const currentUser = {
@@ -14,6 +15,9 @@ const currentUser = {
     },
     removeFollowedUser(state, name) {
       state.following = state.following.filter((user) => user.twitterName !== name);
+    },
+    setFriendSuggestions(state, suggestions) {
+      Vue.set(state, 'friendSuggestions', suggestions);
     },
   },
 
@@ -37,6 +41,15 @@ const currentUser = {
       });
 
       context.commit('removeFollowedUser', name);
+    },
+
+    async loadFriendSuggestions(context) {
+      const resp = await apiRequest(context, {
+        url: `/friend-suggestions`,
+        method: 'GET',
+      });
+
+      context.commit('setFriendSuggestions', resp.data.users);
     }
   },
 
