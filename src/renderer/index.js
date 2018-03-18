@@ -14,6 +14,7 @@ const template = `
   <html>
     <head>
       <title>app</title>
+      <script src="https://www.youtube.com/iframe_api"></script>
       <meta name="viewport" content="width=device-width, initial-scale=1">
     </head>
     <body>

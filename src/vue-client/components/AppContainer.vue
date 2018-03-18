@@ -10,7 +10,7 @@
           </h1>
         </div>
 
-        <!-- TODO: Render <audio-player /> here -->
+        <audio-player></audio-player>
       </div>
     </div>
 
@@ -27,10 +27,11 @@
 <script>
   import {mapState} from 'vuex';
   import SidebarToggle from './SidebarToggle.vue';
+  import AudioPlayer from './audio-player/AudioPlayer.vue';
 
   export default {
     computed: mapState(['authenticated']),
 
-    components: {SidebarToggle},
+    components: {SidebarToggle, AudioPlayer},
   }
 </script>

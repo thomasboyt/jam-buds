@@ -9,6 +9,7 @@ import auth from './modules/auth';
 import currentUser from './modules/currentUser';
 import playlistEntries from './modules/playlistEntries';
 import feed from './modules/feed';
+import playback from './modules/playback';
 
 const root = {
   modules: {
@@ -16,6 +17,7 @@ const root = {
     currentUser,
     playlistEntries,
     feed,
+    playback,
   },
 
   state() {

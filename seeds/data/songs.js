@@ -11,7 +11,13 @@ const songs = [
     "spotify_id": "4sxikSNTEKjvpdupyxxjGL",
     "album_art": "https://i.scdn.co/image/327c4479345a3db7d0f3fbd5352e778473eea4eb",
   },
-  {"id":6,"created_at":"2017-01-17T16:43:09.414925-05:00","artists":["Buscabulla","Helado Negro"],"album":"Frío (feat. Helado Negro)","title":"Frío (feat. Helado Negro)","spotify_id":"3hjBsjNmm2fFCggCtP5hJx","album_art":"https://i.scdn.co/image/e9ee68a74f3930e18237b3a53953820f1a2d9a5f"}
+  {"id":6,"created_at":"2017-01-17T16:43:09.414925-05:00","artists":["Buscabulla","Helado Negro"],"album":"Frío (feat. Helado Negro)","title":"Frío (feat. Helado Negro)","spotify_id":"3hjBsjNmm2fFCggCtP5hJx","album_art":"https://i.scdn.co/image/e9ee68a74f3930e18237b3a53953820f1a2d9a5f"},
+  {
+    "id": 7,
+    "created_at": "2018-01-12 16:44:26.642494-05",
+    "title": "Squishy (short Youtube)",
+    "artists": ["Kirby's Adventure"],
+  }
 ];
 
 const entries = [
@@ -46,7 +52,15 @@ const entries = [
     "bandcamp_url": "https://guerillatoss.bandcamp.com/track/diamond-girls",
   },
 
-  {"id":6,"created_at":"2017-01-17T16:43:09.421355-05:00","song_id":6,"user_id":1,"youtube_url":null,"note":"Here is a test note","source":"soundcloud","bandcamp_track_id":null,"bandcamp_url":null,"bandcamp_streaming_url":null,"soundcloud_track_id":"302435398","soundcloud_url":"https://soundcloud.com/buscabulla/frio-feat-helado-negro","soundcloud_streaming_url":"https://api.soundcloud.com/tracks/302435398/stream?&consumer_key=3ae6bc27002808463649550a768cca8f"}
+  {"id":6,"created_at":"2017-01-17T16:43:09.421355-05:00","song_id":6,"user_id":1,"youtube_url":null,"note":"Here is a test note","source":"soundcloud","bandcamp_track_id":null,"bandcamp_url":null,"bandcamp_streaming_url":null,"soundcloud_track_id":"302435398","soundcloud_url":"https://soundcloud.com/buscabulla/frio-feat-helado-negro","soundcloud_streaming_url":"https://api.soundcloud.com/tracks/302435398/stream?&consumer_key=3ae6bc27002808463649550a768cca8f"},
+
+  {
+    "song_id": 7,
+    "user_id": 1,
+    "source": "youtube",
+    "youtube_url": "https://www.youtube.com/watch?v=L8AoPY0tqRU&feature=youtu.be",
+    "created_at":"2018-01-12 16:44:26.766809-05",
+  }
 ];
 
 module.exports = {

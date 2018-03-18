@@ -6,7 +6,7 @@
       :entries="feedEntries"
       :entriesExhausted="feedEntriesExhausted"
       :loadingNextPage="loadingNextPage"
-      playbackSourceName="your feed"
+      playbackSourceLabel="your feed"
       playbackSourcePath="/"
       @requestNextPage="handleRequestNextPage">
       <p slot="placeholder">

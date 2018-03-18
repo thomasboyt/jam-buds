@@ -55,7 +55,9 @@ const noteIcon = require('../../../../assets/note.svg');
 const arrowIcon = require('../../../../assets/arrow.svg');
 
 export default {
-  props: ['entry'],
+  props: [
+    'entry', 'playbackSourceLabel', 'playbackSourcePath',
+  ],
 
   data() {
     return {
@@ -114,15 +116,20 @@ export default {
   methods: {
     handleClick(evt) {
       evt.preventDefault();
-      // TODO: Play the dang song
-      //this.handleRequestPlay();
       this.isOpen = true;
+      this.$store.dispatch('playback/playSong', {
+        entry: this.entry,
+        playbackSourceLabel: this.playbackSourceLabel,
+        playbackSourcePath: this.playbackSourcePath,
+      });
     },
+
     handleToggleOpen(evt) {
       evt.preventDefault();
       evt.stopPropagation();
       this.isOpen = !this.isOpen;
     },
+
     handleOpenNote(evt) {
       evt.preventDefault();
       evt.stopPropagation();
