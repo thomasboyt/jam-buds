@@ -195,6 +195,7 @@ export default function registerPlaylistEndpoints(router: Router) {
     const resp: Playlist = {
       userProfile: await getUserProfileForUser(user),
       tracks,
+      limit: ENTRY_PAGE_LIMIT,
     };
 
     res.json(resp);
