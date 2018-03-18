@@ -4,6 +4,8 @@
 # Copy-paste it to .env and add them there
 ###
 
+NODE_ENV=development
+
 # The URL of the database. This is set automatically by Heroku.
 DATABASE_URL=postgres://username@localhost:5432/jambuds
 
