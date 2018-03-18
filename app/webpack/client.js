@@ -10,11 +10,6 @@ module.exports = merge(baseConfig, {
     app: ['babel-polyfill', './src/entry-client.js'],
   },
 
-  output: {
-    // TODO: Toggle this based on production/not prod
-    publicPath: '/assets/',
-  },
-
   optimization: {
     splitChunks: {
       cacheGroups: {
