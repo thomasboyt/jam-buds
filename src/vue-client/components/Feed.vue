@@ -3,7 +3,7 @@
     <h2>your feed</h2>
 
     <playlist
-      :entries="feedEntries"
+      :entries="entries"
       :entriesExhausted="feedEntriesExhausted"
       :loadingNextPage="loadingNextPage"
       playbackSourceLabel="your feed"
@@ -24,9 +24,9 @@
     components: {Playlist},
 
     computed: {
-      ...mapGetters(['feedEntries']),
+      entries() { return this.$store.getters.playlistEntries('feed'); },
       ...mapState({
-        feedEntriesExhausted: (state) => state.feed.entriesExhausted,
+        feedEntriesExhausted: (state) => state.playlists.feed.entriesExhausted,
       }),
     },
 
@@ -41,7 +41,7 @@
         this.loadingNextPage = true;
 
         try {
-          await this.$store.dispatch('loadFeedPage');
+          await this.$store.dispatch('loadPlaylistPage', {key: 'feed'});
         } catch(err) {
           console.log('request error');
           console.log(err);

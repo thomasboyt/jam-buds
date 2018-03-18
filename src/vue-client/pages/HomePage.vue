@@ -20,7 +20,7 @@
   export default {
     async asyncData({store, route}) {
       if (store.state.auth.authenticated) {
-        await store.dispatch('loadFeedPage', {initial: true});
+        await store.dispatch('loadPlaylistPage', {key: 'feed', initial: true});
       }
     },
 

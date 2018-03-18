@@ -8,16 +8,16 @@ Vue.use(Vuex);
 import auth from './modules/auth';
 import currentUser from './modules/currentUser';
 import playlistEntries from './modules/playlistEntries';
-import feed from './modules/feed';
 import playback from './modules/playback';
+import playlists from './modules/playlists';
 
 const root = {
   modules: {
     auth,
     currentUser,
     playlistEntries,
-    feed,
     playback,
+    playlists,
   },
 
   state() {
