@@ -22,6 +22,12 @@ export default {
         this.$refs.player.pause();
       }
     }
+  },
+
+  methods: {
+    handleEnded() {
+      this.$emit('ended');
+    }
   }
 }
 </script>
