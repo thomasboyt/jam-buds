@@ -21,9 +21,9 @@ export default {
     },
 
     displayName() {
-      const currentUserId = _.get(this.$store.state.auth.currentUser, 'userId');
+      const currentUserId = _.get(this.$store.state.currentUser, 'id');
 
-      if (currentUserId === this.entry.user.userId) {
+      if (currentUserId === this.entry.user.id) {
         return 'You';
       } else {
         return `@${this.entry.user.twitterName}`;
