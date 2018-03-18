@@ -6,17 +6,14 @@
       </main-wrapper>
     </sidebar-wrapper>
 
-    <p v-else>
-      <a href="/auth/twitter-sign-in">
-        Click me to authenticate
-      </a>
-    </p>
+    <logged-out-home v-else></logged-out-home>
   </app-container>
 </template>
 
 <script>
   import {mapState} from 'vuex';
   import Feed from '../components/Feed.vue';
+  import LoggedOutHome from '../components/LoggedOutHome.vue';
 
   import AppContainer from '../components/AppContainer.vue';
   import MainWrapper from '../components/MainWrapper.vue';
@@ -39,6 +36,7 @@
       AppContainer,
       MainWrapper,
       SidebarWrapper,
+      LoggedOutHome,
     },
   };
 </script>
