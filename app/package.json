@@ -11,7 +11,7 @@
     "postinstall": "webpack --mode production --config webpack/server.js",
     "dev": "nodemon --watch 'server/**/*.js' server/index.js",
     "build": "rm -rf build/ && NODE_ENV=production webpack --mode production --config webpack/client.js && cp -r static/* build/",
-    "deploy-static": "npm run build && firebase deploy && echo 'hey you still need to deploy to heroku'",
+    "deploy-static": "npm run build && firebase deploy",
     "features": "wdio"
   },
   "author": "Thomas Boyt <me@thomasboyt.com>",
