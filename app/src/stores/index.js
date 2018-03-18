@@ -11,6 +11,7 @@ import playlistEntries from './modules/playlistEntries';
 import playback from './modules/playback';
 import playlists from './modules/playlists';
 import profile from './modules/profile';
+import addSong from './modules/addSong';
 
 const root = {
   modules: {
@@ -20,6 +21,7 @@ const root = {
     playback,
     playlists,
     profile,
+    addSong,
   },
 
   state() {

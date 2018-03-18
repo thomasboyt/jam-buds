@@ -42,12 +42,16 @@ $modal-height: 450px;
   outline: none;
 }
 
-.ReactModal__Content--after-open {
+.modal-open-enter-active .modal-content {
   animation: flyIn ease-in-out 1.5s;
 }
 
-.ReactModal__Content--before-close {
+.modal-open-leave-active .modal-content {
   animation: flyOut ease-in-out 1s reverse;
+}
+
+.modal-open-leave-to .modal-content {
+  transform: scale(0);
 }
 
 @keyframes flyIn {

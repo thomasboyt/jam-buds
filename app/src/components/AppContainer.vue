@@ -18,9 +18,7 @@
       <slot></slot>
     </div>
 
-    <div v-if="authenticated">
-      <!-- TODO: Render <add-song-modal /> here if logged in! -->
-    </div>
+    <add-song-modal v-if="authenticated"></add-song-modal>
   </div>
 </template>
 
@@ -28,10 +26,13 @@
   import {mapState} from 'vuex';
   import SidebarToggle from './SidebarToggle.vue';
   import AudioPlayer from './audio-player/AudioPlayer.vue';
+  import AddSongModal from './add-song-modal/AddSongModal.vue';
 
   export default {
-    computed: mapState(['authenticated']),
+    computed: mapState({
+      authenticated: (state) => state.auth.authenticated,
+    }),
 
-    components: {SidebarToggle, AudioPlayer},
+    components: {SidebarToggle, AudioPlayer, AddSongModal},
   }
 </script>
