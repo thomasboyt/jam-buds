@@ -18,7 +18,9 @@ addons:
       - g++-4.8
 
 install:
-  - cd api && npm install
+  - cd api
+  - npm install
+  - cd ..
 
 before_script:
   - psql -c 'create database jambuds_test;' -U postgres
@@ -31,7 +33,8 @@ before_script:
   # - sleep 5
 
 script:
-  - cd api && npm test
+  - cd api
+  - npm test
   # - npm run features
 
 env:
