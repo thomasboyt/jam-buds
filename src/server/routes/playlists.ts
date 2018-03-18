@@ -25,6 +25,8 @@ import {
   CreateEntryParams,
 } from '../models/playlist';
 
+import {ENTRY_PAGE_LIMIT} from '../../universal/constants';
+
 import {getUserFromRequest, isAuthenticated} from '../auth';
 
 import * as spotify from '../apis/spotify';
@@ -164,6 +166,7 @@ export default function registerPlaylistEndpoints(router: Router) {
     const resp: Playlist = {
       userProfile: await getUserProfileForUser(user),
       tracks,
+      limit: ENTRY_PAGE_LIMIT,
     };
 
     res.json(resp);
@@ -209,6 +212,7 @@ export default function registerPlaylistEndpoints(router: Router) {
 
     const feed: Feed = {
       tracks: items,
+      limit: ENTRY_PAGE_LIMIT,
     };
 
     res.json(feed);

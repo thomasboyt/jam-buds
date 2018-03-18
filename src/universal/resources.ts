@@ -36,6 +36,7 @@ export interface PlaylistEntry {
 
 export interface Feed {
   tracks: PlaylistEntry[];
+  limit: number;
 }
 
 export interface PublicUser {
@@ -59,6 +60,7 @@ export interface CurrentUser {
 export interface Playlist {
   userProfile: UserProfile;
   tracks: PlaylistEntry[];
+  limit: number;
 }
 
 export interface Followers {
