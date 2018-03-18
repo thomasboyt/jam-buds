@@ -2,7 +2,7 @@ import Vue from 'vue';
 import Router from 'vue-router';
 
 import HomePage from '../pages/HomePage.vue';
-// import AboutPage from '../pages/AboutPage.vue';
+import AboutPage from '../pages/AboutPage.vue';
 
 // import UserPageWrapper from '../pages/user/UserPageWrapper.vue';
 // import UserPlaylistPage from '../pages/user/UserPlaylistPage.vue';
@@ -24,7 +24,7 @@ export default function createRouter() {
     scrollBehavior: () => ({ x: 0, y: 0 }),
     routes: [
       {path: '/', component: HomePage},
-      // {path: '/about', component: AboutPage},
+      {path: '/about', component: AboutPage},
       // {path: '/user/:id', component: UserPageWrapper, children: [
       //   {path: '/', component: UserPlaylistPage},
       //   {path: 'liked', component: UserLikedPage},

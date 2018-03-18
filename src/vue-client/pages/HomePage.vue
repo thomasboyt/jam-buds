@@ -1,13 +1,11 @@
 <template>
-  <app-container>
-    <sidebar-wrapper v-if="authenticated">
-      <main-wrapper>
-        <feed></feed>
-      </main-wrapper>
-    </sidebar-wrapper>
+  <sidebar-wrapper v-if="authenticated">
+    <main-wrapper>
+      <feed></feed>
+    </main-wrapper>
+  </sidebar-wrapper>
 
-    <logged-out-home v-else></logged-out-home>
-  </app-container>
+  <logged-out-home v-else></logged-out-home>
 </template>
 
 <script>
