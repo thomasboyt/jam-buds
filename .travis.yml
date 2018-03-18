@@ -4,7 +4,9 @@ node_js:
   - "8"
 
 addons:
-  postgresql: "10.3"
+  # XXX: HEY THIS IS OUT OF DATE
+  # see https://github.com/travis-ci/travis-ci/issues/8537 it's a mess
+  postgresql: "9.6"
 
   # this is the last version that supports the selenium extension used I guess??
   firefox: "45.0"
