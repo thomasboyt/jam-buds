@@ -10,6 +10,7 @@ import currentUser from './modules/currentUser';
 import playlistEntries from './modules/playlistEntries';
 import playback from './modules/playback';
 import playlists from './modules/playlists';
+import profile from './modules/profile';
 
 const root = {
   modules: {
@@ -18,6 +19,7 @@ const root = {
     playlistEntries,
     playback,
     playlists,
+    profile,
   },
 
   state() {

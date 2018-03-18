@@ -8,6 +8,12 @@ const playlistState = () => {
   };
 }
 
+/**
+ * TODO:
+ * Consider collapsing key and url into the same field
+ * Instead of having profilePosts/profileLikes, just have a buncha playlists
+ */
+
 const playlists = {
   state() {
     return {
@@ -18,9 +24,12 @@ const playlists = {
   },
 
   mutations: {
-    resetPlaylist(state, key) {
+    resetPlaylist(state, {key, url}) {
       state[key].entryIds = [];
       state[key].entriesExhausted = false;
+      if (url) {
+        state[key].url = url;
+      }
     },
 
     pushPlaylist(state, {key, page}) {
@@ -46,13 +55,13 @@ const playlists = {
   },
 
   actions: {
-    async loadPlaylistPage(context, {key, initial}={}) {
+    async loadPlaylistPage(context, {key, initial, url}={}) {
       if (!context.state[key]) {
         throw new Error(`undefined playlist ${key}`);
       }
 
       if (initial) {
-        context.commit('resetPlaylist', key);
+        context.commit('resetPlaylist', {key, url});
       }
 
       const previousId = context.state[key].entryIds.slice(-1)[0];
@@ -62,10 +71,11 @@ const playlists = {
         method: 'GET',
         params: {previousId},
       });
-      console.log(resp.data);
 
       context.commit('addPlaylistEntries', resp.data.tracks);
       context.commit('pushPlaylist', {key, page: resp.data});
+
+      return resp.data;
     },
   },
 

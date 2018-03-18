@@ -1,8 +1,10 @@
 <template>
-  <div>
-    <ul class="playlist-entries">
-      <slot v-if="!entries.length" name="placeholder"></slot>
+  <div v-if="!entries.length" class="main-placeholder">
+    <slot name="placeholder"></slot>
+  </div>
 
+  <div v-else>
+    <ul class="playlist-entries">
       <li v-for="entry in entries" :key="entry.id">
         <entry-posted-by :entry="entry"></entry-posted-by>
         <playlist-entry
