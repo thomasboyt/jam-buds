@@ -7,7 +7,7 @@
       </router-link>
     </p>
 
-    <!-- <add-song-button></add-song-button> -->
+    <add-song-button></add-song-button>
 
     <ul>
       <li>
@@ -48,8 +48,11 @@
 
 <script>
 import {signOut} from '../apiRequest';
+import AddSongButton from './AddSongButton.vue';
 
 export default {
+  components: {AddSongButton},
+
   props: ['open'],
 
   computed: {
@@ -65,6 +68,6 @@ export default {
 
       document.location.href = '/';
     }
-  }
+  },
 }
 </script>
