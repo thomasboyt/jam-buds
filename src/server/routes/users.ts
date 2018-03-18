@@ -27,12 +27,6 @@ import wrapAsyncRoute from '../util/wrapAsyncRoute';
 import {AUTH_TOKEN_COOKIE} from '../../universal/constants';
 
 export default function registerUserEndpoints(router: Router) {
-  router.delete('/session', isAuthenticated, wrapAsyncRoute(async (req, res) => {
-    // TODO: This should delete the auth token from the database!
-    res.clearCookie(AUTH_TOKEN_COOKIE);
-    res.send(200);
-  }));
-
   // get information about the current user
   router.get('/me', wrapAsyncRoute(async (req, res) => {
     const userModel = await getUserFromRequest(req);

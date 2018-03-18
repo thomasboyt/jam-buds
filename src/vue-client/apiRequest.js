@@ -26,3 +26,13 @@ export default async function apiRequest(context, opts) {
 
   return await apiClient(opts);
 }
+
+export function signOut(authToken) {
+  return axios.request({
+    url: '/auth/sign-out',
+    method: 'POST',
+    headers: {
+      'X-Auth-Token': authToken,
+    },
+  });
+}

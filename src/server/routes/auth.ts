@@ -3,6 +3,7 @@ import wrapAsyncRoute from '../util/wrapAsyncRoute';
 import {AUTH_TOKEN_COOKIE} from '../../universal/constants';
 import {OAuth} from 'oauth';
 import {createUser, getUserByTwitterId} from '../models/user';
+import {isAuthenticated} from '../auth';
 
 /*
  * Here's how Twitter auth works:
@@ -79,4 +80,11 @@ export default function registerTwitterAuthEndpoints(router: Router) {
       });
     });
   });
+
+  router.post('/sign-out', isAuthenticated, wrapAsyncRoute(async (req, res) => {
+    // TODO: This should also delete the auth token from the database!
+    res.clearCookie(AUTH_TOKEN_COOKIE);
+    res.send(200);
+  }));
+
 }

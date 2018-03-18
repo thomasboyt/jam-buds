@@ -47,6 +47,8 @@
 </template>
 
 <script>
+import {signOut} from '../apiRequest';
+
 export default {
   props: ['open'],
 
@@ -56,10 +58,12 @@ export default {
   },
 
   methods: {
-    async handleSignOut() {
-      // TODO
-      // await ajax request that clears cookies & deletes auth, then:
-      // document.location.href = '/';
+    async handleSignOut(evt) {
+      evt.preventDefault();
+
+      await signOut(this.$store.state.auth.authToken);
+
+      document.location.href = '/';
     }
   }
 }
