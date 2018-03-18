@@ -1,7 +1,6 @@
 const webpack = require('webpack')
 const merge = require('webpack-merge')
 const VueSSRClientPlugin = require('vue-server-renderer/client-plugin')
-const dotenv = require('dotenv');
 
 const baseConfig = require('./base.js')
 
