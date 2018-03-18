@@ -32,6 +32,11 @@
 
       &.-placeholder {
         height: 80%;
+        text-align: center;
+
+        svg {
+          height: 100%;
+        }
       }
     }
 

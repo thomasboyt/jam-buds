@@ -1,7 +1,7 @@
 <template>
   <div :class="['playlist-entry', {'is-playing': isPlaying}]">
     <a class="playlist-entry--main" :href="entry.sourceUrl" target="_blank" rel="noopener noreferrer" @click="handleClick">
-      <!-- <album-art :song="entry.song"></album-art> -->
+      <album-art :albumArt="entry.song.albumArt"></album-art>
       <div class="title">
         <div class="title-content">
           {{entry.song.artists.join(',')}}
@@ -14,6 +14,8 @@
 </template>
 
 <script>
+import AlbumArt from './AlbumArt.vue';
+
 export default {
   props: ['entry'],
 
@@ -33,7 +35,9 @@ export default {
       //this.handleRequestPlay();
       this.isOpen = true;
     }
-  }
+  },
+
+  components: {AlbumArt},
 }
 </script>
 
