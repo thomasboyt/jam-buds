@@ -57,7 +57,8 @@ Create a Heroku app and create configuration:
 heroku config:set NODE_ENV=production
 
 # obviously replace these with wherever you deploy the backend & frontend
-heroku config:set SERVER_URL=https://myapp.herokuapps.com
+heroku config:set API_URL=https://myapp-api.herokuapps.com
+heroku config:set APP_URL=https://myapp.herokuapps.com
 heroku config:set STATIC_URL=https://myapp.surge.sh
 
 # Twitter API key and secret, used for Twitter OAuth.

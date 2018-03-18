@@ -8,10 +8,11 @@
     "node": "6.x"
   },
   "scripts": {
-    "run-api": "nodemon --watch 'src/**/*.ts' --ignore 'src/vue-client/**/*.ts' --exec 'ts-node' src/server/entry.ts",
-    "run-renderer": "nodemon --watch 'src/renderer/**/*.js' src/renderer/index.js",
-    "run-server-production": "ts-node 'src/server/entry.ts'",
-    "build": "rm -rf build/ && webpack --config webpack/production.js && cp -r static/* build/",
+    "dev-api": "nodemon --watch 'src/**/*.ts' --ignore 'src/vue-client/**/*.ts' --exec 'ts-node' src/server/entry.ts",
+    "dev-app": "nodemon --watch 'src/renderer/**/*.js' src/renderer/index.js",
+    "run-api": "ts-node 'src/server/entry.ts'",
+    "run-app": "./src/renderer/index.js",
+    "build": "rm -rf build/ && webpack --mode production --config webpack/client.js && webpack --mode production --config webpack/server.js && cp -r static/* build/",
     "deploy": "NODE_ENV=production npm run build && firebase deploy && heroku restart",
     "resetdb": "./scripts/resetdb",
     "test": "NODE_ENV=test mocha --require ts-node/register 'src/server/**/*.spec.ts'",

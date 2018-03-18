@@ -11,10 +11,13 @@ DATABASE_URL=postgres://username@localhost:5432/jambuds
 TWITTER_API_KEY=
 TWITTER_API_SECRET=
 
-# The root origin of the server. This is used for the Twitter OAuth callback.
+# The root origin of the API server.
 API_URL=http://localhost:3000
 
-# The root origin of the web app. Also used for Twitter auth stuff.
+# The root origin of the app (rendering) server.
+APP_URL=http://localhost:8080
+
+# The root origin of the static assets server.
 STATIC_URL=http://localhost:8080
 
 # Spotify API key and secret

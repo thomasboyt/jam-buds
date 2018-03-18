@@ -5,20 +5,6 @@ const dotenv = require('dotenv');
 
 const baseConfig = require('./base.js')
 
-if (!process.env.CI) {
-  if (process.env.NODE_ENV === 'test') {
-    dotenv.config({
-      path: '.env.test',
-    });
-  } else if (process.env.NODE_ENV === 'production') {
-    dotenv.config({
-      path: '.env.production',
-    });
-  } else {
-    dotenv.config();
-  }
-}
-
 module.exports = merge(baseConfig, {
   entry: {
     app: ['babel-polyfill', './src/vue-client/entry-client.js'],
@@ -45,11 +31,5 @@ module.exports = merge(baseConfig, {
 
   plugins: [
     new VueSSRClientPlugin(),
-
-    new webpack.DefinePlugin({
-      'process.env': {
-        API_URL: `"${process.env.API_URL}"`,
-      },
-    }),
   ]
 });
