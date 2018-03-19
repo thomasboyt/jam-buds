@@ -3,13 +3,14 @@ import createApp from './createApp';
 
 import Cookies from 'js-cookie';
 import Raven from 'raven-js';
+import RavenVue from 'raven-js/plugins/vue';
 
 const AUTH_TOKEN_COOKIE = 'jamBudsAuthToken';
 
 if (process.env.SENTRY_PUBLIC_DSN_APP) {
   Raven
     .config(process.env.SENTRY_PUBLIC_DSN_APP)
-    .addPlugin(Raven.Plugins.Vue)
+    .addPlugin(RavenVue, Vue)
     .install();
 }
 
