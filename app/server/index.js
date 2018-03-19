@@ -47,6 +47,7 @@ function createRenderer(bundle, clientManifest) {
 async function main() {
   let renderer;
   let readyPromise;
+  let buildErrors;
 
   if (isProd) {
     // In production: create server renderer using template and built server bundle.
@@ -65,40 +66,60 @@ async function main() {
   } else {
     // In development: setup the dev server with watch and hot-reload,
     // and create a new renderer on bundle / index template update.
-    readyPromise = setupDevServer(app, (bundle, clientManifest) => {
-      renderer = createRenderer(bundle, clientManifest);
+    setupDevServer(app, {
+      onStart: (promise) => {
+        readyPromise = promise;
+        buildErrors = null;
+      },
+      onComplete: (bundle, clientManifest) => {
+        renderer = createRenderer(bundle, clientManifest);
+      },
+      onError: (errors) => {
+        buildErrors = errors;
+      },
     });
   }
 
-  function render(req, res) {
-    const handleError = (err) => {
-      if (err.url) {
-        res.redirect(err.url);
-      } else if (err.code === 404) {
-        // not sure this ever gets triggered cuz there's a wildcard route
-        res.status(404).send('404 | Page Not Found');
+  function renderWebpackError(req, res, buildErrors) {
+    res.send(`
+      <html>
+        <body>
+          <h3>webpack build failed :(</h3>
+          <pre>${buildErrors}</pre>
+        </body>
+      </html>
+    `);
+  }
+
+  function renderAppError(req, res, err) {
+    if (err.url) {
+      res.redirect(err.url);
+    } else if (err.code === 404) {
+      // not sure this ever gets triggered cuz there's a wildcard route
+      res.status(404).send('404 | Page Not Found');
+    } else {
+      // Render Error Page or Redirect
+      res.status(500);
+
+      if (!isProd) {
+        res.send(`
+          <html>
+            <body>
+              <h3>encountered an error :(</h3>
+              <pre>${err.stack}</pre>
+            </body>
+          </html>
+        `);
       } else {
-        // Render Error Page or Redirect
-        res.status(500);
-
-        if (!isProd) {
-          res.send(`
-            <html>
-              <body>
-                <h3>encountered an error :(</h3>
-                <pre>${err.stack}</pre>
-              </body>
-            </html>
-          `);
-        } else {
-          res.send('500 | Internal Server Error');
-        }
-
-        console.error(`error during render : ${req.url}`);
-        console.error(err.stack);
+        res.send('500 | Internal Server Error');
       }
-    };
 
+      console.error(`error during render : ${req.url}`);
+      console.error(err.stack);
+    }
+  }
+
+  function render(req, res) {
     const authToken = req.cookies[AUTH_TOKEN_COOKIE];
 
     const context = {
@@ -109,7 +130,7 @@ async function main() {
 
     renderer.renderToString(context, (err, html) => {
       if (err) {
-        return handleError(err);
+        return renderAppError(req, res, err);
       }
       res.send(html);
     });
@@ -132,7 +153,11 @@ async function main() {
     if (isProd) {
       return render(req, res);
     } else {
-      readyPromise.then(() => render(req, res));
+      if (buildErrors) {
+        renderWebpackError(req, res, buildErrors);
+      } else {
+        readyPromise.then(() => render(req, res));
+      }
     }
   });
 

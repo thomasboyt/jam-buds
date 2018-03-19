@@ -14,12 +14,16 @@ const readFile = (fs, file) => {
   } catch (e) {}
 };
 
-module.exports = function setupDevServer(app, cb) {
+module.exports = function setupDevServer(
+  app,
+  { onStart, onComplete, onError }
+) {
   app.use('/', express.static('static/'));
 
   let bundle;
   let clientManifest;
 
+  // Promise that resolves when client bundle and client manifest become initially available
   let readyPromiseResolve;
   const readyPromise = new Promise((r) => {
     readyPromiseResolve = r;
@@ -28,25 +32,9 @@ module.exports = function setupDevServer(app, cb) {
   const update = () => {
     if (bundle && clientManifest) {
       readyPromiseResolve();
-      cb(bundle, clientManifest);
+      onComplete(bundle, clientManifest);
     }
   };
-
-  // // read template from disk and watch
-  // template = fs.readFileSync(templatePath, 'utf-8')
-  // chokidar.watch(templatePath).on('change', () => {
-  //   template = fs.readFileSync(templatePath, 'utf-8')
-  //   console.log('index.html template updated.')
-  //   update()
-  // })
-
-  // modify client config to work with hot middleware
-  // clientConfig.entry.app = ['webpack-hot-middleware/client', clientConfig.entry.app]
-  // clientConfig.output.filename = '[name].js'
-  // clientConfig.plugins.push(
-  //   new webpack.HotModuleReplacementPlugin(),
-  //   new webpack.NoEmitOnErrorsPlugin()
-  // )
 
   // dev middleware
   const clientCompiler = webpack(clientConfig);
@@ -58,8 +46,6 @@ module.exports = function setupDevServer(app, cb) {
 
   clientCompiler.plugin('done', (webpackStats) => {
     const stats = webpackStats.toJson();
-    stats.errors.forEach((err) => console.error(err));
-    stats.warnings.forEach((err) => console.warn(err));
 
     if (stats.errors.length) {
       return;
@@ -77,13 +63,18 @@ module.exports = function setupDevServer(app, cb) {
   const mfs = new MFS();
   serverCompiler.outputFileSystem = mfs;
 
+  serverCompiler.plugin('watch-run', (compiler, cb) => {
+    onStart(readyPromise);
+    cb();
+  });
+
   serverCompiler.watch({}, (err, webpackStats) => {
     if (err) {
       throw err;
     }
 
-    const stats = webpackStats.toJson();
-    if (stats.errors.length) {
+    if (webpackStats.hasErrors()) {
+      onError(webpackStats.toJson().errors);
       return;
     }
 
@@ -91,6 +82,4 @@ module.exports = function setupDevServer(app, cb) {
     bundle = JSON.parse(readFile(mfs, 'vue-ssr-server-bundle.json'));
     update();
   });
-
-  return readyPromise;
 };
