@@ -5,6 +5,19 @@ const spotifyApi = new SpotifyWebApi({
   clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
 });
 
+function getToken() {
+  console.log('*** Refreshing Spotify token');
+
+  spotifyApi.clientCredentialsGrant()
+    .then((data: any) => {
+      spotifyApi.setAccessToken(data.body['access_token']);
+    });
+}
+
+getToken();
+
+setInterval(getToken, 60 * 30 * 1000);
+
 /**
  * Look up a Spotify track by a given Spotify track ID.
  */

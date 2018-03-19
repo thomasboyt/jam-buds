@@ -1,7 +1,3 @@
-import createApp from './createApp';
-
-import {configureDatabase} from './db';
-
 if (process.env.NODE_ENV !== 'production' && !process.env.CI) {
   console.log('*** Loading .env file!');
 
@@ -18,6 +14,10 @@ if (process.env.NODE_ENV !== 'production' && !process.env.CI) {
     path: '../.env',
   });
 }
+
+import createApp from './createApp';
+
+import {configureDatabase} from './db';
 
 configureDatabase();
 
