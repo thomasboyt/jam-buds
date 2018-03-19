@@ -21,7 +21,7 @@ import {configureDatabase} from './db';
 
 configureDatabase();
 
-const app = createApp(process.env.NODE_ENV);
+const app = createApp();
 
 const port = process.env.PORT || 3000;
 

@@ -4,12 +4,18 @@ const proxy = require('http-proxy-middleware');
 const {createBundleRenderer} = require('vue-server-renderer');
 const axios = require('axios');
 const setupDevServer = require('./devServer');
+const Raven = require('raven');
 
 const AUTH_TOKEN_COOKIE = 'jamBudsAuthToken';
 
 const app = express();
 
 const isProd = process.env.NODE_ENV === 'production';
+
+if (isProd) {
+  Raven.config(process.env.SENTRY_DSN_APP).install();
+  app.use(Raven.requestHandler());
+}
 
 const template = `
   <html>
@@ -121,6 +127,10 @@ async function main() {
       readyPromise.then(() => render(req, res));
     }
   });
+
+  if (isProd) {
+    app.use(Raven.errorHandler());
+  }
 
   app.listen(port, () => {
     console.log(`server started on port ${port}`);

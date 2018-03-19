@@ -8,7 +8,7 @@
 # (backend env vars should just be set on the server!)
 
 # Your PUBLIC (not private!) Sentry DSN.
-SENTRY_PUBLIC_DSN=https://blah@sentry.io/123
+SENTRY_PUBLIC_DSN_APP=
 
 # The root origin of the API server.
 API_URL=

@@ -2,8 +2,16 @@ import Vue from 'vue';
 import createApp from './createApp';
 
 import Cookies from 'js-cookie';
+import Raven from 'raven-js';
 
 const AUTH_TOKEN_COOKIE = 'jamBudsAuthToken';
+
+if (process.env.SENTRY_PUBLIC_DSN_APP) {
+  Raven
+    .config(process.env.SENTRY_PUBLIC_DSN_APP)
+    .addPlugin(Raven.Plugins.Vue)
+    .install();
+}
 
 Vue.mixin({
   beforeRouteUpdate (to, from, next) {

@@ -38,7 +38,7 @@ let envVars = {
 if (process.env.NODE_ENV === 'production') {
   envVars = {
     ...envVars,
-    SENTRY_PUBLIC_DSN: `"${process.env.SENTRY_PUBLIC_DSN}"`,
+    SENTRY_PUBLIC_DSN_APP: `"${process.env.SENTRY_PUBLIC_DSN_APP}"`,
   };
 }
 

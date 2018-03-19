@@ -83,8 +83,8 @@ heroku config:set SPOTIFY_CLIENT_SECRET=bar
 # (Youtube Data API must be enabled in Google Developer Console)
 heroku config:set GOOGLE_API_KEY=foo
 
-# Set Sentry (sentry.io) app DSN
-heroku config:set SENTRY_DSN=https://foo:bar@sentry.io/123
+# Set Sentry (sentry.io) app DSN for the API app
+heroku config:set SENTRY_DSN_API=https://foo:bar@sentry.io/123
 ```
 
 You're gonna want a database:
@@ -106,11 +106,14 @@ heroku config:set NPM_CONFIG_PRODUCTION=true
 heroku config:set SKIP_DOTENV=true
 heroku config:set API_URL=https://myapp-api.herokuapps.com
 heroku config:set STATIC_URL=https://myapp.surge.sh
+heroku config:set SENTRY_DSN_APP=https://foo:bar@sentry.io/123
 ```
 
-### Configure Static Hosting (Firebase Hosting)
+### Configure Static Files
 
-*Note: you can host this with just about anything, as long as you upload the `build/` folder output by `npm run build` somewhere!*
+Copy `_env.production` to `.env.production`. The variables in this file are used _when building_ your Webpack client bundle locally.
+
+#### Configure Firebase
 
 Install Firebase's CLI tools if you don't have it:
 
