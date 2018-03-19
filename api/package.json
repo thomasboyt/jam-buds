@@ -15,6 +15,7 @@
   "author": "Thomas Boyt <me@thomasboyt.com>",
   "license": "MIT",
   "devDependencies": {
+    "@types/expect": "^1.20.3",
     "@types/mocha": "^2.2.33",
     "@types/node": "^9.4.7",
     "@types/supertest": "^2.0.0",
