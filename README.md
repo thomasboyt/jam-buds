@@ -6,6 +6,19 @@ Jam Buds is a tiny web application that helps you share music with your friends.
 
 In Jam Buds, a user can paste links to songs that like. These links are then put into a playlist for that user that their friends can access and play through at their leisure.
 
+## Overview
+
+Jam Buds is split into two self-contained "apps," intended for separate deployment.
+
+* The *API app* is the API server that powers the backend.
+* The *App app* (I know, I know) is the browser app, which is itself two pieces:
+    * The Vue browser app, which is deployed to a static hosting site/CDN
+    * A server that renders the Vue app. This is the web app the user actually hits directly (e.g. it's what's located at `jambuds.club`).
+
+These two apps are deployed in isolation, and don't currently share any dependencies. This might change if I get lerna or something set up.
+
+In addition, this repo also contains some development-specific configuration and feature tests that interact with both the browser app and API.
+
 ## Install
 
 ### API Server
