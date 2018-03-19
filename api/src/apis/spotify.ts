@@ -11,12 +11,17 @@ function getToken() {
   spotifyApi.clientCredentialsGrant()
     .then((data: any) => {
       spotifyApi.setAccessToken(data.body['access_token']);
+    }, (err: any) => {
+      console.error(`*** Failed to acquire Spotify token:`)
+      throw err;
+      /// TODO: RETRY WITH BACKOFF!!
     });
 }
 
 getToken();
 
-setInterval(getToken, 60 * 30 * 1000);
+// new token very five minutes
+setInterval(getToken, 60 * 5 * 1000);
 
 /**
  * Look up a Spotify track by a given Spotify track ID.
