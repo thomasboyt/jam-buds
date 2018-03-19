@@ -32,6 +32,10 @@ const playlists = {
       }
     },
 
+    addPlaylistEntryToHead(state, {key, entry}) {
+      state[key].entryIds = [entry.id].concat(state[key].entryIds);
+    },
+
     pushPlaylist(state, {key, page}) {
       const newIds = page.tracks.map((entry) => entry.id);
       state[key].entryIds = state[key].entryIds.concat(newIds);
