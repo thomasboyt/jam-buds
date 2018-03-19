@@ -33,7 +33,7 @@ install:
 before_script:
   - psql -c 'create database jambuds_test;' -U postgres
   - cd app
-  - npm dev &
+  - PORT=8080 npm dev &
   - sleep 10  # padding to start the dev server
   - cd ..
 
