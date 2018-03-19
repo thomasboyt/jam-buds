@@ -81,7 +81,10 @@ module.exports = {
 
       {
         test: /\.svg$/,
-        loader: 'raw-loader',
+        loader: 'svg-sprite-loader',
+        options: {
+          esModule: false,
+        },
       },
     ],
   },

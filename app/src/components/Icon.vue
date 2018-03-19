@@ -1,5 +1,7 @@
 <template>
-  <span :class="`icon ${className || ''}`" v-html="glyph"/>
+  <svg :class="`icon ${className || ''}`" :view-box="glyph.viewBox">
+    <use :xlink:href="`#${glyph.id}`" />
+  </svg>
 </template>
 
 <script>
@@ -10,7 +12,7 @@ export default {
       default: () => '',
     },
     glyph: {
-      type: String,
+      type: Object,
       required: true,
     },
   },

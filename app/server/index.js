@@ -28,6 +28,7 @@ const template = `
       <div id="app">
         <!--vue-ssr-outlet-->
       </div>
+      {{{spriteContent}}}
     </body>
   </html>
 `;

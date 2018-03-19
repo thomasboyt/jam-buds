@@ -1,4 +1,9 @@
+import sprite from 'svg-sprite-loader/runtime/sprite.build';
+
 import createApp from './createApp';
+
+// Render sprite
+const spriteContent = sprite.stringify();
 
 export default async function(context) {
   const { app, router, store } = createApp();
@@ -46,6 +51,7 @@ export default async function(context) {
           // I don't know if it's actually bad to have the access token in the HTML but EH
           delete store.state.auth.accessToken;
           context.state = store.state;
+          context.spriteContent = spriteContent;
           resolve(app);
         })
         .catch(reject);
