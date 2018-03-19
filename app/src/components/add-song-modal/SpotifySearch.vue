@@ -13,7 +13,7 @@
         No results found!
       </div>
 
-      <ul v-else>
+      <ul v-else data-test="search-results">
         <li v-for="song of searchResults" :key="song.id">
           <a href="#" @click="(evt) => handleSelectSong(evt, song)">
             {{song.artists.join(', ')}} - {{song.name}}

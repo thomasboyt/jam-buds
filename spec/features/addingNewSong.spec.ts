@@ -1,83 +1,111 @@
 import * as expect from 'expect';
+import * as puppeteer from 'puppeteer';
 
+import {getPage} from './browser';
 import './mochaHooks';
 
-function asBigJeffrey(browser: WebdriverIO.Client<any>) {
-  browser.waitForExist('[data-reactroot]');
-  browser.execute(() => {
+async function asBigJeffrey(page: puppeteer.Page) {
+  await page.evaluate(() => {
     (window as any).setDevUser('jeffgerstmann');
   });
+  // TODO: replace this with something faster?
+  await page.waitFor(1000);
 }
 
-function submitSong(browser: WebdriverIO.Client<any>, url: string) {
-  browser.click('[data-test="add-song"]');
-  browser.setValue('[data-test="song-url-field"]', url);
-  browser.submitForm('[data-test="song-url-field"]');
+async function submitSong(page: puppeteer.Page, url: string) {
+  await page.waitFor('[data-test="add-song"]')
+  await page.click('[data-test="add-song"]');
+  await page.type('[data-test="song-url-field"]', url);
+  await page.click('button[type="submit"]');
 }
 
-describe('posting a new song', () => {
+async function expectPlaylistEntry(page: puppeteer.Page, text: string) {
+  await page.waitFor(1000);  // eh
+
+  const exists = await page.$$eval('.playlist-entry', (entries, text) => {
+    return Array.from(entries).some((entry) => !!entry.innerHTML.match(new RegExp(text)));
+  }, text);
+
+  expect(exists).toBe(true);
+}
+describe('posting a new song', function() {
+  this.timeout(30000);
+
   describe('via youtube', () => {
-    it('creates an entry in your feed', () => {
-      browser.url('/');
+    it('creates an entry in your feed', async () => {
+      const page = await getPage('/');
 
-      asBigJeffrey(browser);
+      await asBigJeffrey(page);
 
-      submitSong(browser, 'https://www.youtube.com/watch?v=S-sJp1FfG7Q');
+      await submitSong(page, 'https://www.youtube.com/watch?v=S-sJp1FfG7Q');
 
-      browser.setValue('[data-test="song-search-field"]', 'Bad and Boujee');
-      browser.submitForm('[data-test="song-search-field"]');
+      await page.waitFor('[data-test="song-search-field"]');
+      await page.type('[data-test="song-search-field"]', 'Bad and Boujee');
+      await page.click('button[type="submit"]');  // TODO: this sometimes doesn't work?
 
-      browser.click('*=Migos');
+      await page.waitFor('[data-test="search-results"]')
 
-      browser.click('[data-test="add-song-confirm"]');
+      const results = await page.$('[data-test="search-results"]');
+      const migosLink = (await results!.$x("//a[contains(text(), 'Migos')]"))[0];
 
-      expect(browser.element('.playlist-entry*=Bad and Boujee')).toExist();
+      await migosLink.click();
+
+      await page.waitFor('[data-test="add-song-confirm"]');
+      await page.click('[data-test="add-song-confirm"]');
+
+      await expectPlaylistEntry(page, 'Bad and Boujee');
     });
 
-    it('supports manual entry', () => {
-      browser.url('/');
+    it('supports manual entry', async () => {
+      const page = await getPage('/');
 
-      asBigJeffrey(browser);
+      await asBigJeffrey(page);
 
-      submitSong(browser, 'https://www.youtube.com/watch?v=S-sJp1FfG7Q');
+      await submitSong(page, 'https://www.youtube.com/watch?v=S-sJp1FfG7Q');
 
-      browser.click('[data-test="use-manual-entry"]');
+      await page.waitFor('[data-test="use-manual-entry"]')
+      await page.click('[data-test="use-manual-entry"]');
 
-      browser.setValue('[name="title"]', 'Bad and Boujee');
-      browser.setValue('[name="artist"]', 'Migos');
-      browser.submitForm('[name="artist"]');
+      await page.type('[name="title"]', 'Bad and Boujee');
+      await page.type('[name="artist"]', 'Migos');
+      await page.click('button[type="submit"]');
 
-      browser.click('[data-test="add-song-confirm"]');
-      expect(browser.element('.playlist-entry*=Bad and Boujee')).toExist();
+      await page.click('[data-test="add-song-confirm"]');
+
+      await expectPlaylistEntry(page, 'Bad and Boujee');
     });
   });
 
   describe('via bandcamp', () => {
-    it('autopopulates song title/artist from spotify', () => {
-      browser.url('/');
+    it('autopopulates song title/artist from spotify', async () => {
+      const page = await getPage('/');
 
-      asBigJeffrey(browser);
+      await asBigJeffrey(page);
 
-      submitSong(browser, 'https://m-e-l-e-e.bandcamp.com/track/i-dont-know-why');
+      await submitSong(page, 'https://m-e-l-e-e.bandcamp.com/track/i-dont-know-why');
 
-      browser.click('[data-test="add-song-confirm"]');
+      await page.waitFor('[data-test="add-song-confirm"]');
+      await page.click('[data-test="add-song-confirm"]');
 
-      expect(browser.element('.playlist-entry*=I Don\'t Know Why')).toExist();
+      await expectPlaylistEntry(page, 'Melee');
     });
 
-    it('supports manual entry', () => {
-      browser.url('/');
+    it('supports manual entry', async () => {
+      const page = await getPage('/');
 
-      asBigJeffrey(browser);
+      await asBigJeffrey(page);
 
-      submitSong(browser, 'https://fieldbalm.bandcamp.com/track/quilted');
+      await submitSong(page, 'https://fieldbalm.bandcamp.com/track/quilted');
 
-      expect(browser.getValue('[name="title"]')).toBe('quilted')
-      expect(browser.getValue('[name="artist"]')).toBe('field balm');
-      browser.submitForm('[name="artist"]');
+      await page.waitFor('[name="title"]');
+      const title = await page.$eval('[name="title"]', (el) => (el as HTMLInputElement).value);
+      const artist = await page.$eval('[name="artist"]', (el) => (el as HTMLInputElement).value);
+      expect(title).toEqual('quilted')
+      expect(artist).toEqual('field balm');
+      await page.click('button[type="submit"]');
 
-      browser.click('[data-test="add-song-confirm"]');
-      expect(browser.element('.playlist-entry*=quilted')).toExist();
+      await page.click('[data-test="add-song-confirm"]');
+      await expectPlaylistEntry(page, 'quilted');
     });
   })
 });

@@ -73,7 +73,7 @@ router.onReady(() => {
   }
 
   // global this for ease of debugging
-  if (process.env.NODE_ENV === 'development') {
+  if (process.env.NODE_ENV !== 'production') {
     window.setDevUser = setDevUser;
   }
 });
