@@ -1,7 +1,7 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const proxy = require('http-proxy-middleware');
-const {createBundleRenderer} = require('vue-server-renderer');
+const { createBundleRenderer } = require('vue-server-renderer');
 const axios = require('axios');
 const setupDevServer = require('./devServer');
 const Raven = require('raven');
@@ -33,7 +33,7 @@ const template = `
 `;
 
 function createRenderer(bundle, clientManifest) {
-  return createBundleRenderer(bundle,  {
+  return createBundleRenderer(bundle, {
     // recommended for performance
     runInNewContext: false,
     clientManifest,
@@ -53,26 +53,27 @@ async function main() {
     // The client manifests are optional, but it allows the renderer
     // to automatically infer preload/prefetch links and directly add <script>
     // tags for any async chunks used during render, avoiding waterfall requests.
-    const resp = await axios.get(`${process.env.STATIC_URL}/vue-ssr-client-manifest.json`);
+    const resp = await axios.get(
+      `${process.env.STATIC_URL}/vue-ssr-client-manifest.json`
+    );
     const clientManifest = resp.data;
 
     renderer = createRenderer(serverBundle, clientManifest);
-
   } else {
     // In development: setup the dev server with watch and hot-reload,
     // and create a new renderer on bundle / index template update.
     readyPromise = setupDevServer(app, (bundle, clientManifest) => {
-      renderer = createRenderer(bundle, clientManifest)
+      renderer = createRenderer(bundle, clientManifest);
     });
   }
 
   function render(req, res) {
     const handleError = (err) => {
       if (err.url) {
-        res.redirect(err.url)
-      } else if(err.code === 404) {
+        res.redirect(err.url);
+      } else if (err.code === 404) {
         // not sure this ever gets triggered cuz there's a wildcard route
-        res.status(404).send('404 | Page Not Found')
+        res.status(404).send('404 | Page Not Found');
       } else {
         // Render Error Page or Redirect
         res.status(500);
@@ -87,13 +88,13 @@ async function main() {
             </html>
           `);
         } else {
-          res.send('500 | Internal Server Error')
+          res.send('500 | Internal Server Error');
         }
 
-        console.error(`error during render : ${req.url}`)
-        console.error(err.stack)
+        console.error(`error during render : ${req.url}`);
+        console.error(err.stack);
       }
-    }
+    };
 
     const authToken = req.cookies[AUTH_TOKEN_COOKIE];
 
@@ -114,11 +115,14 @@ async function main() {
 
   app.use(cookieParser());
 
-  app.use('/auth', proxy({
-    target: process.env.API_URL,
-    changeOrigin: true,
-    cookieDomainRewrite: process.env.APP_URL,
-  }));
+  app.use(
+    '/auth',
+    proxy({
+      target: process.env.API_URL,
+      changeOrigin: true,
+      cookieDomainRewrite: process.env.APP_URL,
+    })
+  );
 
   app.get('*', (req, res) => {
     if (isProd) {

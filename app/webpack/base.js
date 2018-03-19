@@ -32,7 +32,7 @@ if (!process.env.SKIP_DOTENV) {
 
 let envVars = {
   API_URL: `"${process.env.API_URL}"`,
-  NODE_ENV: `"${process.env.NODE_ENV}"`
+  NODE_ENV: `"${process.env.NODE_ENV}"`,
 };
 
 if (process.env.NODE_ENV === 'production') {
@@ -71,10 +71,7 @@ module.exports = {
 
       {
         test: /\.scss$/,
-        use: ExtractTextPlugin.extract([
-          'css-loader',
-          'sass-loader'
-        ]),
+        use: ExtractTextPlugin.extract(['css-loader', 'sass-loader']),
       },
 
       {
@@ -85,8 +82,8 @@ module.exports = {
       {
         test: /\.svg$/,
         loader: 'raw-loader',
-      }
-    ]
+      },
+    ],
   },
 
   plugins: [

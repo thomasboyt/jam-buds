@@ -1,8 +1,8 @@
-const merge = require('webpack-merge')
-const nodeExternals = require('webpack-node-externals')
-const VueSSRServerPlugin = require('vue-server-renderer/server-plugin')
+const merge = require('webpack-merge');
+const nodeExternals = require('webpack-node-externals');
+const VueSSRServerPlugin = require('vue-server-renderer/server-plugin');
 
-const baseConfig = require('./base.js')
+const baseConfig = require('./base.js');
 
 const conf = merge(baseConfig, {
   target: 'node',
@@ -17,13 +17,11 @@ const conf = merge(baseConfig, {
 
   externals: [
     nodeExternals({
-      whitelist: /\.css$/
-    })
+      whitelist: /\.css$/,
+    }),
   ],
 
-  plugins: [
-    new VueSSRServerPlugin()
-  ]
+  plugins: [new VueSSRServerPlugin()],
 });
 
 module.exports = conf;

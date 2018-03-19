@@ -1,8 +1,8 @@
-const webpack = require('webpack')
-const merge = require('webpack-merge')
-const VueSSRClientPlugin = require('vue-server-renderer/client-plugin')
+const webpack = require('webpack');
+const merge = require('webpack-merge');
+const VueSSRClientPlugin = require('vue-server-renderer/client-plugin');
 
-const baseConfig = require('./base.js')
+const baseConfig = require('./base.js');
 
 module.exports = merge(baseConfig, {
   entry: {
@@ -18,12 +18,10 @@ module.exports = merge(baseConfig, {
           name: 'vendor',
           priority: 10,
           enforce: true,
-        }
-      }
-    }
+        },
+      },
+    },
   },
 
-  plugins: [
-    new VueSSRClientPlugin(),
-  ]
+  plugins: [new VueSSRClientPlugin()],
 });
