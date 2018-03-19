@@ -1,3 +1,5 @@
 {
+  // Note: feature tests use a different TypeScript dep
+  // some day I'll use lerna or something to coordinate
   "typescript.tsdk": "./api/node_modules/typescript/lib"
 }
