@@ -1,4 +1,7 @@
 {
+    "extends": [
+        "plugin:vue/essential"
+    ],
     "env": {
         "browser": true,
         "commonjs": true,

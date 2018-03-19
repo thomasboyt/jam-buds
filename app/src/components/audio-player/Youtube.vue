@@ -3,6 +3,8 @@
 </template>
 
 <script>
+  /* global YT */
+
   import queryString from 'query-string';
 
   /**
