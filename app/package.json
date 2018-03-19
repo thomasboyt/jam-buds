@@ -11,8 +11,7 @@
     "postinstall": "webpack --mode production --config webpack/server.js",
     "dev": "nodemon --watch 'server/**/*.js' server/index.js",
     "build": "rm -rf build/ && NODE_ENV=production webpack --mode production --config webpack/client.js && cp -r static/* build/",
-    "deploy-static": "npm run build && firebase deploy",
-    "features": "wdio"
+    "deploy-static": "npm run build && firebase deploy"
   },
   "author": "Thomas Boyt <me@thomasboyt.com>",
   "license": "MIT",
@@ -29,10 +28,6 @@
     "node-sass": "^4.7.2",
     "nodemon": "^1.11.0",
     "sass-loader": "^6.0.7",
-    "wdio": "^0.3.3",
-    "wdio-dot-reporter": "0.0.7",
-    "wdio-mocha-framework": "^0.5.8",
-    "wdio-selenium-standalone-service": "0.0.7",
     "webpack": "^4.1.1",
     "webpack-cli": "^2.0.11",
     "webpack-dev-server": "^3.1.1",
