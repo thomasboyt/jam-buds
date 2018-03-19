@@ -50,10 +50,11 @@ Then run `cd api && npm test`.
 ### Feature Tests
 
 ```
-npm run run-client
-npm run features
-# or for a specific spec
-./node_modules/.bin/wdio --spec features/addingNewSong.spec.ts
+# in one session:
+cd api && NODE_ENV=test PORT=8080 npm run dev
+
+# in another:
+cd spec && npm test
 ```
 
 ## Deploy
