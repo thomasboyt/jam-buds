@@ -8,34 +8,35 @@ import RavenVue from 'raven-js/plugins/vue';
 const AUTH_TOKEN_COOKIE = 'jamBudsAuthToken';
 
 if (process.env.SENTRY_PUBLIC_DSN_APP) {
-  Raven
-    .config(process.env.SENTRY_PUBLIC_DSN_APP)
+  Raven.config(process.env.SENTRY_PUBLIC_DSN_APP)
     .addPlugin(RavenVue, Vue)
     .install();
 }
 
 Vue.mixin({
-  beforeRouteUpdate (to, from, next) {
+  beforeRouteUpdate(to, from, next) {
     const { asyncData } = this.$options;
 
     if (asyncData) {
       asyncData({
         store: this.$store,
-        route: to
-      }).then(next).catch(next)
+        route: to,
+      })
+        .then(next)
+        .catch(next);
     } else {
-      next()
+      next();
     }
-  }
-})
+  },
+});
 
-const {app, router, store} = createApp();
+const { app, router, store } = createApp();
 
 // prime the store with server-initialized state.
 // the state is determined during SSR and inlined in the page markup.
 const initialState = window.__INITIAL_STATE__;
 if (initialState) {
-  store.replaceState(initialState)
+  store.replaceState(initialState);
 }
 
 const authToken = Cookies.get(AUTH_TOKEN_COOKIE);
@@ -52,29 +53,29 @@ router.onReady(() => {
   // the data that we already have. Using router.beforeResolve() so that all
   // async components are resolved.
   router.beforeResolve((to, from, next) => {
-    const matched = router.getMatchedComponents(to)
-    const prevMatched = router.getMatchedComponents(from)
-    let diffed = false
+    const matched = router.getMatchedComponents(to);
+    const prevMatched = router.getMatchedComponents(from);
+    let diffed = false;
     const activated = matched.filter((c, i) => {
-      return diffed || (diffed = (prevMatched[i] !== c))
-    })
-    const asyncDataHooks = activated.map(c => c.asyncData).filter(_ => _)
+      return diffed || (diffed = prevMatched[i] !== c);
+    });
+    const asyncDataHooks = activated.map((c) => c.asyncData).filter((_) => _);
     if (!asyncDataHooks.length) {
-      return next()
+      return next();
     }
 
     // TODO: Loading spinner starts and stops here apparently
     // bar.start()
-    Promise.all(asyncDataHooks.map(hook => hook({ store, route: to })))
+    Promise.all(asyncDataHooks.map((hook) => hook({ store, route: to })))
       .then(() => {
         // bar.finish()
-        next()
+        next();
       })
-      .catch(next)
-  })
+      .catch(next);
+  });
 
   // actually mount to DOM
-  app.$mount('#app')
+  app.$mount('#app');
 
   function setDevUser(name) {
     Cookies.set(AUTH_TOKEN_COOKIE, name);

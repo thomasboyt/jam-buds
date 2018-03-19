@@ -5,31 +5,35 @@
 </template>
 
 <script>
-  const menuIcon = require('../../assets/menu.svg');
-  import Icon from './Icon.vue';
+const menuIcon = require('../../assets/menu.svg');
+import Icon from './Icon.vue';
 
-  export default {
-    data() {
-      return {
-        menuIcon,
-      };
+export default {
+  data() {
+    return {
+      menuIcon,
+    };
+  },
+
+  computed: {
+    authenticated() {
+      return this.$store.state.auth.authenticated;
     },
-
-    computed: {
-      authenticated() { return this.$store.state.auth.authenticated; },
-      isSidebarOpen() { return this.$store.state.isSidebarOpen; }
+    isSidebarOpen() {
+      return this.$store.state.isSidebarOpen;
     },
+  },
 
-    methods: {
-      handleOpenSidebar() {
-        if (this.isSidebarOpen) {
-          this.$store.commit('closeSidebar');
-        } else {
-          this.$store.commit('openSidebar');
-        }
+  methods: {
+    handleOpenSidebar() {
+      if (this.isSidebarOpen) {
+        this.$store.commit('closeSidebar');
+      } else {
+        this.$store.commit('openSidebar');
       }
     },
+  },
 
-    components: {Icon},
-  }
+  components: { Icon },
+};
 </script>

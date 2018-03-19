@@ -20,11 +20,11 @@ const playlistEntries = {
     },
     unlikePlaylistEntry(state, id) {
       state[id].isLiked = false;
-    }
+    },
   },
 
   actions: {
-    async likePlaylistEntry(context, {id}) {
+    async likePlaylistEntry(context, { id }) {
       await apiRequest(context, {
         url: `/likes/${id}`,
         method: 'PUT',
@@ -33,7 +33,7 @@ const playlistEntries = {
       context.commit('likePlaylistEntry', id);
     },
 
-    async unlikePlaylistEntry(context, {id}) {
+    async unlikePlaylistEntry(context, { id }) {
       await apiRequest(context, {
         url: `/likes/${id}`,
         method: 'DELETE',
@@ -42,13 +42,13 @@ const playlistEntries = {
       context.commit('unlikePlaylistEntry', id);
     },
 
-    async deletePlaylistEntry(context, {id}) {
+    async deletePlaylistEntry(context, { id }) {
       await apiRequest(context, {
         url: `/playlist/${id}`,
         method: 'DELETE',
       });
       context.commit('deletePlaylistEntry', id);
-    }
+    },
   },
 };
 

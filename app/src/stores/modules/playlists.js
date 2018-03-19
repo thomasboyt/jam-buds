@@ -6,7 +6,7 @@ const playlistState = () => {
     entriesExhausted: false,
     url: null,
   };
-}
+};
 
 /**
  * TODO:
@@ -17,14 +17,14 @@ const playlistState = () => {
 const playlists = {
   state() {
     return {
-      feed: {...playlistState(), url: '/feed'},
+      feed: { ...playlistState(), url: '/feed' },
       profilePosts: playlistState(),
       profileLikes: playlistState(),
     };
   },
 
   mutations: {
-    resetPlaylist(state, {key, url}) {
+    resetPlaylist(state, { key, url }) {
       state[key].entryIds = [];
       state[key].entriesExhausted = false;
       if (url) {
@@ -32,11 +32,11 @@ const playlists = {
       }
     },
 
-    addPlaylistEntryToHead(state, {key, entry}) {
+    addPlaylistEntryToHead(state, { key, entry }) {
       state[key].entryIds = [entry.id].concat(state[key].entryIds);
     },
 
-    pushPlaylist(state, {key, page}) {
+    pushPlaylist(state, { key, page }) {
       const newIds = page.tracks.map((entry) => entry.id);
       state[key].entryIds = state[key].entryIds.concat(newIds);
 
@@ -55,17 +55,17 @@ const playlists = {
 
         state[key].entryIds = state[key].entryIds.filter((val) => val !== id);
       }
-    }
+    },
   },
 
   actions: {
-    async loadPlaylistPage(context, {key, initial, url}={}) {
+    async loadPlaylistPage(context, { key, initial, url } = {}) {
       if (!context.state[key]) {
         throw new Error(`undefined playlist ${key}`);
       }
 
       if (initial) {
-        context.commit('resetPlaylist', {key, url});
+        context.commit('resetPlaylist', { key, url });
       }
 
       const previousId = context.state[key].entryIds.slice(-1)[0];
@@ -73,11 +73,11 @@ const playlists = {
       const resp = await apiRequest(context, {
         url: context.state[key].url,
         method: 'GET',
-        params: {previousId},
+        params: { previousId },
       });
 
       context.commit('addPlaylistEntries', resp.data.tracks);
-      context.commit('pushPlaylist', {key, page: resp.data});
+      context.commit('pushPlaylist', { key, page: resp.data });
 
       return resp.data;
     },
@@ -94,9 +94,9 @@ const playlists = {
         return playlist.entryIds.map((id) => {
           return rootState.playlistEntries[id];
         });
-      }
-    }
-  }
-}
+      };
+    },
+  },
+};
 
 export default playlists;

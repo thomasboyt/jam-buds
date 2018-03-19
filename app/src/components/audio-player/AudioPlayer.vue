@@ -47,82 +47,81 @@
 </template>
 
 <script>
-  import {mapState} from 'vuex';
-  import Icon from '../Icon.vue';
+import { mapState } from 'vuex';
+import Icon from '../Icon.vue';
 
-  import Youtube from './Youtube.vue';
-  import AudioStream from './AudioStream.vue';
+import Youtube from './Youtube.vue';
+import AudioStream from './AudioStream.vue';
 
-  const playIcon = require('../../../assets/play.svg');
-  const pauseIcon = require('../../../assets/pause.svg');
-  const nextIcon = require('../../../assets/next.svg');
-  const albumPlaceholderIcon = require('../../../assets/record.svg');
+const playIcon = require('../../../assets/play.svg');
+const pauseIcon = require('../../../assets/pause.svg');
+const nextIcon = require('../../../assets/next.svg');
+const albumPlaceholderIcon = require('../../../assets/record.svg');
 
-  export default {
-    data() {
+export default {
+  data() {
+    return {
+      playIcon,
+      pauseIcon,
+      nextIcon,
+      albumPlaceholderIcon,
+    };
+  },
+
+  computed: {
+    ...mapState('playback', [
+      'nowPlaying',
+      'isPlaying',
+      'playbackSourcePath',
+      'playbackSourceLabel',
+    ]),
+
+    playPauseIcon() {
+      return this.isPlaying ? pauseIcon : playIcon;
+    },
+
+    artist() {
+      if (this.nowPlaying) {
+        return this.nowPlaying.song.artists[0];
+      } else {
+        return null;
+      }
+    },
+
+    title() {
+      if (this.nowPlaying) {
+        return this.nowPlaying.song.title;
+      } else {
+        return '(nothing playing)';
+      }
+    },
+
+    albumArt() {
+      if (this.nowPlaying) {
+        return this.nowPlaying.song.albumArt;
+      } else {
+        return null;
+      }
+    },
+
+    embedProps() {
       return {
-        playIcon,
-        pauseIcon,
-        nextIcon,
-        albumPlaceholderIcon,
-      }
+        isPlaying: this.isPlaying,
+        'v-on:ended': this.handlePlaybackEnded,
+      };
     },
+  },
 
-    computed: {
-      ...mapState('playback', [
-        'nowPlaying',
-        'isPlaying',
-        'playbackSourcePath',
-        'playbackSourceLabel',
-      ]),
-
-      playPauseIcon() {
-        return this.isPlaying ? pauseIcon : playIcon;
-      },
-
-      artist() {
-        if (this.nowPlaying) {
-          return this.nowPlaying.song.artists[0];
-        } else {
-          return null;
-        }
-      },
-
-      title() {
-        if (this.nowPlaying) {
-          return this.nowPlaying.song.title;
-        } else {
-          return '(nothing playing)';
-        }
-      },
-
-      albumArt() {
-        if (this.nowPlaying) {
-          return this.nowPlaying.song.albumArt;
-        } else {
-          return null;
-        }
-      },
-
-      embedProps() {
-        return {
-          isPlaying: this.isPlaying,
-          'v-on:ended': this.handlePlaybackEnded,
-        };
-      },
+  methods: {
+    handlePlayPauseClick() {
+      this.$store.dispatch('playback/togglePlayback');
     },
-
-    methods: {
-      handlePlayPauseClick() {
-        this.$store.dispatch('playback/togglePlayback');
-      },
-      handleNextClick() {
-      },
-      handlePlaybackEnded() {
-        this.$store.dispatch('playback/clearPlayback')
-      }
+    handleNextClick() {},
+    handlePlaybackEnded() {
+      this.$store.dispatch('playback/clearPlayback');
     },
+  },
 
-    components: {Icon, Youtube, AudioStream},
-  };
+  components: { Icon, Youtube, AudioStream },
+};
 </script>

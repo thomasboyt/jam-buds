@@ -53,16 +53,16 @@
 </template>
 
 <script>
-  import SidebarWrapper from '../components/SidebarWrapper.vue';
-  import MainWrapper from '../components/MainWrapper.vue';
+import SidebarWrapper from '../components/SidebarWrapper.vue';
+import MainWrapper from '../components/MainWrapper.vue';
 
-  export default {
-    components: {SidebarWrapper, MainWrapper},
+export default {
+  components: { SidebarWrapper, MainWrapper },
 
-    data() {
-      return {
-        // buildSha: process.env.BUILD_SHA,
-      };
-    }
-  };
+  data() {
+    return {
+      // buildSha: process.env.BUILD_SHA,
+    };
+  },
+};
 </script>

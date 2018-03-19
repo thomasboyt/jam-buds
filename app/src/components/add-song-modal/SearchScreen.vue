@@ -37,16 +37,15 @@
 </template>
 
 <script>
-import {mapState} from 'vuex';
+import { mapState } from 'vuex';
 import SpotifySearch from './SpotifySearch.vue';
 import ManualEntryForm from './ManualEntryForm.vue';
 
 export default {
-  components: {SpotifySearch, ManualEntryForm},
+  components: { SpotifySearch, ManualEntryForm },
 
   data() {
-    return {
-    };
+    return {};
   },
 
   computed: {
@@ -68,5 +67,5 @@ export default {
       this.$store.dispatch('toggleAddSongManualEntry');
     },
   },
-}
+};
 </script>

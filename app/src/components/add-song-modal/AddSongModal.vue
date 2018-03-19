@@ -19,14 +19,18 @@
 </template>
 
 <script>
-import {mapState} from 'vuex';
-import {INITIAL_STATE, SEARCH_STATE, CONFIRM_STATE} from '../../stores/modules/addSong';
+import { mapState } from 'vuex';
+import {
+  INITIAL_STATE,
+  SEARCH_STATE,
+  CONFIRM_STATE,
+} from '../../stores/modules/addSong';
 import InitialScreen from './InitialScreen.vue';
 import SearchScreen from './SearchScreen.vue';
 import ConfirmScreen from './ConfirmScreen.vue';
 
 export default {
-  components: {InitialScreen, SearchScreen, ConfirmScreen},
+  components: { InitialScreen, SearchScreen, ConfirmScreen },
 
   data() {
     return {
@@ -47,7 +51,7 @@ export default {
     },
     handleModalClick(evt) {
       evt.stopPropagation();
-    }
-  }
-}
+    },
+  },
+};
 </script>

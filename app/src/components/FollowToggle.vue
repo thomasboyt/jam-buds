@@ -30,6 +30,6 @@ export default {
     handleUnfollow() {
       this.$store.dispatch('unfollowUser', this.name);
     },
-  }
-}
+  },
+};
 </script>

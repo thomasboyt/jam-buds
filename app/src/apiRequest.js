@@ -14,7 +14,7 @@ export default async function apiRequest(context, opts) {
   // runtime type checking here because I am a Known Idiot who is definitely gonna forget to pass
   // context as the first arg
   if (authToken === undefined) {
-    throw new Error('can\'t find auth token in context passed to apiRequest()');
+    throw new Error("can't find auth token in context passed to apiRequest()");
   }
 
   const apiClient = axios.create({

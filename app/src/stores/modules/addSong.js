@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import _ from 'lodash';
 import apiRequest from '../../apiRequest';
-import {getPlaybackSourceName} from '../../playbackSources';
+import { getPlaybackSourceName } from '../../playbackSources';
 
 export const INITIAL_STATE = 'initial';
 export const SEARCH_STATE = 'search';
@@ -56,8 +56,8 @@ function getSubmitOptions(opts) {
     title: opts.manualTitle,
     spotifyId: _.get(opts.selectedSong, 'spotifyId'),
     ...sourceDetails,
-    ...(_.pick(opts, ['manualEntry', 'tweet', 'note'])),
-  }
+    ..._.pick(opts, ['manualEntry', 'tweet', 'note']),
+  };
 }
 
 const addSong = {
@@ -78,7 +78,7 @@ const addSong = {
     closeModal(state) {
       state.showModal = false;
     },
-    loadedShareDetails(state, {url, details}) {
+    loadedShareDetails(state, { url, details }) {
       state.shareLink = url;
 
       state.shareEmbeddable = details.embeddable;
@@ -104,12 +104,11 @@ const addSong = {
 
       if (details.source === 'bandcamp') {
         state.bandcampTrackId = details.bandcampTrackId;
-
       } else if (details.source === 'soundcloud') {
         state.soundcloudTrackId = details.soundcloudTrackId;
       }
     },
-    setManualEntry(state, {artist, title}) {
+    setManualEntry(state, { artist, title }) {
       state.manualArtist = artist;
       state.manualTitle = title;
       state.state = CONFIRM_STATE;
@@ -152,14 +151,14 @@ const addSong = {
       const resp = await apiRequest(context, {
         url: '/share-details',
         method: 'GET',
-        params: {url},
+        params: { url },
       });
 
-      context.commit('loadedShareDetails', {url, details: resp.data});
+      context.commit('loadedShareDetails', { url, details: resp.data });
     },
 
-    submitManualEntry(context, {artist, title}) {
-      context.commit('setManualEntry', {artist, title});
+    submitManualEntry(context, { artist, title }) {
+      context.commit('setManualEntry', { artist, title });
     },
 
     async addSongSearch(context, query) {
@@ -168,7 +167,7 @@ const addSong = {
       const resp = await apiRequest(context, {
         url: '/spotify-search',
         method: 'GET',
-        params: {query},
+        params: { query },
       });
 
       context.commit('loadedSearch', resp.data.songs);
@@ -181,8 +180,8 @@ const addSong = {
       context.commit('unselectSong');
     },
 
-    async submitSong(context, {note, tweet}) {
-      const params = getSubmitOptions({...context.state, note, tweet});
+    async submitSong(context, { note, tweet }) {
+      const params = getSubmitOptions({ ...context.state, note, tweet });
 
       const resp = await apiRequest(context, {
         url: '/playlist',
@@ -192,18 +191,28 @@ const addSong = {
 
       const entry = resp.data;
 
-      context.commit('addPlaylistEntries', [entry], {root: true});
+      context.commit('addPlaylistEntries', [entry], { root: true });
 
       // Add the entry to the top of the user's feed
-      context.commit('addPlaylistEntryToHead', {key: 'feed', entry}, {root: true});
+      context.commit(
+        'addPlaylistEntryToHead',
+        { key: 'feed', entry },
+        { root: true }
+      );
 
       // Add the entry to the top of the user's playlist if they're on that page
-      if (_.get(context.rootState.profile.user, 'name') === entry.user.twitterName) {
-        context.commit('addPlaylistEntryToHead', {key: 'profilePosts', entry}, {root: true});
+      if (
+        _.get(context.rootState.profile.user, 'name') === entry.user.twitterName
+      ) {
+        context.commit(
+          'addPlaylistEntryToHead',
+          { key: 'profilePosts', entry },
+          { root: true }
+        );
       }
 
       context.commit('closeModal');
-    }
+    },
   },
 
   getters: {
@@ -211,14 +220,16 @@ const addSong = {
       if (!(state.manualArtist || state.selectedSong)) {
         return null;
       }
-      return state.manualEntry ? state.manualArtist : state.selectedSong.artists[0];
+      return state.manualEntry
+        ? state.manualArtist
+        : state.selectedSong.artists[0];
     },
     addSongTitle(state) {
       if (!(state.manualTitle || state.selectedSong)) {
         return null;
       }
       return state.manualEntry ? state.manualTitle : state.selectedSong.name;
-    }
+    },
   },
 };
 

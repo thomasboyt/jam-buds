@@ -29,21 +29,20 @@
 </template>
 
 <script>
-import {mapState} from 'vuex';
+import { mapState } from 'vuex';
 import FollowToggle from './FollowToggle.vue';
 
 export default {
-  components: {FollowToggle},
+  components: { FollowToggle },
 
   props: ['title'],
 
   computed: {
     ...mapState({
       name: (state) => state.profile.user.twitterName,
-      showFollowToggle: (state) => (
+      showFollowToggle: (state) =>
         state.auth.authenticated &&
-        state.profile.user.twitterName !== state.currentUser.name
-      ),
+        state.profile.user.twitterName !== state.currentUser.name,
     }),
   },
 };

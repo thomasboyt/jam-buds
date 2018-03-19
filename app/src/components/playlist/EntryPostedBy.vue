@@ -9,7 +9,7 @@
 
 <script>
 import _ from 'lodash';
-import {distanceInWords} from 'date-fns';
+import { distanceInWords } from 'date-fns';
 
 export default {
   props: ['entry'],
@@ -28,13 +28,13 @@ export default {
       } else {
         return `@${this.entry.user.twitterName}`;
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style scoped>
-  a {
-    color: rgb(1, 162, 166);
-  }
+a {
+  color: rgb(1, 162, 166);
+}
 </style>

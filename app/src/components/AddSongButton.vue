@@ -9,7 +9,7 @@ export default {
   methods: {
     handleClick() {
       this.$store.dispatch('showAddSong');
-    }
-  }
-}
+    },
+  },
+};
 </script>

@@ -18,13 +18,15 @@ export default {
   methods: {
     handleClickSidebarOverlay() {
       this.$store.commit('closeSidebar');
-    }
+    },
   },
 
   computed: {
-    isSidebarOpen() { return this.$store.state.isSidebarOpen; },
+    isSidebarOpen() {
+      return this.$store.state.isSidebarOpen;
+    },
   },
 
-  components: {Sidebar},
-}
+  components: { Sidebar },
+};
 </script>

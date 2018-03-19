@@ -17,7 +17,7 @@ const auth = {
     },
     setCurrentUser(state, user) {
       state.authenticated = true;
-    }
+    },
   },
 
   actions: {

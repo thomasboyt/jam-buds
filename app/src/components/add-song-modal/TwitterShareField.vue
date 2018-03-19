@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import {getTweetLength} from '../../util/songTweet';
+import { getTweetLength } from '../../util/songTweet';
 
 export default {
   props: ['value'],
@@ -24,5 +24,5 @@ export default {
       this.$emit('input', value);
     },
   },
-}
+};
 </script>

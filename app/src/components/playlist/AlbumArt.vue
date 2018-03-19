@@ -16,6 +16,6 @@ export default {
     };
   },
 
-  components: {Icon},
+  components: { Icon },
 };
 </script>

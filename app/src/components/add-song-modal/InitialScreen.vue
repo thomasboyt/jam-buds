@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import {getPlaybackSourceForUrl} from '../../playbackSources';
+import { getPlaybackSourceForUrl } from '../../playbackSources';
 
 export default {
   data() {
@@ -54,12 +54,12 @@ export default {
 
       try {
         await this.$store.dispatch('submitSongLink', this.songUrl);
-      } catch(err) {
+      } catch (err) {
         console.error('error submitting song');
         console.error(err);
         this.requestInFlight = false;
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>

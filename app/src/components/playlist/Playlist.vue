@@ -28,21 +28,25 @@
 </template>
 
 <script>
-  import EntryPostedBy from './EntryPostedBy.vue';
-  import PlaylistEntry from './PlaylistEntry.vue';
+import EntryPostedBy from './EntryPostedBy.vue';
+import PlaylistEntry from './PlaylistEntry.vue';
 
-  export default {
-    props: [
-      'entries', 'entriesExhausted', 'loadingNextPage', 'playbackSourceLabel', 'playbackSourcePath'
-    ],
+export default {
+  props: [
+    'entries',
+    'entriesExhausted',
+    'loadingNextPage',
+    'playbackSourceLabel',
+    'playbackSourcePath',
+  ],
 
-    components: {EntryPostedBy, PlaylistEntry},
+  components: { EntryPostedBy, PlaylistEntry },
 
-    methods: {
-      handleRequestNextPage(evt) {
-        evt.preventDefault();
-        this.$emit('requestNextPage');
-      }
-    }
-  }
+  methods: {
+    handleRequestNextPage(evt) {
+      evt.preventDefault();
+      this.$emit('requestNextPage');
+    },
+  },
+};
 </script>

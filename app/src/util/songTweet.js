@@ -22,7 +22,8 @@ export function getDefaultTweet(artist, title) {
 
     if (getTweetLength(defaultTweetTemplate(label)) > TWEET_LENGTH) {
       // truncate that shit I guess
-      const toTruncate = getTweetLength(defaultTweetTemplate(label)) - TWEET_LENGTH;
+      const toTruncate =
+        getTweetLength(defaultTweetTemplate(label)) - TWEET_LENGTH;
       label = `"${label.slice(0, -(toTruncate + 1)) + '…'}"`;
     }
   }

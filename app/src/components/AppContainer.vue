@@ -23,16 +23,16 @@
 </template>
 
 <script>
-  import {mapState} from 'vuex';
-  import SidebarToggle from './SidebarToggle.vue';
-  import AudioPlayer from './audio-player/AudioPlayer.vue';
-  import AddSongModal from './add-song-modal/AddSongModal.vue';
+import { mapState } from 'vuex';
+import SidebarToggle from './SidebarToggle.vue';
+import AudioPlayer from './audio-player/AudioPlayer.vue';
+import AddSongModal from './add-song-modal/AddSongModal.vue';
 
-  export default {
-    computed: mapState({
-      authenticated: (state) => state.auth.authenticated,
-    }),
+export default {
+  computed: mapState({
+    authenticated: (state) => state.auth.authenticated,
+  }),
 
-    components: {SidebarToggle, AudioPlayer, AddSongModal},
-  }
+  components: { SidebarToggle, AudioPlayer, AddSongModal },
+};
 </script>

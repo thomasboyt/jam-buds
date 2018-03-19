@@ -3,16 +3,16 @@
 </template>
 
 <script>
-  export default {
-    props: {
-      className: {
-        type: String,
-        default: () => '',
-      },
-      glyph: {
-        type: String,
-        required: true,
-      },
+export default {
+  props: {
+    className: {
+      type: String,
+      default: () => '',
     },
-  }
+    glyph: {
+      type: String,
+      required: true,
+    },
+  },
+};
 </script>

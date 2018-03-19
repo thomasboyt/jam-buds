@@ -21,13 +21,13 @@ export default {
       } else {
         this.$refs.player.pause();
       }
-    }
+    },
   },
 
   methods: {
     handleEnded() {
       this.$emit('ended');
-    }
-  }
-}
+    },
+  },
+};
 </script>

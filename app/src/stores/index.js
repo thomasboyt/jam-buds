@@ -27,7 +27,7 @@ const root = {
   state() {
     return {
       isSidebarOpen: false,
-    }
+    };
   },
 
   mutations: {
@@ -39,9 +39,8 @@ const root = {
     },
   },
 
-  actions: {
-  },
-}
+  actions: {},
+};
 
 export default function createStore() {
   return new Vuex.Store(root);

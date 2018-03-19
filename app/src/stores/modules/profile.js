@@ -7,7 +7,7 @@ const profile = {
       user: null,
       followers: null,
       following: null,
-    }
+    };
   },
 
   mutations: {
@@ -65,8 +65,8 @@ const profile = {
 
       this.commit('setViewedProfile', userProfile);
       this.commit('setFollowers', followers);
-    }
-  }
+    },
+  },
 };
 
 export default profile;

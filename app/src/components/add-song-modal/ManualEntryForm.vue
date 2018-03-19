@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import {mapState} from 'vuex';
+import { mapState } from 'vuex';
 
 export default {
   data() {
@@ -39,9 +39,9 @@ export default {
   methods: {
     handleSubmit(evt) {
       evt.preventDefault();
-      const {artist, title} = this;
-      this.$store.dispatch('submitManualEntry', {artist, title});
+      const { artist, title } = this;
+      this.$store.dispatch('submitManualEntry', { artist, title });
     },
   },
-}
+};
 </script>

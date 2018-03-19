@@ -24,14 +24,18 @@ export default {
       e.preventDefault();
       e.stopPropagation();
 
-      const confirmedDelete = window.confirm('Are you sure you want to delete this entry?')
+      const confirmedDelete = window.confirm(
+        'Are you sure you want to delete this entry?'
+      );
 
       if (confirmedDelete) {
         this.requestInFlight = true;
 
         try {
-          await this.$store.dispatch('deletePlaylistEntry', {id: this.entry.id});
-        } catch(err) {
+          await this.$store.dispatch('deletePlaylistEntry', {
+            id: this.entry.id,
+          });
+        } catch (err) {
           console.log('request error');
           console.log(err);
         } finally {
@@ -41,6 +45,6 @@ export default {
     },
   },
 
-  components: {Icon},
-}
+  components: { Icon },
+};
 </script>

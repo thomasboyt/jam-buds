@@ -47,17 +47,21 @@
 </template>
 
 <script>
-import {signOut} from '../apiRequest';
+import { signOut } from '../apiRequest';
 import AddSongButton from './AddSongButton.vue';
 
 export default {
-  components: {AddSongButton},
+  components: { AddSongButton },
 
   props: ['open'],
 
   computed: {
-    currentUserName() { return this.$store.state.currentUser.name; },
-    authenticated() { return this.$store.state.auth.authenticated; }
+    currentUserName() {
+      return this.$store.state.currentUser.name;
+    },
+    authenticated() {
+      return this.$store.state.auth.authenticated;
+    },
   },
 
   methods: {
@@ -67,7 +71,7 @@ export default {
       await signOut(this.$store.state.auth.authToken);
 
       document.location.href = '/';
-    }
+    },
   },
-}
+};
 </script>

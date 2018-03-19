@@ -11,7 +11,7 @@ const playback = {
   },
 
   mutations: {
-    playSong(state, {entry, playbackSourceLabel, playbackSourcePath}) {
+    playSong(state, { entry, playbackSourceLabel, playbackSourcePath }) {
       // TODO: this could/should take ID instead of entry, and a getter would
       // look it up from the playlistEntries store
       // currently it's copying because I'm worried about a bunch of edge cases
@@ -30,7 +30,7 @@ const playback = {
       state.isPlaying = false;
       state.playbackSourceLabel = null;
       state.playbackSourcePath = null;
-    }
+    },
   },
 
   actions: {

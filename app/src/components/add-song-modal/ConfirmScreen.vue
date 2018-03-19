@@ -24,14 +24,18 @@
 </template>
 
 <script>
-import {mapGetters, mapState} from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 
 import serializeSongLabel from '../../util/serializeSongLabel';
 import TwitterShareField from './TwitterShareField.vue';
-import {getDefaultTweet, getTweetLength, TWEET_LENGTH} from '../../util/songTweet';
+import {
+  getDefaultTweet,
+  getTweetLength,
+  TWEET_LENGTH,
+} from '../../util/songTweet';
 
 export default {
-  components: {TwitterShareField},
+  components: { TwitterShareField },
 
   mounted() {
     this.tweetText = getDefaultTweet(this.addSongArtist, this.addSongTitle);
@@ -50,14 +54,19 @@ export default {
 
     ...mapState({
       songLabel: (state) => {
-        const {manualArtist, manualTitle, manualEntry, selectedSong} = state.addSong;
+        const {
+          manualArtist,
+          manualTitle,
+          manualEntry,
+          selectedSong,
+        } = state.addSong;
 
         if (manualEntry) {
           return `${manualArtist} - ${manualTitle}`;
         } else {
           return serializeSongLabel(selectedSong);
         }
-      }
+      },
     }),
   },
 
@@ -81,5 +90,5 @@ export default {
       this.$store.dispatch('submitSong', opts);
     },
   },
-}
+};
 </script>

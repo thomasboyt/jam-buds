@@ -23,15 +23,19 @@ export default function createRouter() {
     fallback: false,
     scrollBehavior: () => ({ x: 0, y: 0 }),
     routes: [
-      {path: '/', component: HomePage},
-      {path: '/about', component: AboutPage},
-      {path: '/users/:id', component: UserPageWrapper, children: [
-        {path: '/', component: UserPlaylistPage},
-        {path: 'liked', component: UserLikedPage},
-        {path: 'following', component: UserFollowingPage},
-        {path: 'followers', component: UserFollowersPage},
-      ]},
-      {path: '/find-friends', component: FindFriendsPage},
+      { path: '/', component: HomePage },
+      { path: '/about', component: AboutPage },
+      {
+        path: '/users/:id',
+        component: UserPageWrapper,
+        children: [
+          { path: '/', component: UserPlaylistPage },
+          { path: 'liked', component: UserLikedPage },
+          { path: 'following', component: UserFollowingPage },
+          { path: 'followers', component: UserFollowersPage },
+        ],
+      },
+      { path: '/find-friends', component: FindFriendsPage },
       // {path: '/settings', component: SettingsPage},
       // {path: '*', component: NotFoundPage},
     ],

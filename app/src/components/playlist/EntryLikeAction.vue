@@ -27,13 +27,15 @@ export default {
       e.preventDefault();
       e.stopPropagation();
 
-      const action = this.entry.isLiked ? 'unlikePlaylistEntry' : 'likePlaylistEntry';
+      const action = this.entry.isLiked
+        ? 'unlikePlaylistEntry'
+        : 'likePlaylistEntry';
 
       this.requestInFlight = true;
 
       try {
-        await this.$store.dispatch(`${action}`, {id: this.entry.id});
-      } catch(err) {
+        await this.$store.dispatch(`${action}`, { id: this.entry.id });
+      } catch (err) {
         console.log('request error');
         console.log(err);
       } finally {
@@ -42,6 +44,6 @@ export default {
     },
   },
 
-  components: {Icon},
-}
+  components: { Icon },
+};
 </script>

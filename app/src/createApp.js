@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import {sync} from 'vuex-router-sync';
+import { sync } from 'vuex-router-sync';
 
 import App from './App.vue';
 import createStore from './stores';
@@ -16,8 +16,8 @@ export default function createApp() {
   const app = new Vue({
     router,
     store,
-    render: (h) => h(App)
+    render: (h) => h(App),
   });
 
-  return {app, router, store};
+  return { app, router, store };
 }

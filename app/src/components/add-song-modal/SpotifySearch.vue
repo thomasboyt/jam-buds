@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import {mapState} from 'vuex';
+import { mapState } from 'vuex';
 
 export default {
   data() {
@@ -50,7 +50,7 @@ export default {
       evt.preventDefault();
 
       this.$store.dispatch('addSongSelectResult', song);
-    }
+    },
   },
-}
+};
 </script>

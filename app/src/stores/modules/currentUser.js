@@ -11,10 +11,12 @@ const currentUser = {
       Object.assign(state, user);
     },
     addFollowedUser(state, user) {
-      state.following = state.following.concat([user])
+      state.following = state.following.concat([user]);
     },
     removeFollowedUser(state, name) {
-      state.following = state.following.filter((user) => user.twitterName !== name);
+      state.following = state.following.filter(
+        (user) => user.twitterName !== name
+      );
     },
     setFriendSuggestions(state, suggestions) {
       Vue.set(state, 'friendSuggestions', suggestions);
@@ -23,7 +25,7 @@ const currentUser = {
 
   actions: {
     async followUser(context, name) {
-      console.log('following', name)
+      console.log('following', name);
       const resp = await apiRequest(context, {
         url: '/following',
         method: 'POST',
@@ -50,14 +52,14 @@ const currentUser = {
       });
 
       context.commit('setFriendSuggestions', resp.data.users);
-    }
+    },
   },
 
   getters: {
     isFollowing: (state) => (name) => {
       return state.following.some((user) => user.twitterName === name);
-    }
-  }
+    },
+  },
 };
 
 export default currentUser;

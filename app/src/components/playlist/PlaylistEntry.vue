@@ -55,9 +55,7 @@ const noteIcon = require('../../../assets/note.svg');
 const arrowIcon = require('../../../assets/arrow.svg');
 
 export default {
-  props: [
-    'entry', 'playbackSourceLabel', 'playbackSourcePath',
-  ],
+  props: ['entry', 'playbackSourceLabel', 'playbackSourcePath'],
 
   data() {
     return {
@@ -93,7 +91,7 @@ export default {
     },
 
     showLikeButton() {
-      const {state} = this.$store;
+      const { state } = this.$store;
 
       // users can't like their own posts
       return (
@@ -103,14 +101,13 @@ export default {
     },
 
     showDeleteButton() {
-      const {state} = this.$store;
+      const { state } = this.$store;
 
       // users can't delete other ppl's posts
       return (
-        state.auth.authenticated &&
-        state.currentUser.id === this.entry.user.id
+        state.auth.authenticated && state.currentUser.id === this.entry.user.id
       );
-    }
+    },
   },
 
   methods: {
@@ -143,12 +140,12 @@ export default {
     EntryLikeAction,
     EntryDeleteAction,
   },
-}
+};
 </script>
 
 <style>
-  .playlist-entry  {
-    background-color: rgb(255, 255, 166);
-    color: black;
-  }
+.playlist-entry {
+  background-color: rgb(255, 255, 166);
+  color: black;
+}
 </style>
