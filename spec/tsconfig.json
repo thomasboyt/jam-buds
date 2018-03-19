@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "lib": ["dom", "es6", "es2015.promise", "es2015.iterable", "scripthost"],
+
+    "module": "commonjs",
+    "moduleResolution": "node",
+
+    "sourceMap": true,
+    "typeRoots": ["node_modules/@types", "typings"],
+    "jsx": "react",
+    "experimentalDecorators": true,
+
+    "strictNullChecks": true,
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "allowJs": true
+  }
+}

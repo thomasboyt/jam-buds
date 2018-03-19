@@ -24,8 +24,6 @@ if (!process.env.SKIP_DOTENV) {
   }
 }
 
-const mode = process.env.NODE_ENV || 'development';
-
 // TODO: this is broken on heroku cuz it's not a real git repo :(
 // function gitSha() {
 //   const execSync = require('child_process').execSync;
@@ -37,7 +35,7 @@ let envVars = {
   NODE_ENV: `"${process.env.NODE_ENV}"`
 };
 
-if (mode === 'production') {
+if (process.env.NODE_ENV === 'production') {
   envVars = {
     ...envVars,
     SENTRY_PUBLIC_DSN: `"${process.env.SENTRY_PUBLIC_DSN}"`,
@@ -45,7 +43,7 @@ if (mode === 'production') {
 }
 
 module.exports = {
-  mode,
+  mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
 
   output: {
     path: path.resolve(__dirname, '../build'),

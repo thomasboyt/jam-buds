@@ -1,8 +1,6 @@
 import * as path from 'path';
 import * as childProcess from 'child_process';
 
-import * as dotenv from 'dotenv';
-
 function resetDb() {
   // THIS IS SO WACKY
   // See https://github.com/tgriesser/knex/issues/1851#issuecomment-272371575
@@ -31,9 +29,12 @@ function waitForStart(ms: number): Promise<any> {
 before(async function() {
   this.timeout(0);
 
+  console.log('spawning node')
+
   // this uses a node entry point instead of ts-node cuz i couldn't easily clean up after ts-node
   // exited
-  const child = childProcess.spawn('node', ['src/server/entry.js'], {
+  const child = childProcess.spawn('node', ['npm start'], {
+    cwd: path.join(__dirname, '../api'),
     stdio: 'inherit',
   });
 

@@ -1,7 +1,9 @@
 // this is the dumbest bullshit
 require('ts-node/register');
 
-const db = require('../src/server/db');
+console.log('resetting test db');
+
+const db = require('../api/src/db');
 
 db.configureDatabase();
 
