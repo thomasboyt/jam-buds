@@ -20,7 +20,7 @@ if (isProd) {
 const template = `
   <html>
     <head>
-      <title>app</title>
+      <title>{{title}}</title>
       <script src="https://www.youtube.com/iframe_api"></script>
       <meta name="viewport" content="width=device-width, initial-scale=1">
     </head>
@@ -102,6 +102,7 @@ async function main() {
     const context = {
       url: req.url,
       authToken,
+      title: 'Jam Buds',
     };
 
     renderer.renderToString(context, (err, html) => {

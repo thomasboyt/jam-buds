@@ -1,6 +1,6 @@
 <template>
   <div>
-    <profile-nav :title="`@${name}'s followers`"/>
+    <profile-nav :title="title"/>
     <users-list :users="followers"/>
   </div>
 </template>
@@ -9,8 +9,20 @@
 import { mapState } from 'vuex';
 import ProfileNav from '../../components/ProfileNav.vue';
 import UsersList from '../../components/UsersList.vue';
+import titleMixin from '../../util/titleMixin';
 
 export default {
+  components: {
+    ProfileNav,
+    UsersList,
+  },
+
+  mixins: [titleMixin],
+
+  title() {
+    return this.title;
+  },
+
   async asyncData({ store, route }) {
     await store.dispatch('loadProfileFollowers', route.params.id);
   },
@@ -20,11 +32,9 @@ export default {
       name: (state) => state.profile.user.twitterName,
       followers: (state) => state.profile.followers,
     }),
-  },
-
-  components: {
-    ProfileNav,
-    UsersList,
+    title() {
+      return `@${this.name}'s followers`;
+    },
   },
 };
 </script>

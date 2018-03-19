@@ -17,9 +17,14 @@ import { mapState } from 'vuex';
 import MainWrapper from '../components/MainWrapper.vue';
 import SidebarWrapper from '../components/SidebarWrapper.vue';
 import UsersList from '../components/UsersList.vue';
+import titleMixin from '../util/titleMixin';
 
 export default {
   components: { SidebarWrapper, MainWrapper, UsersList },
+
+  mixins: [titleMixin],
+
+  title: 'Find Friends',
 
   async asyncData({ store, route }) {
     await store.dispatch('loadFriendSuggestions');

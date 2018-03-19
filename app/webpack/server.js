@@ -1,3 +1,4 @@
+const webpack = require('webpack');
 const merge = require('webpack-merge');
 const nodeExternals = require('webpack-node-externals');
 const VueSSRServerPlugin = require('vue-server-renderer/server-plugin');
@@ -21,7 +22,14 @@ const conf = merge(baseConfig, {
     }),
   ],
 
-  plugins: [new VueSSRServerPlugin()],
+  plugins: [
+    new VueSSRServerPlugin(),
+    new webpack.DefinePlugin({
+      'process.env': {
+        VUE_ENV: `"server"`,
+      },
+    }),
+  ],
 });
 
 module.exports = conf;

@@ -17,7 +17,21 @@ import AppContainer from '../components/AppContainer.vue';
 import MainWrapper from '../components/MainWrapper.vue';
 import SidebarWrapper from '../components/SidebarWrapper.vue';
 
+import titleMixin from '../util/titleMixin';
+
 export default {
+  components: {
+    Feed,
+    AppContainer,
+    MainWrapper,
+    SidebarWrapper,
+    LoggedOutHome,
+  },
+
+  mixins: [titleMixin],
+
+  title: 'Feed',
+
   async asyncData({ store, route }) {
     if (store.state.auth.authenticated) {
       await store.dispatch('loadPlaylistPage', { key: 'feed', initial: true });
@@ -27,13 +41,5 @@ export default {
   computed: mapState({
     authenticated: (state) => state.auth.authenticated,
   }),
-
-  components: {
-    Feed,
-    AppContainer,
-    MainWrapper,
-    SidebarWrapper,
-    LoggedOutHome,
-  },
 };
 </script>

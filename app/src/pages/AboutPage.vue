@@ -55,9 +55,14 @@
 <script>
 import SidebarWrapper from '../components/SidebarWrapper.vue';
 import MainWrapper from '../components/MainWrapper.vue';
+import titleMixin from '../util/titleMixin';
 
 export default {
   components: { SidebarWrapper, MainWrapper },
+
+  mixins: [titleMixin],
+
+  title: 'About',
 
   data() {
     return {

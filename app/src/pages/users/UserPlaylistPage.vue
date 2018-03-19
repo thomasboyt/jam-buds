@@ -19,8 +19,20 @@
 import { mapState } from 'vuex';
 import ProfileNav from '../../components/ProfileNav.vue';
 import Playlist from '../../components/playlist/Playlist.vue';
+import titleMixin from '../../util/titleMixin';
 
 export default {
+  components: {
+    ProfileNav,
+    Playlist,
+  },
+
+  mixins: [titleMixin],
+
+  title() {
+    return this.title;
+  },
+
   async asyncData({ store, route }) {
     await store.dispatch('loadProfilePostsPlaylist', route.params.id);
   },
@@ -37,12 +49,14 @@ export default {
     },
     ...mapState({
       name: (state) => state.profile.user.twitterName,
-      title: (state) => `@${state.profile.user.twitterName}'s playlist`,
       entriesExhausted: (state) =>
         state.playlists.profilePosts.entriesExhausted,
     }),
     playbackSourcePath() {
       return `/users/${this.name}`;
+    },
+    title() {
+      return `@${this.name}'s playlist`;
     },
   },
 
@@ -59,11 +73,6 @@ export default {
         this.loadingNextPage = false;
       }
     },
-  },
-
-  components: {
-    ProfileNav,
-    Playlist,
   },
 };
 </script>

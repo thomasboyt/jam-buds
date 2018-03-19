@@ -23,5 +23,13 @@ module.exports = merge(baseConfig, {
     },
   },
 
-  plugins: [new VueSSRClientPlugin()],
+  plugins: [
+    new VueSSRClientPlugin(),
+
+    new webpack.DefinePlugin({
+      'process.env': {
+        VUE_ENV: `"client"`,
+      },
+    }),
+  ],
 });
