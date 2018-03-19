@@ -50,9 +50,9 @@ env:
     # In addition to these, API keys for feature tests are included in Travis's settings page
     - DATABASE_URL=postgres://postgres@localhost:5432/jambuds_test
     - PORT=3001
-    - SERVER_URL=http://localhost:3001
+    - API_URL=http://localhost:3001
     - STATIC_URL=http://localhost:8080
-    - API_URL=http://localhost:8080
+    - APP_URL=http://localhost:8080
 
 cache:
   directories:
