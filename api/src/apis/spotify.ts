@@ -5,23 +5,24 @@ const spotifyApi = new SpotifyWebApi({
   clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
 });
 
-function getToken() {
+async function getToken() {
   console.log('*** Refreshing Spotify token');
 
-  spotifyApi.clientCredentialsGrant()
-    .then((data: any) => {
-      spotifyApi.setAccessToken(data.body['access_token']);
-    }, (err: any) => {
-      console.error(`*** Failed to acquire Spotify token:`)
-      throw err;
-      /// TODO: RETRY WITH BACKOFF!!
-    });
+  try {
+    const data = await spotifyApi.clientCredentialsGrant();
+    spotifyApi.setAccessToken(data.body['access_token']);
+  } catch(err) {
+    console.error(`*** Failed to acquire Spotify token:`)
+    throw err;
+    /// TODO: RETRY WITH BACKOFF!!
+  }
 }
 
-getToken();
-
-// new token very five minutes
-setInterval(getToken, 60 * 5 * 1000);
+if (process.env.NODE_ENV !== 'test') {
+  getToken();
+  // new token very five minutes
+  setInterval(getToken, 60 * 5 * 1000);
+}
 
 /**
  * Look up a Spotify track by a given Spotify track ID.
