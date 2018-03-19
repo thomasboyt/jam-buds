@@ -7,7 +7,7 @@
         No suggestions found! Try inviting your Twitter friends to Jam Buds!
       </div>
 
-      <users-list v-else :users="friendSuggestions"></users-list>
+      <users-list v-else :users="friendSuggestions"/>
     </main-wrapper>
   </sidebar-wrapper>
 </template>

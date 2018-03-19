@@ -9,9 +9,9 @@
             </h2>
           </div>
 
-          <initial-screen v-if="state === INITIAL_STATE"></initial-screen>
-          <search-screen v-if="state === SEARCH_STATE"></search-screen>
-          <confirm-screen v-if="state === CONFIRM_STATE"></confirm-screen>
+          <initial-screen v-if="state === INITIAL_STATE"/>
+          <search-screen v-if="state === SEARCH_STATE"/>
+          <confirm-screen v-if="state === CONFIRM_STATE"/>
         </div>
       </div>
     </div>

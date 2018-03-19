@@ -2,7 +2,7 @@
   <div>
     <form class="submit-box" @submit="handleSubmit">
       <div class="input-container">
-        <input type="text" v-model="searchQuery" data-test="song-search-field" />
+        <input type="text" v-model="searchQuery" data-test="song-search-field" >
       </div>
 
       <button type="submit">find</button>
@@ -16,7 +16,7 @@
       <ul v-else data-test="search-results">
         <li v-for="song of searchResults" :key="song.id">
           <a href="#" @click="(evt) => handleSelectSong(evt, song)">
-            {{song.artists.join(', ')}} - {{song.name}}
+            {{ song.artists.join(', ') }} - {{ song.name }}
           </a>
         </li>
       </ul>

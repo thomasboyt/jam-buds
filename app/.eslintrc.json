@@ -1,6 +1,6 @@
 {
     "extends": [
-        "plugin:vue/essential"
+        "plugin:vue/strongly-recommended"
     ],
     "env": {
         "browser": true,
@@ -17,11 +17,28 @@
         "sourceType": "module"
     },
     "rules": {
-        "no-const-assign": "warn",
-        "no-this-before-super": "warn",
-        "no-undef": "warn",
-        "no-unreachable": "warn",
-        "constructor-super": "warn",
-        "valid-typeof": "warn"
+        "no-const-assign": "error",
+        "no-this-before-super": "error",
+        "no-undef": "error",
+        "no-unreachable": "error",
+        "constructor-super": "error",
+        "valid-typeof": "error",
+
+        "vue/html-indent": ["error", 2, {
+            "alignAttributesVertically": false
+        }],
+
+        "vue/require-default-prop": "off",
+        "vue/require-prop-types": "off",
+
+        "vue/max-attributes-per-line": ["error", {
+            "singleline": 3,
+            "multiline": {
+                "max": 1,
+                "allowFirstLine": true
+            }
+        }],
+
+        "vue/order-in-components": "error"
     }
 }

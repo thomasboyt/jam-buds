@@ -1,5 +1,5 @@
 <template>
-  <div ref="container"></div>
+  <div ref="container"/>
 </template>
 
 <script>
@@ -53,6 +53,21 @@ function getVideoId(url) {
 export default {
   props: ['url', 'isPlaying'],
 
+  watch: {
+    isPlaying(newVal, oldVal) {
+      if (!newVal) {
+        ytPlayer.pauseVideo();
+      } else {
+        ytPlayer.playVideo();
+      }
+    },
+
+    url(newVal, oldVal) {
+      const id = getVideoId(newVal);
+      ytPlayer.loadVideoById(id);
+    },
+  },
+
   mounted() {
     if (!ytPlayer || !ytPlayerReady) {
       // TODO: Handle Youtube player not being loaded yet!!
@@ -75,21 +90,6 @@ export default {
 
     ytPlayer.stopVideo();
     ytPlayer.removeEventListener('onStateChange', this.onStateChange);
-  },
-
-  watch: {
-    isPlaying(newVal, oldVal) {
-      if (!newVal) {
-        ytPlayer.pauseVideo();
-      } else {
-        ytPlayer.playVideo();
-      }
-    },
-
-    url(newVal, oldVal) {
-      const id = getVideoId(newVal);
-      ytPlayer.loadVideoById(id);
-    },
   },
 
   methods: {

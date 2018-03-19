@@ -1,10 +1,9 @@
 <template>
   <div class="confirm-screen">
-    <p>you're posting <strong>{{songLabel}}</strong></p>
+    <p>you're posting <strong>{{ songLabel }}</strong></p>
 
     <div class="note-box">
-      <textarea v-model="noteText" placeholder="(optional) Write a note about this song!">
-      </textarea>
+      <textarea v-model="noteText" placeholder="(optional) Write a note about this song!"/>
     </div>
 
     <p>
@@ -14,8 +13,7 @@
       </label>
     </p>
 
-    <twitter-share-field v-if="twitterPostEnabled" v-model="tweetText">
-    </twitter-share-field>
+    <twitter-share-field v-if="twitterPostEnabled" v-model="tweetText"/>
 
     <button @click="handleSubmit" class="submit" data-test="add-song-confirm">
       post it!!
@@ -36,10 +34,6 @@ import {
 
 export default {
   components: { TwitterShareField },
-
-  mounted() {
-    this.tweetText = getDefaultTweet(this.addSongArtist, this.addSongTitle);
-  },
 
   data() {
     return {
@@ -68,6 +62,10 @@ export default {
         }
       },
     }),
+  },
+
+  mounted() {
+    this.tweetText = getDefaultTweet(this.addSongArtist, this.addSongTitle);
   },
 
   methods: {

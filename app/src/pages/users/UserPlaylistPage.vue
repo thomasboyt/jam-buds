@@ -1,12 +1,12 @@
 <template>
   <div>
-    <profile-nav :title="title"></profile-nav>
+    <profile-nav :title="title"/>
     <playlist
       :entries="entries"
-      :entriesExhausted="entriesExhausted"
-      :loadingNextPage="loadingNextPage"
-      :playbackSourceLabel="title"
-      :playbackSourcePath="playbackSourcePath"
+      :entries-exhausted="entriesExhausted"
+      :loading-next-page="loadingNextPage"
+      :playback-source-label="title"
+      :playback-source-path="playbackSourcePath"
       @requestNextPage="handleRequestNextPage">
       <p slot="placeholder">
         This user has not posted any songs yet :(

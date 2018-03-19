@@ -1,7 +1,13 @@
 <template>
   <form class="submit-box" @submit="handleSubmit">
-    <input type="text" name="artist" placeholder="Artist" v-model="artist">
-    <input type="text" name="title" placeholder="Title" v-model="title">
+    <input type="text"
+      name="artist"
+      placeholder="Artist"
+      v-model="artist">
+    <input type="text"
+      name="title"
+      placeholder="Title"
+      v-model="title">
 
     <button type="submit" :disabled="!isFilled">
       next
@@ -20,13 +26,6 @@ export default {
     };
   },
 
-  mounted() {
-    if (this.manualEntrySuggestion) {
-      this.artist = this.manualEntrySuggestion.artist;
-      this.title = this.manualEntrySuggestion.title;
-    }
-  },
-
   computed: {
     isFilled() {
       return this.artist.length && this.title.length;
@@ -34,6 +33,13 @@ export default {
     ...mapState({
       manualEntrySuggestion: (state) => state.addSong.manualEntrySuggestion,
     }),
+  },
+
+  mounted() {
+    if (this.manualEntrySuggestion) {
+      this.artist = this.manualEntrySuggestion.artist;
+      this.title = this.manualEntrySuggestion.title;
+    }
   },
 
   methods: {

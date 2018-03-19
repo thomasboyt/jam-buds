@@ -2,10 +2,10 @@
   <div class="user-header">
     <div class="user-header-top">
       <h2>
-        {{title}}
+        {{ title }}
       </h2>
 
-      <follow-toggle v-if="showFollowToggle" :name="name"></follow-toggle>
+      <follow-toggle v-if="showFollowToggle" :name="name"/>
     </div>
 
     <div class="user-links">

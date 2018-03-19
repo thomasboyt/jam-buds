@@ -1,7 +1,7 @@
 <template>
   <div>
-    <profile-nav :title="`@${name}'s followed users`"></profile-nav>
-    <users-list :users="following"></users-list>
+    <profile-nav :title="`@${name}'s followed users`"/>
+    <users-list :users="following"/>
   </div>
 </template>
 

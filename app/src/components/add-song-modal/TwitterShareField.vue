@@ -1,9 +1,8 @@
 <template>
   <div class="tweet-box">
     <textarea :value="value"
-      @input="updateTweetText($event.target.value)">
-    </textarea>
-    ({{remainingChars}} characters left)
+      @input="updateTweetText($event.target.value)"/>
+    ({{ remainingChars }} characters left)
   </div>
 </template>
 

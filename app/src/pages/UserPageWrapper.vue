@@ -2,7 +2,7 @@
   <sidebar-wrapper>
     <main-wrapper>
       <div class="playlist">
-        <router-view></router-view>
+        <router-view/>
       </div>
     </main-wrapper>
   </sidebar-wrapper>

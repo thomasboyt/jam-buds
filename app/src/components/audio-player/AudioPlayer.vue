@@ -3,46 +3,46 @@
     <div v-if="nowPlaying">
       <youtube v-if="nowPlaying.source === 'youtube'"
         :url="nowPlaying.youtubeUrl"
-        :isPlaying="isPlaying"
-        @ended="this.handlePlaybackEnded">
-      </youtube>
+        :is-playing="isPlaying"
+        @ended="this.handlePlaybackEnded"/>
       <audio-stream v-if="nowPlaying.source === 'bandcamp'"
         :url="nowPlaying.bandcampStreamingUrl"
-        :isPlaying="isPlaying"
-        @ended="this.handlePlaybackEnded">
-      </audio-stream>
+        :is-playing="isPlaying"
+        @ended="this.handlePlaybackEnded"/>
       <audio-stream v-if="nowPlaying.source === 'soundcloud'"
         :url="nowPlaying.soundcloudStreamingUrl"
-        :isPlaying="isPlaying"
-        @ended="this.handlePlaybackEnded">
-      </audio-stream>
+        :is-playing="isPlaying"
+        @ended="this.handlePlaybackEnded"/>
     </div>
 
     <div class="audio-player--controls">
-      <button class="play-pause-button" @click="handlePlayPauseClick"
+      <button class="play-pause-button"
+        @click="handlePlayPauseClick"
         :disabled="!nowPlaying">
-        <icon :glyph="playPauseIcon"></icon>
+        <icon :glyph="playPauseIcon"/>
       </button>
 
-      <button class="next-button" @click="handleNextClick"
+      <button class="next-button"
+        @click="handleNextClick"
         :disabled="!nowPlaying">
-        <icon :glyph="nextIcon"></icon>
+        <icon :glyph="nextIcon"/>
       </button>
     </div>
 
     <div class="audio-player--main">
-      <div>{{title}}</div>
-      <div>{{artist}}</div>
+      <div>{{ title }}</div>
+      <div>{{ artist }}</div>
 
       <div v-if="nowPlaying">
         playing from
-        <router-link :to="playbackSourcePath">{{playbackSourceLabel}}</router-link>
+        <router-link :to="playbackSourcePath">{{ playbackSourceLabel }}</router-link>
       </div>
     </div>
 
     <img v-if="nowPlaying && albumArt" :src="albumArt" class="audio-player--art">
-    <icon v-else class="audio-player--art -placeholder"
-      :glyph="albumPlaceholderIcon"></icon>
+    <icon v-else
+      class="audio-player--art -placeholder"
+      :glyph="albumPlaceholderIcon"/>
   </div>
 </template>
 
@@ -59,6 +59,8 @@ const nextIcon = require('../../../assets/next.svg');
 const albumPlaceholderIcon = require('../../../assets/record.svg');
 
 export default {
+  components: { Icon, Youtube, AudioStream },
+
   data() {
     return {
       playIcon,
@@ -121,7 +123,5 @@ export default {
       this.$store.dispatch('playback/clearPlayback');
     },
   },
-
-  components: { Icon, Youtube, AudioStream },
 };
 </script>

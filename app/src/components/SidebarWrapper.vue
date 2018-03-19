@@ -1,13 +1,12 @@
 <template>
   <div class="container">
-    <sidebar :open="isSidebarOpen"></sidebar>
+    <sidebar :open="isSidebarOpen"/>
 
     <div v-if="isSidebarOpen"
       class="container-overlay"
-      @click="handleClickSidebarOverlay">
-    </div>
+      @click="handleClickSidebarOverlay"/>
 
-    <slot></slot>
+    <slot/>
   </div>
 </template>
 
@@ -15,18 +14,17 @@
 import Sidebar from './Sidebar.vue';
 
 export default {
-  methods: {
-    handleClickSidebarOverlay() {
-      this.$store.commit('closeSidebar');
-    },
-  },
+  components: { Sidebar },
 
   computed: {
     isSidebarOpen() {
       return this.$store.state.isSidebarOpen;
     },
   },
-
-  components: { Sidebar },
+  methods: {
+    handleClickSidebarOverlay() {
+      this.$store.commit('closeSidebar');
+    },
+  },
 };
 </script>

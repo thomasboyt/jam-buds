@@ -1,5 +1,5 @@
 <template>
-  <span :class="`icon ${className || ''}`" v-html="glyph"></span>
+  <span :class="`icon ${className || ''}`" v-html="glyph"/>
 </template>
 
 <script>

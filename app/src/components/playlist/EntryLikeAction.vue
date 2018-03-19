@@ -1,7 +1,7 @@
 <template>
   <button @click="handleToggleLike" :disabled="requestInFlight">
-    <icon v-if="entry.isLiked" :glyph="heartFilledIcon"></icon>
-    <icon v-else :glyph="heartOpenIcon"></icon>
+    <icon v-if="entry.isLiked" :glyph="heartFilledIcon"/>
+    <icon v-else :glyph="heartOpenIcon"/>
   </button>
 </template>
 
@@ -12,6 +12,8 @@ const heartOpenIcon = require('../../../assets/heart_open.svg');
 const heartFilledIcon = require('../../../assets/heart_filled.svg');
 
 export default {
+  components: { Icon },
+
   props: ['entry'],
 
   data() {
@@ -43,7 +45,5 @@ export default {
       }
     },
   },
-
-  components: { Icon },
 };
 </script>

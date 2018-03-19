@@ -7,8 +7,11 @@
 
     <form class="submit-box" @submit="handleSubmit">
       <div class="input-container">
-        <input type="text" :class="{invalid}"
-          v-model="songUrl" @input="handleInput" placeholder="Paste a link here!!"
+        <input type="text" 
+          :class="{invalid}"
+          v-model="songUrl" 
+          @input="handleInput" 
+          placeholder="Paste a link here!!"
           data-test="song-url-field">
       </div>
 

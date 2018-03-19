@@ -1,35 +1,39 @@
 <template>
   <div :class="['playlist-entry', {'is-playing': isPlaying}]">
 
-    <a class="playlist-entry--main" :href="entry.sourceUrl" target="_blank" rel="noopener noreferrer" @click="handleClick">
-      <album-art :albumArt="entry.song.albumArt"></album-art>
+    <a class="playlist-entry--main"
+      :href="entry.sourceUrl"
+      target="_blank"
+      rel="noopener noreferrer"
+      @click="handleClick">
+      <album-art :album-art="entry.song.albumArt"/>
 
       <div class="title">
         <div class="title-content">
-          {{entry.song.artists.join(',')}}
-          <br />
-          {{entry.song.title}}
+          {{ entry.song.artists.join(',') }}
+          <br >
+          {{ entry.song.title }}
         </div>
 
       </div>
 
       <span class="playlist-entry--actions">
         <button v-if="entry.note" @click="handleOpenNote">
-          <icon :glyph="noteIcon"></icon>
+          <icon :glyph="noteIcon"/>
         </button>
 
-        <entry-like-action v-if="showLikeButton" :entry="entry"></entry-like-action>
-        <entry-delete-action v-if="showDeleteButton" :entry="entry"></entry-delete-action>
+        <entry-like-action v-if="showLikeButton" :entry="entry"/>
+        <entry-delete-action v-if="showDeleteButton" :entry="entry"/>
 
         <button @click="handleToggleOpen" class="drawer-toggle">
-          <icon :glyph="arrowIcon" :class="{'arrow-up': isOpen, 'arrow-down': !isOpen}"></icon>
+          <icon :glyph="arrowIcon" :class="{'arrow-up': isOpen, 'arrow-down': !isOpen}"/>
         </button>
       </span>
     </a>
 
     <div :class="['playlist-entry--detail', {'open': isOpen}]">
       <p v-if="entry.note" class="track-note">
-        {{entry.note}}
+        {{ entry.note }}
       </p>
 
       <p>
@@ -37,7 +41,7 @@
           Listen to this song on:
 
           <a :href="sourceUrl" target="_blank" rel="noopener noreferrer">
-            {{sourceLabel}}
+            {{ sourceLabel }}
           </a>
         </em>
       </p>
@@ -55,6 +59,13 @@ const noteIcon = require('../../../assets/note.svg');
 const arrowIcon = require('../../../assets/arrow.svg');
 
 export default {
+  components: {
+    AlbumArt,
+    Icon,
+    EntryLikeAction,
+    EntryDeleteAction,
+  },
+
   props: ['entry', 'playbackSourceLabel', 'playbackSourcePath'],
 
   data() {
@@ -132,13 +143,6 @@ export default {
       evt.stopPropagation();
       this.isOpen = true;
     },
-  },
-
-  components: {
-    AlbumArt,
-    Icon,
-    EntryLikeAction,
-    EntryDeleteAction,
   },
 };
 </script>

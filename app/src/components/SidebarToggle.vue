@@ -1,6 +1,6 @@
 <template>
   <button v-if="authenticated" class="sidebar-toggle" @click="handleOpenSidebar">
-    <icon :glyph="menuIcon"></icon>
+    <icon :glyph="menuIcon"/>
   </button>
 </template>
 
@@ -9,6 +9,8 @@ const menuIcon = require('../../assets/menu.svg');
 import Icon from './Icon.vue';
 
 export default {
+  components: { Icon },
+
   data() {
     return {
       menuIcon,
@@ -33,7 +35,5 @@ export default {
       }
     },
   },
-
-  components: { Icon },
 };
 </script>

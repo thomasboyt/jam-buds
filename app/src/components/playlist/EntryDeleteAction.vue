@@ -1,6 +1,6 @@
 <template>
   <button @click="handleDelete" :disabled="requestInFlight">
-    <icon :glyph="closeIcon"></icon>
+    <icon :glyph="closeIcon"/>
   </button>
 </template>
 
@@ -10,6 +10,8 @@ import Icon from '../Icon.vue';
 const closeIcon = require('../../../assets/close.svg');
 
 export default {
+  components: { Icon },
+
   props: ['entry'],
 
   data() {
@@ -44,7 +46,5 @@ export default {
       }
     },
   },
-
-  components: { Icon },
 };
 </script>

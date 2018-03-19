@@ -1,9 +1,9 @@
 <template>
   <div class="posted-by">
     <router-link :to="`/users/${entry.user.twitterName}`">
-      {{displayName}}
+      {{ displayName }}
     </router-link>
-    posted ({{timestamp}} ago)
+    posted ({{ timestamp }} ago)
   </div>
 </template>
 
