@@ -2,7 +2,7 @@ import {Router} from 'express';
 import wrapAsyncRoute from '../util/wrapAsyncRoute';
 import {AUTH_TOKEN_COOKIE} from '../constants';
 import {OAuth} from 'oauth';
-import {createUser, getUserByTwitterId} from '../models/user';
+import {createUser, getUserByTwitterId, updateTwitterCredentials} from '../models/user';
 import {isAuthenticated} from '../auth';
 
 /*
@@ -73,6 +73,15 @@ export default function registerTwitterAuthEndpoints(router: Router) {
           user = await createUser({
             twitterId, twitterName, twitterToken: token, twitterSecret: secret
           });
+        } else {
+          // Update user if needed
+          if (!(user.twitterToken === token && user.twitterSecret === secret)) {
+            await updateTwitterCredentials({
+              twitterName,
+              twitterToken: token,
+              twitterSecret: secret,
+            });
+          }
         }
 
 -        res.cookie(AUTH_TOKEN_COOKIE, user.authToken);

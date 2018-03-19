@@ -36,6 +36,11 @@ export async function getTwitterFriendIds(user: User): Promise<string[]> {
     stringify_ids: true,
   } as Object);
 
+  if ((resp.data as any).errors) {
+    console.error(resp.data);
+    throw new Error('Error communicating with Twitter API');
+  }
+
   const users: string[] = (resp.data as any).ids;
 
   return users;

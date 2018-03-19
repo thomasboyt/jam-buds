@@ -41,6 +41,20 @@ export async function createUser(opts: CreateUserOptions): Promise<User> {
   return user;
 }
 
+interface UpdateTwitterCredentialsOptions {
+  twitterName: string;
+  twitterToken: string;
+  twitterSecret: string;
+}
+
+export async function updateTwitterCredentials(opts: UpdateTwitterCredentialsOptions) {
+  const {twitterName, twitterToken, twitterSecret} = opts;
+
+  return db!('users')
+    .where({'twitter_name': twitterName})
+    .update(decamelizeKeys({twitterSecret, twitterToken}));
+}
+
 async function getUserWhere(params: any) {
   const query = db!('users').where(params);
 
