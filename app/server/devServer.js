@@ -3,6 +3,7 @@ const path = require('path');
 const webpack = require('webpack');
 const createDevMiddleware = require('webpack-dev-middleware');
 const MFS = require('memory-fs');
+const express = require('express');
 
 const clientConfig = require('../webpack/client');
 const serverConfig = require('../webpack/server');
@@ -14,6 +15,8 @@ const readFile = (fs, file) => {
 };
 
 module.exports = function setupDevServer(app, cb) {
+  app.use('/', express.static('static/'));
+
   let bundle;
   let clientManifest;
 

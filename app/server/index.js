@@ -23,6 +23,8 @@ const template = `
       <title>{{title}}</title>
       <script src="https://www.youtube.com/iframe_api"></script>
       <meta name="viewport" content="width=device-width, initial-scale=1">
+      <link rel="icon" href="/favicon16.png" type="image/png" sizes="32x32">
+      <link rel="icon" href="/favicon32.png" type="image/png" sizes="32x32">
     </head>
     <body>
       <div id="app">
