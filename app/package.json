@@ -48,6 +48,7 @@
     "js-cookie": "^2.1.4",
     "lodash": "^4.17.4",
     "memory-fs": "^0.4.1",
+    "mustache": "^2.3.0",
     "normalize.css": "^5.0.0",
     "query-string": "^4.2.3",
     "raven": "^2.4.2",

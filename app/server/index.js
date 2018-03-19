@@ -5,6 +5,7 @@ const { createBundleRenderer } = require('vue-server-renderer');
 const axios = require('axios');
 const setupDevServer = require('./devServer');
 const Raven = require('raven');
+const { renderTemplate, templates } = require('./templates');
 
 const AUTH_TOKEN_COOKIE = 'jamBudsAuthToken';
 
@@ -17,30 +18,12 @@ if (isProd) {
   app.use(Raven.requestHandler());
 }
 
-const template = `
-  <html>
-    <head>
-      <title>{{title}}</title>
-      <script src="https://www.youtube.com/iframe_api"></script>
-      <meta name="viewport" content="width=device-width, initial-scale=1">
-      <link rel="icon" href="/favicon16.png" type="image/png" sizes="32x32">
-      <link rel="icon" href="/favicon32.png" type="image/png" sizes="32x32">
-    </head>
-    <body>
-      <div id="app">
-        <!--vue-ssr-outlet-->
-      </div>
-      {{{spriteContent}}}
-    </body>
-  </html>
-`;
-
 function createRenderer(bundle, clientManifest) {
   return createBundleRenderer(bundle, {
     // recommended for performance
     runInNewContext: false,
     clientManifest,
-    template,
+    template: templates['index'],
   });
 }
 
@@ -57,10 +40,9 @@ async function main() {
     // The client manifests are optional, but it allows the renderer
     // to automatically infer preload/prefetch links and directly add <script>
     // tags for any async chunks used during render, avoiding waterfall requests.
-    const resp = await axios.get(
+    const clientManifest = (await axios.get(
       `${process.env.STATIC_URL}/vue-ssr-client-manifest.json`
-    );
-    const clientManifest = resp.data;
+    )).data;
 
     renderer = createRenderer(serverBundle, clientManifest);
   } else {
@@ -81,37 +63,27 @@ async function main() {
   }
 
   function renderWebpackError(req, res, buildErrors) {
-    res.send(`
-      <html>
-        <body>
-          <h3>webpack build failed :(</h3>
-          <pre>${buildErrors}</pre>
-        </body>
-      </html>
-    `);
+    res.send(renderTemplate('webpackError'));
   }
 
-  function renderAppError(req, res, err) {
+  function renderAppError(req, res, err, context) {
     if (err.url) {
       res.redirect(err.url);
-    } else if (err.code === 404) {
-      // not sure this ever gets triggered cuz there's a wildcard route
-      res.status(404).send('404 | Page Not Found');
+    } else if (
+      err.code === 404 ||
+      (err.response && err.response.status === 404)
+    ) {
+      res.status(404);
+
+      res.send(renderTemplate('404'));
     } else {
       // Render Error Page or Redirect
       res.status(500);
 
       if (!isProd) {
-        res.send(`
-          <html>
-            <body>
-              <h3>encountered an error :(</h3>
-              <pre>${err.stack}</pre>
-            </body>
-          </html>
-        `);
+        res.send(renderTemplate('500-dev', { stack: err.stack }));
       } else {
-        res.send('500 | Internal Server Error');
+        res.send(renderTemplate('500'));
       }
 
       console.error(`error during render : ${req.url}`);
@@ -126,11 +98,12 @@ async function main() {
       url: req.url,
       authToken,
       title: 'Jam Buds',
+      staticUrl: process.env.STATIC_URL,
     };
 
     renderer.renderToString(context, (err, html) => {
       if (err) {
-        return renderAppError(req, res, err);
+        return renderAppError(req, res, err, context);
       }
       res.send(html);
     });
