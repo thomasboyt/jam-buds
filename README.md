@@ -21,6 +21,14 @@ In addition, this repo also contains some development-specific configuration and
 
 ## Install
 
+Base requirements:
+
+* Node: 8.x or higher is probably fine.
+* NPM: 5.x or higher is a-ok.
+* Postgres: 10.x recommended, but 9.x is probably fine too. Currently runs in 9.6 on CI because of Travis woes anyways.
+
+Everything else is handled by NPM. Make sure your editor is configured to prefer local versions of dev depdendencies (TypeScript, ESLint, Prettier...).
+
 ### API Server
 
 ```
