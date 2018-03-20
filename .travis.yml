@@ -28,6 +28,8 @@ install:
   - npm install
   - cd ../spec
   - npm install
+  - cd ../app
+  - npm install
   - cd ..
 
 before_script:
