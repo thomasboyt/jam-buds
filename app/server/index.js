@@ -109,8 +109,6 @@ async function main() {
     });
   }
 
-  const port = process.env.PORT || 8080;
-
   app.use(cookieParser());
 
   app.use(
@@ -137,6 +135,8 @@ async function main() {
   if (isProd) {
     app.use(Raven.errorHandler());
   }
+
+  const port = process.env.PORT || 8080;
 
   app.listen(port, () => {
     console.log(`server started on port ${port}`);
