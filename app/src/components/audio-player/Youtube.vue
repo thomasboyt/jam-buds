@@ -15,15 +15,15 @@ import queryString from 'query-string';
 let ytPlayer = null;
 let ytPlayerReady = false;
 
-function setupYoutube() {
-  if (!YT.Player && !window.onYoutubeIframeAPIReady) {
-    // wait for youtube to load and try again
-    window.onYoutubeIframeAPIReady = () => {
-      setupYoutube();
-    };
-    return;
+if (process.env.VUE_ENV === 'client') {
+  if (window.YT && YT.Player) {
+    setupYoutube();
+  } else {
+    window.onYoutubeIframeAPIReady = setupYoutube;
   }
+}
 
+function setupYoutube() {
   const tub = document.createElement('div');
   document.body.appendChild(tub);
 
@@ -39,10 +39,6 @@ function setupYoutube() {
       onReady: (e) => (ytPlayerReady = true),
     },
   });
-}
-
-if (typeof window !== 'undefined') {
-  setupYoutube();
 }
 
 function getVideoId(url) {
