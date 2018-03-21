@@ -40,9 +40,7 @@ async function main() {
     // The client manifests are optional, but it allows the renderer
     // to automatically infer preload/prefetch links and directly add <script>
     // tags for any async chunks used during render, avoiding waterfall requests.
-    const clientManifest = (await axios.get(
-      `${process.env.STATIC_URL}/vue-ssr-client-manifest.json`
-    )).data;
+    const clientManifest = require('../build/vue-ssr-client-manifest.json');
 
     renderer = createRenderer(serverBundle, clientManifest);
   } else {
@@ -107,6 +105,12 @@ async function main() {
       }
       res.send(html);
     });
+  }
+
+  app.use('/assets', express.static('static/'));
+
+  if (isProd) {
+    app.use('/assets', express.static('build/'));
   }
 
   app.use(cookieParser());
