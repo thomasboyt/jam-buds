@@ -14,6 +14,7 @@ import queryString from 'query-string';
 
 let ytPlayer = null;
 let ytPlayerReady = false;
+let ytOnStateChange = () => {};
 
 if (process.env.VUE_ENV === 'client') {
   if (window.YT && YT.Player) {
@@ -37,6 +38,7 @@ function setupYoutube() {
 
     events: {
       onReady: (e) => (ytPlayerReady = true),
+      onStateChange: (e) => ytOnStateChange(e),
     },
   });
 }
@@ -72,11 +74,14 @@ export default {
 
     ytPlayer.loadVideoById(getVideoId(this.url));
 
+    // sending this up early prevents a flash of album art from appearing
+    this.$emit('buffering');
+
     if (this.isPlaying) {
       ytPlayer.playVideo();
     }
 
-    ytPlayer.addEventListener('onStateChange', this.onStateChange);
+    ytOnStateChange = this.onStateChange;
   },
 
   beforeDestroy() {
@@ -85,13 +90,20 @@ export default {
     }
 
     ytPlayer.stopVideo();
-    ytPlayer.removeEventListener('onStateChange', this.onStateChange);
+
+    ytOnStateChange = () => {};
+
+    this.$emit('buffered'); // just clear the buffering spinner state
   },
 
   methods: {
     onStateChange(evt) {
       if (evt.data === YT.PlayerState.ENDED) {
         this.$emit('ended');
+      } else if (evt.data === YT.PlayerState.BUFFERING || evt.data === -1) {
+        this.$emit('buffering');
+      } else {
+        this.$emit('buffered');
       }
     },
   },
