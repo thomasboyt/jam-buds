@@ -2,7 +2,7 @@
   <div :class="['playlist-entry', {'is-playing': isPlaying}]">
 
     <a class="playlist-entry--main"
-      :href="entry.sourceUrl"
+      :href="sourceUrl"
       target="_blank"
       rel="noopener noreferrer"
       @click="handleClick">
