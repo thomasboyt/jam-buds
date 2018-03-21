@@ -107,10 +107,21 @@ async function main() {
     });
   }
 
-  app.use('/assets', express.static('static/'));
-
   if (isProd) {
-    app.use('/assets', express.static('build/'));
+    app.use('/assets', express.static('build/'), {
+      // this is pretty arbitrary because these are all sha-stamped and should never be updated
+      // cloudfront doesn't support Cache-Control: immutable tho...
+      maxAge: '1 year',
+    });
+
+    app.use('/assets', express.static('static/'), {
+      // TODO: so, currently, these assets aren't sha-stamped, and I don't have a way to invalidate
+      // cloudfront in my deploy process
+      // once invalidation is added this should have a maxAge block
+      // https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Invalidation.html
+    });
+  } else {
+    app.use('/assets', express.static('static/'));
   }
 
   app.use(cookieParser());
