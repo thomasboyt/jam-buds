@@ -19,7 +19,7 @@ if (process.env.VUE_ENV === 'client') {
   if (window.YT && YT.Player) {
     setupYoutube();
   } else {
-    window.onYoutubeIframeAPIReady = setupYoutube;
+    window.onYouTubeIframeAPIReady = setupYoutube;
   }
 }
 
