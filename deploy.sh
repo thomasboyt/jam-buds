@@ -1,7 +1,7 @@
 git subtree push --prefix api heroku-api master
-
-# so, the app server loads the client manifest from the static site, so you need to either deploy
-# the static site first, or restart the server after deploying
-# not sure which is better??
-(cd app && npm run deploy-static)
 git subtree push --prefix app heroku-app master
+
+# if you need a force push it looks like this
+# git push heroku-api `git subtree split --prefix api master`:master --force
+# or
+# git push heroku-app `git subtree split --prefix app master`:master --force

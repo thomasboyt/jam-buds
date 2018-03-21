@@ -12,8 +12,8 @@ Jam Buds is split into two self-contained "apps," intended for separate deployme
 
 * The *API app* is the API server that powers the backend.
 * The *App app* (I know, I know) is the browser app, which is itself two pieces:
-    * The Vue browser app, which is deployed to a static hosting site/CDN
-    * A server that renders the Vue app. This is the web app the user actually hits directly (e.g. it's what's located at `jambuds.club`).
+    * The Vue browser app
+    * A server that renders the Vue app. This is the web app the user actually hits directly (e.g. it's what's located at `jambuds.club`). It also hosts static assets for the client, which should be behind a CDN
 
 These two apps are deployed in isolation, and don't currently share any dependencies. This might change if I get lerna or something set up.
 
@@ -127,31 +127,16 @@ NODE_ENV=production /node_modules/.bin/knex migrate:latest
 heroku config:set NPM_CONFIG_PRODUCTION=true
 heroku config:set SKIP_DOTENV=true
 heroku config:set API_URL=https://myapp-api.herokuapps.com
-heroku config:set STATIC_URL=https://myapp.surge.sh
+heroku config:set STATIC_URL=https://xxx.cloudfront.net
 heroku config:set SENTRY_DSN_APP=https://foo:bar@sentry.io/123
+heroku config:set SENTRY_PUBLIC_DSN_APP=https://foo@sentry.io/123
 ```
 
-### Configure Static Files
+### Configure CDN
 
-Copy `_env.production` to `.env.production`. The variables in this file are used _when building_ your Webpack client bundle locally.
+TODO
 
-#### Configure Firebase
-
-Install Firebase's CLI tools if you don't have it:
-
-```
-npm install -g firebase-tools
-```
-
-Create a new Firebase hosting project. Then add a `.firebaserc`:
-
-```
-{
-  "projects": {
-    "default": "firebase-project-id"
-  }
-}
-```
+tl;dr - cloudfront in front of $APP_URL/assets, configure to use HTTPS and gzip assets, set STATIC_URL=https://xxx.cloudfront.net on app server
 
 ### Deploy
 
