@@ -125,7 +125,6 @@ NODE_ENV=production /node_modules/.bin/knex migrate:latest
 
 ```
 heroku config:set NPM_CONFIG_PRODUCTION=true
-heroku config:set SKIP_DOTENV=true
 heroku config:set API_URL=https://myapp-api.herokuapps.com
 heroku config:set STATIC_URL=https://xxx.cloudfront.net
 heroku config:set SENTRY_DSN_APP=https://foo:bar@sentry.io/123
