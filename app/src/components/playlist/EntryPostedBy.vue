@@ -8,8 +8,8 @@
 </template>
 
 <script>
-import _ from 'lodash';
-import { distanceInWords } from 'date-fns';
+import _get from 'lodash/get';
+import distanceInWords from 'date-fns/distance_in_words';
 
 export default {
   props: ['entry'],
@@ -21,7 +21,7 @@ export default {
     },
 
     displayName() {
-      const currentUserId = _.get(this.$store.state.currentUser, 'id');
+      const currentUserId = _get(this.$store.state.currentUser, 'id');
 
       if (currentUserId === this.entry.user.id) {
         return 'You';

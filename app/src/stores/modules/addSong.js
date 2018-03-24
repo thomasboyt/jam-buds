@@ -1,5 +1,6 @@
 import Vue from 'vue';
-import _ from 'lodash';
+import _get from 'lodash/get';
+import _pick from 'lodash/pick';
 import apiRequest from '../../apiRequest';
 import { getPlaybackSourceName } from '../../playbackSources';
 
@@ -54,9 +55,9 @@ function getSubmitOptions(opts) {
     source,
     artist: opts.manualArtist,
     title: opts.manualTitle,
-    spotifyId: _.get(opts.selectedSong, 'spotifyId'),
+    spotifyId: _get(opts.selectedSong, 'spotifyId'),
     ...sourceDetails,
-    ..._.pick(opts, ['manualEntry', 'tweet', 'note']),
+    ..._pick(opts, ['manualEntry', 'tweet', 'note']),
   };
 }
 
@@ -202,7 +203,7 @@ const addSong = {
 
       // Add the entry to the top of the user's playlist if they're on that page
       if (
-        _.get(context.rootState.profile.user, 'name') === entry.user.twitterName
+        _get(context.rootState.profile.user, 'name') === entry.user.twitterName
       ) {
         context.commit(
           'addPlaylistEntryToHead',

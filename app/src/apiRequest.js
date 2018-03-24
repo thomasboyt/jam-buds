@@ -1,5 +1,5 @@
 import axios from 'axios';
-import _ from 'lodash';
+import _get from 'lodash/get';
 
 /**
  * Currently be passed the store context so it can get authToken!
@@ -9,7 +9,7 @@ import _ from 'lodash';
  * https://github.com/vuejs/vue-ssr-docs/blob/master/en/structure.md#avoid-stateful-singletons
  */
 export default async function apiRequest(context, opts) {
-  const authToken = _.get(context, 'rootState.auth.authToken');
+  const authToken = _get(context, 'rootState.auth.authToken');
 
   // runtime type checking here because I am a Known Idiot who is definitely gonna forget to pass
   // context as the first arg
