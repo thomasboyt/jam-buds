@@ -1,17 +1,22 @@
-import Vue from 'vue';
-import createApp from './createApp';
-
-import Cookies from 'js-cookie';
 import Raven from 'raven-js';
 import RavenVue from 'raven-js/plugins/vue';
-
-const AUTH_TOKEN_COOKIE = 'jamBudsAuthToken';
 
 if (process.env.SENTRY_PUBLIC_DSN_APP) {
   Raven.config(process.env.SENTRY_PUBLIC_DSN_APP)
     .addPlugin(RavenVue, Vue)
     .install();
 }
+
+import Vue from 'vue';
+import createApp from './createApp';
+
+import ProgressBar from './components/ProgressBar.vue';
+const bar = new Vue(ProgressBar).$mount();
+Vue.prototype.$bar = bar; // inject into Vue instance so components can update progress
+document.body.appendChild(bar.$el);
+
+import Cookies from 'js-cookie';
+const AUTH_TOKEN_COOKIE = 'jamBudsAuthToken';
 
 Vue.mixin({
   beforeRouteUpdate(to, from, next) {
@@ -64,11 +69,10 @@ router.onReady(() => {
       return next();
     }
 
-    // TODO: Loading spinner starts and stops here apparently
-    // bar.start()
+    bar.start();
     Promise.all(asyncDataHooks.map((hook) => hook({ store, route: to })))
       .then(() => {
-        // bar.finish()
+        bar.finish();
         next();
       })
       .catch(next);
