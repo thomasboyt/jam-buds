@@ -61,7 +61,8 @@ async function main() {
   }
 
   function renderWebpackError(req, res, buildErrors) {
-    res.send(renderTemplate('webpackError'));
+    res.status(500);
+    res.send(renderTemplate('webpack-error', { buildErrors }));
   }
 
   function renderAppError(req, res, err, context) {
