@@ -26,7 +26,7 @@
         </router-link>
       </li>
       <li>
-        <router-link to="find-friends">
+        <router-link to="/find-friends">
           find twitter friends on jam buds!
         </router-link>
       </li>
