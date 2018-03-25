@@ -48,7 +48,7 @@ export default {
       return this.$store.getters.playlistEntries('profileLikes');
     },
     ...mapState({
-      name: (state) => state.profile.user.twitterName,
+      name: (state) => state.profile.user.name,
       entriesExhausted: (state) =>
         state.playlists.profileLikes.entriesExhausted,
     }),

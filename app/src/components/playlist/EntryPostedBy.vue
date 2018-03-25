@@ -1,6 +1,6 @@
 <template>
   <div class="posted-by">
-    <router-link :to="`/users/${entry.user.twitterName}`">
+    <router-link :to="`/users/${entry.user.name}`">
       {{ displayName }}
     </router-link>
     posted ({{ timestamp }} ago)
@@ -26,7 +26,7 @@ export default {
       if (currentUserId === this.entry.user.id) {
         return 'You';
       } else {
-        return `@${this.entry.user.twitterName}`;
+        return `@${this.entry.user.name}`;
       }
     },
   },

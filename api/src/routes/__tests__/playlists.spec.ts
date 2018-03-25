@@ -30,7 +30,7 @@ describe('routes/playlists', () => {
       }
 
       const firstPageReq = request(app)
-        .get(`/api/playlists/${user.twitterName}`)
+        .get(`/api/playlists/${user.name}`)
         .set('X-Auth-Token', user.authToken);
 
       // TODO: Assert that these are the newest 20 items
@@ -41,7 +41,7 @@ describe('routes/playlists', () => {
       const previousId = firstPageRes.body.tracks.slice(-1)[0].id;
 
       const secondPageReq = request(app)
-        .get(`/api/playlists/${user.twitterName}`)
+        .get(`/api/playlists/${user.name}`)
         .set('X-Auth-Token', user.authToken)
         .query({
           previousId,

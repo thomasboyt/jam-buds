@@ -41,12 +41,12 @@ export interface Feed {
 
 export interface PublicUser {
   id: number;
-  twitterName: string;
+  name: string;
 }
 
 export interface UserProfile {
   id: number;
-  twitterName: string;
+  name: string;
   colorScheme: ColorScheme;
 }
 

@@ -13,15 +13,9 @@ import { getFollowingForUserId } from './following';
 export interface User {
   id: number;
   authToken: string;
-  twitterId: string;
+  name: string;
   twitterName: string;
-  twitterToken: string;
-  twitterSecret: string;
-}
-
-interface CreateUserOptions {
   twitterId: string;
-  twitterName: string;
   twitterToken: string;
   twitterSecret: string;
 }
@@ -29,11 +23,24 @@ interface CreateUserOptions {
 export function serializePublicUser(user: User): PublicUser {
   return {
     id: user.id,
-    twitterName: user.twitterName,
+    name: user.name,
   };
 }
 
-export async function createUser(opts: CreateUserOptions): Promise<User> {
+interface CreateUserOptions {
+  name: string;
+}
+
+interface CreateUserFromTwitterOptions extends CreateUserOptions {
+  twitterId: string;
+  twitterName: string;
+  twitterToken: string;
+  twitterSecret: string;
+}
+
+export async function createUserFromTwitter(
+  opts: CreateUserFromTwitterOptions
+): Promise<User> {
   const authToken = await genAuthToken();
 
   const insert = Object.assign({ authToken }, opts);
@@ -50,7 +57,7 @@ export async function createUser(opts: CreateUserOptions): Promise<User> {
 }
 
 interface UpdateTwitterCredentialsOptions {
-  twitterName: string;
+  twitterId: string;
   twitterToken: string;
   twitterSecret: string;
 }
@@ -58,10 +65,10 @@ interface UpdateTwitterCredentialsOptions {
 export async function updateTwitterCredentials(
   opts: UpdateTwitterCredentialsOptions
 ) {
-  const { twitterName, twitterToken, twitterSecret } = opts;
+  const { twitterId, twitterToken, twitterSecret } = opts;
 
   return db!('users')
-    .where({ twitter_name: twitterName })
+    .where({ twitter_id: twitterId })
     .update(decamelizeKeys({ twitterSecret, twitterToken }));
 }
 
@@ -89,8 +96,8 @@ export async function getUserByTwitterId(id: string): Promise<User | null> {
   return await getUserWhere({ twitter_id: id });
 }
 
-export async function getUserByTwitterName(name: string): Promise<User | null> {
-  return await getUserWhere({ twitter_name: name });
+export async function getUserByName(name: string): Promise<User | null> {
+  return await getUserWhere({ name });
 }
 
 export async function getUserByUserId(id: number): Promise<User | null> {
@@ -144,7 +151,7 @@ export async function getUserProfileForUser(user: User): Promise<UserProfile> {
 
   return {
     id: user.id,
-    twitterName: user.twitterName,
+    name: user.name,
     colorScheme,
   };
 }
@@ -176,7 +183,7 @@ export async function serializeCurrentUser(user: User): Promise<CurrentUser> {
 
   return {
     id: user.id,
-    name: user.twitterName,
+    name: user.name,
     following: serializedUsers,
     colorScheme,
   };

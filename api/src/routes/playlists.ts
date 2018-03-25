@@ -3,7 +3,7 @@ import wrapAsyncRoute from '../util/wrapAsyncRoute';
 
 import {
   User,
-  getUserByTwitterName,
+  getUserByName,
   serializePublicUser,
   getUserProfileForUser,
 } from '../models/user';
@@ -159,7 +159,7 @@ export default function registerPlaylistEndpoints(router: Router) {
     '/playlists/:userName',
     wrapAsyncRoute(async (req, res) => {
       const userName = req.params.userName;
-      const user = await getUserByTwitterName(userName);
+      const user = await getUserByName(userName);
       const currentUser = await getUserFromRequest(req);
 
       if (!user) {
@@ -192,7 +192,7 @@ export default function registerPlaylistEndpoints(router: Router) {
     '/playlists/:userName/liked',
     wrapAsyncRoute(async (req, res) => {
       const userName = req.params.userName;
-      const user = await getUserByTwitterName(userName);
+      const user = await getUserByName(userName);
       const currentUser = await getUserFromRequest(req);
 
       if (!user) {

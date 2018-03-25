@@ -39,10 +39,10 @@ export default {
 
   computed: {
     ...mapState({
-      name: (state) => state.profile.user.twitterName,
+      name: (state) => state.profile.user.name,
       showFollowToggle: (state) =>
         state.auth.authenticated &&
-        state.profile.user.twitterName !== state.currentUser.name,
+        state.profile.user.name !== state.currentUser.name,
     }),
   },
 };

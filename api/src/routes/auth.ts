@@ -3,7 +3,7 @@ import wrapAsyncRoute from '../util/wrapAsyncRoute';
 import { AUTH_TOKEN_COOKIE } from '../constants';
 import { OAuth } from 'oauth';
 import {
-  createUser,
+  createUserFromTwitter,
   getUserByTwitterId,
   updateTwitterCredentials,
 } from '../models/user';
@@ -82,7 +82,8 @@ export default function registerTwitterAuthEndpoints(router: Router) {
             let user = await getUserByTwitterId(twitterId);
 
             if (!user) {
-              user = await createUser({
+              user = await createUserFromTwitter({
+                name: twitterName,
                 twitterId,
                 twitterName,
                 twitterToken: token,
@@ -94,7 +95,7 @@ export default function registerTwitterAuthEndpoints(router: Router) {
                 !(user.twitterToken === token && user.twitterSecret === secret)
               ) {
                 await updateTwitterCredentials({
-                  twitterName,
+                  twitterId,
                   twitterToken: token,
                   twitterSecret: secret,
                 });

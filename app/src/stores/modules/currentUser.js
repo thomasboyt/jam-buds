@@ -14,9 +14,7 @@ const currentUser = {
       state.following = state.following.concat([user]);
     },
     removeFollowedUser(state, name) {
-      state.following = state.following.filter(
-        (user) => user.twitterName !== name
-      );
+      state.following = state.following.filter((user) => user.name !== name);
     },
     setFriendSuggestions(state, suggestions) {
       Vue.set(state, 'friendSuggestions', suggestions);
@@ -57,7 +55,7 @@ const currentUser = {
 
   getters: {
     isFollowing: (state) => (name) => {
-      return state.following.some((user) => user.twitterName === name);
+      return state.following.some((user) => user.name === name);
     },
   },
 };

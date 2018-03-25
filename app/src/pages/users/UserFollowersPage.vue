@@ -29,7 +29,7 @@ export default {
 
   computed: {
     ...mapState({
-      name: (state) => state.profile.user.twitterName,
+      name: (state) => state.profile.user.name,
       followers: (state) => state.profile.followers,
     }),
     title() {

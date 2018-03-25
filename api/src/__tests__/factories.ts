@@ -1,4 +1,4 @@
-import { createUser, User } from '../models/user';
+import { createUserFromTwitter, User } from '../models/user';
 import { createSongFromManualEntry, Song } from '../models/song';
 import { addSongToPlaylist } from '../models/playlist';
 import { PlaylistEntry, PlaybackSource } from '../resources';
@@ -12,6 +12,7 @@ export function uniqueString() {
 
 export async function userFactory(opts: Object = {}): Promise<User> {
   const defaults = {
+    name: uniqueString(),
     twitterName: uniqueString(),
     twitterId: uniqueString(),
     twitterToken: uniqueString(),
@@ -20,7 +21,7 @@ export async function userFactory(opts: Object = {}): Promise<User> {
 
   const finalOpts = { ...defaults, ...opts };
 
-  const user = await createUser(finalOpts);
+  const user = await createUserFromTwitter(finalOpts);
   return user;
 }
 

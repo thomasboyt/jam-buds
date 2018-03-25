@@ -3,7 +3,7 @@ import * as _ from 'lodash';
 
 import {
   User,
-  getUserByTwitterName,
+  getUserByName,
   serializePublicUser,
   getUnfollowedUsersByTwitterIds,
   getColorSchemeForUserId,
@@ -68,7 +68,7 @@ export default function registerUserEndpoints(router: Router) {
         return;
       }
 
-      const followingUser = await getUserByTwitterName(followingName);
+      const followingUser = await getUserByName(followingName);
 
       if (!followingUser) {
         res.status(400).json({
@@ -94,7 +94,7 @@ export default function registerUserEndpoints(router: Router) {
       const user: User = res.locals.user;
       const followingName: string = req.params.followingName;
 
-      const followingUser = await getUserByTwitterName(followingName);
+      const followingUser = await getUserByName(followingName);
 
       if (!followingUser) {
         res.status(400).json({
@@ -138,7 +138,7 @@ export default function registerUserEndpoints(router: Router) {
     wrapAsyncRoute(async (req, res) => {
       const userName: string = req.params.userName;
 
-      const user = await getUserByTwitterName(userName);
+      const user = await getUserByName(userName);
 
       if (!user) {
         res.status(400).json({
@@ -166,7 +166,7 @@ export default function registerUserEndpoints(router: Router) {
     wrapAsyncRoute(async (req, res) => {
       const userName: string = req.params.userName;
 
-      const user = await getUserByTwitterName(userName);
+      const user = await getUserByName(userName);
 
       if (!user) {
         res.status(400).json({
