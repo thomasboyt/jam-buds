@@ -102,8 +102,8 @@ export default function registerTwitterAuthEndpoints(router: Router) {
               }
             }
 
-            -res.cookie(AUTH_TOKEN_COOKIE, user.authToken);
-            -res.redirect(process.env.APP_URL!);
+            res.cookie(AUTH_TOKEN_COOKIE, user.authToken);
+            res.redirect(process.env.APP_URL!);
           }
         );
       }
