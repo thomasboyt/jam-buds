@@ -14,13 +14,13 @@ const appUrl = (path: string) => `${process.env.APP_URL}${path}`;
 export const getPage = async (url: string) => {
   const page = await browser.newPage();
 
-  page.on('console', msg => console.log('PAGE LOG:', msg.text()));
+  page.on('console', (msg) => console.log('PAGE LOG:', msg.text()));
   page.on('pageerror', (err) => {
-    console.log('Error on page')
+    console.log('Error on page');
     console.log(err);
   });
 
   await page.goto(appUrl(url));
 
   return page;
-}
+};
