@@ -7,6 +7,8 @@ import createApp from '../../createApp';
 import { db } from '../../db';
 import { userFactory } from '../../__tests__/factories';
 import { getSignInTokenByEmail } from '../../models/signInToken';
+import { AUTH_TOKEN_COOKIE } from '../../constants';
+import { getUserByEmail } from '../../models/user';
 
 const app = createApp();
 
@@ -72,6 +74,34 @@ describe('routes/auth', () => {
 
         expect(res.status).toBe(400);
       });
+    });
+  });
+
+  describe.only('GET /sign-in', () => {
+    it('signs in with a valid token', async () => {
+      let user = await userFactory();
+
+      let res = await request(app)
+        .post('/auth/sign-in-token')
+        .send({
+          email: user.email,
+        });
+
+      expect(res.status).toBe(200);
+
+      let token = await getSignInTokenByEmail(user.email!);
+
+      res = await request(app)
+        .get('/auth/sign-in')
+        .query({ t: token });
+      expect(res.status).toBe(302);
+
+      user = (await getUserByEmail(user.email!))!;
+      const cookieRe = new RegExp(`${AUTH_TOKEN_COOKIE}=${user.authToken}`);
+      expect(res.header['set-cookie']).toMatch(cookieRe);
+
+      token = await getSignInTokenByEmail(user.email!);
+      expect(token).toNotExist();
     });
   });
 });

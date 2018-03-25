@@ -35,3 +35,24 @@ export async function getSignInTokenByEmail(
     return null;
   }
 }
+
+export async function getEmailFromSignInToken(
+  token: string
+): Promise<string | null> {
+  const [row] = await db!
+    .select('*')
+    .from('sign_in_tokens')
+    .where({ token });
+
+  if (row) {
+    return row.email;
+  } else {
+    return null;
+  }
+}
+
+export async function deleteSignInToken(token: string): Promise<void> {
+  await db!('sign_in_tokens')
+    .where({ token })
+    .delete();
+}

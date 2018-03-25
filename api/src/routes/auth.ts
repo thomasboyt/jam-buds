@@ -9,7 +9,11 @@ import {
   getUserByEmail,
   updateTwitterCredentials,
 } from '../models/user';
-import { createSignInToken } from '../models/signInToken';
+import {
+  createSignInToken,
+  getEmailFromSignInToken,
+  deleteSignInToken,
+} from '../models/signInToken';
 import { isAuthenticated } from '../auth';
 
 /*
@@ -140,6 +144,40 @@ export default function registerTwitterAuthEndpoints(router: Router) {
       }
 
       res.status(200).json({ success: true });
+    })
+  );
+
+  router.get(
+    '/sign-in',
+    wrapAsyncRoute(async (req, res) => {
+      const token: string | undefined = req.query.t;
+
+      // TODO: make better error pages for these since they're gonna be user-facing...
+
+      if (!token) {
+        res.status(400).send(`Missing token param`);
+        return;
+      }
+
+      const email = await getEmailFromSignInToken(token);
+
+      if (!email) {
+        res.status(400).send(`Invalid token param`);
+        return;
+      }
+
+      const user = await getUserByEmail(email);
+
+      if (!user) {
+        // this is a weird one, but I guess could happen if the user got deleted
+        await deleteSignInToken(token);
+        res.status(400).send(`no user found for email`);
+        return;
+      }
+
+      await deleteSignInToken(token);
+      res.cookie(AUTH_TOKEN_COOKIE, user.authToken);
+      res.redirect(process.env.APP_URL!);
     })
   );
 
