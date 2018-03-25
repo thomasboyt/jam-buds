@@ -2,9 +2,13 @@
 
 import * as expect from 'expect';
 
-import {userFactory} from '../../__tests__/factories';
-import {User} from '../../models/user';
-import {followUser, getFollowersForUserId, getFollowingForUserId} from '../../models/following';
+import { userFactory } from '../../__tests__/factories';
+import { User } from '../../models/user';
+import {
+  followUser,
+  getFollowersForUserId,
+  getFollowingForUserId,
+} from '../../models/following';
 
 describe('models/following', () => {
   describe('querying', () => {
@@ -36,6 +40,5 @@ describe('models/following', () => {
         expect(followers[0].id).toBe(dan.id);
       });
     });
-
   });
 });

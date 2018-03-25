@@ -1,4 +1,3 @@
-
 exports.up = function(knex, Promise) {
   return knex.raw('ALTER TABLE songs ALTER COLUMN album DROP NOT NULL;');
 };

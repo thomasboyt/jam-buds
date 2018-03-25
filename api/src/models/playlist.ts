@@ -1,8 +1,8 @@
-import {db} from '../db';
-import {camelizeKeys, decamelizeKeys} from 'humps';
-import {User, serializePublicUser} from './user';
-import {PlaylistEntry, Song, PlaybackSource} from '../resources';
-import {ENTRY_PAGE_LIMIT} from '../constants';
+import { db } from '../db';
+import { camelizeKeys, decamelizeKeys } from 'humps';
+import { User, serializePublicUser } from './user';
+import { PlaylistEntry, Song, PlaybackSource } from '../resources';
+import { ENTRY_PAGE_LIMIT } from '../constants';
 
 export interface CreateEntryParams {
   userId: number;
@@ -22,8 +22,13 @@ export interface CreateEntryParams {
   soundcloudUrl?: string;
 }
 
-export async function addSongToPlaylist(values: CreateEntryParams): Promise<PlaylistEntry> {
-  const query = db!.insert(decamelizeKeys(values)).into('playlist_entries').returning('id');
+export async function addSongToPlaylist(
+  values: CreateEntryParams
+): Promise<PlaylistEntry> {
+  const query = db!
+    .insert(decamelizeKeys(values))
+    .into('playlist_entries')
+    .returning('id');
 
   const [id] = await (query as any);
   const entry = await getPlaylistEntryById(id);
@@ -42,7 +47,7 @@ function serializeSong(song: any): Song {
 }
 
 function serializePlaylistEntry(row: any): PlaylistEntry {
-  const {song, entry} = row;
+  const { song, entry } = row;
   const user = serializePublicUser(camelizeKeys(row.user) as User);
 
   return {
@@ -84,13 +89,16 @@ function getBasePlaylistQuery(opts: QueryOptions) {
   ];
 
   if (opts.currentUserId !== undefined) {
-    select.push(db!.raw(
-      'EXISTS(SELECT 1 FROM likes WHERE user_id=? AND entry_id=playlist_entries.id) AS is_liked',
-      [opts.currentUserId]
-    ));
+    select.push(
+      db!.raw(
+        'EXISTS(SELECT 1 FROM likes WHERE user_id=? AND entry_id=playlist_entries.id) AS is_liked',
+        [opts.currentUserId]
+      )
+    );
   }
 
-  let query = db!.select(select)
+  let query = db!
+    .select(select)
     .from('playlist_entries')
     .join('songs', {
       'songs.id': 'playlist_entries.song_id',
@@ -107,9 +115,12 @@ function getBasePlaylistQuery(opts: QueryOptions) {
   return query;
 }
 
-export async function getPlaylistByUserId(id: number, opts: QueryOptions = {}): Promise<PlaylistEntry[]> {
+export async function getPlaylistByUserId(
+  id: number,
+  opts: QueryOptions = {}
+): Promise<PlaylistEntry[]> {
   const query = getBasePlaylistQuery(opts)
-    .where({user_id: id})
+    .where({ user_id: id })
     .orderBy('playlist_entries.created_at', 'desc');
 
   const rows = await (query as any);
@@ -117,7 +128,10 @@ export async function getPlaylistByUserId(id: number, opts: QueryOptions = {}): 
   return rows.map((row: any) => serializePlaylistEntry(row));
 }
 
-export async function getFeedByUserId(id: number, opts: QueryOptions = {}): Promise<PlaylistEntry[]> {
+export async function getFeedByUserId(
+  id: number,
+  opts: QueryOptions = {}
+): Promise<PlaylistEntry[]> {
   opts.currentUserId = id;
 
   const query = getBasePlaylistQuery(opts)
@@ -125,8 +139,8 @@ export async function getFeedByUserId(id: number, opts: QueryOptions = {}): Prom
       this.whereIn('user_id', function() {
         this.select('following_id')
           .from('following')
-          .where({user_id: id});
-      }).orWhere({user_id: id})
+          .where({ user_id: id });
+      }).orWhere({ user_id: id });
     })
     .orderBy('playlist_entries.created_at', 'desc');
 
@@ -135,13 +149,14 @@ export async function getFeedByUserId(id: number, opts: QueryOptions = {}): Prom
   return rows.map((row: any) => serializePlaylistEntry(row));
 }
 
-export async function getLikedEntriesByUserId(id: number, opts: QueryOptions = {}): Promise<PlaylistEntry[]> {
+export async function getLikedEntriesByUserId(
+  id: number,
+  opts: QueryOptions = {}
+): Promise<PlaylistEntry[]> {
   const query = getBasePlaylistQuery(opts)
-    .select([
-      db!.raw('to_json(likes.*) as like'),
-    ])
+    .select([db!.raw('to_json(likes.*) as like')])
     .join('likes', {
-      'likes.entry_id': 'playlist_entries.id'
+      'likes.entry_id': 'playlist_entries.id',
     })
     .orderBy('likes.created_at', 'desc');
 
@@ -150,9 +165,11 @@ export async function getLikedEntriesByUserId(id: number, opts: QueryOptions = {
   return rows.map((row: any) => serializePlaylistEntry(row));
 }
 
-export async function getPlaylistEntryById(id: number, opts: QueryOptions = {}): Promise<PlaylistEntry | null> {
-  const query = getBasePlaylistQuery(opts)
-    .where({'playlist_entries.id': id});
+export async function getPlaylistEntryById(
+  id: number,
+  opts: QueryOptions = {}
+): Promise<PlaylistEntry | null> {
+  const query = getBasePlaylistQuery(opts).where({ 'playlist_entries.id': id });
 
   const rows = await (query as any);
 
@@ -163,7 +180,10 @@ export async function getPlaylistEntryById(id: number, opts: QueryOptions = {}):
   return serializePlaylistEntry(rows[0]);
 }
 
-export async function likePlaylistEntry(userId: number, entryId: number): Promise<void> {
+export async function likePlaylistEntry(
+  userId: number,
+  entryId: number
+): Promise<void> {
   const query = db!('likes').insert({
     entry_id: entryId,
     user_id: userId,
@@ -172,17 +192,24 @@ export async function likePlaylistEntry(userId: number, entryId: number): Promis
   await (query as any);
 }
 
-export async function unlikePlaylistEntry(userId: number, entryId: number): Promise<void> {
-  const query = db!('likes').where({
-    entry_id: entryId,
-    user_id: userId,
-  }).delete();
+export async function unlikePlaylistEntry(
+  userId: number,
+  entryId: number
+): Promise<void> {
+  const query = db!('likes')
+    .where({
+      entry_id: entryId,
+      user_id: userId,
+    })
+    .delete();
 
   await (query as any);
 }
 
 export async function deletePlaylistEntryById(id: number): Promise<void> {
-  const query = db!('playlist_entries').where({id}).delete();
+  const query = db!('playlist_entries')
+    .where({ id })
+    .delete();
 
   await (query as any);
 }

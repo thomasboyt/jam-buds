@@ -11,7 +11,9 @@ interface SoundcloudTrack {
 const key = '3ae6bc27002808463649550a768cca8f';
 
 export async function getDetailsFromUrl(url: string): Promise<SoundcloudTrack> {
-  const apiUrl = `https://api.soundcloud.com/resolve?url=${qs.escape(url)}&consumer_key=${key}`;
+  const apiUrl = `https://api.soundcloud.com/resolve?url=${qs.escape(
+    url
+  )}&consumer_key=${key}`;
 
   const resp = await axios.get(apiUrl);
   const body = resp.data;

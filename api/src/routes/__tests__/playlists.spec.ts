@@ -4,8 +4,8 @@ import * as expect from 'expect';
 import * as request from 'supertest';
 import * as Express from 'express';
 
-import {userFactory, entryFactory} from '../../__tests__/factories';
-import {getPlaylistByUserId, addSongToPlaylist} from '../../models/playlist';
+import { userFactory, entryFactory } from '../../__tests__/factories';
+import { getPlaylistByUserId, addSongToPlaylist } from '../../models/playlist';
 
 import createApp from '../../createApp';
 
@@ -14,20 +14,19 @@ const app = createApp();
 function expectStatus(res: request.Response, status: number) {
   try {
     expect(res.status).toBe(status);
-  } catch(err) {
+  } catch (err) {
     console.log(res.text);
     throw err;
   }
 }
 
 describe('routes/playlists', () => {
-
   describe('GET /playlists/:name', () => {
     it('supports pagination', async () => {
       const user = await userFactory();
 
       for (let i = 0; i < 100; i += 1) {
-        await entryFactory({userId: user.id});
+        await entryFactory({ userId: user.id });
       }
 
       const firstPageReq = request(app)
@@ -105,7 +104,7 @@ describe('routes/playlists', () => {
       expect(afterPlaylist.length).toBe(0);
     });
 
-    it('does not allow you to delete another user\'s song', async () => {
+    it("does not allow you to delete another user's song", async () => {
       const user = await userFactory();
       const entry = await entryFactory();
 

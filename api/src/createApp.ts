@@ -24,9 +24,11 @@ export default function createApp() {
 
   app.use(bodyParser.json());
 
-  app.use(cors({
-    origin: process.env.APP_URL,
-  }));
+  app.use(
+    cors({
+      origin: process.env.APP_URL,
+    })
+  );
 
   const apiRouter = express.Router();
 

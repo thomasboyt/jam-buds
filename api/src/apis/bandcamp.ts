@@ -18,18 +18,24 @@ interface TrackMicrodata {
 
 function getTrackFromMicrodata(body: any): TrackMicrodata {
   const data = microdata.toJson(body);
-  const recording = data.items.find((item: any) => item.type[0] === 'http://schema.org/MusicRecording').properties;
+  const recording = data.items.find(
+    (item: any) => item.type[0] === 'http://schema.org/MusicRecording'
+  ).properties;
 
   const title = recording.name[0].trim();
   const artist = recording.byArtist[0].trim();
   const album = recording.inAlbum[0].properties.name[0].trim();
 
   return {
-    title, artist, album
+    title,
+    artist,
+    album,
   };
 }
 
-export async function getBandcampInformation(url: string): Promise<BandcampTrack> {
+export async function getBandcampInformation(
+  url: string
+): Promise<BandcampTrack> {
   const resp = await axios.get(url);
 
   const body = resp.data;
@@ -45,7 +51,7 @@ export async function getBandcampInformation(url: string): Promise<BandcampTrack
   const embedUrl = $('meta[property="og:video"]').attr('content');
   const trackId = embedUrl.match(/track=(\d+)/)![1];
 
-  const {title, album, artist} = getTrackFromMicrodata(body);
+  const { title, album, artist } = getTrackFromMicrodata(body);
   const spotifyQuery = `artist:${artist} track:${title} album:${album}`;
 
   return {
@@ -57,11 +63,14 @@ export async function getBandcampInformation(url: string): Promise<BandcampTrack
   };
 }
 
-export async function getBandcampStreamingUrl(trackId: string): Promise<string> {
+export async function getBandcampStreamingUrl(
+  trackId: string
+): Promise<string> {
   // this is a public key that fell off the back of a truck so it's cool that it's hardcoded, don't worry about it~
   const resp = await axios.get(
     `http://api.bandcamp.com/api/track/1/info?key=anamannthrotiuppburdreinbreidr&track_id=${trackId}
-  `);
+  `
+  );
 
   return resp.data.streaming_url;
 }

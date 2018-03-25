@@ -1,9 +1,9 @@
-
 exports.up = function(knex, Promise) {
   return knex.schema.createTable('color_schemes', (table) => {
     table.increments();
 
-    table.integer('user_id')
+    table
+      .integer('user_id')
       .references('users.id')
       .notNullable();
 

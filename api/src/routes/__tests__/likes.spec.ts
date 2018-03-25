@@ -6,7 +6,11 @@ import * as Express from 'express';
 
 import createApp from '../../createApp';
 
-import {userFactory, songFactory, uniqueString} from '../../__tests__/factories';
+import {
+  userFactory,
+  songFactory,
+  uniqueString,
+} from '../../__tests__/factories';
 
 import {
   addSongToPlaylist,
@@ -39,7 +43,7 @@ describe('routes/likes', () => {
 
       try {
         expect(res.status).toBe(200);
-      } catch(err) {
+      } catch (err) {
         console.log(res.text);
         throw err;
       }

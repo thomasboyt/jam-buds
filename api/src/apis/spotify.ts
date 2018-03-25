@@ -11,8 +11,8 @@ async function getToken() {
   try {
     const data = await spotifyApi.clientCredentialsGrant();
     spotifyApi.setAccessToken(data.body['access_token']);
-  } catch(err) {
-    console.error(`*** Failed to acquire Spotify token:`)
+  } catch (err) {
+    console.error(`*** Failed to acquire Spotify token:`);
     throw err;
     /// TODO: RETRY WITH BACKOFF!!
   }

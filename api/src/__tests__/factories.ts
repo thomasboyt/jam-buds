@@ -1,7 +1,7 @@
-import {createUser, User} from '../models/user';
-import {createSongFromManualEntry, Song} from '../models/song';
-import {addSongToPlaylist} from '../models/playlist';
-import {PlaylistEntry, PlaybackSource} from '../resources';
+import { createUser, User } from '../models/user';
+import { createSongFromManualEntry, Song } from '../models/song';
+import { addSongToPlaylist } from '../models/playlist';
+import { PlaylistEntry, PlaybackSource } from '../resources';
 
 // SHRUG
 let uniqueCounter = 0;
@@ -18,13 +18,16 @@ export async function userFactory(opts: Object = {}): Promise<User> {
     twitterSecret: uniqueString(),
   };
 
-  const finalOpts = {...defaults, ...opts};
+  const finalOpts = { ...defaults, ...opts };
 
   const user = await createUser(finalOpts);
   return user;
 }
 
-export async function songFactory(artist: string = uniqueString(), title: string = uniqueString()): Promise<Song> {
+export async function songFactory(
+  artist: string = uniqueString(),
+  title: string = uniqueString()
+): Promise<Song> {
   const song = await createSongFromManualEntry(artist, title);
   return song;
 }
@@ -40,7 +43,7 @@ export async function entryFactory(opts: Object = {}): Promise<PlaylistEntry> {
     source,
   };
 
-  const finalOpts = {...defaults, ...opts};
+  const finalOpts = { ...defaults, ...opts };
 
   const entry = await addSongToPlaylist(finalOpts);
 

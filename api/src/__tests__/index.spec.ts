@@ -9,7 +9,7 @@ dotenv.config({
   path: '../.env.test',
 });
 
-import {db, configureDatabase} from '../db';
+import { db, configureDatabase } from '../db';
 
 before(async () => {
   configureDatabase();
@@ -21,6 +21,6 @@ beforeEach(async () => {
   await (db!.raw('BEGIN') as any);
 });
 
-afterEach(async() => {
+afterEach(async () => {
   await (db!.raw('ROLLBACK') as any);
 });

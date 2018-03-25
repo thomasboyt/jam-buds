@@ -1,28 +1,32 @@
 exports.up = function(knex, Promise) {
   return knex.schema.createTable('users', (table) => {
     table.increments('id');
-    table.timestamp('created_at').notNullable().defaultTo(knex.fn.now());
+    table
+      .timestamp('created_at')
+      .notNullable()
+      .defaultTo(knex.fn.now());
 
-    table.string('auth_token')
+    table
+      .string('auth_token')
       .notNullable()
       .index()
       .unique();
 
-    table.string('twitter_name')
+    table
+      .string('twitter_name')
       .notNullable()
       .index()
       .unique();
 
-    table.string('twitter_id')
+    table
+      .string('twitter_id')
       .notNullable()
       .index()
       .unique();
 
-    table.string('twitter_token')
-      .notNullable();
+    table.string('twitter_token').notNullable();
 
-    table.string('twitter_secret')
-      .notNullable();
+    table.string('twitter_secret').notNullable();
   });
 };
 

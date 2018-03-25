@@ -1,9 +1,14 @@
-import {db} from '../db';
+import { db } from '../db';
 import genAuthToken from '../util/genAuthToken';
-import {camelizeKeys, decamelizeKeys} from 'humps';
-import {PublicUser, ColorScheme, UserProfile, CurrentUser} from '../resources';
-import {defaultColorScheme} from '../constants';
-import {getFollowingForUserId} from './following';
+import { camelizeKeys, decamelizeKeys } from 'humps';
+import {
+  PublicUser,
+  ColorScheme,
+  UserProfile,
+  CurrentUser,
+} from '../resources';
+import { defaultColorScheme } from '../constants';
+import { getFollowingForUserId } from './following';
 
 export interface User {
   id: number;
@@ -31,9 +36,12 @@ export function serializePublicUser(user: User): PublicUser {
 export async function createUser(opts: CreateUserOptions): Promise<User> {
   const authToken = await genAuthToken();
 
-  const insert = Object.assign({authToken}, opts);
+  const insert = Object.assign({ authToken }, opts);
 
-  const query = db!.insert(decamelizeKeys(insert)).returning('*').into('users');
+  const query = db!
+    .insert(decamelizeKeys(insert))
+    .returning('*')
+    .into('users');
 
   const [row] = await (query as any);
   const user = camelizeKeys(row) as User;
@@ -47,12 +55,14 @@ interface UpdateTwitterCredentialsOptions {
   twitterSecret: string;
 }
 
-export async function updateTwitterCredentials(opts: UpdateTwitterCredentialsOptions) {
-  const {twitterName, twitterToken, twitterSecret} = opts;
+export async function updateTwitterCredentials(
+  opts: UpdateTwitterCredentialsOptions
+) {
+  const { twitterName, twitterToken, twitterSecret } = opts;
 
   return db!('users')
-    .where({'twitter_name': twitterName})
-    .update(decamelizeKeys({twitterSecret, twitterToken}));
+    .where({ twitter_name: twitterName })
+    .update(decamelizeKeys({ twitterSecret, twitterToken }));
 }
 
 async function getUserWhere(params: any) {
@@ -69,33 +79,39 @@ async function getUserWhere(params: any) {
   return user;
 }
 
-export async function getUserByAuthToken(authToken: string): Promise<User | null> {
-  return await getUserWhere({auth_token: authToken});
+export async function getUserByAuthToken(
+  authToken: string
+): Promise<User | null> {
+  return await getUserWhere({ auth_token: authToken });
 }
 
 export async function getUserByTwitterId(id: string): Promise<User | null> {
-  return await getUserWhere({twitter_id: id});
+  return await getUserWhere({ twitter_id: id });
 }
 
 export async function getUserByTwitterName(name: string): Promise<User | null> {
-  return await getUserWhere({twitter_name: name});
+  return await getUserWhere({ twitter_name: name });
 }
 
 export async function getUserByUserId(id: number): Promise<User | null> {
-  return await getUserWhere({id});
+  return await getUserWhere({ id });
 }
 
-export async function getUnfollowedUsersByTwitterIds(userId: number, twitterIds: string[]): Promise<User[]> {
-  const followQuery = db!.select('following_id')
+export async function getUnfollowedUsersByTwitterIds(
+  userId: number,
+  twitterIds: string[]
+): Promise<User[]> {
+  const followQuery = db!
+    .select('following_id')
     .from('following')
-    .where({user_id: userId})
-    .join('users', {'users.id': 'following.following_id'});
+    .where({ user_id: userId })
+    .join('users', { 'users.id': 'following.following_id' });
 
   const query = db!
     .select('*')
     .from('users')
     .whereIn('twitter_id', twitterIds)
-    .where('id', 'not in', followQuery)
+    .where('id', 'not in', followQuery);
 
   const rows = await (query as any);
   const users: User[] = rows.map((row: any) => camelizeKeys(row));
@@ -103,8 +119,13 @@ export async function getUnfollowedUsersByTwitterIds(userId: number, twitterIds:
   return users;
 }
 
-export async function getColorSchemeForUserId(userId: number): Promise<ColorScheme> {
-  const query = db!.select('*').from('color_schemes').where({user_id: userId});
+export async function getColorSchemeForUserId(
+  userId: number
+): Promise<ColorScheme> {
+  const query = db!
+    .select('*')
+    .from('color_schemes')
+    .where({ user_id: userId });
 
   const [row] = await (query as any);
 
@@ -128,10 +149,15 @@ export async function getUserProfileForUser(user: User): Promise<UserProfile> {
   };
 }
 
-export async function setColorSchemeForUserId(userId: number, colorScheme: ColorScheme): Promise<void> {
+export async function setColorSchemeForUserId(
+  userId: number,
+  colorScheme: ColorScheme
+): Promise<void> {
   // delete any existing color scheme
   const existingScheme = await getColorSchemeForUserId(userId);
-  const deleteQuery = db!('color_schemes').where({user_id: userId}).delete();
+  const deleteQuery = db!('color_schemes')
+    .where({ user_id: userId })
+    .delete();
 
   await (deleteQuery as any);
 

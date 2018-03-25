@@ -1,4 +1,4 @@
-import {Router} from 'express';
+import { Router } from 'express';
 import * as _ from 'lodash';
 
 import {
@@ -19,162 +19,197 @@ import {
   getFollowersForUserId,
 } from '../models/following';
 
-import {getUserFromRequest, isAuthenticated} from '../auth';
-import {getTwitterFriendIds} from '../apis/twitter';
+import { getUserFromRequest, isAuthenticated } from '../auth';
+import { getTwitterFriendIds } from '../apis/twitter';
 
-import {PublicUser, Playlist, Feed, Followers, Following, ColorScheme} from '../resources';
+import {
+  PublicUser,
+  Playlist,
+  Feed,
+  Followers,
+  Following,
+  ColorScheme,
+} from '../resources';
 import wrapAsyncRoute from '../util/wrapAsyncRoute';
-import {AUTH_TOKEN_COOKIE} from '../constants';
+import { AUTH_TOKEN_COOKIE } from '../constants';
 
 export default function registerUserEndpoints(router: Router) {
   // get information about the current user
-  router.get('/me', wrapAsyncRoute(async (req, res) => {
-    const userModel = await getUserFromRequest(req);
+  router.get(
+    '/me',
+    wrapAsyncRoute(async (req, res) => {
+      const userModel = await getUserFromRequest(req);
 
-    if (!userModel) {
-      return res.json({
-        user: null,
+      if (!userModel) {
+        return res.json({
+          user: null,
+        });
+      }
+
+      res.json({
+        user: await serializeCurrentUser(userModel),
       });
-    }
-
-    res.json({
-      user: await serializeCurrentUser(userModel),
-    });
-  }));
+    })
+  );
 
   // follow a user
-  router.post('/following', isAuthenticated, wrapAsyncRoute(async (req, res) => {
-    const user: User = res.locals.user;
-    const followingName: string = req.body.userName;
+  router.post(
+    '/following',
+    isAuthenticated,
+    wrapAsyncRoute(async (req, res) => {
+      const user: User = res.locals.user;
+      const followingName: string = req.body.userName;
 
-    if (!followingName) {
-      res.status(400).json({
-        error: 'Missing userName parameter in body'
+      if (!followingName) {
+        res.status(400).json({
+          error: 'Missing userName parameter in body',
+        });
+
+        return;
+      }
+
+      const followingUser = await getUserByTwitterName(followingName);
+
+      if (!followingUser) {
+        res.status(400).json({
+          error: `Could not find user with name ${followingName}`,
+        });
+
+        return;
+      }
+
+      await followUser(user.id, followingUser.id);
+
+      res.json({
+        user: serializePublicUser(followingUser),
       });
-
-      return;
-    }
-
-    const followingUser = await getUserByTwitterName(followingName);
-
-    if (!followingUser) {
-      res.status(400).json({
-        error: `Could not find user with name ${followingName}`
-      });
-
-      return;
-    }
-
-    await followUser(user.id, followingUser.id);
-
-    res.json({
-      user: serializePublicUser(followingUser),
-    });
-  }));
+    })
+  );
 
   // unfollow a user
-  router.delete('/following/:followingName', isAuthenticated, wrapAsyncRoute(async (req, res) => {
-    const user: User = res.locals.user;
-    const followingName: string = req.params.followingName;
+  router.delete(
+    '/following/:followingName',
+    isAuthenticated,
+    wrapAsyncRoute(async (req, res) => {
+      const user: User = res.locals.user;
+      const followingName: string = req.params.followingName;
 
-    const followingUser = await getUserByTwitterName(followingName);
+      const followingUser = await getUserByTwitterName(followingName);
 
-    if (!followingUser) {
-      res.status(400).json({
-        error: `Could not find user with name ${followingName}`
+      if (!followingUser) {
+        res.status(400).json({
+          error: `Could not find user with name ${followingName}`,
+        });
+
+        return;
+      }
+
+      await unfollowUser(user.id, followingUser.id);
+
+      res.json({
+        success: true,
       });
-
-      return;
-    }
-
-    await unfollowUser(user.id, followingUser.id);
-
-    res.json({
-      success: true,
-    });
-  }));
+    })
+  );
 
   // get twitter friends who have signed up
-  router.get('/friend-suggestions', isAuthenticated, wrapAsyncRoute(async (req, res) => {
-    // get a list of twitter IDs!
-    const ids = await getTwitterFriendIds(res.locals.user);
+  router.get(
+    '/friend-suggestions',
+    isAuthenticated,
+    wrapAsyncRoute(async (req, res) => {
+      // get a list of twitter IDs!
+      const ids = await getTwitterFriendIds(res.locals.user);
 
-    const users = await getUnfollowedUsersByTwitterIds(res.locals.user.id, ids);
+      const users = await getUnfollowedUsersByTwitterIds(
+        res.locals.user.id,
+        ids
+      );
 
-    const publicUsers = users.map((row) => serializePublicUser(row));
+      const publicUsers = users.map((row) => serializePublicUser(row));
 
-    res.status(200).send({
-      users: users,
-    });
-  }));
-
-  router.get('/users/:userName/following', wrapAsyncRoute(async (req, res) => {
-    const userName: string = req.params.userName;
-
-    const user = await getUserByTwitterName(userName);
-
-    if (!user) {
-      res.status(400).json({
-        error: `Could not find user with name ${userName}`
+      res.status(200).send({
+        users: users,
       });
+    })
+  );
 
-      return;
-    }
+  router.get(
+    '/users/:userName/following',
+    wrapAsyncRoute(async (req, res) => {
+      const userName: string = req.params.userName;
 
-    const following = await getFollowingForUserId(user.id);
+      const user = await getUserByTwitterName(userName);
 
-    const publicUsers = following.map((row) => serializePublicUser(row));
+      if (!user) {
+        res.status(400).json({
+          error: `Could not find user with name ${userName}`,
+        });
 
-    const resp: Following = {
-      userProfile: await getUserProfileForUser(user),
-      users: publicUsers,
-    };
+        return;
+      }
 
-    res.json(resp);
-  }));
+      const following = await getFollowingForUserId(user.id);
 
-  router.get('/users/:userName/followers', wrapAsyncRoute(async (req, res) => {
-    const userName: string = req.params.userName;
+      const publicUsers = following.map((row) => serializePublicUser(row));
 
-    const user = await getUserByTwitterName(userName);
+      const resp: Following = {
+        userProfile: await getUserProfileForUser(user),
+        users: publicUsers,
+      };
 
-    if (!user) {
-      res.status(400).json({
-        error: `Could not find user with name ${userName}`
+      res.json(resp);
+    })
+  );
+
+  router.get(
+    '/users/:userName/followers',
+    wrapAsyncRoute(async (req, res) => {
+      const userName: string = req.params.userName;
+
+      const user = await getUserByTwitterName(userName);
+
+      if (!user) {
+        res.status(400).json({
+          error: `Could not find user with name ${userName}`,
+        });
+
+        return;
+      }
+
+      const followers = await getFollowersForUserId(user.id);
+
+      const publicUsers = followers.map((row) => serializePublicUser(row));
+
+      const resp: Followers = {
+        userProfile: await getUserProfileForUser(user),
+        users: publicUsers,
+      };
+
+      res.json(resp);
+    })
+  );
+
+  router.post(
+    '/settings/color-scheme',
+    isAuthenticated,
+    wrapAsyncRoute(async (req, res) => {
+      const user: User = res.locals.user;
+
+      const colorScheme = getColorSchemeFromBody(req.body);
+
+      if (!colorScheme) {
+        return res.status(400).json({
+          error: 'Incorrect format for color scheme',
+        });
+      }
+
+      await setColorSchemeForUserId(user.id, colorScheme);
+
+      res.json({
+        success: true,
       });
-
-      return;
-    }
-
-    const followers = await getFollowersForUserId(user.id);
-
-    const publicUsers = followers.map((row) => serializePublicUser(row));
-
-    const resp: Followers = {
-      userProfile: await getUserProfileForUser(user),
-      users: publicUsers,
-    };
-
-    res.json(resp);
-  }));
-
-  router.post('/settings/color-scheme', isAuthenticated, wrapAsyncRoute(async (req, res) => {
-    const user: User = res.locals.user;
-
-    const colorScheme = getColorSchemeFromBody(req.body);
-
-    if (!colorScheme) {
-      return res.status(400).json({
-        error: 'Incorrect format for color scheme',
-      });
-    }
-
-    await setColorSchemeForUserId(user.id, colorScheme);
-
-    res.json({
-      success: true,
-    });
-  }));
+    })
+  );
 }
 
 function getColorSchemeFromBody(reqBody: any): ColorScheme | null {

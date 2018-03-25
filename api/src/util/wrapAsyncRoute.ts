@@ -3,13 +3,19 @@
 import * as Express from 'express';
 
 export interface PromiseRequestHandler {
-  (req: Express.Request, res: Express.Response, next: Express.NextFunction): Promise<any>;
+  (
+    req: Express.Request,
+    res: Express.Response,
+    next: Express.NextFunction
+  ): Promise<any>;
 }
 
-export default function wrapAsyncRoute(fn: PromiseRequestHandler): Express.RequestHandler {
+export default function wrapAsyncRoute(
+  fn: PromiseRequestHandler
+): Express.RequestHandler {
   return (req, res, next) => {
     const routePromise = fn(req, res, next);
 
-    routePromise.catch(err => next(err));
+    routePromise.catch((err) => next(err));
   };
 }

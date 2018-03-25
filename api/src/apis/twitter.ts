@@ -1,4 +1,4 @@
-import {User} from '../models/user';
+import { User } from '../models/user';
 import * as Twit from 'twit';
 
 interface PostSongTweetParams {
@@ -9,7 +9,9 @@ interface PostSongTweetParams {
 function getTwitterClient(user: User): Twit {
   // TODO: This should probably be raised up out of this getter thingy
   if (!process.env.TWITTER_API_KEY || !process.env.TWITTER_API_SECRET) {
-    throw new Error('missing TWITTER_API_KEY and/or TWITTER_API_SECRET env variable')
+    throw new Error(
+      'missing TWITTER_API_KEY and/or TWITTER_API_SECRET env variable'
+    );
   }
 
   return new Twit({
@@ -20,7 +22,7 @@ function getTwitterClient(user: User): Twit {
   });
 }
 
-export async function postSongTweet({text, user}: PostSongTweetParams) {
+export async function postSongTweet({ text, user }: PostSongTweetParams) {
   const link = `${process.env.APP_URL}/users/${user.twitterName}`;
 
   const tweet = `${text} ${link}`;

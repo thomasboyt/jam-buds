@@ -1,9 +1,13 @@
-import {Router} from 'express';
+import { Router } from 'express';
 import wrapAsyncRoute from '../util/wrapAsyncRoute';
-import {AUTH_TOKEN_COOKIE} from '../constants';
-import {OAuth} from 'oauth';
-import {createUser, getUserByTwitterId, updateTwitterCredentials} from '../models/user';
-import {isAuthenticated} from '../auth';
+import { AUTH_TOKEN_COOKIE } from '../constants';
+import { OAuth } from 'oauth';
+import {
+  createUser,
+  getUserByTwitterId,
+  updateTwitterCredentials,
+} from '../models/user';
+import { isAuthenticated } from '../auth';
 
 /*
  * Here's how Twitter auth works:
@@ -47,53 +51,71 @@ export default function registerTwitterAuthEndpoints(router: Router) {
   });
 
   router.get('/twitter-sign-in-callback', (req, res) => {
-    oa.getOAuthAccessToken(req.query.oauth_token, '', req.query.oauth_verifier, (err: any, token: string, secret: string, authorizeUrl: string) => {
-      if (err) {
-        console.error(`Twitter access token error`);
-        console.error(err);
-        res.sendStatus(500);
-        return;
-      }
-
-      oa.get('https://api.twitter.com/1.1/account/verify_credentials.json', token, secret, async (err: any, data: any) => {
+    oa.getOAuthAccessToken(
+      req.query.oauth_token,
+      '',
+      req.query.oauth_verifier,
+      (err: any, token: string, secret: string, authorizeUrl: string) => {
         if (err) {
-          console.error(`Twitter user fetch error`);
+          console.error(`Twitter access token error`);
           console.error(err);
           res.sendStatus(500);
           return;
         }
 
-        const twitterData = JSON.parse(data);
-        const twitterId = twitterData.id_str;
-        const twitterName = twitterData.screen_name;
+        oa.get(
+          'https://api.twitter.com/1.1/account/verify_credentials.json',
+          token,
+          secret,
+          async (err: any, data: any) => {
+            if (err) {
+              console.error(`Twitter user fetch error`);
+              console.error(err);
+              res.sendStatus(500);
+              return;
+            }
 
-        let user = await getUserByTwitterId(twitterId);
+            const twitterData = JSON.parse(data);
+            const twitterId = twitterData.id_str;
+            const twitterName = twitterData.screen_name;
 
-        if (!user) {
-          user = await createUser({
-            twitterId, twitterName, twitterToken: token, twitterSecret: secret
-          });
-        } else {
-          // Update user if needed
-          if (!(user.twitterToken === token && user.twitterSecret === secret)) {
-            await updateTwitterCredentials({
-              twitterName,
-              twitterToken: token,
-              twitterSecret: secret,
-            });
+            let user = await getUserByTwitterId(twitterId);
+
+            if (!user) {
+              user = await createUser({
+                twitterId,
+                twitterName,
+                twitterToken: token,
+                twitterSecret: secret,
+              });
+            } else {
+              // Update user if needed
+              if (
+                !(user.twitterToken === token && user.twitterSecret === secret)
+              ) {
+                await updateTwitterCredentials({
+                  twitterName,
+                  twitterToken: token,
+                  twitterSecret: secret,
+                });
+              }
+            }
+
+            -res.cookie(AUTH_TOKEN_COOKIE, user.authToken);
+            -res.redirect(process.env.APP_URL!);
           }
-        }
-
--        res.cookie(AUTH_TOKEN_COOKIE, user.authToken);
--        res.redirect(process.env.APP_URL!);
-      });
-    });
+        );
+      }
+    );
   });
 
-  router.post('/sign-out', isAuthenticated, wrapAsyncRoute(async (req, res) => {
-    // TODO: This should also delete the auth token from the database!
-    res.clearCookie(AUTH_TOKEN_COOKIE);
-    res.send(200);
-  }));
-
+  router.post(
+    '/sign-out',
+    isAuthenticated,
+    wrapAsyncRoute(async (req, res) => {
+      // TODO: This should also delete the auth token from the database!
+      res.clearCookie(AUTH_TOKEN_COOKIE);
+      res.send(200);
+    })
+  );
 }

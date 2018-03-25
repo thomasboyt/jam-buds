@@ -1,7 +1,7 @@
 // Update with your config settings.
 
 if (process.env.NODE_ENV !== 'production') {
- require('dotenv').config();
+  require('dotenv').config();
 } else {
   // XXX: This fixes knex not using SSL for Heroku connections
   // Comment this out if you're not using Heroku/SSL database connections
@@ -10,17 +10,16 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 module.exports = {
-
   development: {
     client: 'postgresql',
     connection: process.env.DATABASE_URL,
     pool: {
       min: 2,
-      max: 10
+      max: 10,
     },
     migrations: {
-      tableName: 'knex_migrations'
-    }
+      tableName: 'knex_migrations',
+    },
   },
 
   production: {
@@ -28,11 +27,10 @@ module.exports = {
     connection: '',
     pool: {
       min: 2,
-      max: 10
+      max: 10,
     },
     migrations: {
-      tableName: 'knex_migrations'
-    }
-  }
-
+      tableName: 'knex_migrations',
+    },
+  },
 };
