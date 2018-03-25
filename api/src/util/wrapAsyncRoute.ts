@@ -2,13 +2,11 @@
 
 import * as Express from 'express';
 
-export interface PromiseRequestHandler {
-  (
-    req: Express.Request,
-    res: Express.Response,
-    next: Express.NextFunction
-  ): Promise<any>;
-}
+export type PromiseRequestHandler = (
+  req: Express.Request,
+  res: Express.Response,
+  next: Express.NextFunction
+) => Promise<any>;
 
 export default function wrapAsyncRoute(
   fn: PromiseRequestHandler
