@@ -1,5 +1,6 @@
 {
   "name": "jam-buds-dev",
+  "private": true,
   "version": "1.0.0",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -8,8 +9,8 @@
     "type": "git",
     "url": "git+https://github.com/thomasboyt/jam-buds.git"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Thomas Boyt <me@thomasboyt.com>",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/thomasboyt/jam-buds/issues"
   },
