@@ -13,6 +13,7 @@ export function uniqueString() {
 export async function userFactory(opts: Object = {}): Promise<User> {
   const defaults = {
     name: uniqueString(),
+    email: `${uniqueString()}@example.example`,
     twitterName: uniqueString(),
     twitterId: uniqueString(),
     twitterToken: uniqueString(),

@@ -14,10 +14,11 @@ export interface User {
   id: number;
   authToken: string;
   name: string;
-  twitterName: string;
-  twitterId: string;
-  twitterToken: string;
-  twitterSecret: string;
+  email?: string;
+  twitterName?: string;
+  twitterId?: string;
+  twitterToken?: string;
+  twitterSecret?: string;
 }
 
 export function serializePublicUser(user: User): PublicUser {
@@ -31,16 +32,7 @@ interface CreateUserOptions {
   name: string;
 }
 
-interface CreateUserFromTwitterOptions extends CreateUserOptions {
-  twitterId: string;
-  twitterName: string;
-  twitterToken: string;
-  twitterSecret: string;
-}
-
-export async function createUserFromTwitter(
-  opts: CreateUserFromTwitterOptions
-): Promise<User> {
+async function createUser(opts: CreateUserOptions) {
   const authToken = await genAuthToken();
 
   const insert = Object.assign({ authToken }, opts);
@@ -54,6 +46,29 @@ export async function createUserFromTwitter(
   const user = camelizeKeys(row) as User;
 
   return user;
+}
+
+interface CreateUserFromTwitterOptions extends CreateUserOptions {
+  twitterId: string;
+  twitterName: string;
+  twitterToken: string;
+  twitterSecret: string;
+}
+
+export async function createUserFromTwitter(
+  opts: CreateUserFromTwitterOptions
+): Promise<User> {
+  return createUser(opts);
+}
+
+interface CreateUserFromEmailOptions extends CreateUserOptions {
+  email: string;
+}
+
+export async function createUserFromEmail(
+  opts: CreateUserFromEmailOptions
+): Promise<User> {
+  return createUser(opts);
 }
 
 interface UpdateTwitterCredentialsOptions {
@@ -102,6 +117,10 @@ export async function getUserByName(name: string): Promise<User | null> {
 
 export async function getUserByUserId(id: number): Promise<User | null> {
   return await getUserWhere({ id });
+}
+
+export async function getUserByEmail(email: string): Promise<User | null> {
+  return await getUserWhere({ email });
 }
 
 export async function getUnfollowedUsersByTwitterIds(

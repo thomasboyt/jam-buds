@@ -3,10 +3,13 @@ import wrapAsyncRoute from '../util/wrapAsyncRoute';
 import { AUTH_TOKEN_COOKIE } from '../constants';
 import { OAuth } from 'oauth';
 import {
+  // createUserFromEmail,
   createUserFromTwitter,
   getUserByTwitterId,
+  getUserByEmail,
   updateTwitterCredentials,
 } from '../models/user';
+import { createSignInToken } from '../models/signInToken';
 import { isAuthenticated } from '../auth';
 
 /*
@@ -109,6 +112,36 @@ export default function registerTwitterAuthEndpoints(router: Router) {
       }
     );
   });
+
+  router.post(
+    '/sign-in-token',
+    wrapAsyncRoute(async (req, res) => {
+      const email: string | undefined = req.body.email;
+
+      if (!email) {
+        res.status(400).json({ error: 'Missing email param' });
+        return;
+      }
+
+      // got this from stack overflow, iunno
+      const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRe.test(email)) {
+        res.status(400).json({ error: 'Invalid email param' });
+        return;
+      }
+
+      const user = await getUserByEmail(email);
+
+      if (user) {
+        await createSignInToken(email);
+
+        // TODO: SEND SIGN-IN EMAIL HERE, DUH
+        // await sendEmail(email, )
+      }
+
+      res.status(200).json({ success: true });
+    })
+  );
 
   router.post(
     '/sign-out',
