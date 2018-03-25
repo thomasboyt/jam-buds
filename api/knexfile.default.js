@@ -1,7 +1,9 @@
 // Update with your config settings.
 
 if (process.env.NODE_ENV !== 'production') {
-  require('dotenv').config();
+  require('dotenv').config({
+    path: '../.env',
+  });
 } else {
   // XXX: This fixes knex not using SSL for Heroku connections
   // Comment this out if you're not using Heroku/SSL database connections
