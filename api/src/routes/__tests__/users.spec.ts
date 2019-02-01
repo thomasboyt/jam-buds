@@ -11,6 +11,7 @@ import {
   createSignInToken,
   getSignInTokenByEmail,
 } from '../../models/signInToken';
+import { getUserByEmail } from '../../models/user';
 
 const app = createApp();
 
@@ -28,7 +29,8 @@ describe('routes/users', () => {
     });
 
     it('creates a new user given a sign-in token and registration form', async () => {
-      const token = await createSignInToken('example@example.example');
+      const email = 'example@example.example';
+      const token = await createSignInToken(email);
 
       const res = await request(app)
         .post('/api/users')
@@ -39,7 +41,11 @@ describe('routes/users', () => {
 
       expect(res.status).toBe(200);
 
-      expect(await getSignInTokenByEmail('example@example.example')).toBe(null);
+      expect(await getSignInTokenByEmail(email)).toBe(null);
+
+      const user = (await getUserByEmail(email))!;
+      const cookieRe = new RegExp(`${AUTH_TOKEN_COOKIE}=${user.authToken}`);
+      expect(res.header['set-cookie']).toMatch(cookieRe);
     });
 
     it('returns an error if the email is associated with a user', async () => {

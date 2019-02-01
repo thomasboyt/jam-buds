@@ -119,8 +119,7 @@ export default function registerUserEndpoints(router: Router) {
       });
 
       await deleteSignInToken(token);
-
-      // TODO: sign in using /auth/sign-in
+      res.cookie(AUTH_TOKEN_COOKIE, user.authToken);
 
       res.status(200).json({ success: true });
     })
