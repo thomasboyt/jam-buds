@@ -14,6 +14,7 @@ import {
   deleteSignInToken,
 } from '../models/signInToken';
 import { isAuthenticated } from '../auth';
+import { validEmail } from '../util/validators';
 
 /*
  * Here's how Twitter auth works:
@@ -135,9 +136,7 @@ export default function registerTwitterAuthEndpoints(router: Router) {
         return;
       }
 
-      // got this from stack overflow, iunno
-      const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRe.test(email)) {
+      if (!validEmail(email)) {
         res.status(400).json({ error: 'Invalid email param' });
         return;
       }

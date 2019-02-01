@@ -10,6 +10,8 @@ import {
   getUserProfileForUser,
   setColorSchemeForUserId,
   serializeCurrentUser,
+  getUserByEmail,
+  createUserFromEmail,
 } from '../models/user';
 
 import {
@@ -31,7 +33,13 @@ import {
   ColorScheme,
 } from '../resources';
 import wrapAsyncRoute from '../util/wrapAsyncRoute';
+import { validate, Fields } from '../util/validation';
+import { validEmail, validUsername } from '../util/validators';
 import { AUTH_TOKEN_COOKIE } from '../constants';
+import {
+  getEmailFromSignInToken,
+  deleteSignInToken,
+} from '../models/signInToken';
 
 export default function registerUserEndpoints(router: Router) {
   // get information about the current user
@@ -49,6 +57,72 @@ export default function registerUserEndpoints(router: Router) {
       res.json({
         user: await serializeCurrentUser(userModel),
       });
+    })
+  );
+
+  // create an account
+  /**
+   * POST /users
+   *
+   * Create a new account, given a sign-in token ("registration token") corresponding to an unregistered email, and a
+   */
+  router.post(
+    '/users',
+    wrapAsyncRoute(async (req, res) => {
+      const token = req.body.token;
+
+      if (!token) {
+        res.status(400).json({ error: 'Missing registration token' });
+        return;
+      }
+
+      const email = await getEmailFromSignInToken(token);
+
+      if (!email) {
+        res.status(400).json({ error: `No record found for token ${token}` });
+        return;
+      }
+
+      const fields: Fields = {
+        name: {
+          required: true,
+          label: 'Name',
+          rules: [
+            {
+              text: 'Username is invalid',
+              isValid: validUsername,
+            },
+            {
+              text: 'This username has already been taken',
+              isValid: async (name) => !await getUserByName(name),
+            },
+          ],
+        },
+      };
+
+      const { data, errors } = await validate(req.body, fields);
+
+      if (errors) {
+        res.status(400).json({ errors });
+        return;
+      }
+
+      if (await getUserByEmail(email)) {
+        res.status(400).json({ error: 'User already exists' });
+        return;
+      }
+
+      // Create user
+      const user = await createUserFromEmail({
+        email,
+        name: req.body.name,
+      });
+
+      await deleteSignInToken(token);
+
+      // TODO: sign in using /auth/sign-in
+
+      res.status(200).json({ success: true });
     })
   );
 

@@ -2,7 +2,7 @@ import { db } from '../db';
 import { decamelizeKeys } from 'humps';
 import genAuthToken from '../util/genAuthToken';
 
-export async function createSignInToken(email: string): Promise<void> {
+export async function createSignInToken(email: string): Promise<string> {
   const [row] = await db!
     .insert(
       decamelizeKeys({
@@ -19,6 +19,8 @@ export async function createSignInToken(email: string): Promise<void> {
     console.log(`Or: ${process.env.APP_URL}/auth/sign-in?t=${row.token}`);
     console.log('');
   }
+
+  return row.token;
 }
 
 export async function getSignInTokenByEmail(
