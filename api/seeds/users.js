@@ -7,6 +7,7 @@ function createUser(knex, id, name, opts) {
     Object.assign(
       {
         id,
+        name,
         auth_token: name,
         twitter_name: name,
         twitter_id: `${id}`,
