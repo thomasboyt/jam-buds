@@ -13,13 +13,6 @@ export async function createSignInToken(email: string): Promise<string> {
     .returning('*')
     .into('sign_in_tokens');
 
-  if (process.env.NODE_ENV === 'development') {
-    console.log('');
-    console.log(`*** Created sign-in token: ${row.token}`);
-    console.log(`Or: ${process.env.APP_URL}/auth/sign-in?t=${row.token}`);
-    console.log('');
-  }
-
   return row.token;
 }
 

@@ -7,6 +7,8 @@ import {
   getUserByTwitterId,
   getUserByEmail,
   updateTwitterCredentials,
+  getUserByName,
+  createUserFromEmail,
 } from '../models/user';
 import {
   createSignInToken,
@@ -14,7 +16,8 @@ import {
   deleteSignInToken,
 } from '../models/signInToken';
 import { isAuthenticated } from '../auth';
-import { validEmail } from '../util/validators';
+import { validEmail, validUsername } from '../util/validators';
+import { Fields, validate } from '../util/validation';
 
 /*
  * Here's how Twitter auth works:
@@ -143,14 +146,23 @@ export default function registerTwitterAuthEndpoints(router: Router) {
 
       // TODO: Check to make sure existing sign-in token doesn't already exist.
       // Bail out if it does, or resend email if > 24 hours
-      await createSignInToken(email);
+      const token = await createSignInToken(email);
 
       const user = await getUserByEmail(email);
 
       if (user) {
         // TODO: Send sign in email here
+
+        if (process.env.NODE_ENV === 'development') {
+          console.log('\n*** Created sign-in link:');
+          console.log(`${process.env.APP_URL}/auth/sign-in?t=${token}\n`);
+        }
       } else {
         // TODO: Send registration email here
+        if (process.env.NODE_ENV === 'development') {
+          console.log('\n*** Created registration link:');
+          console.log(`${process.env.APP_URL}/registration?t=${token}\n`);
+        }
       }
 
       res.status(200).json({ success: true });
@@ -193,6 +205,70 @@ export default function registerTwitterAuthEndpoints(router: Router) {
       await deleteSignInToken(token);
       res.cookie(AUTH_TOKEN_COOKIE, user.authToken);
       res.redirect(process.env.APP_URL!);
+    })
+  );
+
+  /**
+   * POST /registration
+   *
+   * Create a new account, given a sign-in token ("registration token") corresponding to an unregistered email, and a
+   */
+  router.post(
+    '/registration',
+    wrapAsyncRoute(async (req, res) => {
+      const token = req.body.token;
+
+      if (!token) {
+        res.status(400).json({ error: 'Missing registration token' });
+        return;
+      }
+
+      const email = await getEmailFromSignInToken(token);
+
+      if (!email) {
+        res.status(400).json({ error: `No record found for token ${token}` });
+        return;
+      }
+
+      const fields: Fields = {
+        name: {
+          required: true,
+          label: 'Name',
+          rules: [
+            {
+              text: 'Username is invalid',
+              isValid: validUsername,
+            },
+            {
+              text: 'This username has already been taken',
+              isValid: async (name) => !await getUserByName(name),
+            },
+          ],
+        },
+      };
+
+      const { data, errors } = await validate(req.body, fields);
+
+      if (errors) {
+        res.status(400).json({ errors });
+        return;
+      }
+
+      if (await getUserByEmail(email)) {
+        res.status(400).json({ error: 'User already exists' });
+        return;
+      }
+
+      // Create user
+      const user = await createUserFromEmail({
+        email,
+        name: req.body.name,
+      });
+
+      await deleteSignInToken(token);
+      res.cookie(AUTH_TOKEN_COOKIE, user.authToken);
+
+      res.status(200).json({ success: true });
     })
   );
 
