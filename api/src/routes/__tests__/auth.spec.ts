@@ -14,7 +14,7 @@ const app = createApp();
 
 describe('routes/auth', () => {
   describe('POST /sign-in-token', () => {
-    it('creates a sign-in token if a user exists with the passed email', async () => {
+    it('creates a sign-in token for an email', async () => {
       const user = await userFactory();
 
       const req = request(app)
@@ -28,22 +28,6 @@ describe('routes/auth', () => {
 
       const token = await getSignInTokenByEmail(user.email!);
       expect(token).toExist();
-    });
-
-    it("does not create a token if a user doesn't exist with the passed email", async () => {
-      const email = 'foo@foobar.foo';
-
-      const req = request(app)
-        .post('/auth/sign-in-token')
-        .send({
-          email,
-        });
-
-      const res = await req;
-      expect(res.status).toBe(200);
-
-      const token = await getSignInTokenByEmail(email);
-      expect(token).toNotExist();
     });
 
     describe('email validation', () => {
@@ -77,8 +61,8 @@ describe('routes/auth', () => {
     });
   });
 
-  describe.only('GET /sign-in', () => {
-    it('signs in with a valid token', async () => {
+  describe('GET /sign-in', () => {
+    it('signs in with a valid token and existing user', async () => {
       let user = await userFactory();
 
       let res = await request(app)
@@ -102,6 +86,10 @@ describe('routes/auth', () => {
 
       token = await getSignInTokenByEmail(user.email!);
       expect(token).toNotExist();
+    });
+
+    it('redirects to registration screen with valid token and nonexistent user', async () => {
+      throw new Error('TODO');
     });
   });
 });

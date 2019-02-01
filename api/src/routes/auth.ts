@@ -3,7 +3,6 @@ import wrapAsyncRoute from '../util/wrapAsyncRoute';
 import { AUTH_TOKEN_COOKIE } from '../constants';
 import { OAuth } from 'oauth';
 import {
-  // createUserFromEmail,
   createUserFromTwitter,
   getUserByTwitterId,
   getUserByEmail,
@@ -117,6 +116,15 @@ export default function registerTwitterAuthEndpoints(router: Router) {
     );
   });
 
+  /**
+   * POST /sign-in-token
+   *
+   * Create a new sign in or registration token and send an email to the
+   * corresponding account.
+   *
+   * Params:
+   * - email (string)
+   */
   router.post(
     '/sign-in-token',
     wrapAsyncRoute(async (req, res) => {
@@ -134,19 +142,27 @@ export default function registerTwitterAuthEndpoints(router: Router) {
         return;
       }
 
+      // TODO: Check to make sure existing sign-in token doesn't already exist.
+      // Bail out if it does, or resend email if > 24 hours
+      await createSignInToken(email);
+
       const user = await getUserByEmail(email);
 
       if (user) {
-        await createSignInToken(email);
-
-        // TODO: SEND SIGN-IN EMAIL HERE, DUH
-        // await sendEmail(email, )
+        // TODO: Send sign in email here
+      } else {
+        // TODO: Send registration email here
       }
 
       res.status(200).json({ success: true });
     })
   );
 
+  /**
+   * GET /sign-in
+   *
+   * Clicking on the magic link in your email redirects you here.
+   */
   router.get(
     '/sign-in',
     wrapAsyncRoute(async (req, res) => {
