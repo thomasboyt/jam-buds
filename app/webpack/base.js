@@ -1,6 +1,7 @@
 const webpack = require('webpack');
 const path = require('path');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const dotenv = require('dotenv');
 
 if (process.env.NODE_ENV !== 'production') {
@@ -84,7 +85,7 @@ module.exports = {
 
   plugins: [
     new ExtractTextPlugin('[name].[chunkhash].css'),
-
+    new VueLoaderPlugin(),
     new webpack.DefinePlugin({
       'process.env': envVars,
     }),

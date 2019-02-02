@@ -2,7 +2,7 @@
   <div class="loading-spinner">Buffering</div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 /* some shit i got from https://projects.lukehaas.me/css-loaders/ */
 /* it's kind of a mess? idk */
 

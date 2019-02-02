@@ -6,7 +6,7 @@
   </div>
 </template>
 
-<style lang="scss">
+<style scoped lang="scss">
 // todo replace this with user color schemes?
 .main {
   background: rgb(189, 242, 113);
