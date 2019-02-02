@@ -9,10 +9,6 @@ function createUser(knex, id, name, opts) {
         id,
         name,
         auth_token: name,
-        twitter_name: name,
-        twitter_id: `${id}`,
-        twitter_token: `${id}`,
-        twitter_secret: `${id}`,
       },
       opts
     )
@@ -36,12 +32,10 @@ function createEntry(knex, entry) {
 
 exports.seed = function(knex, Promise) {
   return Promise.all([
-    createUser(knex, 1, 'jeffgerstmann', {
-      twitter_id: '12223',
-    }),
-    createUser(knex, 2, 'DanRyckert'),
-    createUser(knex, 3, 'bradshoemaker'),
-    createUser(knex, 4, 'VinnyCaravella'),
+    createUser(knex, 1, 'jeff'),
+    createUser(knex, 2, 'dan'),
+    createUser(knex, 3, 'brad'),
+    createUser(knex, 4, 'vinny'),
   ])
     .then(() => {
       return knex.schema.raw(`SELECT setval('users_id_seq', 5)`);
