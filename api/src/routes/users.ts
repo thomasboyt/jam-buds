@@ -31,7 +31,6 @@ import {
   ColorScheme,
 } from '../resources';
 import wrapAsyncRoute from '../util/wrapAsyncRoute';
-import { AUTH_TOKEN_COOKIE } from '../constants';
 
 export default function registerUserEndpoints(router: Router) {
   // get information about the current user

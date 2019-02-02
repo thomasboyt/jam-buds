@@ -28,3 +28,6 @@ SPOTIFY_CLIENT_SECRET=
 
 # A Google API key enabled to use the Youtube Data API
 GOOGLE_API_KEY=
+
+# Used for sending emails. Only needed for running in production!
+SENDGRID_API_KEY=

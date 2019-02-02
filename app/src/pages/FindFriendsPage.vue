@@ -3,11 +3,15 @@
     <main-wrapper>
       <h2>Find Friends</h2>
 
-      <div v-if="friendSuggestions.length === 0" class="main-placeholder">
-        No suggestions found! Try inviting your Twitter friends to Jam Buds!
+      <div v-if="showTwitterSuggestions">
+        <div v-if="friendSuggestions.length === 0" class="main-placeholder">
+          No suggestions found! Try inviting your Twitter friends to Jam Buds!
+        </div>
+        <users-list v-else :users="friendSuggestions"/>
       </div>
-
-      <users-list v-else :users="friendSuggestions"/>
+      <div v-else>
+        TODO: Add connect Twitter link here...
+      </div>
     </main-wrapper>
   </sidebar-wrapper>
 </template>
@@ -27,11 +31,14 @@ export default {
   title: 'Find Friends',
 
   async asyncData({ store, route }) {
-    await store.dispatch('loadFriendSuggestions');
+    if (store.state.currentUser.hasTwitter) {
+      await store.dispatch('loadFriendSuggestions');
+    }
   },
 
   computed: mapState({
     friendSuggestions: (state) => state.currentUser.friendSuggestions,
+    showTwitterSuggestions: (state) => state.currentUser.hasTwitter,
   }),
 };
 </script>

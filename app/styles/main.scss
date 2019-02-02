@@ -139,10 +139,11 @@ button:active, .button:active {
   position: relative;
 
   max-width: 600px;
-  height: 800px;
+  min-height: 850px;
   margin: 0 auto;
   margin-bottom: 80px;
   padding: 0 20px;
+  padding-bottom: 50px;
 
   background-image: url('../assets/ghettoblaster_corgi.png');
   background-color: white;

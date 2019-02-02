@@ -4,9 +4,9 @@ import _get from 'lodash/get';
 /**
  * Currently be passed the store context so it can get authToken!
  *
- * There may be a more elegant version of this in the future, but it CANNOT be a singleton
- * module that gets configured or something, because of
- * https://github.com/vuejs/vue-ssr-docs/blob/master/en/structure.md#avoid-stateful-singletons
+ * There may be a more elegant version of this in the future, but it CANNOT be a
+ * singleton module that gets configured or something, because of
+ * https://ssr.vuejs.org/guide/structure.html#avoid-stateful-singletons
  */
 export default async function apiRequest(context, opts) {
   const authToken = _get(context, 'rootState.auth.authToken');

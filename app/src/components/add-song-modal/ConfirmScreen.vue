@@ -13,7 +13,10 @@
       </label>
     </p>
 
+    <!-- XXX: Disabled until Twitter auth is reintroduced -->
+    <!--
     <twitter-share-field v-if="twitterPostEnabled" v-model="tweetText"/>
+    -->
 
     <button @click="handleSubmit" class="submit" data-test="add-song-confirm">
       post it!!
