@@ -9,21 +9,12 @@
     </div>
 
     <div class="user-links">
-      <router-link :to="`/users/${name}`" exact-active-class="active">
-        Posts
-      </router-link>
-      /
-      <router-link :to="`/users/${name}/liked`" active-class="active">
-        Liked
-      </router-link>
-      /
-      <router-link :to="`/users/${name}/following`" active-class="active">
-        Following
-      </router-link>
-      /
-      <router-link :to="`/users/${name}/followers`" active-class="active">
-        Followers
-      </router-link>
+      <span v-for="(link, idx) of links" :key="link.to">
+        <router-link :to="`/users/${name}${link.to}`">
+          {{ link.label }}</router-link
+        >
+        <span v-if="idx !== links.length - 1">/</span>
+      </span>
     </div>
   </div>
 </template>
@@ -36,6 +27,29 @@ export default {
   components: { FollowToggle },
 
   props: ['title'],
+
+  data() {
+    return {
+      links: [
+        {
+          to: '',
+          label: 'Playlist',
+        },
+        {
+          to: '/liked',
+          label: 'Liked',
+        },
+        {
+          to: '/following',
+          label: 'Following',
+        },
+        {
+          to: '/followed',
+          label: 'Followed',
+        },
+      ],
+    };
+  },
 
   computed: {
     ...mapState({
