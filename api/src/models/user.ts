@@ -205,5 +205,6 @@ export async function serializeCurrentUser(user: User): Promise<CurrentUser> {
     name: user.name,
     following: serializedUsers,
     colorScheme,
+    hasTwitter: !!user.twitterId,
   };
 }
