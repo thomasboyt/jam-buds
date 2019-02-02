@@ -160,7 +160,7 @@ export default function registerTwitterAuthEndpoints(router: Router) {
           `Welcome back! Click here to sign into Jam Buds: ${link}`
         );
       } else {
-        const link = `${process.env.APP_URL}/auth/sign-in?t=${token}`;
+        const link = `${process.env.APP_URL}/registration?t=${token}`;
 
         await sendEmail(
           email,
