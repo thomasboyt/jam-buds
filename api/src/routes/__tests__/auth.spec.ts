@@ -90,10 +90,6 @@ describe('routes/auth', () => {
       token = await getSignInTokenByEmail(user.email!);
       expect(token).toNotExist();
     });
-
-    it('redirects to registration screen with valid token and nonexistent user', async () => {
-      throw new Error('TODO');
-    });
   });
 
   describe('POST /registration', () => {
