@@ -39,8 +39,8 @@ export default function registerTwitterAuthEndpoints(router: Router) {
   const oa = new OAuth(
     'https://api.twitter.com/oauth/request_token',
     'https://api.twitter.com/oauth/access_token',
-    process.env.TWITTER_API_KEY,
-    process.env.TWITTER_API_SECRET,
+    process.env.TWITTER_API_KEY!,
+    process.env.TWITTER_API_SECRET!,
     '1.0A',
     `${process.env.APP_URL}/auth/twitter-sign-in-callback`,
     'HMAC-SHA1'
