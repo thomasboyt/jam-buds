@@ -59,7 +59,7 @@
     "pg": "^6.1.0",
     "query-string": "^4.2.3",
     "raven": "^2.4.2",
-    "spotify-web-api-node": "^2.3.6",
+    "spotify-web-api-node": "^4.0.0",
     "ts-node": "^8.0.2",
     "twit": "^2.2.5",
     "typescript": "^3.3.1"
