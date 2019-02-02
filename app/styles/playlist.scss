@@ -18,8 +18,8 @@
     }
   }
 
-  .user-links a.active {
-    font-weight: bold;
+  .user-links a.router-link-exact-active {
+    font-weight: 600;
   }
 
   margin-bottom: 20px;

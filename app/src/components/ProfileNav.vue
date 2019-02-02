@@ -10,10 +10,10 @@
 
     <div class="user-links">
       <span v-for="(link, idx) of links" :key="link.to">
-        <router-link :to="`/users/${name}${link.to}`">
-          {{ link.label }}</router-link
-        >
-        <span v-if="idx !== links.length - 1">/</span>
+        <router-link :to="`/users/${name}${link.to}`">{{
+          link.label
+        }}</router-link>
+        <span v-if="idx !== links.length - 1">/&nbsp;</span>
       </span>
     </div>
   </div>
@@ -44,8 +44,8 @@ export default {
           label: 'Following',
         },
         {
-          to: '/followed',
-          label: 'Followed',
+          to: '/followers',
+          label: 'Followers',
         },
       ],
     };
