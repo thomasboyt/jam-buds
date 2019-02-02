@@ -16,6 +16,6 @@
   },
   "homepage": "https://github.com/thomasboyt/jam-buds#readme",
   "devDependencies": {
-    "prettier": "^1.11.1"
+    "prettier": "^1.16.3"
   }
 }

@@ -9,8 +9,6 @@ export default async function(context) {
   const { app, router, store } = createApp();
   const { url, authToken } = context;
 
-  const fullPath = router.resolve(url).route;
-
   if (authToken) {
     store.commit('setAuthToken', authToken);
     await store.dispatch('fetchCurrentUser');

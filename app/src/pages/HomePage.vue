@@ -1,11 +1,11 @@
 <template>
   <sidebar-wrapper v-if="authenticated">
     <main-wrapper>
-      <feed/>
+      <feed />
     </main-wrapper>
   </sidebar-wrapper>
 
-  <logged-out-home v-else/>
+  <logged-out-home v-else />
 </template>
 
 <script>
@@ -13,7 +13,6 @@ import { mapState } from 'vuex';
 import Feed from '../components/Feed.vue';
 import LoggedOutHome from '../components/LoggedOutHome.vue';
 
-import AppContainer from '../components/AppContainer.vue';
 import MainWrapper from '../components/MainWrapper.vue';
 import SidebarWrapper from '../components/SidebarWrapper.vue';
 
@@ -22,7 +21,6 @@ import titleMixin from '../util/titleMixin';
 export default {
   components: {
     Feed,
-    AppContainer,
     MainWrapper,
     SidebarWrapper,
     LoggedOutHome,
@@ -32,7 +30,7 @@ export default {
 
   title: 'Feed',
 
-  async asyncData({ store, route }) {
+  async asyncData({ store }) {
     if (store.state.auth.authenticated) {
       await store.dispatch('loadPlaylistPage', { key: 'feed', initial: true });
     }

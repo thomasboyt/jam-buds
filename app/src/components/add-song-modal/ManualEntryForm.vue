@@ -1,13 +1,7 @@
 <template>
   <form class="submit-box" @submit="handleSubmit">
-    <input type="text"
-      name="artist"
-      placeholder="Artist"
-      v-model="artist">
-    <input type="text"
-      name="title"
-      placeholder="Title"
-      v-model="title">
+    <input type="text" name="artist" placeholder="Artist" v-model="artist" />
+    <input type="text" name="title" placeholder="Title" v-model="title" />
 
     <button type="submit" :disabled="!isFilled">
       next

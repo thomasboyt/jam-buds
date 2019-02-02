@@ -1,4 +1,3 @@
-import Vue from 'vue';
 import _get from 'lodash/get';
 import _pick from 'lodash/pick';
 import apiRequest from '../../apiRequest';
@@ -127,7 +126,7 @@ const addSong = {
       state.selectedSong = song;
       state.state = CONFIRM_STATE;
     },
-    unselectSong(state, song) {
+    unselectSong(state) {
       state.selectedSong = null;
       state.state = SEARCH_STATE;
     },

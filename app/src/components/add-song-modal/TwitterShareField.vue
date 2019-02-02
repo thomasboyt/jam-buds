@@ -1,20 +1,19 @@
 <template>
   <div class="tweet-box">
-    <textarea :value="value"
-      @input="updateTweetText($event.target.value)"/>
+    <textarea :value="value" @input="updateTweetText($event.target.value)" />
     ({{ remainingChars }} characters left)
   </div>
 </template>
 
 <script>
-import { getTweetLength } from '../../util/songTweet';
+import { getTweetLength, TWEET_LENGTH } from '../../util/songTweet';
 
 export default {
   props: ['value'],
 
   computed: {
     remainingChars() {
-      return 240 - this.value.length;
+      return TWEET_LENGTH - getTweetLength(this.value);
     },
   },
 

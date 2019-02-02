@@ -7,7 +7,7 @@
         <div v-if="friendSuggestions.length === 0" class="main-placeholder">
           No suggestions found! Try inviting your Twitter friends to Jam Buds!
         </div>
-        <users-list v-else :users="friendSuggestions"/>
+        <users-list v-else :users="friendSuggestions" />
       </div>
       <div v-else>
         TODO: Add connect Twitter link here...
@@ -30,10 +30,12 @@ export default {
 
   title: 'Find Friends',
 
-  async asyncData({ store, route }) {
+  async asyncData({ store }) {
     if (store.state.currentUser.hasTwitter) {
       await store.dispatch('loadFriendSuggestions');
     }
+
+    console.log('hi');
   },
 
   computed: mapState({

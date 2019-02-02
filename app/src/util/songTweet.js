@@ -1,5 +1,3 @@
-import serializeSongLabel from './serializeSongLabel';
-
 // TODO: this might change lol
 export const TWEET_LENGTH = 280;
 const TWITTER_URL_LENGTH = 23;

@@ -3,16 +3,23 @@
     <main-wrapper>
       <h2>what is this thing</h2>
 
-      <p>this is <strong>jam buds</strong>, a site to share music with friends</p>
+      <p>
+        this is <strong>jam buds</strong>, a site to share music with friends
+      </p>
 
       <p>
-        you can post songs you like, follow your friends, and listen to what everyone you know is listening to.
+        you can post songs you like, follow your friends, and listen to what
+        everyone you know is listening to.
       </p>
 
       <h2>who's responsible for this mess</h2>
 
       <p>
-        this site was built by <a href="https://thomasboyt.com/">thomas</a>. if you want to yell at him, you can do so on <a href="https://twitter.com/thomasABoyt">twitter</a>. you can also <router-link to="/users/thomasABoyt">follow him on here</router-link> if you'd like.
+        this site was built by <a href="https://thomasboyt.com/">thomas</a>. if
+        you want to yell at him, you can do so on
+        <a href="https://twitter.com/thomasABoyt">twitter</a>. you can also
+        <router-link to="/users/thomasABoyt">follow him on here</router-link> if
+        you'd like.
       </p>
 
       <p>
@@ -22,7 +29,10 @@
       <h3>images</h3>
 
       <ul>
-        <li>very good dog by <a href="http://twitter.com/rainbowfission">@rainbowfission</a></li>
+        <li>
+          very good dog by
+          <a href="http://twitter.com/rainbowfission">@rainbowfission</a>
+        </li>
       </ul>
 
       <h3>icons</h3>
@@ -42,7 +52,8 @@
       <h2>nerd things</h2>
 
       <p>
-        the code for jam buds is open source and viewable <a href="https://github.com/thomasboyt/jam-buds">on github</a>
+        the code for jam buds is open source and viewable
+        <a href="https://github.com/thomasboyt/jam-buds">on github</a>
       </p>
 
       <!-- <p v-if="buildSha">

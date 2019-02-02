@@ -2,14 +2,21 @@
   <div>
     <form class="submit-box" @submit="handleSubmit">
       <div class="input-container">
-        <input type="text" v-model="searchQuery" data-test="song-search-field" >
+        <input
+          type="text"
+          v-model="searchQuery"
+          data-test="song-search-field"
+        />
       </div>
 
       <button type="submit">find</button>
     </form>
 
     <div v-if="searchResults">
-      <div v-if="searchResults.length === 0" :style="{textAlign: 'center', padding: '50px'}">
+      <div
+        v-if="searchResults.length === 0"
+        :style="{ textAlign: 'center', padding: '50px' }"
+      >
         No results found!
       </div>
 

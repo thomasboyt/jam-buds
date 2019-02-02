@@ -1,12 +1,14 @@
 <template>
   <div class="container">
-    <sidebar :open="isSidebarOpen"/>
+    <sidebar :open="isSidebarOpen" />
 
-    <div v-if="isSidebarOpen"
+    <div
+      v-if="isSidebarOpen"
       class="container-overlay"
-      @click="handleClickSidebarOverlay"/>
+      @click="handleClickSidebarOverlay"
+    />
 
-    <slot/>
+    <slot />
   </div>
 </template>
 

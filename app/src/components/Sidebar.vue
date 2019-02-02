@@ -1,5 +1,5 @@
 <template>
-  <div v-if="authenticated" :class="['sidebar', {'-open': open}]">
+  <div v-if="authenticated" :class="['sidebar', { '-open': open }]">
     <p>
       what up,
       <router-link :to="`/users/${currentUserName}`">
@@ -7,7 +7,7 @@
       </router-link>
     </p>
 
-    <add-song-button/>
+    <add-song-button />
 
     <ul>
       <li>

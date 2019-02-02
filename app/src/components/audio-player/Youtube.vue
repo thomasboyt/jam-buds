@@ -1,5 +1,5 @@
 <template>
-  <div ref="container"/>
+  <div ref="container" />
 </template>
 
 <script>
@@ -37,7 +37,7 @@ function setupYoutube() {
     },
 
     events: {
-      onReady: (e) => (ytPlayerReady = true),
+      onReady: () => (ytPlayerReady = true),
       onStateChange: (e) => ytOnStateChange(e),
     },
   });
@@ -52,7 +52,7 @@ export default {
   props: ['url', 'isPlaying'],
 
   watch: {
-    isPlaying(newVal, oldVal) {
+    isPlaying(newVal) {
       if (!newVal) {
         ytPlayer.pauseVideo();
       } else {
@@ -60,7 +60,7 @@ export default {
       }
     },
 
-    url(newVal, oldVal) {
+    url(newVal) {
       const id = getVideoId(newVal);
       ytPlayer.loadVideoById(id);
     },

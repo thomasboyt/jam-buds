@@ -1,14 +1,19 @@
 <template>
   <div class="confirm-screen">
-    <p>you're posting <strong>{{ songLabel }}</strong></p>
+    <p>
+      you're posting <strong>{{ songLabel }}</strong>
+    </p>
 
     <div class="note-box">
-      <textarea v-model="noteText" placeholder="(optional) Write a note about this song!"/>
+      <textarea
+        v-model="noteText"
+        placeholder="(optional) Write a note about this song!"
+      />
     </div>
 
     <p>
       <label>
-        <input type="checkbox" v-model="twitterPostEnabled">
+        <input type="checkbox" v-model="twitterPostEnabled" />
         cross-post to twitter
       </label>
     </p>
@@ -28,7 +33,7 @@
 import { mapGetters, mapState } from 'vuex';
 
 import serializeSongLabel from '../../util/serializeSongLabel';
-import TwitterShareField from './TwitterShareField.vue';
+// import TwitterShareField from './TwitterShareField.vue';
 import {
   getDefaultTweet,
   getTweetLength,
@@ -36,7 +41,7 @@ import {
 } from '../../util/songTweet';
 
 export default {
-  components: { TwitterShareField },
+  // components: { TwitterShareField },
 
   data() {
     return {

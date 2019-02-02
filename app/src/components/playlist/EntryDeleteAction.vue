@@ -1,6 +1,6 @@
 <template>
   <button @click="handleDelete" :disabled="requestInFlight">
-    <icon :glyph="closeIcon"/>
+    <icon :glyph="closeIcon" />
   </button>
 </template>
 

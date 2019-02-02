@@ -1,17 +1,20 @@
 <template>
   <div v-if="didSignIn">
     <h3 style="color: hotpink">🎉 Email Sent! 🎉</h3>
-    <p>Check your inbox at
-      <br>
+    <p>
+      Check your inbox at
+      <br />
       <strong>{{ this.email }}</strong>
-      <br>for a link to sign in or sign up.
+      <br />for a link to sign in or sign up.
     </p>
   </div>
   <form v-else @submit="handleSubmit">
-    <input type="email"
+    <input
+      type="email"
       v-model="email"
       placeholder="enter ur email..."
-      aria-label="Email">
+      aria-label="Email"
+    />
 
     <button type="submit" class="submit">let's go!</button>
   </form>
@@ -19,8 +22,6 @@
 
 <script>
 import axios from 'axios';
-
-import apiRequest from '../apiRequest';
 
 export default {
   data() {
@@ -36,9 +37,8 @@ export default {
 
       const email = this.email;
 
-      let resp;
       try {
-        resp = await axios.post(`${process.env.API_URL}/auth/sign-in-token`, {
+        await axios.post(`${process.env.API_URL}/auth/sign-in-token`, {
           email,
         });
       } catch (err) {
@@ -47,7 +47,6 @@ export default {
         return;
       }
 
-      console.log('token generated, check log');
       this.didSignIn = true;
     },
   },

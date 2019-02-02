@@ -3,10 +3,12 @@
     <main-wrapper>
       <h2>get started</h2>
 
-      <p>slam a name down and get started! you can change it later, don't stress.</p>
+      <p>
+        slam a name down and get started! you can change it later, don't stress.
+      </p>
 
       <form @submit="handleSubmit">
-        <input type="text" v-model="name">
+        <input type="text" v-model="name" />
 
         <button type="submit" class="submit">gogogo</button>
       </form>
@@ -20,8 +22,6 @@
 
 <script>
 import axios from 'axios';
-
-import apiRequest from '../apiRequest';
 
 import SidebarWrapper from '../components/SidebarWrapper.vue';
 import MainWrapper from '../components/MainWrapper.vue';

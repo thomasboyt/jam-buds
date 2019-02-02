@@ -1,13 +1,13 @@
 <template>
-  <button v-if="isFollowing"
+  <button
+    v-if="isFollowing"
     class="follow-toggle -is-following"
-    @click="handleUnfollow">
+    @click="handleUnfollow"
+  >
     <span>Unfollow</span>
   </button>
 
-  <button v-else
-    class="follow-toggle"
-    @click="handleFollow">
+  <button v-else class="follow-toggle" @click="handleFollow">
     <span>+ Follow</span>
   </button>
 </template>

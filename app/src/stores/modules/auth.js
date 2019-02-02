@@ -15,7 +15,7 @@ const auth = {
     setAuthToken(state, token) {
       state.authToken = token;
     },
-    setCurrentUser(state, user) {
+    setCurrentUser(state) {
       state.authenticated = true;
     },
   },

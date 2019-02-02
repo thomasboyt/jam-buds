@@ -1,7 +1,9 @@
 <template>
   <div v-if="notEmbeddable">
     <p>
-      You tried to share the song "{{ shareTitle }}" via {{ shareSourceName }}, but unfortunately, this song can't be embedded on Jam Buds due to restrictions set by the song's uploader.
+      You tried to share the song "{{ shareTitle }}" via {{ shareSourceName }},
+      but unfortunately, this song can't be embedded on Jam Buds due to
+      restrictions set by the song's uploader.
     </p>
     <p>
       We recommend trying to find another source for this song!
@@ -12,12 +14,10 @@
   </div>
 
   <div v-else>
-    <p>
-      You're sharing the link "{{ shareTitle }}" via {{ shareSourceName }}.
-    </p>
+    <p>You're sharing the link "{{ shareTitle }}" via {{ shareSourceName }}.</p>
 
     <div v-if="manualEntry">
-      <manual-entry-form/>
+      <manual-entry-form />
 
       Or
       <a @click="handleToggleManualEntry" href="#">
@@ -26,7 +26,7 @@
     </div>
 
     <div v-else>
-      <spotify-search/>
+      <spotify-search />
 
       Or
       <a @click="handleToggleManualEntry" href="#" data-test="use-manual-entry">

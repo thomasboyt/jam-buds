@@ -1,7 +1,7 @@
 <template>
   <div>
-    <profile-nav :title="title"/>
-    <users-list :users="followers"/>
+    <profile-nav :title="title" />
+    <users-list :users="followers" />
   </div>
 </template>
 

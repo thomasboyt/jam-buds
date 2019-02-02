@@ -1,4 +1,3 @@
-const fs = require('fs');
 const path = require('path');
 const webpack = require('webpack');
 const createDevMiddleware = require('webpack-dev-middleware');
@@ -11,7 +10,9 @@ const serverConfig = require('../webpack/server');
 const readFile = (fs, file) => {
   try {
     return fs.readFileSync(path.join(clientConfig.output.path, file), 'utf-8');
-  } catch (e) {}
+  } catch (e) {
+    /* XXX: Silently fail */
+  }
 };
 
 module.exports = function setupDevServer(

@@ -1,13 +1,14 @@
 <template>
   <div>
-    <profile-nav :title="title"/>
+    <profile-nav :title="title" />
     <playlist
       :entries="entries"
       :entries-exhausted="entriesExhausted"
       :loading-next-page="loadingNextPage"
       :playback-source-label="title"
       :playback-source-path="playbackSourcePath"
-      @requestNextPage="handleRequestNextPage">
+      @requestNextPage="handleRequestNextPage"
+    >
       <p slot="placeholder">
         This user has not liked any songs yet :(
       </p>

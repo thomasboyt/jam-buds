@@ -1,37 +1,40 @@
 <template>
-  <div :class="['playlist-entry', {'is-playing': isPlaying}]">
-
-    <a class="playlist-entry--main"
+  <div :class="['playlist-entry', { 'is-playing': isPlaying }]">
+    <a
+      class="playlist-entry--main"
       :href="sourceUrl"
       target="_blank"
       rel="noopener noreferrer"
-      @click="handleClick">
-      <album-art :album-art="entry.song.albumArt"/>
+      @click="handleClick"
+    >
+      <album-art :album-art="entry.song.albumArt" />
 
       <div class="title">
         <div class="title-content">
           {{ entry.song.artists.join(',') }}
-          <br >
+          <br />
           {{ entry.song.title }}
         </div>
-
       </div>
 
       <span class="playlist-entry--actions">
         <button v-if="entry.note" @click="handleOpenNote">
-          <icon :glyph="noteIcon"/>
+          <icon :glyph="noteIcon" />
         </button>
 
-        <entry-like-action v-if="showLikeButton" :entry="entry"/>
-        <entry-delete-action v-if="showDeleteButton" :entry="entry"/>
+        <entry-like-action v-if="showLikeButton" :entry="entry" />
+        <entry-delete-action v-if="showDeleteButton" :entry="entry" />
 
         <button @click="handleToggleOpen" class="drawer-toggle">
-          <icon :glyph="arrowIcon" :class="{'arrow-up': isOpen, 'arrow-down': !isOpen}"/>
+          <icon
+            :glyph="arrowIcon"
+            :class="{ 'arrow-up': isOpen, 'arrow-down': !isOpen }"
+          />
         </button>
       </span>
     </a>
 
-    <div :class="['playlist-entry--detail', {'open': isOpen}]">
+    <div :class="['playlist-entry--detail', { open: isOpen }]">
       <p v-if="entry.note" class="track-note">
         {{ entry.note }}
       </p>

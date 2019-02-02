@@ -8,16 +8,20 @@
       :loading-next-page="loadingNextPage"
       playback-source-label="your feed"
       playback-source-path="/"
-      @requestNextPage="handleRequestNextPage">
+      @requestNextPage="handleRequestNextPage"
+    >
       <p slot="placeholder">
-        Your feed doesn't have any entries yet! <router-link to="/find-friends">Find some friends to follow!</router-link>
+        Your feed doesn't have any entries yet!
+        <router-link to="/find-friends">
+          Find some friends to follow!
+        </router-link>
       </p>
     </playlist>
   </div>
 </template>
 
 <script>
-import { mapGetters, mapState } from 'vuex';
+import { mapState } from 'vuex';
 import Playlist from './playlist/Playlist.vue';
 
 export default {

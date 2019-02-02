@@ -1,7 +1,7 @@
 <template>
   <button @click="handleToggleLike" :disabled="requestInFlight">
-    <icon v-if="entry.isLiked" :glyph="heartFilledIcon"/>
-    <icon v-else :glyph="heartOpenIcon"/>
+    <icon v-if="entry.isLiked" :glyph="heartFilledIcon" />
+    <icon v-else :glyph="heartOpenIcon" />
   </button>
 </template>
 

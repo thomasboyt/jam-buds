@@ -1,33 +1,43 @@
 <template>
   <div class="audio-player">
     <div v-if="nowPlaying">
-      <youtube v-if="nowPlaying.source === 'youtube'"
+      <youtube
+        v-if="nowPlaying.source === 'youtube'"
         :url="nowPlaying.youtubeUrl"
         :is-playing="isPlaying"
         @buffering="this.handleBufferingStart"
         @buffered="this.handleBufferingEnd"
-        @ended="this.handlePlaybackEnded"/>
-      <audio-stream v-if="nowPlaying.source === 'bandcamp'"
+        @ended="this.handlePlaybackEnded"
+      />
+      <audio-stream
+        v-if="nowPlaying.source === 'bandcamp'"
         :url="nowPlaying.bandcampStreamingUrl"
         :is-playing="isPlaying"
-        @ended="this.handlePlaybackEnded"/>
-      <audio-stream v-if="nowPlaying.source === 'soundcloud'"
+        @ended="this.handlePlaybackEnded"
+      />
+      <audio-stream
+        v-if="nowPlaying.source === 'soundcloud'"
         :url="nowPlaying.soundcloudStreamingUrl"
         :is-playing="isPlaying"
-        @ended="this.handlePlaybackEnded"/>
+        @ended="this.handlePlaybackEnded"
+      />
     </div>
 
     <div class="audio-player--controls">
-      <button class="play-pause-button"
+      <button
+        class="play-pause-button"
         @click="handlePlayPauseClick"
-        :disabled="!nowPlaying">
-        <icon :glyph="playPauseIcon"/>
+        :disabled="!nowPlaying"
+      >
+        <icon :glyph="playPauseIcon" />
       </button>
 
-      <button class="next-button"
+      <button
+        class="next-button"
         @click="handleNextClick"
-        :disabled="!nowPlaying">
-        <icon :glyph="nextIcon"/>
+        :disabled="!nowPlaying"
+      >
+        <icon :glyph="nextIcon" />
       </button>
     </div>
 
@@ -37,16 +47,24 @@
 
       <div v-if="nowPlaying">
         playing from
-        <router-link :to="playbackSourcePath">{{ playbackSourceLabel }}</router-link>
+        <router-link :to="playbackSourcePath">{{
+          playbackSourceLabel
+        }}</router-link>
       </div>
     </div>
 
     <div class="audio-player--art-container">
-      <loading-spinner v-if="isBuffering"/>
-      <img v-else-if="nowPlaying && albumArt" :src="albumArt" class="audio-player--art">
-      <icon v-else
+      <loading-spinner v-if="isBuffering" />
+      <img
+        v-else-if="nowPlaying && albumArt"
+        :src="albumArt"
+        class="audio-player--art"
+      />
+      <icon
+        v-else
         class="audio-player--art-placeholder"
-        :glyph="albumPlaceholderIcon"/>
+        :glyph="albumPlaceholderIcon"
+      />
     </div>
   </div>
 </template>

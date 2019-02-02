@@ -1,6 +1,10 @@
 <template>
-  <img v-if="albumArt" class="playlist-entry--album-art" :src="albumArt">
-  <icon v-else class="playlist-entry--album-art -placeholder" :glyph="albumPlaceholderIcon"/>
+  <img v-if="albumArt" class="playlist-entry--album-art" :src="albumArt" />
+  <icon
+    v-else
+    class="playlist-entry--album-art -placeholder"
+    :glyph="albumPlaceholderIcon"
+  />
 </template>
 
 <script>

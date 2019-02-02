@@ -1,8 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 
-import apiRequest from '../apiRequest';
-
 Vue.use(Vuex);
 
 import auth from './modules/auth';

@@ -1,6 +1,10 @@
 <template>
-  <button v-if="authenticated" class="sidebar-toggle" @click="handleOpenSidebar">
-    <icon :glyph="menuIcon"/>
+  <button
+    v-if="authenticated"
+    class="sidebar-toggle"
+    @click="handleOpenSidebar"
+  >
+    <icon :glyph="menuIcon" />
   </button>
 </template>
 

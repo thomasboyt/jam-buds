@@ -1,17 +1,21 @@
 <template>
-  <transition name="modal-open" :duration="{enter: 1500, leave: 1000}">
-    <div v-if="showAddSongModal" class="modal-overlay" @click="handleOverlayClick">
+  <transition name="modal-open" :duration="{ enter: 1500, leave: 1000 }">
+    <div
+      v-if="showAddSongModal"
+      class="modal-overlay"
+      @click="handleOverlayClick"
+    >
       <div class="modal-content" @click="handleModalClick">
         <div class="add-song-screen">
-          <div :style="{textAlign: 'center'}">
+          <div :style="{ textAlign: 'center' }">
             <h2>
               share a jam!
             </h2>
           </div>
 
-          <initial-screen v-if="state === INITIAL_STATE"/>
-          <search-screen v-if="state === SEARCH_STATE"/>
-          <confirm-screen v-if="state === CONFIRM_STATE"/>
+          <initial-screen v-if="state === INITIAL_STATE" />
+          <search-screen v-if="state === SEARCH_STATE" />
+          <confirm-screen v-if="state === CONFIRM_STATE" />
         </div>
       </div>
     </div>

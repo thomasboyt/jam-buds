@@ -1,6 +1,9 @@
 {
     "extends": [
-        "plugin:vue/strongly-recommended"
+        "plugin:vue/strongly-recommended",
+        "eslint:recommended",
+        "prettier",
+        "prettier/vue"
     ],
     "env": {
         "browser": true,
@@ -9,36 +12,14 @@
         "node": true
     },
     "parserOptions": {
-        "ecmaVersion": 2017,
-        "ecmaFeatures": {
-            "jsx": true,
-            "experimentalObjectRestSpread": true
-        },
+        "ecmaVersion": 2018,
         "sourceType": "module"
     },
     "rules": {
-        "no-const-assign": "error",
-        "no-this-before-super": "error",
-        "no-undef": "error",
-        "no-unreachable": "error",
-        "constructor-super": "error",
-        "valid-typeof": "error",
-
-        "vue/html-indent": ["error", 2, {
-            "alignAttributesVertically": false
-        }],
+        "no-console": "off",
 
         "vue/require-default-prop": "off",
         "vue/require-prop-types": "off",
-
-        "vue/max-attributes-per-line": ["error", {
-            "singleline": 3,
-            "multiline": {
-                "max": 1,
-                "allowFirstLine": true
-            }
-        }],
-
         "vue/order-in-components": "error"
     }
 }

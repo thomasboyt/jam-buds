@@ -2,7 +2,6 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const proxy = require('http-proxy-middleware');
 const { createBundleRenderer } = require('vue-server-renderer');
-const axios = require('axios');
 const setupDevServer = require('./devServer');
 const Raven = require('raven');
 const { renderTemplate, templates } = require('./templates');
@@ -65,7 +64,7 @@ async function main() {
     res.send(renderTemplate('webpack-error', { buildErrors }));
   }
 
-  function renderAppError(req, res, err, context) {
+  function renderAppError(req, res, err) {
     if (err.url) {
       res.redirect(err.url);
     } else if (

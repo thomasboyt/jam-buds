@@ -5,7 +5,7 @@
         {{ title }}
       </h2>
 
-      <follow-toggle v-if="showFollowToggle" :name="name"/>
+      <follow-toggle v-if="showFollowToggle" :name="name" />
     </div>
 
     <div class="user-links">
