@@ -1,12 +1,7 @@
 import { Router } from 'express';
 import wrapAsyncRoute from '../util/wrapAsyncRoute';
 
-import {
-  User,
-  getUserByName,
-  serializePublicUser,
-  getUserProfileForUser,
-} from '../models/user';
+import { User, getUserByName, getUserProfileForUser } from '../models/user';
 
 import {
   Song,

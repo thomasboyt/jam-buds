@@ -6,7 +6,6 @@ import {
   getUserByName,
   serializePublicUser,
   getUnfollowedUsersByTwitterIds,
-  getColorSchemeForUserId,
   getUserProfileForUser,
   setColorSchemeForUserId,
   serializeCurrentUser,
@@ -22,14 +21,7 @@ import {
 import { getUserFromRequest, isAuthenticated } from '../auth';
 import { getTwitterFriendIds } from '../apis/twitter';
 
-import {
-  PublicUser,
-  Playlist,
-  Feed,
-  Followers,
-  Following,
-  ColorScheme,
-} from '../resources';
+import { Followers, Following, ColorScheme } from '../resources';
 import wrapAsyncRoute from '../util/wrapAsyncRoute';
 
 export default function registerUserEndpoints(router: Router) {
@@ -127,7 +119,7 @@ export default function registerUserEndpoints(router: Router) {
       const publicUsers = users.map((row) => serializePublicUser(row));
 
       res.status(200).send({
-        users: users,
+        users: publicUsers,
       });
     })
   );

@@ -66,7 +66,7 @@ export default function registerTwitterAuthEndpoints(router: Router) {
       req.query.oauth_token,
       '',
       req.query.oauth_verifier,
-      (err: any, token: string, secret: string, authorizeUrl: string) => {
+      (err: any, token: string, secret: string) => {
         if (err) {
           console.error(`Twitter access token error`);
           console.error(err);
@@ -251,7 +251,7 @@ export default function registerTwitterAuthEndpoints(router: Router) {
         },
       };
 
-      const { data, errors } = await validate(req.body, fields);
+      const { errors } = await validate(req.body, fields);
 
       if (errors) {
         res.status(400).json({ errors });

@@ -4,7 +4,6 @@ import * as expect from 'expect';
 import * as request from 'supertest';
 
 import createApp from '../../createApp';
-import { db } from '../../db';
 import { userFactory } from '../../__tests__/factories';
 import {
   getSignInTokenByEmail,

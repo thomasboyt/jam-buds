@@ -8,7 +8,7 @@ import * as soundcloud from '../apis/soundcloud';
 
 import { getPlaybackSourceForUrl } from '../playbackSources';
 
-import { SearchResult, PlaybackSource } from '../resources';
+import { SearchResult } from '../resources';
 
 function serializeSpotifyResult(result: any): SearchResult {
   return {

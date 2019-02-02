@@ -2,10 +2,9 @@
 
 import * as expect from 'expect';
 import * as request from 'supertest';
-import * as Express from 'express';
 
 import { userFactory, entryFactory } from '../../__tests__/factories';
-import { getPlaylistByUserId, addSongToPlaylist } from '../../models/playlist';
+import { getPlaylistByUserId } from '../../models/playlist';
 
 import createApp from '../../createApp';
 

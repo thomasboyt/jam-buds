@@ -24,7 +24,7 @@ export interface ValidationResults {
 }
 
 // via https://github.com/Microsoft/TypeScript/issues/16069#issuecomment-369374214
-function isNotNullOrUndefined<T extends Object>(
+function isNotNullOrUndefined<T extends Record<string, any>>(
   input: null | undefined | T
 ): input is T {
   return input != null;
@@ -35,7 +35,6 @@ export async function validate(
   fields: Fields
 ): Promise<ValidationResults> {
   const fieldNames = Object.keys(fields);
-  const requiredFieldNames = fieldNames.map((name) => fields[name].required);
 
   const errorPromises = fieldNames.map(async (name) => {
     const field = fields[name];

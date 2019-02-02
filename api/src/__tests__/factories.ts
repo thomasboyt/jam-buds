@@ -10,7 +10,9 @@ export function uniqueString() {
   return `${uniqueCounter}`;
 }
 
-export async function userFactory(opts: Object = {}): Promise<User> {
+export async function userFactory(
+  opts: Record<string, any> = {}
+): Promise<User> {
   const defaults = {
     name: uniqueString(),
     email: `${uniqueString()}@example.example`,
@@ -34,7 +36,9 @@ export async function songFactory(
   return song;
 }
 
-export async function entryFactory(opts: Object = {}): Promise<PlaylistEntry> {
+export async function entryFactory(
+  opts: Record<string, any> = {}
+): Promise<PlaylistEntry> {
   const source: PlaybackSource = 'youtube';
 
   const defaults = {

@@ -16,7 +16,6 @@ export async function getDetailsFromUrl(url: string): Promise<SoundcloudTrack> {
   )}&consumer_key=${key}`;
 
   const resp = await axios.get(apiUrl);
-  const body = resp.data;
 
   if (resp.status !== 200) {
     // TODO: handle this well I guess

@@ -11,5 +11,5 @@
   "[typescript]": {
     "editor.formatOnSave": true
   },
-  "eslint.validate": ["javascript", "javascriptreact", "vue"],
+  "eslint.validate": ["javascript", "javascriptreact", "vue", "typescript"],
 }

@@ -36,7 +36,7 @@ export async function getTwitterFriendIds(user: User): Promise<string[]> {
   // the twit type defs are real bad so this is ugly
   const resp = await getTwitterClient(user).get('friends/ids', {
     stringify_ids: true,
-  } as Object);
+  });
 
   if ((resp.data as any).errors) {
     console.error(resp.data);

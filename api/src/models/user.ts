@@ -180,7 +180,6 @@ export async function setColorSchemeForUserId(
   colorScheme: ColorScheme
 ): Promise<void> {
   // delete any existing color scheme
-  const existingScheme = await getColorSchemeForUserId(userId);
   const deleteQuery = db!('color_schemes')
     .where({ user_id: userId })
     .delete();

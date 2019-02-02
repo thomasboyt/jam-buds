@@ -69,7 +69,7 @@ export interface Followers {
   users: PublicUser[];
 }
 
-export interface Following extends Followers {}
+export type Following = Followers;
 
 export interface ManualEntrySuggestion {
   title: string;

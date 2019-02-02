@@ -1,6 +1,5 @@
 /// <reference types="mocha" />
 
-import * as expect from 'expect';
 import * as dotenv from 'dotenv';
 
 // (this is only used for local testing, and doesn't exist in CI)

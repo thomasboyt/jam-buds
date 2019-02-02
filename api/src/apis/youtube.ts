@@ -1,6 +1,5 @@
 import axios from 'axios';
 import * as qs from 'query-string';
-import { ShareLinkDetails } from '../resources';
 
 const YOUTUBE_URL = /https:\/\/www\.youtube\.com\/watch\?v=(.*)/;
 
