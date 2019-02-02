@@ -57,7 +57,7 @@ export default {
       return `/users/${this.name}/liked`;
     },
     title() {
-      return `@${this.name}'s liked tracks`;
+      return `${this.name}'s liked tracks`;
     },
   },
 

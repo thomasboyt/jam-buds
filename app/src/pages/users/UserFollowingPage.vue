@@ -33,7 +33,7 @@ export default {
       following: (state) => state.profile.following,
     }),
     title() {
-      return `@${this.name}'s followed users`;
+      return `${this.name}'s followed users`;
     },
   },
 };

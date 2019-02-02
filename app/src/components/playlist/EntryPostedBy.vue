@@ -26,7 +26,7 @@ export default {
       if (currentUserId === this.entry.user.id) {
         return 'You';
       } else {
-        return `@${this.entry.user.name}`;
+        return this.entry.user.name;
       }
     },
   },

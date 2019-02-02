@@ -57,7 +57,7 @@ export default {
       return `/users/${this.name}`;
     },
     title() {
-      return `@${this.name}'s playlist`;
+      return `${this.name}'s playlist`;
     },
   },
 

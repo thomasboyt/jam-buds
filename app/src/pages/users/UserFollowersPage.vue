@@ -33,7 +33,7 @@ export default {
       followers: (state) => state.profile.followers,
     }),
     title() {
-      return `@${this.name}'s followers`;
+      return `${this.name}'s followers`;
     },
   },
 };
