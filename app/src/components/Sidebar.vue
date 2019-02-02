@@ -27,7 +27,7 @@
       </li>
       <li>
         <router-link to="/find-friends">
-          find twitter friends on jam buds!
+          find twitter friends
         </router-link>
       </li>
       <!-- <li>
@@ -75,3 +75,55 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+@import '../../styles/mixins';
+
+.sidebar {
+  padding: 10px 20px;
+  background: lighten($black, 5%);
+  position: relative;
+  font-family: 'Open Sans', sans-serif;
+  color: white;
+
+  @media (max-width: $breakpoint-small) {
+    position: fixed;
+    width: 300px;
+    height: 100%;
+    top: $header-height;
+    left: -300px;
+    z-index: 2;
+
+    transition: 0.2s left ease-in;
+
+    &.-open {
+      left: 0;
+    }
+  }
+
+  a,
+  a:visited {
+    color: #ccc;
+  }
+
+  ul {
+    list-style-type: none;
+    padding-left: 0;
+
+    li a {
+      display: block;
+      width: 100%;
+      text-decoration: none;
+      padding: 8px 0;
+
+      &.router-link-exact-active {
+        color: white;
+        font-weight: 600;
+      }
+      &:hover {
+        color: white;
+      }
+    }
+  }
+}
+</style>

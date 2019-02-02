@@ -50,3 +50,10 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+ul.playlist-entries {
+  list-style-type: none;
+  padding-left: 0px;
+}
+</style>

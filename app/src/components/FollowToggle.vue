@@ -33,3 +33,28 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.follow-toggle {
+  border: 3px var(--theme-border-color) solid;
+  padding: 10px 15px;
+  width: 120px;
+
+  font-weight: bold;
+  font-size: 16px;
+
+  &.-is-following {
+    span {
+      display: none;
+    }
+
+    &:after {
+      content: 'Following';
+    }
+
+    &:hover:after {
+      content: '- Unfollow';
+    }
+  }
+}
+</style>

@@ -1,8 +1,8 @@
 <template>
   <div class="posted-by">
-    <router-link :to="`/users/${entry.user.name}`">
-      {{ displayName }}
-    </router-link>
+    <router-link :to="`/users/${entry.user.name}`">{{
+      displayName
+    }}</router-link>
     posted ({{ timestamp }} ago)
   </div>
 </template>
@@ -32,3 +32,17 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.posted-by {
+  border: 3px var(--theme-border-color) solid;
+  display: inline-block;
+  padding: 5px 15px;
+  border-bottom: 0;
+
+  a {
+    color: var(--theme-link-color);
+    font-weight: 500;
+  }
+}
+</style>

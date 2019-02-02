@@ -11,7 +11,7 @@
 
       <div class="title">
         <div class="title-content">
-          {{ entry.song.artists.join(',') }}
+          <span class="title-artist">{{ entry.song.artists.join(',') }}</span>
           <br />
           {{ entry.song.title }}
         </div>
@@ -152,7 +152,130 @@ export default {
 
 <style scoped lang="scss">
 .playlist-entry {
-  background-color: rgb(255, 255, 166);
-  color: black;
+  color: var(--theme-text-color);
+  border: 3px var(--theme-border-color) solid;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.1);
+  }
+  margin-bottom: 30px;
+  display: block;
+}
+
+a.playlist-entry--main,
+a:visited.playlist-entry--main {
+  color: var(--theme-text-color);
+}
+
+.playlist-entry--main {
+  height: 64px;
+
+  display: flex;
+  align-items: center;
+  color: var(--theme-text-color);
+  text-decoration: none;
+
+  .playlist-entry--album-art {
+    height: 100%;
+    flex: 0 0 64px;
+    border-right: 3px var(--theme-border-color) solid;
+
+    &.-placeholder {
+      height: 80%;
+      text-align: center;
+
+      svg {
+        height: 100%;
+      }
+    }
+  }
+
+  .title {
+    .title-artist {
+      font-weight: 500;
+    }
+
+    > .title-content {
+      display: inline-block;
+      width: 100%;
+
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    flex-shrink: 1;
+    flex-grow: 1;
+    max-width: 100%;
+    min-width: 0;
+
+    padding: 0 20px;
+    line-height: 24px;
+  }
+}
+
+.playlist-entry--actions {
+  flex-grow: 0;
+  flex-shrink: 0;
+
+  margin-left: auto;
+  margin-right: 10px;
+
+  /deep/ button {
+    transition: transform 0.15s linear;
+    transform: scale(1);
+    padding: 0;
+
+    &:hover,
+    &:active {
+      transform: scale(1.3);
+    }
+
+    margin-left: 10px;
+
+    &:disabled {
+      stroke: grey;
+      fill: grey;
+    }
+
+    .icon {
+      width: 30px;
+      height: 30px;
+
+      transform: rotate(0deg);
+      transition: transform 0.3s ease-in-out;
+
+      &.heart-filled path {
+        fill: var(--theme-text-color);
+      }
+
+      &.arrow-up {
+        transform: rotate(-180deg);
+      }
+    }
+  }
+
+  .drawer-toggle {
+    margin-left: 20px;
+    margin-right: 10px;
+  }
+}
+
+.playlist-entry--detail {
+  max-height: 0px;
+  overflow: hidden;
+
+  transition: max-height 0.5s ease;
+
+  &.open {
+    max-height: 300px;
+    overflow: auto;
+  }
+
+  padding: 0 10px;
+
+  > p:first-child {
+    padding-top: 20px;
+  }
 }
 </style>

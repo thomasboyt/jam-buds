@@ -1,11 +1,13 @@
-@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,700');
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,500,600,700');
+
+// TODO: cull this down
+@import url('https://fonts.googleapis.com/css?family=Work+Sans:400,500,600,700,800,900');
 
 @import './mixins';
 @import './z-index';
 
 @import "~normalize.css/normalize.css";
 @import "./playlist.scss";
-@import "./sidebar.scss";
 @import "./header.scss";
 @import "./add-song.scss";
 @import "./audio-player.scss";
@@ -16,21 +18,19 @@
 }
 
 body {
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Work Sans', sans-serif;
   background: url('../assets/bg.jpg');
+  font-size: 16px;
+  line-height: 1.25em;
 }
 
 h2 {
-  font-weight: normal;
+  font-weight: 600;
 }
 
 p {
   margin-top: 0;
   margin-bottom: 1em;
-}
-
-a, a:visited {
-  color: yellow;
 }
 
 a:hover, a:active {
@@ -53,29 +53,9 @@ html, body, .react-root, .app-container, .page-container {
   padding-top: $header-height;
 }
 
-.main, .sidebar {
+.main {
   padding: 10px;
   padding-top: 20px;
-}
-
-.sidebar {
-  background: lighten($black, 15%);
-  color: white;
-
-  @media (max-width: $breakpoint-small) {
-    position: fixed;
-    width: 300px;
-    height: 100%;
-    top: $header-height;
-    left: -300px;
-    z-index: 2;
-
-    transition: 0.2s left ease-in;
-
-    &.-open {
-      left: 0;
-    }
-  }
 }
 
 .main-inner {
@@ -133,64 +113,6 @@ button, .button {
 button:active, .button:active {
   box-shadow: none;
   transform: translate(2px, 2px);
-}
-
-.logged-out-homepage {
-  position: relative;
-
-  max-width: 600px;
-  min-height: 850px;
-  margin: 0 auto;
-  margin-bottom: 80px;
-  padding: 0 20px;
-  padding-bottom: 50px;
-
-  background-image: url('../assets/ghettoblaster_corgi.png');
-  background-color: white;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  border: 15px hotpink solid;
-
-  text-align: center;
-
-  .lower {
-    margin-top: 450px;
-  }
-
-  .twitter-auth {
-    margin-top: 30px;
-  }
-
-  .twitter-auth .button {
-    display: inline-block;
-    margin: 10px auto;
-    padding: 10px;
-    text-decoration: none;
-
-    background-color: yellow;
-    color: black;
-    font-weight: bold;
-    font-size: 1.5em;
-
-    &:active {
-      transform: translate3d(4px, 4px, 0px);
-    }
-  }
-
-  .attribution {
-    position: absolute;
-    text-align: center;
-    left: 0;
-    right: 0;
-    bottom: 15px;
-
-    font-size: 12px;
-
-    a, a:visited, a:hover, a:active {
-      color: hotpink;
-    }
-  }
 }
 
 .not-found-page {

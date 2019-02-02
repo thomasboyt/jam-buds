@@ -10,6 +10,10 @@
 
   padding: 0 20px;
 
+  a, a:visited {
+    color: yellow;
+  }
+
   .header-content {
     display: flex;
     align-items: center;

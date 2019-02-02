@@ -1,6 +1,6 @@
 <template>
   <sidebar-wrapper v-if="authenticated">
-    <main-wrapper>
+    <main-wrapper :color-scheme="colorScheme">
       <feed />
     </main-wrapper>
   </sidebar-wrapper>
@@ -38,6 +38,8 @@ export default {
 
   computed: mapState({
     authenticated: (state) => state.auth.authenticated,
+    colorScheme: (state) =>
+      state.auth.authenticated && state.currentUser.colorScheme,
   }),
 };
 </script>

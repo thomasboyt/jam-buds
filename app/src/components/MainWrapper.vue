@@ -1,22 +1,42 @@
 <template>
-  <div class="main">
+  <div class="main" :style="cssTheme">
     <div class="main-inner">
       <slot />
     </div>
   </div>
 </template>
 
-<style scoped lang="scss">
-// todo replace this with user color schemes?
+<script>
+export default {
+  props: {
+    colorScheme: {
+      default: {
+        backgroundColor: 'hotpink',
+        textColor: 'black',
+        linkColor: 'black',
+      },
+    },
+  },
+  computed: {
+    cssTheme() {
+      return {
+        '--theme-background-color': this.colorScheme.backgroundColor,
+        '--theme-border-color': this.colorScheme.textColor,
+        '--theme-text-color': this.colorScheme.textColor,
+        '--theme-link-color': this.colorScheme.linkColor,
+      };
+    },
+  },
+};
+</script>
+
+<style lang="scss">
 .main {
-  background: rgb(189, 242, 113);
+  background: var(--theme-background-color);
+  color: var(--theme-text-color);
 
   a {
-    color: rgb(1, 162, 166);
+    color: var(--theme-link-color);
   }
-}
-
-button.follow-toggle {
-  background: yellow;
 }
 </style>
