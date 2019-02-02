@@ -10,10 +10,12 @@
 export default {
   props: {
     colorScheme: {
-      default: {
-        backgroundColor: 'hotpink',
-        textColor: 'black',
-        linkColor: 'black',
+      default() {
+        return {
+          backgroundColor: 'hotpink',
+          textColor: 'black',
+          linkColor: 'black',
+        };
       },
     },
   },
