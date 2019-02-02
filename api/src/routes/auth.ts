@@ -18,6 +18,7 @@ import {
 import { isAuthenticated } from '../auth';
 import { validEmail, validUsername } from '../util/validators';
 import { Fields, validate } from '../util/validation';
+import { sendEmail } from '../util/email';
 
 /*
  * Here's how Twitter auth works:
@@ -151,18 +152,21 @@ export default function registerTwitterAuthEndpoints(router: Router) {
       const user = await getUserByEmail(email);
 
       if (user) {
-        // TODO: Send sign in email here
+        const link = `${process.env.APP_URL}/auth/sign-in?t=${token}`;
 
-        if (process.env.NODE_ENV === 'development') {
-          console.log('\n*** Created sign-in link:');
-          console.log(`${process.env.APP_URL}/auth/sign-in?t=${token}\n`);
-        }
+        await sendEmail(
+          email,
+          'Your sign-in link for jambuds.club',
+          `Welcome back! Click here to sign into Jam Buds: ${link}`
+        );
       } else {
-        // TODO: Send registration email here
-        if (process.env.NODE_ENV === 'development') {
-          console.log('\n*** Created registration link:');
-          console.log(`${process.env.APP_URL}/registration?t=${token}\n`);
-        }
+        const link = `${process.env.APP_URL}/auth/sign-in?t=${token}`;
+
+        await sendEmail(
+          email,
+          'Welcome to jambuds.club!',
+          `Hi! You must be new here. Click here to sign up for Jam Buds: ${link}`
+        );
       }
 
       res.status(200).json({ success: true });
