@@ -2,7 +2,6 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const proxy = require('http-proxy-middleware');
 const { createBundleRenderer } = require('vue-server-renderer');
-const setupDevServer = require('./devServer');
 const Raven = require('raven');
 const { renderTemplate, templates } = require('./templates');
 
@@ -45,6 +44,10 @@ async function main() {
   } else {
     // In development: setup the dev server with watch and hot-reload,
     // and create a new renderer on bundle / index template update.
+
+    // XXX: Defer loading dev server module so various dependencies aren't
+    // required in production
+    const setupDevServer = require('./devServer');
     setupDevServer(app, {
       onStart: (promise) => {
         readyPromise = promise;

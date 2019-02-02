@@ -6,7 +6,7 @@ const baseConfig = require('./base.js');
 
 module.exports = merge(baseConfig, {
   entry: {
-    app: ['babel-polyfill', './src/entry-client.js'],
+    app: ['@babel/polyfill', './src/entry-client.js'],
   },
 
   optimization: {

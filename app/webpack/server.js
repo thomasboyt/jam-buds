@@ -9,7 +9,7 @@ const conf = merge(baseConfig, {
   target: 'node',
 
   entry: {
-    app: ['babel-polyfill', './src/entry-server.js'],
+    app: ['@babel/polyfill', './src/entry-server.js'],
   },
 
   output: {
