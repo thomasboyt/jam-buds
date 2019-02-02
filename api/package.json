@@ -27,7 +27,7 @@
     "expect": "^1.20.2",
     "mocha": "^5.2.0",
     "nodemon": "^1.18.9",
-    "supertest": "^2.0.1"
+    "supertest": "^3.4.2"
   },
   "dependencies": {
     "@sendgrid/mail": "^6.3.1",
