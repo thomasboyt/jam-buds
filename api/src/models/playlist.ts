@@ -78,10 +78,10 @@ interface QueryOptions {
 
 function getBasePlaylistQuery(opts: QueryOptions) {
   /*
-  * Note: the db!.raw('to_json') calls are used to "namespace" the results here
-  * https://github.com/tgriesser/knex/issues/61#issuecomment-259176685
-  * This may not be a great idea performance-wise.
-  */
+   * Note: the db!.raw('to_json') calls are used to "namespace" the results here
+   * https://github.com/tgriesser/knex/issues/61#issuecomment-259176685
+   * This may not be a great idea performance-wise.
+   */
   const select = [
     db!.raw('to_json(playlist_entries.*) as entry'),
     db!.raw('to_json(songs.*) as song'),

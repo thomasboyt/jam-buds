@@ -245,7 +245,7 @@ export default function registerTwitterAuthEndpoints(router: Router) {
             },
             {
               text: 'This username has already been taken',
-              isValid: async (name) => !await getUserByName(name),
+              isValid: async (name) => !(await getUserByName(name)),
             },
           ],
         },
