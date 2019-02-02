@@ -7,9 +7,13 @@
 
       <form @submit="handleSubmit">
         <input type="text" v-model="name">
-        
-        <button type="submit">gogogo</button>
+
+        <button type="submit" class="submit">gogogo</button>
       </form>
+
+      <p v-if="didError" style="color: red">
+        Unknown error occurred
+      </p>
     </main-wrapper>
   </sidebar-wrapper>
 </template>
@@ -33,6 +37,7 @@ export default {
   data() {
     return {
       name: '',
+      didError: false,
     };
   },
 
@@ -48,10 +53,17 @@ export default {
 
       const name = this.name;
 
-      const resp = await axios.post('/auth/registration', {
-        name,
-        token: this.$route.query.t,
-      });
+      let resp;
+      try {
+        resp = await axios.post('/auth/registration', {
+          name,
+          token: this.$route.query.t,
+        });
+      } catch (err) {
+        console.log(err);
+        this.didError = true;
+        return;
+      }
 
       if (resp.status === 200) {
         document.location = '/';
@@ -60,3 +72,12 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.submit {
+  background: yellow;
+  color: black;
+  font-weight: bold;
+  padding: 3px 5px;
+}
+</style>
