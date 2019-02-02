@@ -10,19 +10,19 @@
     "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/entry.ts",
     "start": "ts-node 'src/entry.ts'",
     "resetdb": "./scripts/resetdb",
-    "test": "NODE_ENV=test mocha --require ts-node/register 'src/**/*.spec.ts'"
+    "test": "NODE_ENV=test mocha --exit --require ts-node/register 'src/**/*.spec.ts'"
   },
   "author": "Thomas Boyt <me@thomasboyt.com>",
   "license": "MIT",
   "devDependencies": {
     "@types/expect": "^1.20.3",
-    "@types/mocha": "^2.2.33",
+    "@types/mocha": "^2.2.48",
     "@types/node": "^9.4.7",
     "@types/supertest": "^2.0.0",
     "dotenv": "^2.0.0",
     "expect": "^1.20.2",
-    "mocha": "^3.2.0",
-    "nodemon": "^1.11.0",
+    "mocha": "^5.2.0",
+    "nodemon": "^1.18.9",
     "supertest": "^2.0.1"
   },
   "dependencies": {
