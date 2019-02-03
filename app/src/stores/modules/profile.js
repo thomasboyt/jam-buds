@@ -1,5 +1,4 @@
 import Vue from 'vue';
-import apiRequest from '../../apiRequest';
 
 const profile = {
   state() {
@@ -44,7 +43,7 @@ const profile = {
     },
 
     async loadProfileFollowing(context, userName) {
-      const resp = await apiRequest(context, {
+      const resp = await this.$axios({
         url: `/users/${userName}/following`,
         method: 'GET',
       });
@@ -56,7 +55,7 @@ const profile = {
     },
 
     async loadProfileFollowers(context, userName) {
-      const resp = await apiRequest(context, {
+      const resp = await this.$axios({
         url: `/users/${userName}/followers`,
         method: 'GET',
       });

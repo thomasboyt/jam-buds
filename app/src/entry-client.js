@@ -45,10 +45,9 @@ if (initialState) {
 }
 
 const authToken = Cookies.get(AUTH_TOKEN_COOKIE);
-
-if (authToken) {
-  store.commit('setAuthToken', authToken);
-}
+app.$axios.defaults.headers = {
+  'X-Auth-Token': authToken,
+};
 
 // wait until router has resolved all async before hooks
 // and async components...

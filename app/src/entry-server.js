@@ -10,7 +10,9 @@ export default async function(context) {
   const { url, authToken } = context;
 
   if (authToken) {
-    store.commit('setAuthToken', authToken);
+    app.$axios.defaults.headers = {
+      'X-Auth-Token': authToken,
+    };
     await store.dispatch('fetchCurrentUser');
   }
 
@@ -46,8 +48,6 @@ export default async function(context) {
           // store to pick-up the server-side state without having to duplicate
           // the initial data fetching on the client.
 
-          // I don't know if it's actually bad to have the access token in the HTML but EH
-          delete store.state.auth.accessToken;
           context.state = store.state;
           context.spriteContent = spriteContent;
           resolve(app);

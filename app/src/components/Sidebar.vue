@@ -47,7 +47,6 @@
 </template>
 
 <script>
-import { signOut } from '../apiRequest';
 import AddSongButton from './AddSongButton.vue';
 
 export default {
@@ -68,7 +67,11 @@ export default {
     async handleSignOut(evt) {
       evt.preventDefault();
 
-      await signOut(this.$store.state.auth.authToken);
+      await this.$axios({
+        baseURL: null,
+        url: '/auth/sign-out',
+        method: 'POST',
+      });
 
       document.location.href = '/';
     },

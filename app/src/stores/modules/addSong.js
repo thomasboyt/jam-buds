@@ -1,6 +1,5 @@
 import _get from 'lodash/get';
 import _pick from 'lodash/pick';
-import apiRequest from '../../apiRequest';
 import { getPlaybackSourceName } from '../../playbackSources';
 
 export const INITIAL_STATE = 'initial';
@@ -148,7 +147,7 @@ const addSong = {
     },
 
     async submitSongLink(context, url) {
-      const resp = await apiRequest(context, {
+      const resp = await this.$axios({
         url: '/share-details',
         method: 'GET',
         params: { url },
@@ -164,7 +163,7 @@ const addSong = {
     async addSongSearch(context, query) {
       context.commit('resetSearch');
 
-      const resp = await apiRequest(context, {
+      const resp = await this.$axios({
         url: '/spotify-search',
         method: 'GET',
         params: { query },
@@ -183,7 +182,7 @@ const addSong = {
     async submitSong(context, { note, tweet }) {
       const params = getSubmitOptions({ ...context.state, note, tweet });
 
-      const resp = await apiRequest(context, {
+      const resp = await this.$axios({
         url: '/playlist',
         method: 'POST',
         data: params,

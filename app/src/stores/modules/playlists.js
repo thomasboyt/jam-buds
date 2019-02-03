@@ -1,5 +1,3 @@
-import apiRequest from '../../apiRequest';
-
 const playlistState = () => {
   return {
     entryIds: [],
@@ -70,7 +68,7 @@ const playlists = {
 
       const previousId = context.state[key].entryIds.slice(-1)[0];
 
-      const resp = await apiRequest(context, {
+      const resp = await this.$axios({
         url: context.state[key].url,
         method: 'GET',
         params: { previousId },

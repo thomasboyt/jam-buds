@@ -1,5 +1,4 @@
 import Vue from 'vue';
-import apiRequest from '../../apiRequest';
 
 const currentUser = {
   state() {
@@ -24,7 +23,7 @@ const currentUser = {
   actions: {
     async followUser(context, name) {
       console.log('following', name);
-      const resp = await apiRequest(context, {
+      const resp = await this.$axios({
         url: '/following',
         method: 'POST',
         data: {
@@ -35,7 +34,7 @@ const currentUser = {
     },
 
     async unfollowUser(context, name) {
-      await apiRequest(context, {
+      await this.$axios({
         url: `/following/${name}`,
         method: 'DELETE',
       });
@@ -44,7 +43,7 @@ const currentUser = {
     },
 
     async loadFriendSuggestions(context) {
-      const resp = await apiRequest(context, {
+      const resp = await this.$axios({
         url: `/friend-suggestions`,
         method: 'GET',
       });

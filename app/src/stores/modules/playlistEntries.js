@@ -1,5 +1,4 @@
 import Vue from 'vue';
-import apiRequest from '../../apiRequest';
 
 const playlistEntries = {
   state() {
@@ -25,7 +24,7 @@ const playlistEntries = {
 
   actions: {
     async likePlaylistEntry(context, { id }) {
-      await apiRequest(context, {
+      await this.$axios({
         url: `/likes/${id}`,
         method: 'PUT',
       });
@@ -34,7 +33,7 @@ const playlistEntries = {
     },
 
     async unlikePlaylistEntry(context, { id }) {
-      await apiRequest(context, {
+      await this.$axios({
         url: `/likes/${id}`,
         method: 'DELETE',
       });
@@ -43,7 +42,7 @@ const playlistEntries = {
     },
 
     async deletePlaylistEntry(context, { id }) {
-      await apiRequest(context, {
+      await this.$axios({
         url: `/playlist/${id}`,
         method: 'DELETE',
       });
