@@ -8,6 +8,7 @@ import registerUserEndpoints from './routes/users';
 import registerSearchEndpoints from './routes/search';
 import registerPlaylistEndpoints from './routes/playlists';
 import registerLikesEndpoints from './routes/likes';
+import registerSettingsEndpoints from './routes/settings';
 
 const env = process.env.NODE_ENV;
 
@@ -36,6 +37,7 @@ export default function createApp() {
   registerSearchEndpoints(apiRouter);
   registerPlaylistEndpoints(apiRouter);
   registerLikesEndpoints(apiRouter);
+  registerSettingsEndpoints(apiRouter);
   app.use('/api', apiRouter);
 
   const authRouter = express.Router();

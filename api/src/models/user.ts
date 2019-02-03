@@ -1,14 +1,9 @@
 import { db } from '../db';
 import genAuthToken from '../util/genAuthToken';
 import { camelizeKeys, decamelizeKeys } from 'humps';
-import {
-  PublicUser,
-  ColorScheme,
-  UserProfile,
-  CurrentUser,
-} from '../resources';
-import { defaultColorScheme } from '../constants';
+import { PublicUser, CurrentUser, UserProfile } from '../resources';
 import { getFollowingForUserId } from './following';
+import { getColorSchemeForUserId } from './colorSchemes';
 
 export interface User {
   id: number;
@@ -145,26 +140,6 @@ export async function getUnfollowedUsersByTwitterIds(
   return users;
 }
 
-export async function getColorSchemeForUserId(
-  userId: number
-): Promise<ColorScheme> {
-  const query = db!
-    .select('*')
-    .from('color_schemes')
-    .where({ user_id: userId });
-
-  const [row] = await (query as any);
-
-  if (!row) {
-    return defaultColorScheme;
-  }
-
-  delete row.user_id;
-  delete row.id;
-
-  return camelizeKeys(row) as ColorScheme;
-}
-
 export async function getUserProfileForUser(user: User): Promise<UserProfile> {
   const colorScheme = await getColorSchemeForUserId(user.id);
 
@@ -173,25 +148,6 @@ export async function getUserProfileForUser(user: User): Promise<UserProfile> {
     name: user.name,
     colorScheme,
   };
-}
-
-export async function setColorSchemeForUserId(
-  userId: number,
-  colorScheme: ColorScheme
-): Promise<void> {
-  // delete any existing color scheme
-  const deleteQuery = db!('color_schemes')
-    .where({ user_id: userId })
-    .delete();
-
-  await (deleteQuery as any);
-
-  const query = db!('color_schemes').insert({
-    user_id: userId,
-    ...decamelizeKeys(colorScheme),
-  });
-
-  await (query as any);
 }
 
 export async function serializeCurrentUser(user: User): Promise<CurrentUser> {

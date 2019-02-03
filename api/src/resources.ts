@@ -91,7 +91,4 @@ export interface ColorScheme {
   backgroundColor: string;
   textColor: string;
   linkColor: string;
-  entryBackgroundColor: string;
-  entryTextColor: string;
-  entryLinkColor: string;
 }
