@@ -16,6 +16,7 @@ const currentUser = {
       state.following = state.following.filter((user) => user.name !== name);
     },
     setFriendSuggestions(state, suggestions) {
+      // XXX: is there a reason this uses Vue.set?
       Vue.set(state, 'friendSuggestions', suggestions);
     },
     updateColorScheme(state, scheme) {
