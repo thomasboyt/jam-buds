@@ -51,5 +51,11 @@ export default {
   a {
     color: var(--theme-link-color);
   }
+
+  svg {
+    fill: var(--theme-link-color);
+    stroke: var(--theme-link-color);
+    color: var(--theme-link-color);
+  }
 }
 </style>

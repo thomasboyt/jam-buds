@@ -42,10 +42,6 @@
         <li>play by Alex Fuller from the Noun Project</li>
         <li>pause by Alex Fuller from the Noun Project</li>
         <li>Skip Forward by Alex Fuller from the Noun Project</li>
-        <li>down by Matthias Van Wambeke from the Noun Project</li>
-        <li>Close by Viktor Vorobyev from the Noun Project</li>
-        <li>Heart by Alfa Design from the Noun Project</li>
-        <li>Note by Bernar Novalyi from the Noun Project</li>
         <li>menu by Ismael Ruiz from the Noun Project</li>
       </ul>
 
