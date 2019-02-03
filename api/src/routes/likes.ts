@@ -11,7 +11,7 @@ import {
 
 import { isAuthenticated } from '../auth';
 
-export default function registerLikeEndpoints(router: Router) {
+export default function registerLikesEndpoints(router: Router) {
   // Like a song
   router.put(
     '/likes/:entryId',
