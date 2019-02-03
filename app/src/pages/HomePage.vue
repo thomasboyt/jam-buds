@@ -38,8 +38,6 @@ export default {
 
   computed: mapState({
     authenticated: (state) => state.auth.authenticated,
-    colorScheme: (state) =>
-      state.auth.authenticated && state.currentUser.colorScheme,
   }),
 };
 </script>

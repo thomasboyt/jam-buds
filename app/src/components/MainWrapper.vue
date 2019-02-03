@@ -7,25 +7,36 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
+
 export default {
-  props: {
-    colorScheme: {
-      default() {
-        return {
+  props: ['colorScheme'],
+
+  computed: {
+    ...mapState({
+      currentUserScheme: (state) => state.currentUser.colorScheme,
+    }),
+
+    cssTheme() {
+      let colorScheme;
+
+      if (this.colorScheme) {
+        colorScheme = this.colorScheme;
+      } else if (this.currentUserScheme) {
+        colorScheme = this.currentUserScheme;
+      } else {
+        colorScheme = {
           backgroundColor: 'hotpink',
           textColor: 'black',
           linkColor: 'black',
         };
-      },
-    },
-  },
-  computed: {
-    cssTheme() {
+      }
+
       return {
-        '--theme-background-color': this.colorScheme.backgroundColor,
-        '--theme-border-color': this.colorScheme.textColor,
-        '--theme-text-color': this.colorScheme.textColor,
-        '--theme-link-color': this.colorScheme.linkColor,
+        '--theme-background-color': colorScheme.backgroundColor,
+        '--theme-border-color': colorScheme.textColor,
+        '--theme-text-color': colorScheme.textColor,
+        '--theme-link-color': colorScheme.linkColor,
       };
     },
   },
