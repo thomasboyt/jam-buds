@@ -18,6 +18,9 @@ const currentUser = {
     setFriendSuggestions(state, suggestions) {
       Vue.set(state, 'friendSuggestions', suggestions);
     },
+    updateColorScheme(state, scheme) {
+      state.colorScheme = scheme;
+    },
   },
 
   actions: {

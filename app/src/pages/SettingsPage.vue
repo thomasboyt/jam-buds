@@ -62,11 +62,14 @@ export default {
   methods: {
     async handleSubmit(e) {
       e.preventDefault();
+
       this.$axios({
         url: '/settings/color-scheme',
         method: 'POST',
         data: this.colorScheme,
       });
+
+      this.$store.commit('updateColorScheme', this.colorScheme);
       // TODO
     },
   },
