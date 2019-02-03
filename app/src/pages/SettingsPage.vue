@@ -60,7 +60,13 @@ export default {
   },
 
   methods: {
-    async handleSubmit() {
+    async handleSubmit(e) {
+      e.preventDefault();
+      this.$axios({
+        url: '/settings/color-scheme',
+        method: 'POST',
+        data: this.colorScheme,
+      });
       // TODO
     },
   },
