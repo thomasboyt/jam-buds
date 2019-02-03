@@ -1,6 +1,6 @@
 <template>
   <sidebar-wrapper v-if="authenticated">
-    <main-wrapper :color-scheme="colorScheme">
+    <main-wrapper>
       <feed />
     </main-wrapper>
   </sidebar-wrapper>
