@@ -30,11 +30,11 @@
           find twitter friends
         </router-link>
       </li>
-      <!-- <li>
+      <li>
         <router-link to="/settings">
           your settings
         </router-link>
-      </li> -->
+      </li>
       <li>
         <router-link to="/about">
           about jam buds
