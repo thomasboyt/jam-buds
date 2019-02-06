@@ -34,9 +34,6 @@ Everything else is handled by NPM. Make sure your editor is configured to prefer
 ```
 cd api
 npm install
-createdb jambuds
-./node_modules/.bin/knex init
-npm run resetdb
 ```
 
 ### App Server
@@ -49,6 +46,16 @@ npm install
 ## Run in development
 
 First, copy over `_env` to `.env` and fill it out. You'll need to provision Twitter, Spotify, and Youtube API apps, but they're all pretty easy to set up. The Google one just needs Youtube API access, btw.
+
+Make sure your `.env` has your username replaced for the DB connection, then set up your database:
+
+```
+cd api
+createdb jambuds
+./node_modules/.bin/knex init
+cp knexfile.default.js knexfile.js
+npm run resetdb
+```
 
 To start the app, in two separate sessions, run:
 
