@@ -10,7 +10,7 @@ export async function followUser(userId: number, followingId: number) {
     })
     .into('following');
 
-  await (query as any);
+  await query;
 }
 
 export async function unfollowUser(userId: number, followingId: number) {
@@ -21,7 +21,7 @@ export async function unfollowUser(userId: number, followingId: number) {
     })
     .delete();
 
-  await (query as any);
+  await query;
 }
 
 export async function getFollowingForUserId(userId: number): Promise<User[]> {
@@ -29,7 +29,7 @@ export async function getFollowingForUserId(userId: number): Promise<User[]> {
     .where({ user_id: userId })
     .join('users', { 'users.id': 'following.following_id' });
 
-  const rows = await (query as any);
+  const rows = await query;
 
   const users = rows.map((row: any) => camelizeKeys(row) as User);
 
@@ -41,7 +41,7 @@ export async function getFollowersForUserId(userId: number): Promise<User[]> {
     .where({ following_id: userId })
     .join('users', { 'users.id': 'following.user_id' });
 
-  const rows = await (query as any);
+  const rows = await query;
 
   const users = rows.map((row: any) => camelizeKeys(row) as User);
 

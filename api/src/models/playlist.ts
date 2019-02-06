@@ -30,7 +30,7 @@ export async function addSongToPlaylist(
     .into('playlist_entries')
     .returning('id');
 
-  const [id] = await (query as any);
+  const [id] = await query;
   const entry = await getPlaylistEntryById(id);
 
   return entry!;
@@ -123,7 +123,7 @@ export async function getPlaylistByUserId(
     .where({ user_id: id })
     .orderBy('playlist_entries.created_at', 'desc');
 
-  const rows = await (query as any);
+  const rows = await query;
 
   return rows.map((row: any) => serializePlaylistEntry(row));
 }
@@ -144,7 +144,7 @@ export async function getFeedByUserId(
     })
     .orderBy('playlist_entries.created_at', 'desc');
 
-  const rows = await (query as any);
+  const rows = await query;
 
   return rows.map((row: any) => serializePlaylistEntry(row));
 }
@@ -160,7 +160,7 @@ export async function getLikedEntriesByUserId(
     })
     .orderBy('likes.created_at', 'desc');
 
-  const rows = await (query as any);
+  const rows = await query;
 
   return rows.map((row: any) => serializePlaylistEntry(row));
 }
@@ -171,7 +171,7 @@ export async function getPlaylistEntryById(
 ): Promise<PlaylistEntry | null> {
   const query = getBasePlaylistQuery(opts).where({ 'playlist_entries.id': id });
 
-  const rows = await (query as any);
+  const rows = await query;
 
   if (!rows[0]) {
     return null;
@@ -189,7 +189,7 @@ export async function likePlaylistEntry(
     user_id: userId,
   });
 
-  await (query as any);
+  await query;
 }
 
 export async function unlikePlaylistEntry(
@@ -203,7 +203,7 @@ export async function unlikePlaylistEntry(
     })
     .delete();
 
-  await (query as any);
+  await query;
 }
 
 export async function deletePlaylistEntryById(id: number): Promise<void> {
@@ -211,5 +211,5 @@ export async function deletePlaylistEntryById(id: number): Promise<void> {
     .where({ id })
     .delete();
 
-  await (query as any);
+  await query;
 }

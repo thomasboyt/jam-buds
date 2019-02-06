@@ -37,7 +37,7 @@ async function createUser(opts: CreateUserOptions) {
     .returning('*')
     .into('users');
 
-  const [row] = await (query as any);
+  const [row] = await query;
   const user = camelizeKeys(row) as User;
 
   return user;
@@ -85,7 +85,7 @@ export async function updateTwitterCredentials(
 async function getUserWhere(params: any) {
   const query = db!('users').where(params);
 
-  const [row] = await (query as any);
+  const [row] = await query;
 
   if (!row) {
     return null;
@@ -134,7 +134,7 @@ export async function getUnfollowedUsersByTwitterIds(
     .whereIn('twitter_id', twitterIds)
     .where('id', 'not in', followQuery);
 
-  const rows = await (query as any);
+  const rows = await query;
   const users: User[] = rows.map((row: any) => camelizeKeys(row));
 
   return users;

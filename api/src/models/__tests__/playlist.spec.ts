@@ -16,11 +16,11 @@ import { PlaylistEntry } from '../../resources';
 import { db } from '../../db';
 
 async function setEntryCreated(id: number, createdAt: string) {
-  await (db!('playlist_entries')
+  await db!('playlist_entries')
     .where({ id })
     .update({
       created_at: createdAt,
-    }) as any);
+    });
 }
 
 describe('models/playlist', () => {
@@ -87,7 +87,7 @@ describe('models/playlist', () => {
 
       await deletePlaylistEntryById(entry.id);
 
-      expect((await getPlaylistEntryById(entry.id)) as any).toNotExist();
+      expect(await getPlaylistEntryById(entry.id)).toNotExist();
     });
   });
 });

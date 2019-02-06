@@ -14,7 +14,7 @@ export async function getSongBySpotifyId(
 ): Promise<Song | null> {
   const query = db!('songs').where({ spotify_id: spotifyId });
 
-  let [row] = await (query as any);
+  let [row] = await query;
 
   if (!row) {
     return null;
@@ -53,7 +53,7 @@ export async function createSongFromSpotifyResource(
     .returning('*')
     .into('songs');
 
-  const [row] = await (query as any);
+  const [row] = await query;
   const song = camelizeKeys(row) as Song;
 
   return song;
@@ -73,7 +73,7 @@ export async function createSongFromManualEntry(
     .returning('*')
     .into('songs');
 
-  const [row] = await (query as any);
+  const [row] = await query;
   const song = camelizeKeys(row) as Song;
 
   return song;

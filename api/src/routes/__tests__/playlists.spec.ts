@@ -33,7 +33,7 @@ describe('routes/playlists', () => {
         .set('X-Auth-Token', user.authToken);
 
       // TODO: Assert that these are the newest 20 items
-      const firstPageRes: request.Response = await (firstPageReq as any);
+      const firstPageRes = await firstPageReq;
 
       expectStatus(firstPageRes, 200);
 
@@ -46,7 +46,7 @@ describe('routes/playlists', () => {
           previousId,
         });
 
-      const secondPageRes: request.Response = await (secondPageReq as any);
+      const secondPageRes = await secondPageReq;
 
       expectStatus(firstPageRes, 200);
 
@@ -71,7 +71,7 @@ describe('routes/playlists', () => {
           source: 'youtube',
         });
 
-      const res: request.Response = await (req as any);
+      const res = await req;
 
       expectStatus(res, 200);
 
@@ -95,7 +95,7 @@ describe('routes/playlists', () => {
         .delete(`/api/playlist/${entry.id}`)
         .set('X-Auth-Token', user.authToken);
 
-      const res: request.Response = await (req as any);
+      const res = await req;
 
       expectStatus(res, 200);
 
@@ -111,7 +111,7 @@ describe('routes/playlists', () => {
         .delete(`/api/playlist/${entry.id}`)
         .set('X-Auth-Token', user.authToken);
 
-      const res: request.Response = await (req as any);
+      const res = await req;
 
       expectStatus(res, 400);
     });
@@ -123,7 +123,7 @@ describe('routes/playlists', () => {
         .delete('/api/playlist/42069')
         .set('X-Auth-Token', user.authToken);
 
-      const res: request.Response = await (req as any);
+      const res = await req;
 
       expectStatus(res, 404);
     });

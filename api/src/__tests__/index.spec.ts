@@ -17,9 +17,9 @@ before(async () => {
 });
 
 beforeEach(async () => {
-  await (db!.raw('BEGIN') as any);
+  await db!.raw('BEGIN');
 });
 
 afterEach(async () => {
-  await (db!.raw('ROLLBACK') as any);
+  await db!.raw('ROLLBACK');
 });

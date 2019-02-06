@@ -11,7 +11,7 @@ export async function getColorSchemeForUserId(
     .from('color_schemes')
     .where({ user_id: userId });
 
-  const [row] = await (query as any);
+  const [row] = await query;
 
   if (!row) {
     return defaultColorScheme;
@@ -32,12 +32,12 @@ export async function setColorSchemeForUserId(
     .where({ user_id: userId })
     .delete();
 
-  await (deleteQuery as any);
+  await deleteQuery;
 
   const query = db!('color_schemes').insert({
     user_id: userId,
     ...decamelizeKeys(colorScheme),
   });
 
-  await (query as any);
+  await query;
 }
