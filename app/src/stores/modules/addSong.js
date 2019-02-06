@@ -179,17 +179,19 @@ const addSong = {
       context.commit('unselectSong');
     },
 
-    async submitSong(context, { note, tweet }) {
-      const params = getSubmitOptions({ ...context.state, note, tweet });
+    // async submitSong(context, { note, tweet }) {
+    //   const params = getSubmitOptions({ ...context.state, note, tweet });
 
-      const resp = await this.$axios({
-        url: '/playlist',
-        method: 'POST',
-        data: params,
-      });
+    //   const resp = await this.$axios({
+    //     url: '/playlist',
+    //     method: 'POST',
+    //     data: params,
+    //   });
 
-      const entry = resp.data;
+    //   const entry = resp.data;
+    // },
 
+    didSubmitSong(context, entry) {
       context.commit('addPlaylistEntries', [entry], { root: true });
 
       // Add the entry to the top of the user's feed

@@ -57,6 +57,7 @@ export default function registerPlaylistEndpoints(router: Router) {
       }
 
       if (
+        !req.body.spotifyId &&
         !req.body.bandcampTrackId &&
         !req.body.youtubeUrl &&
         !req.body.soundcloudTrackId

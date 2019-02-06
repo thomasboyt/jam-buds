@@ -26,7 +26,7 @@
 import { mapState } from 'vuex';
 import SidebarToggle from './SidebarToggle.vue';
 import AudioPlayer from './audio-player/AudioPlayer.vue';
-import AddSongModal from './add-song-modal/AddSongModal.vue';
+import AddSongModal from './new-song-modal/AddSongModal.vue';
 
 export default {
   components: { SidebarToggle, AudioPlayer, AddSongModal },

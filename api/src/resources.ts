@@ -1,4 +1,4 @@
-export type PlaybackSource = 'youtube' | 'bandcamp' | 'soundcloud';
+export type PlaybackSource = 'youtube' | 'bandcamp' | 'soundcloud' | 'spotify';
 
 export interface SearchResult {
   artists: string[];
