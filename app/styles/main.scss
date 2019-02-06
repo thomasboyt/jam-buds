@@ -37,20 +37,13 @@ a:hover, a:active {
   text-decoration: none;
 }
 
-/*
- * Page positioning
- */
-
-html, body, .react-root, .app-container, .page-container {
-  min-height: 100%;
-}
-
 .page-container {
   display: flex;
   flex-flow: column;
 
   margin: 0 auto;
   padding-top: $header-height;
+  min-height: 100vh;
 }
 
 .main {
