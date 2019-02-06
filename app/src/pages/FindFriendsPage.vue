@@ -9,8 +9,11 @@
         </div>
         <users-list v-else :users="friendSuggestions" />
       </div>
-      <div v-else>
-        TODO: Add connect Twitter link here...
+      <div v-else class="main-placeholder">
+        You can find your friends on Twitter by
+        <router-link to="/settings"
+          >connecting your Twitter account to Jam Buds!</router-link
+        >
       </div>
     </main-wrapper>
   </sidebar-wrapper>
@@ -31,16 +34,14 @@ export default {
   title: 'Find Friends',
 
   async asyncData({ store }) {
-    if (store.state.currentUser.hasTwitter) {
+    if (store.state.currentUser.twitterName) {
       await store.dispatch('loadFriendSuggestions');
     }
-
-    console.log('hi');
   },
 
   computed: mapState({
     friendSuggestions: (state) => state.currentUser.friendSuggestions,
-    showTwitterSuggestions: (state) => state.currentUser.hasTwitter,
+    showTwitterSuggestions: (state) => state.currentUser.twitterName,
   }),
 };
 </script>

@@ -1,39 +1,19 @@
 <template>
   <sidebar-wrapper>
-    <main-wrapper :color-scheme="colorScheme">
+    <main-wrapper>
       <h2>your settings</h2>
 
-      <p>
-        set a color scheme for your profile! you can put in any text you want
-        here and there's no real validations, so, uh, make sure it looks ok
-        here.
-      </p>
+      <h3>connect to streaming services</h3>
 
-      <p>
-        need some inspiration? check out
-        <a href="https://cloudflare.design/color/"
-          >this fancy color picker by cloudflare</a
-        >; it enforces accessibility which is neat
-      </p>
+      <spotify-connect />
 
-      <form @submit="handleSubmit">
-        <label>
-          text color
-          <input type="text" v-model.lazy="colorScheme.textColor" />
-        </label>
-        <label>
-          background color
-          <input type="text" v-model.lazy="colorScheme.backgroundColor" />
-        </label>
-        <label>
-          <a href="#">link color</a>
-          <input type="text" v-model.lazy="colorScheme.linkColor" />
-        </label>
+      <h3>connect to twitter</h3>
 
-        <button type="submit">
-          save
-        </button>
-      </form>
+      <twitter-connect />
+
+      <h3>color schemes</h3>
+
+      <update-color-scheme />
     </main-wrapper>
   </sidebar-wrapper>
 </template>
@@ -43,41 +23,21 @@ import MainWrapper from '../components/MainWrapper.vue';
 import SidebarWrapper from '../components/SidebarWrapper.vue';
 import titleMixin from '../util/titleMixin';
 
+import SpotifyConnect from '../components/settings/SpotifyConnect.vue';
+import TwitterConnect from '../components/settings/TwitterConnect.vue';
+import UpdateColorScheme from '../components/settings/UpdateColorScheme.vue';
+
 export default {
-  components: { SidebarWrapper, MainWrapper },
+  components: {
+    SidebarWrapper,
+    MainWrapper,
+    SpotifyConnect,
+    TwitterConnect,
+    UpdateColorScheme,
+  },
 
   mixins: [titleMixin],
 
   title: 'Settings',
-
-  data() {
-    // copy color scheme out of store
-    const colorScheme = { ...this.$store.state.currentUser.colorScheme };
-
-    return {
-      colorScheme,
-    };
-  },
-
-  methods: {
-    async handleSubmit(e) {
-      e.preventDefault();
-
-      this.$axios({
-        url: '/settings/color-scheme',
-        method: 'POST',
-        data: this.colorScheme,
-      });
-
-      this.$store.commit('updateColorScheme', this.colorScheme);
-      // TODO
-    },
-  },
 };
 </script>
-
-<style lang="scss" scoped>
-label {
-  display: block;
-}
-</style>

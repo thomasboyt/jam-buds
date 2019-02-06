@@ -9,11 +9,14 @@ export interface User {
   id: number;
   authToken: string;
   name: string;
-  email?: string;
-  twitterName?: string;
-  twitterId?: string;
-  twitterToken?: string;
-  twitterSecret?: string;
+  email: string;
+  twitterName: string | null;
+  twitterId: string | null;
+  twitterToken: string | null;
+  twitterSecret: string | null;
+  spotifyAccessToken: string | null;
+  spotifyRefreshToken: string | null;
+  spotifyExpiresIn: number | null;
 }
 
 export function serializePublicUser(user: User): PublicUser {
@@ -25,9 +28,10 @@ export function serializePublicUser(user: User): PublicUser {
 
 interface CreateUserOptions {
   name: string;
+  email: string;
 }
 
-async function createUser(opts: CreateUserOptions) {
+export async function createUser(opts: CreateUserOptions) {
   const authToken = await genAuthToken();
 
   const insert = Object.assign({ authToken }, opts);
@@ -43,43 +47,33 @@ async function createUser(opts: CreateUserOptions) {
   return user;
 }
 
-interface CreateUserFromTwitterOptions extends CreateUserOptions {
+interface UpdateTwitterCredentialsOptions {
   twitterId: string;
   twitterName: string;
   twitterToken: string;
   twitterSecret: string;
 }
 
-export async function createUserFromTwitter(
-  opts: CreateUserFromTwitterOptions
-): Promise<User> {
-  return createUser(opts);
-}
-
-interface CreateUserFromEmailOptions extends CreateUserOptions {
-  email: string;
-}
-
-export async function createUserFromEmail(
-  opts: CreateUserFromEmailOptions
-): Promise<User> {
-  return createUser(opts);
-}
-
-interface UpdateTwitterCredentialsOptions {
-  twitterId: string;
-  twitterToken: string;
-  twitterSecret: string;
-}
-
 export async function updateTwitterCredentials(
-  opts: UpdateTwitterCredentialsOptions
+  user: User,
+  twitterParams: UpdateTwitterCredentialsOptions
 ) {
-  const { twitterId, twitterToken, twitterSecret } = opts;
+  return db!('users')
+    .where({ id: user.id })
+    .update(decamelizeKeys(twitterParams));
+}
+
+export async function deleteTwitterCredentialsFromUser(user: User) {
+  const updateParams: Partial<User> = {
+    twitterId: null,
+    twitterName: null,
+    twitterSecret: null,
+    twitterToken: null,
+  };
 
   return db!('users')
-    .where({ twitter_id: twitterId })
-    .update(decamelizeKeys({ twitterSecret, twitterToken }));
+    .where({ id: user.id })
+    .update(decamelizeKeys(updateParams));
 }
 
 async function getUserWhere(params: any) {
@@ -160,6 +154,40 @@ export async function serializeCurrentUser(user: User): Promise<CurrentUser> {
     name: user.name,
     following: serializedUsers,
     colorScheme,
-    hasTwitter: !!user.twitterId,
+    twitterName: user.twitterName,
+    spotifyAccessToken: user.spotifyAccessToken,
   };
+}
+
+interface SpotifyCredentials {
+  accessToken: string;
+  refreshToken: string;
+  expiresIn: number;
+}
+
+export async function addSpotifyCredentialsToUser(
+  user: User,
+  spotifyCredentials: SpotifyCredentials
+): Promise<void> {
+  const updateParams: Partial<User> = {
+    spotifyAccessToken: spotifyCredentials.accessToken,
+    spotifyRefreshToken: spotifyCredentials.refreshToken,
+    spotifyExpiresIn: spotifyCredentials.expiresIn,
+  };
+
+  return db!('users')
+    .where({ id: user.id })
+    .update(decamelizeKeys(updateParams));
+}
+
+export async function deleteSpotifyCredentialsFromUser(user: User) {
+  const updateParams: Partial<User> = {
+    spotifyAccessToken: null,
+    spotifyRefreshToken: null,
+    spotifyExpiresIn: null,
+  };
+
+  return db!('users')
+    .where({ id: user.id })
+    .update(decamelizeKeys(updateParams));
 }

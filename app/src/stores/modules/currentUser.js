@@ -22,6 +22,12 @@ const currentUser = {
     updateColorScheme(state, scheme) {
       state.colorScheme = scheme;
     },
+    disconnectedSpotify(state) {
+      state.spotifyAccessToken = undefined;
+    },
+    disconnectedTwitter(state) {
+      state.twitterName = null;
+    },
   },
 
   actions: {

@@ -14,6 +14,10 @@ function getTwitterClient(user: User): Twit {
     );
   }
 
+  if (!user.twitterToken || !user.twitterSecret) {
+    throw new Error(`missing twitter credentials for user ${user.email}`);
+  }
+
   return new Twit({
     consumer_key: process.env.TWITTER_API_KEY,
     consumer_secret: process.env.TWITTER_API_SECRET,

@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { User, getUserByAuthToken } from './models/user';
+import { AUTH_TOKEN_COOKIE } from './constants';
 
 /**
  * Given a request object, return a User.
@@ -10,6 +11,30 @@ export async function getUserFromRequest(req: Request): Promise<User | null> {
   const token = req.get('X-Auth-Token');
   if (token) {
     user = await getUserByAuthToken(token);
+  }
+
+  return user;
+}
+
+/**
+ * Given a request object, parse the user from the token cookie. Errors if it's
+ * not set.
+ *
+ * Only works on proxied /auth routes, and SHOULD NEVER BE USED FOR NON-GET
+ * REQUESTS, as it has no CSRF protection. We're only using it for managing the
+ * session when going through external resources auth flows.
+ */
+export async function getUserFromCookie(req: Request): Promise<User> {
+  const token = req.cookies[AUTH_TOKEN_COOKIE];
+
+  if (!token) {
+    throw new Error('Missing auth token cookie');
+  }
+
+  const user = await getUserByAuthToken(token);
+
+  if (!user) {
+    throw new Error('Invalid auth token');
   }
 
   return user;

@@ -1,14 +1,17 @@
 import * as express from 'express';
 import * as bodyParser from 'body-parser';
+import * as cookieParser from 'cookie-parser';
 import * as cors from 'cors';
 import * as Raven from 'raven';
 
-import registerTwitterAuthEndpoints from './routes/auth';
+import registerAuthEndpoints from './routes/auth';
 import registerUserEndpoints from './routes/users';
 import registerSearchEndpoints from './routes/search';
 import registerPlaylistEndpoints from './routes/playlists';
 import registerLikesEndpoints from './routes/likes';
 import registerSettingsEndpoints from './routes/settings';
+import registerSpotifyAuthEndpoints from './routes/spotify-auth';
+import registerTwitterAuthEndpoints from './routes/twitter-auth';
 
 const env = process.env.NODE_ENV;
 
@@ -24,6 +27,7 @@ export default function createApp() {
   }
 
   app.use(bodyParser.json());
+  app.use(cookieParser());
 
   app.use(
     cors({
@@ -42,6 +46,8 @@ export default function createApp() {
 
   const authRouter = express.Router();
 
+  registerAuthEndpoints(authRouter);
+  registerSpotifyAuthEndpoints(authRouter);
   registerTwitterAuthEndpoints(authRouter);
   app.use('/auth', authRouter);
 
