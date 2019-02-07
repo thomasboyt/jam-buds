@@ -13,14 +13,15 @@ async function resetDb() {
   configureDatabase();
 
   try {
-    console.log('rolling back');
-    await db!.migrate.rollback({
-      directory: '../api/migrations',
-    });
+    console.log('resetting schema');
+    await db!.raw('DROP SCHEMA public CASCADE;');
+    await db!.raw('CREATE SCHEMA public;');
+
     console.log('running migrations');
     await db!.migrate.latest({
       directory: '../api/migrations',
     });
+
     console.log('running seeds');
     await db!.seed.run({
       directory: '../api/seeds',

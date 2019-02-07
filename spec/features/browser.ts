@@ -3,7 +3,9 @@ import * as puppeteer from 'puppeteer';
 export let browser: puppeteer.Browser;
 
 before(async () => {
-  browser = await puppeteer.launch();
+  browser = await puppeteer.launch({
+    headless: false,
+  });
 });
 after(async () => {
   await browser.close();
