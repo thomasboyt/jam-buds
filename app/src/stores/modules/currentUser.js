@@ -23,7 +23,7 @@ const currentUser = {
       state.colorScheme = scheme;
     },
     disconnectedSpotify(state) {
-      state.spotifyAccessToken = undefined;
+      state.hasSpotify = false;
     },
     disconnectedTwitter(state) {
       state.twitterName = null;

@@ -44,7 +44,7 @@ export default {
   },
 
   computed: mapState({
-    hasSpotify: (state) => !!state.currentUser.spotifyAccessToken,
+    hasSpotify: (state) => state.currentUser.hasSpotify,
   }),
 
   methods: {

@@ -16,7 +16,7 @@ export interface User {
   twitterSecret: string | null;
   spotifyAccessToken: string | null;
   spotifyRefreshToken: string | null;
-  spotifyExpiresIn: number | null;
+  spotifyExpiresAt: Date | null;
 }
 
 export function serializePublicUser(user: User): PublicUser {
@@ -155,7 +155,7 @@ export async function serializeCurrentUser(user: User): Promise<CurrentUser> {
     following: serializedUsers,
     colorScheme,
     twitterName: user.twitterName,
-    spotifyAccessToken: user.spotifyAccessToken,
+    hasSpotify: !!user.spotifyAccessToken,
   };
 }
 
@@ -165,6 +165,9 @@ interface SpotifyCredentials {
   expiresIn: number;
 }
 
+const toExpiresAt = (expiresInSec: number) =>
+  new Date(Date.now() + expiresInSec * 1000);
+
 export async function addSpotifyCredentialsToUser(
   user: User,
   spotifyCredentials: SpotifyCredentials
@@ -172,7 +175,26 @@ export async function addSpotifyCredentialsToUser(
   const updateParams: Partial<User> = {
     spotifyAccessToken: spotifyCredentials.accessToken,
     spotifyRefreshToken: spotifyCredentials.refreshToken,
-    spotifyExpiresIn: spotifyCredentials.expiresIn,
+    spotifyExpiresAt: toExpiresAt(spotifyCredentials.expiresIn),
+  };
+
+  return db!('users')
+    .where({ id: user.id })
+    .update(decamelizeKeys(updateParams));
+}
+
+interface SpotifyRefreshCredentials {
+  accessToken: string;
+  expiresIn: number;
+}
+
+export async function updateRefreshedSpotifyCredentialsForUser(
+  user: User,
+  spotifyCredentials: SpotifyRefreshCredentials
+): Promise<void> {
+  const updateParams: Partial<User> = {
+    spotifyAccessToken: spotifyCredentials.accessToken,
+    spotifyExpiresAt: toExpiresAt(spotifyCredentials.expiresIn),
   };
 
   return db!('users')
@@ -184,7 +206,7 @@ export async function deleteSpotifyCredentialsFromUser(user: User) {
   const updateParams: Partial<User> = {
     spotifyAccessToken: null,
     spotifyRefreshToken: null,
-    spotifyExpiresIn: null,
+    spotifyExpiresAt: null,
   };
 
   return db!('users')

@@ -56,7 +56,7 @@ export interface CurrentUser {
   following: PublicUser[];
   colorScheme: ColorScheme;
   twitterName: string | null;
-  spotifyAccessToken: string | null;
+  hasSpotify: boolean;
 }
 
 export interface Playlist {

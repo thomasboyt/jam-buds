@@ -1,26 +1,39 @@
 <template>
   <div class="audio-player">
     <div v-if="nowPlaying">
-      <youtube
-        v-if="nowPlaying.source === 'youtube'"
-        :url="nowPlaying.youtubeUrl"
-        :is-playing="isPlaying"
-        @buffering="this.handleBufferingStart"
-        @buffered="this.handleBufferingEnd"
-        @ended="this.handlePlaybackEnded"
-      />
-      <audio-stream
-        v-if="nowPlaying.source === 'bandcamp'"
-        :url="nowPlaying.bandcampStreamingUrl"
-        :is-playing="isPlaying"
-        @ended="this.handlePlaybackEnded"
-      />
-      <audio-stream
-        v-if="nowPlaying.source === 'soundcloud'"
-        :url="nowPlaying.soundcloudStreamingUrl"
-        :is-playing="isPlaying"
-        @ended="this.handlePlaybackEnded"
-      />
+      <!-- TODO: eventually we want to be able to have both spotify _and_ other
+      stream players available at same time-->
+      <div v-if="spotifyEnabled">
+        <spotify-player
+          :spotify-id="nowPlaying.song.spotifyId"
+          :is-playing="isPlaying"
+          @buffering="this.handleBufferingStart"
+          @buffered="this.handleBufferingEnd"
+          @ended="this.handlePlaybackEnded"
+        />
+      </div>
+      <div v-else>
+        <youtube
+          v-if="nowPlaying.source === 'youtube'"
+          :url="nowPlaying.youtubeUrl"
+          :is-playing="isPlaying"
+          @buffering="this.handleBufferingStart"
+          @buffered="this.handleBufferingEnd"
+          @ended="this.handlePlaybackEnded"
+        />
+        <audio-stream
+          v-if="nowPlaying.source === 'bandcamp'"
+          :url="nowPlaying.bandcampStreamingUrl"
+          :is-playing="isPlaying"
+          @ended="this.handlePlaybackEnded"
+        />
+        <audio-stream
+          v-if="nowPlaying.source === 'soundcloud'"
+          :url="nowPlaying.soundcloudStreamingUrl"
+          :is-playing="isPlaying"
+          @ended="this.handlePlaybackEnded"
+        />
+      </div>
     </div>
 
     <div class="audio-player--controls">
@@ -73,6 +86,7 @@
 import { mapState } from 'vuex';
 import Icon from '../Icon.vue';
 
+import SpotifyPlayer from './SpotifyPlayer.vue';
 import Youtube from './Youtube.vue';
 import AudioStream from './AudioStream.vue';
 import LoadingSpinner from './LoadingSpinner.vue';
@@ -83,7 +97,7 @@ const nextIcon = require('../../../assets/next.svg');
 const albumPlaceholderIcon = require('../../../assets/record.svg');
 
 export default {
-  components: { Icon, Youtube, AudioStream, LoadingSpinner },
+  components: { Icon, Youtube, AudioStream, LoadingSpinner, SpotifyPlayer },
 
   data() {
     return {
@@ -102,6 +116,10 @@ export default {
       'playbackSourcePath',
       'playbackSourceLabel',
     ]),
+
+    ...mapState({
+      spotifyEnabled: (state) => state.currentUser.hasSpotify,
+    }),
 
     playPauseIcon() {
       return this.isPlaying ? pauseIcon : playIcon;
