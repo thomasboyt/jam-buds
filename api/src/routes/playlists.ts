@@ -4,10 +4,8 @@ import wrapAsyncRoute from '../util/wrapAsyncRoute';
 import { User, getUserByName, getUserProfileForUser } from '../models/user';
 
 import {
-  Song,
   getSongBySpotifyId,
   createSongFromSpotifyResource,
-  createSongFromManualEntry,
 } from '../models/song';
 
 import {
@@ -25,11 +23,9 @@ import { ENTRY_PAGE_LIMIT } from '../constants';
 import { getUserFromRequest, isAuthenticated } from '../auth';
 
 import * as spotify from '../apis/spotify';
-import * as bandcamp from '../apis/bandcamp';
-import * as soundcloud from '../apis/soundcloud';
 import { postSongTweet } from '../apis/twitter';
 
-import { Playlist, Feed, PlaybackSource } from '../resources';
+import { Playlist, Feed } from '../resources';
 
 export default function registerPlaylistEndpoints(router: Router) {
   // post a new song to your playlist
@@ -39,72 +35,20 @@ export default function registerPlaylistEndpoints(router: Router) {
     wrapAsyncRoute(async (req, res) => {
       const user: User = res.locals.user;
 
-      let song: Song;
+      const spotifyId = req.body.spotifyId;
 
-      if (req.body.manualEntry) {
-        song = await createSongFromManualEntry(req.body.artist, req.body.title);
-      } else {
-        const spotifyId = req.body.spotifyId;
+      let song = await getSongBySpotifyId(spotifyId);
 
-        const maybeSong = await getSongBySpotifyId(spotifyId);
-
-        if (!maybeSong) {
-          const spotifyResource = await spotify.getTrackById(spotifyId);
-          song = await createSongFromSpotifyResource(spotifyResource);
-        } else {
-          song = maybeSong;
-        }
+      if (!song) {
+        const spotifyResource = await spotify.getTrackById(spotifyId);
+        song = await createSongFromSpotifyResource(spotifyResource);
       }
 
-      if (
-        !req.body.spotifyId &&
-        !req.body.bandcampTrackId &&
-        !req.body.youtubeUrl &&
-        !req.body.soundcloudTrackId
-      ) {
-        return res.status(400).json({
-          error: 'No playback source given',
-        });
-      }
-
-      const source: PlaybackSource = req.body.source;
-
-      let params: CreateEntryParams = {
-        source,
+      const params: CreateEntryParams = {
         userId: user.id,
         songId: song.id,
         note: req.body.note,
-        youtubeUrl: req.body.youtubeUrl,
       };
-
-      if (source === 'bandcamp') {
-        const bandcampTrackId = req.body.bandcampTrackId;
-
-        params = {
-          bandcampTrackId,
-          bandcampStreamingUrl: await bandcamp.getBandcampStreamingUrl(
-            bandcampTrackId
-          ),
-          bandcampUrl: req.body.bandcampUrl,
-          ...params,
-        };
-      } else if (source === 'soundcloud') {
-        const soundcloudTrackId = req.body.soundcloudTrackId;
-
-        params = {
-          soundcloudTrackId,
-          soundcloudStreamingUrl: soundcloud.getSoundcloudStreamingUrl(
-            soundcloudTrackId
-          ),
-          soundcloudUrl: req.body.soundcloudUrl,
-          ...params,
-        };
-      } else if (source === 'youtube') {
-        params = {
-          youtubeUrl: req.body.youtubeUrl,
-          ...params,
-        };
-      }
 
       const entry = await addSongToPlaylist(params);
 

@@ -12,7 +12,10 @@ import { db, configureDatabase } from '../db';
 
 before(async () => {
   configureDatabase();
-  await db!.migrate.rollback();
+
+  // reset schema and run all migrations
+  await db!.raw('DROP SCHEMA public CASCADE;');
+  await db!.raw('CREATE SCHEMA public;');
   await db!.migrate.latest();
 });
 

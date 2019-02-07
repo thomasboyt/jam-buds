@@ -1,25 +1,13 @@
 import { db } from '../db';
 import { camelizeKeys, decamelizeKeys } from 'humps';
 import { User, serializePublicUser } from './user';
-import { PlaylistEntry, Song, PlaybackSource } from '../resources';
+import { PlaylistEntry, Song } from '../resources';
 import { ENTRY_PAGE_LIMIT } from '../constants';
 
 export interface CreateEntryParams {
   userId: number;
   songId: number;
   note: string;
-
-  source: PlaybackSource;
-
-  youtubeUrl?: string;
-
-  bandcampTrackId?: string;
-  bandcampStreamingUrl?: string;
-  bandcampUrl?: string;
-
-  soundcloudTrackId?: string;
-  soundcloudStreamingUrl?: string;
-  soundcloudUrl?: string;
 }
 
 export async function addSongToPlaylist(
@@ -52,15 +40,6 @@ function serializePlaylistEntry(row: any): PlaylistEntry {
 
   return {
     id: entry.id,
-
-    source: entry.source,
-
-    youtubeUrl: entry.youtube_url,
-    bandcampStreamingUrl: entry.bandcamp_streaming_url,
-    bandcampUrl: entry.bandcamp_url,
-
-    soundcloudStreamingUrl: entry.soundcloud_streaming_url,
-    soundcloudUrl: entry.soundcloud_url,
 
     note: entry.note,
     added: entry.created_at,
@@ -121,7 +100,7 @@ export async function getPlaylistByUserId(
 ): Promise<PlaylistEntry[]> {
   const query = getBasePlaylistQuery(opts)
     .where({ user_id: id })
-    .orderBy('playlist_entries.created_at', 'desc');
+    .orderBy('playlist_entries.id', 'desc');
 
   const rows = await query;
 
@@ -142,7 +121,7 @@ export async function getFeedByUserId(
           .where({ user_id: id });
       }).orWhere({ user_id: id });
     })
-    .orderBy('playlist_entries.created_at', 'desc');
+    .orderBy('playlist_entries.id', 'desc');
 
   const rows = await query;
 
@@ -158,7 +137,7 @@ export async function getLikedEntriesByUserId(
     .join('likes', {
       'likes.entry_id': 'playlist_entries.id',
     })
-    .orderBy('likes.created_at', 'desc');
+    .orderBy('likes.id', 'desc');
 
   const rows = await query;
 

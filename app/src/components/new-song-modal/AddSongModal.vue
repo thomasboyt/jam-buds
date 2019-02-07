@@ -30,9 +30,11 @@
 
 <script>
 import { mapState } from 'vuex';
-import { INITIAL_STATE, CONFIRM_STATE } from '../../stores/modules/addSong';
 import InitialScreen from './InitialScreen.vue';
 import ConfirmScreen from './ConfirmScreen.vue';
+
+const INITIAL_STATE = 'initial';
+const CONFIRM_STATE = 'confirm';
 
 export default {
   components: { InitialScreen, ConfirmScreen },

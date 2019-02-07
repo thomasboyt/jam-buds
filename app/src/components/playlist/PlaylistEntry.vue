@@ -1,12 +1,6 @@
 <template>
   <div :class="['playlist-entry', { 'is-playing': isPlaying }]">
-    <a
-      class="playlist-entry--main"
-      :href="sourceUrl"
-      target="_blank"
-      rel="noopener noreferrer"
-      @click="handleClick"
-    >
+    <div class="playlist-entry--main" @click="handleClick">
       <album-art :album-art="entry.song.albumArt" />
 
       <div class="title">
@@ -32,7 +26,7 @@
           />
         </button>
       </span>
-    </a>
+    </div>
 
     <div :class="['playlist-entry--detail', { open: isOpen }]">
       <p v-if="entry.note" class="track-note">
@@ -41,11 +35,7 @@
 
       <p>
         <em>
-          Listen to this song on:
-
-          <a :href="sourceUrl" target="_blank" rel="noopener noreferrer">
-            {{ sourceLabel }}
-          </a>
+          <youtube-search-link :song="entry.song" />
         </em>
       </p>
     </div>
@@ -55,6 +45,7 @@
 <script>
 import Icon from '../Icon.vue';
 import AlbumArt from './AlbumArt.vue';
+import YoutubeSearchLink from './YoutubeSearchLink.vue';
 import EntryLikeAction from './EntryLikeAction.vue';
 import EntryDeleteAction from './EntryDeleteAction.vue';
 
@@ -67,6 +58,7 @@ export default {
     Icon,
     EntryLikeAction,
     EntryDeleteAction,
+    YoutubeSearchLink,
   },
 
   props: ['entry', 'playbackSourceLabel', 'playbackSourcePath'],
@@ -84,26 +76,6 @@ export default {
   },
 
   computed: {
-    sourceUrl() {
-      const entry = this.entry;
-
-      return {
-        youtube: entry.youtubeUrl,
-        bandcamp: entry.bandcampUrl,
-        soundcloud: entry.soundcloudUrl,
-      }[entry.source];
-    },
-
-    sourceLabel() {
-      const entry = this.entry;
-
-      return {
-        youtube: 'Youtube',
-        bandcamp: 'Bandcamp',
-        soundcloud: 'SoundCloud',
-      }[entry.source];
-    },
-
     showLikeButton() {
       const { state } = this.$store;
 

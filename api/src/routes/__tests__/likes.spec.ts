@@ -28,9 +28,7 @@ describe('routes/likes', () => {
       const entry = await addSongToPlaylist({
         songId: song.id,
         userId: dan.id,
-        youtubeUrl: uniqueString(),
         note: uniqueString(),
-        source: 'youtube',
       });
 
       const req = request(app)
