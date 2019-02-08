@@ -53,7 +53,6 @@ Make sure your `.env` has your username replaced for the DB connection, then set
 cd api
 createdb jambuds
 ./node_modules/.bin/knex init
-cp knexfile.default.js knexfile.js
 npm run resetdb
 ```
 
@@ -122,10 +121,10 @@ You're gonna want a database:
 heroku addons:create heroku-postgresql:hobby-dev
 ```
 
-Grab the DATABASE_URL from `heroku config:get DATABASE_URL`, and paste it into your knexfile so you can run migrations:
+After deploying for the first time, run migrations:
 
 ```
-NODE_ENV=production /node_modules/.bin/knex migrate:latest
+heroku run npx knex migrate:latest --app jambuds-api
 ```
 
 ### Configure App Server
