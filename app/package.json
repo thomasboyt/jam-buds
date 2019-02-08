@@ -8,7 +8,7 @@
   },
   "scripts": {
     "start": "node server/index.js",
-    "postinstall": "webpack --mode production --config webpack/server.js && webpack --mode production --config webpack/client.js",
+    "build-assets": "webpack --mode production --config webpack/server.js && webpack --mode production --config webpack/client.js",
     "dev": "nodemon --watch 'server/**/*.js' server/index.js"
   },
   "author": "Thomas Boyt <me@thomasboyt.com>",
