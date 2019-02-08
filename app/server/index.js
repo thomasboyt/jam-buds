@@ -144,6 +144,13 @@ async function main() {
     })
   );
 
+  app.use(
+    '/api',
+    proxy({
+      target: process.env.API_URL,
+    })
+  );
+
   app.get('*', (req, res) => {
     if (isProd) {
       return render(req, res);

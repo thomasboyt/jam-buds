@@ -38,7 +38,7 @@ export default {
       const email = this.email;
 
       try {
-        await axios.post(`${process.env.API_URL}/auth/sign-in-token`, {
+        await axios.post('/auth/sign-in-token', {
           email,
         });
       } catch (err) {

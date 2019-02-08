@@ -20,7 +20,7 @@ export default function createApp() {
     render: (h) => h(App),
   };
 
-  injectAxios(appConfig, store);
+  injectAxios(appConfig);
 
   const app = new Vue(appConfig);
   return { app, router, store };
