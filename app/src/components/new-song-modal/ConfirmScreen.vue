@@ -11,17 +11,16 @@
       />
     </div>
 
-    <p>
-      <label>
-        <input type="checkbox" v-model="twitterPostEnabled" />
-        cross-post to twitter
-      </label>
-    </p>
+    <div v-if="hasTwitter">
+      <p>
+        <label>
+          <input type="checkbox" v-model="twitterPostEnabled" />
+          cross-post to twitter
+        </label>
+      </p>
 
-    <!-- XXX: Disabled until Twitter auth is reintroduced -->
-    <!--
-    <twitter-share-field v-if="twitterPostEnabled" v-model="tweetText"/>
-    -->
+      <twitter-share-field v-if="twitterPostEnabled" v-model="tweetText" />
+    </div>
 
     <button @click="handleSubmit" class="submit" data-test="add-song-confirm">
       post it!!
@@ -30,8 +29,10 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
+
 import serializeSongLabel from '../../util/serializeSongLabel';
-// import TwitterShareField from './TwitterShareField.vue';
+import TwitterShareField from './TwitterShareField.vue';
 import {
   getDefaultTweet,
   getTweetLength,
@@ -39,7 +40,7 @@ import {
 } from '../../util/songTweet';
 
 export default {
-  // components: { TwitterShareField },
+  components: { TwitterShareField },
 
   props: ['selectedSong'],
 
@@ -52,8 +53,15 @@ export default {
     };
   },
 
+  computed: mapState({
+    hasTwitter: (state) => !!state.currentUser.twitterName,
+  }),
+
   mounted() {
-    this.tweetText = getDefaultTweet(this.addSongArtist, this.addSongTitle);
+    this.tweetText = getDefaultTweet(
+      this.selectedSong.artists[0],
+      this.selectedSong.name
+    );
   },
 
   methods: {
