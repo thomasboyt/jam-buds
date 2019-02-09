@@ -7,7 +7,9 @@ const spriteContent = sprite.stringify();
 
 export default async function(context) {
   const { app, router, store } = createApp();
-  const { url, authToken } = context;
+  const { url, authToken, apiUrl } = context;
+
+  app.$axios.defaults.baseURL = `${apiUrl}/api/`;
 
   if (authToken) {
     app.$axios.defaults.headers = {

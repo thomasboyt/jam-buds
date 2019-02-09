@@ -25,7 +25,6 @@ if (process.env.NODE_ENV !== 'production') {
 // }
 
 let envVars = {
-  API_URL: `"${process.env.API_URL}"`,
   NODE_ENV: `"${process.env.NODE_ENV}"`,
 };
 

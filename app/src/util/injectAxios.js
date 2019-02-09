@@ -10,11 +10,8 @@ import axios from 'axios';
  * 2. Create Vue.prototype property that will act as a getter for this instance
  */
 export default function injectAxios(appConfig) {
-  // Don't bother proxying through ourself!
-  const baseHost = process.env.VUE_ENV === 'server' ? process.env.API_URL : '';
-
   const apiClient = axios.create({
-    baseURL: `${baseHost}/api/`,
+    baseURL: `/api/`,
   });
 
   appConfig.$axios = apiClient;
