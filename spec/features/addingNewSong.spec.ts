@@ -1,5 +1,5 @@
-import * as expect from 'expect';
-import * as puppeteer from 'puppeteer';
+import expect from 'expect';
+import puppeteer from 'puppeteer';
 
 import { getPage } from './browser';
 import './mochaHooks';

@@ -1,7 +1,7 @@
-import * as path from 'path';
-import * as childProcess from 'child_process';
+import path from 'path';
+import childProcess from 'child_process';
 import { configureDatabase, db } from '../../api/src/db';
-import * as dotenv from 'dotenv';
+import dotenv from 'dotenv';
 
 if (!process.env.CI) {
   dotenv.config({
