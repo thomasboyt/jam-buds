@@ -1,0 +1,10 @@
+# This config is used for production builds and deploys.
+
+# These are required for building the production Webpack bundles locally
+NODE_ENV=production
+STATIC_URL=https://jambuds.club/assets/
+SENTRY_PUBLIC_DSN_APP=
+
+# Stuff used by the deploy scripts
+JAMBUDS_SSH_REMOTE=you@yoursite.whatever
+JAMBUDS_REMOTE_PATH=/home/you/jam-buds
