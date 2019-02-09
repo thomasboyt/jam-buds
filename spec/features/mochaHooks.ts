@@ -44,8 +44,8 @@ before(async function() {
 
   console.log('spawning node');
 
-  // this uses a node entry point instead of ts-node cuz i couldn't easily clean up after ts-node
-  // exited
+  // this uses a node entry point instead of ts-node cuz i couldn't easily clean
+  // up after ts-node exited
   const child = childProcess.spawn('npm', ['start'], {
     cwd: path.join(__dirname, '../../api'),
     stdio: 'inherit',
