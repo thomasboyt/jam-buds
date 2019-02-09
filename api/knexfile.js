@@ -4,6 +4,11 @@ if (process.env.NODE_ENV !== 'production') {
   });
 }
 
+if (process.env.NODE_ENV === 'production') {
+  const pg = require('pg');
+  pg.defaults.ssl = true;
+}
+
 module.exports = {
   development: {
     client: 'postgresql',

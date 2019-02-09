@@ -1,8 +1,13 @@
 import * as knex from 'knex';
+import * as pg from 'pg';
 
 export let db: knex | undefined;
 
 export function configureDatabase() {
+  if (process.env.NODE_ENV === 'production') {
+    pg.defaults.ssl = true;
+  }
+
   const config: knex.Config = {
     client: 'pg',
     connection: process.env.DATABASE_URL,

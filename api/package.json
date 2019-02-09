@@ -40,6 +40,7 @@
     "@types/humps": "^1.1.2",
     "@types/lodash": "^4.14.47",
     "@types/oauth": "^0.9.1",
+    "@types/pg": "^7.4.11",
     "@types/query-string": "^3.0.30",
     "@types/raven": "^2.1.6",
     "@types/twit": "^2.2.20",
