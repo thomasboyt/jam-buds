@@ -16,9 +16,12 @@
     "@types/puppeteer": "^1.12.1",
     "dotenv": "^5.0.1",
     "expect": "^24.0.0",
+    "knex": "^0.16.3",
     "mocha": "^5.0.4",
+    "pg": "^7.8.0",
     "puppeteer": "^1.12.2",
     "ts-node": "^8.0.2",
-    "typescript": "^3.3.3"
+    "typescript": "^3.3.3",
+    "wait-port": "^0.2.2"
   }
 }

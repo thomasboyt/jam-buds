@@ -36,7 +36,9 @@ before_script:
   - psql -c 'create database jambuds_test;' -U postgres
   - cd app
   - PORT=8080 npm run dev &
-  - sleep 5  # little padding to start the dev server
+  # wait for dev server to start
+  - cd ../spec
+  - npx wait-port 8080
   - cd ..
 
 script:

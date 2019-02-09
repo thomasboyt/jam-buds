@@ -1,7 +1,8 @@
+import knex from 'knex';
 import path from 'path';
 import childProcess from 'child_process';
-import { configureDatabase, db } from '../../api/src/db';
 import dotenv from 'dotenv';
+import waitPort from 'wait-port';
 
 if (!process.env.CI) {
   dotenv.config({
@@ -10,19 +11,19 @@ if (!process.env.CI) {
 }
 
 async function resetDb() {
-  configureDatabase();
+  const db = knex({
+    client: 'pg',
+    connection: process.env.DATABASE_URL,
+  });
 
   try {
-    console.log('resetting schema');
     await db!.raw('DROP SCHEMA public CASCADE;');
     await db!.raw('CREATE SCHEMA public;');
 
-    console.log('running migrations');
     await db!.migrate.latest({
       directory: '../api/migrations',
     });
 
-    console.log('running seeds');
     await db!.seed.run({
       directory: '../api/seeds',
     });
@@ -42,7 +43,7 @@ function waitForStart(ms: number): Promise<any> {
 before(async function() {
   this.timeout(30 * 1000);
 
-  console.log('spawning node');
+  console.log('Starting API server');
 
   // this uses a node entry point instead of ts-node cuz i couldn't easily clean
   // up after ts-node exited
@@ -55,8 +56,15 @@ before(async function() {
     child.kill();
   });
 
-  console.log('Waiting 5 seconds for server start...');
-  await waitForStart(5 * 1000);
+  console.log('Waiting for API server start');
+  const started = await waitPort({
+    port: parseInt(process.env.PORT!),
+    timeout: 10 * 1000,
+  });
+
+  if (!started) {
+    throw new Error('timed out :(');
+  }
 });
 
 beforeEach(async () => {
