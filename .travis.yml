@@ -42,8 +42,8 @@ before_script:
 script:
   - cd api
   - npm test
-  # - cd ../spec
-  # - npm test
+  - cd ../spec
+  - npm test
 
 env:
   global:
