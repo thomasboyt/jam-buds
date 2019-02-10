@@ -8,3 +8,4 @@ SENTRY_PUBLIC_DSN_APP=
 # Stuff used by the deploy scripts
 JAMBUDS_SSH_REMOTE=you@yoursite.whatever
 JAMBUDS_REMOTE_PATH=/home/you/jam-buds
+JAMBUDS_DOCKER_REGISTRY=

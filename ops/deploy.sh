@@ -13,7 +13,10 @@ source .env.deploy
 set +o allexport
 
 bash ops/tasks/build.sh
-bash ops/tasks/upload-images.sh
+bash ops/tasks/docker-push.sh
+ssh $JAMBUDS_SSH_REMOTE \
+  JAMBUDS_DOCKER_REGISTRY=$JAMBUDS_DOCKER_REGISTRY \
+  'bash -s' < ops/remote-tasks/docker-pull.sh
 ssh $JAMBUDS_SSH_REMOTE \
   JAMBUDS_REMOTE_PATH=$JAMBUDS_REMOTE_PATH \
-  'bash -s' < ops/tasks/run-docker.sh
+  'bash -s' < ops/remote-tasks/restart-docker.sh
