@@ -1,106 +1,165 @@
 <template>
-  <div class="logged-out-homepage">
-    <h2>hey! listen!</h2>
+  <div class="logged-out-home" :style="{ background: rainbow }">
+    <div class="logged-out-main">
+      <div class="left-drawing">
+        <img :src="corgi" />
+      </div>
 
-    <div class="lower">
-      <p>
-        this is <strong>jam buds</strong>, a site to share music with friends
-      </p>
+      <div class="content">
+        <div v-if="sentMailAddress">
+          <h2>check ur mail!</h2>
+          <p>
+            Check your inbox at
+            <strong>{{ sentMailAddress }}</strong>
+            for a link to sign in or sign up.
+          </p>
+        </div>
 
-      <p>
-        you can post songs you like, follow your friends, and listen to what
-        everyone you know is listening to.
-      </p>
+        <div v-else>
+          <h2>
+            hey, listen!
+          </h2>
 
-      <div class="twitter-auth">
-        <p>want to get started?</p>
+          <p>
+            this is <strong>jam buds</strong>, a site for sharing music with
+            friends
+          </p>
 
-        <sign-in-form />
+          <p>
+            you can post songs you like, follow your friends, and listen to what
+            everyone you know is listening to.
+          </p>
+
+          <p>want to get started? <strong>sign up or log in below:</strong></p>
+
+          <sign-in-form @sentMail="handleSentMail" />
+        </div>
       </div>
     </div>
 
-    <div class="attribution">
-      site by
-      <a href="https://twitter.com/thomasABoyt">thomas</a>
-      &middot; good doggo by
-      <a href="http://twitter.com/rainbowfission">@rainbowfission</a>
-      &middot;
+    <footer>
+      <span class="credits">
+        site by
+        <a href="https://twitter.com/thomasABoyt">thomas</a>
+        &middot; good doggo by
+        <a href="http://twitter.com/rainbowfission">@rainbowfission</a>
+        &middot;
+      </span>
       <router-link to="/about">about jam buds</router-link>
-    </div>
+    </footer>
   </div>
 </template>
 
 <script>
 import SignInForm from './SignInForm.vue';
+import corgi from '../../assets/ghettoblaster_corgi.png';
 
 export default {
   components: { SignInForm },
+
+  data() {
+    return {
+      corgi,
+      rainbow: 'linear-gradient(45deg, #ef32d9, #89fffd)',
+      sentMailAddress: null,
+    };
+  },
+
+  methods: {
+    handleSentMail(emailAddress) {
+      this.sentMailAddress = emailAddress;
+    },
+  },
 };
 </script>
 
 <style scoped lang="scss">
-.logged-out-homepage {
-  position: relative;
+@import '../../styles/mixins.scss';
 
-  max-width: 600px;
-  min-height: 850px;
+.logged-out-home {
+  display: flex;
+  flex: 1;
+  flex-flow: column;
+  padding: 20px 20px;
+}
+
+.logged-out-main {
+  flex: 1;
+}
+
+// Desktop two-column layout
+@media (min-width: $breakpoint-small) {
+  .logged-out-main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .left-drawing {
+    flex: 0 1 auto;
+    transform: rotate(-10deg);
+  }
+
+  .content {
+    flex: 1 1 auto;
+    margin-left: 70px;
+    max-width: 400px;
+  }
+}
+
+.left-drawing {
+  img {
+    max-width: 100%;
+    height: auto;
+    border: 15px hotpink solid;
+  }
+
+  @media (max-width: $breakpoint-small) {
+    display: none;
+  }
+}
+
+.inline-drawing {
+  display: block;
+  max-height: 200px;
+  width: auto;
+  border: 10px hotpink solid;
   margin: 0 auto;
-  margin-bottom: 80px;
-  padding: 0 20px;
-  padding-bottom: 50px;
 
-  background-image: url('../../assets/ghettoblaster_corgi.png');
-  background-color: white;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  border: 15px hotpink solid;
+  @media (min-width: $breakpoint-small) {
+    display: none;
+  }
+}
 
-  text-align: center;
+h2 {
+  line-height: 1em;
+  margin-top: 0px;
+  margin-bottom: 20px;
 
-  h2 {
-    margin-top: 32px;
+  @media (max-width: $breakpoint-small) {
+    text-align: center;
     font-size: 48px;
   }
-
-  .lower {
-    margin-top: 460px;
+  @media (min-width: $breakpoint-small) {
+    font-size: 72px;
   }
+}
 
-  .twitter-auth {
-    margin-top: 30px;
-  }
+footer {
+  font-size: 14px;
+  text-align: center;
 
-  .twitter-auth .button {
-    display: inline-block;
-    margin: 10px auto;
-    padding: 10px;
-    text-decoration: none;
-
-    background-color: yellow;
+  a,
+  a:visited,
+  a:hover,
+  a:active {
     color: black;
-    font-weight: bold;
-    font-size: 1.5em;
-
-    &:active {
-      transform: translate3d(4px, 4px, 0px);
-    }
+    font-weight: 500;
   }
 
-  .attribution {
-    position: absolute;
-    text-align: center;
-    left: 0;
-    right: 0;
-    bottom: 15px;
-
-    font-size: 12px;
-
-    a,
-    a:visited,
-    a:hover,
-    a:active {
-      color: hotpink;
+  .credits {
+    @media (max-width: $breakpoint-small) {
+      display: none;
     }
   }
 }

@@ -1,14 +1,5 @@
 <template>
-  <div v-if="didSignIn">
-    <h3 style="color: hotpink">🎉 Email Sent! 🎉</h3>
-    <p>
-      Check your inbox at
-      <br />
-      <strong>{{ this.email }}</strong>
-      <br />for a link to sign in or sign up.
-    </p>
-  </div>
-  <form v-else @submit="handleSubmit">
+  <form @submit="handleSubmit">
     <input
       type="email"
       v-model="email"
@@ -27,7 +18,6 @@ export default {
   data() {
     return {
       email: '',
-      didSignIn: false,
     };
   },
 
@@ -48,16 +38,53 @@ export default {
       }
 
       this.didSignIn = true;
+
+      this.$emit('sentMail', email);
     },
   },
 };
 </script>
 
 <style lang="scss" scoped>
+@import '../../styles/mixins.scss';
+
+form {
+  display: flex;
+  width: 100%;
+}
+
+input {
+  flex: 1 1 auto;
+  min-width: 0px;
+  padding: 0px 5px;
+  margin-right: 5px;
+}
+
 .submit {
+  flex: 0 0 auto;
+  width: 100px;
+  padding: 0px;
+}
+
+input,
+.submit {
+  height: 45px;
+  font-family: 'Work Sans', sans-serif;
+}
+
+input {
+  @media (max-width: $breakpoint-small) {
+    font-size: 16px;
+  }
+  @media (min-width: $breakpoint-small) {
+    font-size: 22px;
+  }
+}
+
+.submit {
+  font-size: 22px;
   background: yellow;
   color: black;
   font-weight: bold;
-  padding: 3px 5px;
 }
 </style>
