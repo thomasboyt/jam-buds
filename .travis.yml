@@ -35,14 +35,10 @@ install:
 before_script:
   - psql -c 'create database jambuds_test;' -U postgres
   - cd app
-  - PORT=8080 npm run dev &
-  # wait for dev server to start
-  - cd ../spec
-  - npx wait-port 8080
-  - cd ..
+  - npm run build-assets
 
 script:
-  - cd api
+  - cd ../api
   - npm test
   - cd ../spec
   - npm test
@@ -53,9 +49,8 @@ env:
 
     # In addition to these, API keys for feature tests are included in Travis's settings page
     - DATABASE_URL=postgres://postgres@localhost:5432/jambuds_test
-    - PORT=3001
     - API_URL=http://localhost:3001
-    - STATIC_URL=http://localhost:8080
+    - STATIC_URL=http://localhost:8080/assets
     - APP_URL=http://localhost:8080
 
 cache:
