@@ -1,0 +1,98 @@
+version: v1.0
+name: Tests
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu1804
+
+blocks:
+  - name: "Set Up"
+    task:
+      prologue:
+        commands:
+          - sem-version node 10
+      jobs:
+      - name: "npm install"
+        commands:
+          - checkout
+          # TODO: use a shell script to dedupe this?
+          - cd api
+          - cache restore node-modules-api-$SEMAPHORE_GIT_BRANCH-$(checksum package-lock.json),node-modules-api-$SEMAPHORE_GIT_BRANCH,node-modules-api-master
+          - npm install
+          - cache store node-modules-api-$SEMAPHORE_GIT_BRANCH-$(checksum package-lock.json) node_modules
+          - cd ../spec
+          - cache restore node-modules-spec-$SEMAPHORE_GIT_BRANCH-$(checksum package-lock.json),node-modules-spec-$SEMAPHORE_GIT_BRANCH,node-modules-spec-master
+          - npm install
+          - cache store node-modules-spec-$SEMAPHORE_GIT_BRANCH-$(checksum package-lock.json) node_modules
+          - cd ../app
+          - cache restore node-modules-app-$SEMAPHORE_GIT_BRANCH-$(checksum package-lock.json),node-modules-app-$SEMAPHORE_GIT_BRANCH,node-modules-app-master
+          - npm install
+          - cache store node-modules-app-$SEMAPHORE_GIT_BRANCH-$(checksum package-lock.json) node_modules
+
+  - name: "Unit Tests"
+    task:
+      env_vars:
+        - name: DATABASE_URL
+          value: "postgres://postgres@localhost:5432/jambuds_test"
+        - name: REDIS_URL
+          value: "redis://localhost:6379"
+      prologue:
+        commands:
+          - checkout
+          - sem-version node 10
+          - cd api
+          - cache restore node-modules-api-$SEMAPHORE_GIT_BRANCH-$(checksum package-lock.json),node-modules-api-$SEMAPHORE_GIT_BRANCH,node-modules-api-master
+          - sem-service start postgres
+          - sem-service start redis
+      jobs:
+      - name: Unit Tests
+        commands:
+          - npm test
+
+  - name: "Integration Tests"
+    task:
+      secrets:
+        - name: jambuds-integration-keys
+      env_vars:
+        - name: DATABASE_URL
+          value: "postgres://postgres@localhost:5432/jambuds_test"
+        - name: REDIS_URL
+          value: "redis://localhost:6379"
+        - name: API_URL
+          value: http://localhost:3001
+        - name: APP_URL
+          value: http://localhost:8080
+        - name: STATIC_URL
+          value: http://localhost:8080/assets
+        - name: CI
+          value: "1"
+        - name: DISABLE_APPLE_MUSIC
+          value: "1"
+      prologue:
+        commands:
+          - checkout
+          - sem-version node 10
+          - cd api
+          - cache restore node-modules-api-$SEMAPHORE_GIT_BRANCH-$(checksum package-lock.json),node-modules-api-$SEMAPHORE_GIT_BRANCH,node-modules-api-master
+          - cd ../app
+          - cache restore node-modules-app-$SEMAPHORE_GIT_BRANCH-$(checksum package-lock.json),node-modules-app-$SEMAPHORE_GIT_BRANCH,node-modules-app-master
+          - cd ../spec
+          - cache restore node-modules-spec-$SEMAPHORE_GIT_BRANCH-$(checksum package-lock.json),node-modules-spec-$SEMAPHORE_GIT_BRANCH,node-modules-spec-master
+          - sem-service start postgres
+          - createdb -U postgres -h 0.0.0.0 jambuds_test
+          - sem-service start redis
+      jobs:
+      - name: Integration Tests
+        commands:
+          - cd ../app
+          - npm run build-assets
+          - cd ../spec
+          - npm test
+
+  # - name: "Push Image"
+  #   task:
+  #     jobs:
+  #     - name: Push
+  #       commands:
+  #         - checkout
+  #         - echo "make docker.push"
