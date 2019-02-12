@@ -5,6 +5,10 @@ agent:
     type: e1-standard-2
     os_image: ubuntu1804
 
+promotions:
+  - name: Docker push
+    pipeline_file: docker-push.yml
+
 blocks:
   - name: "Set Up"
     task:

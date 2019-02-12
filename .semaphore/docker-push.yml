@@ -1,0 +1,29 @@
+version: "v1.0"
+name: Docker Push
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu1804
+
+blocks:
+  - name: "Build & Push Image"
+    task:
+      secrets:
+        - name: GCP
+      prologue:
+        commands:
+          # Authenticate using the file injected from the secret
+          - gcloud auth activate-service-account --key-file=.secrets.gcp.json
+          - gcloud auth configure-docker -q
+          - checkout
+      jobs:
+        - name: Build API
+          commands:
+            - cd api
+            - docker build -t "gcr.io/${GCP_PROJECT_ID}/jambuds-api" .
+            - docker push "gcr.io/${GCP_PROJECT_ID}/jambuds-api"
+        - name: Build App
+          commands:
+            - cd app
+            - docker build -t "gcr.io/${GCP_PROJECT_ID}/jambuds-app" .
+            - docker push "gcr.io/${GCP_PROJECT_ID}/jambuds-app"
