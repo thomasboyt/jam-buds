@@ -20,7 +20,7 @@ API_URL=http://localhost:3000
 APP_URL=http://localhost:8080
 
 # The root origin of the static assets server.
-STATIC_URL=http://localhost:8080
+STATIC_URL=http://localhost:8080/assets
 
 # Spotify API key and secret
 SPOTIFY_CLIENT_ID=
