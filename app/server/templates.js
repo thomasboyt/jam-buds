@@ -8,6 +8,7 @@ const templatePaths = [
   '500-dev.html',
   'index.html',
   'webpack-error.html',
+  'production-scripts.html',
 ];
 
 const templates = {};

@@ -102,6 +102,7 @@ async function main() {
       title: 'Jam Buds',
       staticUrl: process.env.STATIC_URL,
       apiUrl: process.env.API_URL,
+      productionScripts: isProd ? templates['production-scripts'] : '',
     };
 
     renderer.renderToString(context, (err, html) => {
