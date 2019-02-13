@@ -1,5 +1,5 @@
 import axios from 'axios';
-import * as qs from 'querystring';
+import qs from 'querystring';
 
 interface SoundcloudTrack {
   trackId: string;

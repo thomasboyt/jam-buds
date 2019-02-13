@@ -1,5 +1,5 @@
 import axios from 'axios';
-import * as qs from 'query-string';
+import qs from 'query-string';
 
 const YOUTUBE_URL = /https:\/\/www\.youtube\.com\/watch\?v=(.*)/;
 

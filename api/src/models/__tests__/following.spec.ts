@@ -1,6 +1,4 @@
-/// <reference types="mocha" />
-
-import * as expect from 'expect';
+import expect from 'expect';
 
 import { userFactory } from '../../__tests__/factories';
 import { User } from '../../models/user';

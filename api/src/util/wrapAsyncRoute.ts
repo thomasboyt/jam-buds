@@ -1,6 +1,6 @@
 // See http://madole.xyz/error-handling-in-express-with-async-await-routes/
 
-import * as Express from 'express';
+import Express from 'express';
 
 export type PromiseRequestHandler = (
   req: Express.Request,

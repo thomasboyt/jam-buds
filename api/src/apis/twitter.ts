@@ -1,5 +1,5 @@
 import { User } from '../models/user';
-import * as Twit from 'twit';
+import Twit from 'twit';
 
 interface PostSongTweetParams {
   text: string;

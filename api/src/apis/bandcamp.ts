@@ -1,6 +1,6 @@
 import axios from 'axios';
-import * as cheerio from 'cheerio';
-import * as microdata from 'microdata-node';
+import cheerio from 'cheerio';
+import microdata from 'microdata-node';
 
 interface BandcampTrack {
   trackId: string;

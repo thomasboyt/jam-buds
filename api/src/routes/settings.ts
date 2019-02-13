@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import * as _ from 'lodash';
+import _ from 'lodash';
 import { isAuthenticated } from '../auth';
 import wrapAsyncRoute from '../util/wrapAsyncRoute';
 

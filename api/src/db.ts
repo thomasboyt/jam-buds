@@ -1,5 +1,5 @@
-import * as knex from 'knex';
-import * as pg from 'pg';
+import knex from 'knex';
+import pg from 'pg';
 
 export let db: knex | undefined;
 

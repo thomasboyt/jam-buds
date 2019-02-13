@@ -5,7 +5,7 @@
 
     // TODO: Convert existing imports. See:
     // https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-7.html
-    // "esModuleInterop": true,
+    "esModuleInterop": true,
 
     "module": "commonjs",
     "moduleResolution": "node",

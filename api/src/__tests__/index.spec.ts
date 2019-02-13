@@ -1,6 +1,4 @@
-/// <reference types="mocha" />
-
-import * as dotenv from 'dotenv';
+import dotenv from 'dotenv';
 
 // (this is only used for local testing, and doesn't exist in CI)
 dotenv.config({

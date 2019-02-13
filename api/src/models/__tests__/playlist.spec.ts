@@ -1,9 +1,7 @@
-/// <reference types="mocha" />
-
-import * as expect from 'expect';
-import * as playlist from '../playlist';
+import expect from 'expect';
 
 import { userFactory, entryFactory } from '../../__tests__/factories';
+import * as playlist from '../playlist';
 import { User } from '../../models/user';
 import {
   likePlaylistEntry,

@@ -1,7 +1,5 @@
-/// <reference types="mocha" />
-
-import * as expect from 'expect';
-import * as request from 'supertest';
+import expect from 'expect';
+import request from 'supertest';
 
 import { userFactory, entryFactory } from '../../__tests__/factories';
 import { getPlaylistByUserId } from '../../models/playlist';

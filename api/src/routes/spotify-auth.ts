@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import * as SpotifyWebApi from 'spotify-web-api-node';
+import SpotifyWebApi from 'spotify-web-api-node';
 import axios from 'axios';
 
 import wrapAsyncRoute from '../util/wrapAsyncRoute';

@@ -1,8 +1,8 @@
-import * as express from 'express';
-import * as bodyParser from 'body-parser';
-import * as cookieParser from 'cookie-parser';
-import * as cors from 'cors';
-import * as Raven from 'raven';
+import express from 'express';
+import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
+import cors from 'cors';
+import Raven from 'raven';
 
 import registerAuthEndpoints from './routes/auth';
 import registerUserEndpoints from './routes/users';
