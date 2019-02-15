@@ -11,5 +11,8 @@ RUN npm install
 COPY --chown=node:node . .
 USER node
 
+# Build the app
+RUN npm run build-prod -b
+
 EXPOSE 3000
 CMD [ "npm", "start" ]

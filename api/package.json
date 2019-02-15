@@ -8,8 +8,9 @@
   },
   "scripts": {
     "dev": "nodemon --watch 'src/**/*.ts' --watch 'emails/**/*.*' --exec 'ts-node' src/entry.ts",
-    "start": "ts-node 'src/entry.ts'",
     "resetdb": "./scripts/resetdb",
+    "start": "node build/entry.js",
+    "build-prod": "tsc",
     "test": "NODE_ENV=test mocha --exit --require ts-node/register 'src/**/*.spec.ts'"
   },
   "author": "Thomas Boyt <me@thomasboyt.com>",

@@ -4,3 +4,4 @@ build/
 .firebaserc
 errorShots/
 secrets/
+api/dist
