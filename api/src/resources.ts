@@ -17,18 +17,24 @@ export interface Song {
 
 export interface PlaylistEntry {
   id: number;
+  song: Song;
+}
+
+export interface Post extends PlaylistEntry {
   note: string | null;
   added: string;
-  song: Song;
   user: PublicUser;
 }
 
-export interface Like {
-  id: number;
-  song: Song;
-}
+export type Like = PlaylistEntry;
 
 export interface Feed {
+  tracks: Post[];
+  limit: number;
+}
+
+export interface Playlist {
+  userProfile: UserProfile;
   tracks: PlaylistEntry[];
   limit: number;
 }
@@ -51,12 +57,6 @@ export interface CurrentUser {
   colorScheme: ColorScheme;
   twitterName: string | null;
   hasSpotify: boolean;
-}
-
-export interface Playlist {
-  userProfile: UserProfile;
-  tracks: (PlaylistEntry | Like)[];
-  limit: number;
 }
 
 export interface Followers {

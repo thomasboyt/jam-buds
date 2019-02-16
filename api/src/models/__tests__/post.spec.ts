@@ -1,31 +1,30 @@
 import expect from 'expect';
 
-import { userFactory, entryFactory } from '../../__tests__/factories';
-import * as playlist from '../playlist';
+import { userFactory, postFactory } from '../../__tests__/factories';
+import * as playlist from '../post';
 import { User } from '../user';
-import { getPlaylistEntryById, deletePlaylistEntryById } from '../playlist';
-import { createLike } from '../like';
+import { getPostById, deletePostById } from '../post';
 import { followUser } from '../following';
-import { PlaylistEntry } from '../../resources';
+import { Post } from '../../resources';
 
 import { db } from '../../db';
 
 async function setEntryCreated(id: number, createdAt: string) {
-  await db!('playlist_entries')
+  await db!('posts')
     .where({ id })
     .update({
       created_at: createdAt,
     });
 }
 
-describe('models/playlist', () => {
+describe('models/post', () => {
   describe('querying', () => {
     let jeff: User;
     let vinny: User;
     let dan: User;
-    let jeffEntry: PlaylistEntry;
-    let vinnyEntry: PlaylistEntry;
-    let danEntry: PlaylistEntry;
+    let jeffEntry: Post;
+    let vinnyEntry: Post;
+    let danEntry: Post;
 
     beforeEach(async () => {
       jeff = await userFactory();
@@ -34,13 +33,13 @@ describe('models/playlist', () => {
 
       await followUser(jeff.id, vinny.id);
 
-      jeffEntry = await entryFactory({ userId: jeff.id });
+      jeffEntry = await postFactory({ userId: jeff.id });
       await setEntryCreated(jeffEntry.id, '2016-11-01T00:04:03.059656-05:00');
 
-      vinnyEntry = await entryFactory({ userId: vinny.id });
+      vinnyEntry = await postFactory({ userId: vinny.id });
       await setEntryCreated(vinnyEntry.id, '2016-12-01T00:04:03.059656-05:00');
 
-      danEntry = await entryFactory({ userId: dan.id });
+      danEntry = await postFactory({ userId: dan.id });
     });
 
     describe('getFeedByUserId', () => {
@@ -68,11 +67,11 @@ describe('models/playlist', () => {
   describe('deleteEntryById', () => {
     it('deletes a posted entry', async () => {
       const user = await userFactory();
-      const entry = await entryFactory({ userId: user.id });
+      const entry = await postFactory({ userId: user.id });
 
-      await deletePlaylistEntryById(entry.id);
+      await deletePostById(entry.id);
 
-      expect(await getPlaylistEntryById(entry.id)).toNotExist();
+      expect(await getPostById(entry.id)).toNotExist();
     });
   });
 });

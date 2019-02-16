@@ -9,13 +9,13 @@ import {
 } from '../models/song';
 
 import {
-  addSongToPlaylist,
-  getPlaylistByUserId,
+  createPost,
+  getPostsByUserId,
   getFeedByUserId,
-  getPlaylistEntryById,
-  deletePlaylistEntryById,
-  CreateEntryParams,
-} from '../models/playlist';
+  getPostById,
+  deletePostById,
+  CreatePostParams,
+} from '../models/post';
 
 import { ENTRY_PAGE_LIMIT } from '../constants';
 
@@ -44,13 +44,13 @@ export default function registerPlaylistEndpoints(router: Router) {
         song = await createSongFromSpotifyResource(spotifyResource);
       }
 
-      const params: CreateEntryParams = {
+      const params: CreatePostParams = {
         userId: user.id,
         songId: song.id,
         note: req.body.note,
       };
 
-      const entry = await addSongToPlaylist(params);
+      const entry = await createPost(params);
 
       if (req.body.tweet) {
         await postSongTweet({
@@ -72,7 +72,7 @@ export default function registerPlaylistEndpoints(router: Router) {
       const entryId: number = req.params.entryId;
 
       // TODO: delete song by ID
-      const entry = await getPlaylistEntryById(entryId);
+      const entry = await getPostById(entryId);
 
       if (!entry) {
         return res.status(404).json({
@@ -86,7 +86,7 @@ export default function registerPlaylistEndpoints(router: Router) {
         });
       }
 
-      await deletePlaylistEntryById(entryId);
+      await deletePostById(entryId);
 
       res.json({
         success: true,
@@ -113,7 +113,7 @@ export default function registerPlaylistEndpoints(router: Router) {
       const previousId =
         req.query.previousId && parseInt(req.query.previousId, 10);
 
-      const tracks = await getPlaylistByUserId(user.id, {
+      const tracks = await getPostsByUserId(user.id, {
         currentUserId: currentUser ? currentUser.id : undefined,
         previousId,
       });

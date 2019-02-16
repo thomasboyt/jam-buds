@@ -1,41 +1,38 @@
 import { db } from '../db';
-import Knex from 'knex';
 import { camelizeKeys, decamelizeKeys } from 'humps';
 import { User, serializePublicUser } from './user';
-import { PlaylistEntry, Song } from '../resources';
+import { Post } from '../resources';
 import { ENTRY_PAGE_LIMIT } from '../constants';
 import { joinSongsQuery, serializeSong } from './song';
 import { paginate } from './utils';
 
-export interface CreateEntryParams {
+export interface CreatePostParams {
   userId: number;
   songId: number;
   note: string;
 }
 
-export async function addSongToPlaylist(
-  values: CreateEntryParams
-): Promise<PlaylistEntry> {
+export async function createPost(values: CreatePostParams): Promise<Post> {
   const query = db!
     .insert(decamelizeKeys(values))
-    .into('playlist_entries')
+    .into('posts')
     .returning('id');
 
   const [id] = await query;
-  const entry = await getPlaylistEntryById(id);
+  const post = await getPostById(id);
 
-  return entry!;
+  return post!;
 }
 
-function serializePlaylistEntry(row: any): PlaylistEntry {
-  const { song, isLiked, entry } = camelizeKeys(row) as any;
+function serializePost(row: any): Post {
+  const { song, isLiked, post } = camelizeKeys(row) as any;
   const user = serializePublicUser(camelizeKeys(row.user) as User);
 
   return {
-    id: entry.id,
+    id: post.id,
 
-    note: entry.note,
-    added: entry.createdAt,
+    note: post.note,
+    added: post.createdAt,
 
     song: serializeSong(song, isLiked),
     user,
@@ -47,48 +44,51 @@ interface QueryOptions {
   previousId?: number;
 }
 
-function getBasePlaylistQuery(opts: QueryOptions) {
+function getBasePostsQuery(opts: QueryOptions) {
   /*
    * Note: the db!.raw('to_json') calls are used to "namespace" the results here
    * https://github.com/tgriesser/knex/issues/61#issuecomment-259176685
    * This may not be a great idea performance-wise.
    */
 
-  let query = db!('playlist_entries')
-    .select(db!.raw('to_json(playlist_entries.*) as entry'))
+  let query = db!('posts')
+    .select(db!.raw('to_json(posts.*) as post'))
     .join('users', {
-      'users.id': 'playlist_entries.user_id',
+      'users.id': 'posts.user_id',
     });
 
   return paginate(joinSongsQuery(query, opts), {
     limit: ENTRY_PAGE_LIMIT,
     previousId: opts.previousId,
-    idColumn: 'playlist_entries.id',
+    idColumn: 'posts.id',
   }).join('songs', {
-    'songs.id': 'playlist_entries.song_id',
+    'songs.id': 'posts.song_id',
   });
 }
 
-export async function getPlaylistByUserId(
+export async function getPostsByUserId(
   id: number,
   opts: QueryOptions = {}
-): Promise<PlaylistEntry[]> {
-  const query = getBasePlaylistQuery(opts)
+): Promise<Post[]> {
+  const query = getBasePostsQuery(opts)
     .where({ user_id: id })
-    .orderBy('playlist_entries.id', 'desc');
+    .orderBy('posts.id', 'desc');
 
   const rows = await query;
 
-  return rows.map((row: any) => serializePlaylistEntry(row));
+  return rows.map((row: any) => serializePost(row));
 }
 
+/**
+ * "Feed" is a list of posts, so it's here for convenience.
+ */
 export async function getFeedByUserId(
   id: number,
   opts: QueryOptions = {}
-): Promise<PlaylistEntry[]> {
+): Promise<Post[]> {
   opts.currentUserId = id;
 
-  const query = getBasePlaylistQuery(opts)
+  const query = getBasePostsQuery(opts)
     .where(function() {
       this.whereIn('user_id', function() {
         this.select('following_id')
@@ -96,18 +96,18 @@ export async function getFeedByUserId(
           .where({ user_id: id });
       }).orWhere({ user_id: id });
     })
-    .orderBy('playlist_entries.id', 'desc');
+    .orderBy('posts.id', 'desc');
 
   const rows = await query;
 
-  return rows.map((row: any) => serializePlaylistEntry(row));
+  return rows.map((row: any) => serializePost(row));
 }
 
-export async function getPlaylistEntryById(
+export async function getPostById(
   id: number,
   opts: QueryOptions = {}
-): Promise<PlaylistEntry | null> {
-  const query = getBasePlaylistQuery(opts).where({ 'playlist_entries.id': id });
+): Promise<Post | null> {
+  const query = getBasePostsQuery(opts).where({ 'posts.id': id });
 
   const rows = await query;
 
@@ -115,11 +115,11 @@ export async function getPlaylistEntryById(
     return null;
   }
 
-  return serializePlaylistEntry(rows[0]);
+  return serializePost(rows[0]);
 }
 
-export async function deletePlaylistEntryById(id: number): Promise<void> {
-  const query = db!('playlist_entries')
+export async function deletePostById(id: number): Promise<void> {
+  const query = db!('posts')
     .where({ id })
     .delete();
 

@@ -1,8 +1,8 @@
 import expect from 'expect';
 import request from 'supertest';
 
-import { userFactory, entryFactory } from '../../__tests__/factories';
-import { getPlaylistByUserId } from '../../models/playlist';
+import { userFactory, postFactory } from '../../__tests__/factories';
+import { getPostsByUserId } from '../../models/post';
 
 import createApp from '../../createApp';
 
@@ -23,7 +23,7 @@ describe('routes/playlists', () => {
       const user = await userFactory();
 
       for (let i = 0; i < 100; i += 1) {
-        await entryFactory({ userId: user.id });
+        await postFactory({ userId: user.id });
       }
 
       const firstPageReq = request(app)
@@ -85,11 +85,11 @@ describe('routes/playlists', () => {
   describe('DELETE /playlist/:id', () => {
     it('deletes a song', async () => {
       const user = await userFactory();
-      const entry = await entryFactory({
+      const entry = await postFactory({
         userId: user.id,
       });
 
-      const beforePlaylist = await getPlaylistByUserId(user.id);
+      const beforePlaylist = await getPostsByUserId(user.id);
       expect(beforePlaylist.length).toBe(1);
 
       const req = request(app)
@@ -100,13 +100,13 @@ describe('routes/playlists', () => {
 
       expectStatus(res, 200);
 
-      const afterPlaylist = await getPlaylistByUserId(user.id);
+      const afterPlaylist = await getPostsByUserId(user.id);
       expect(afterPlaylist.length).toBe(0);
     });
 
     it("does not allow you to delete another user's song", async () => {
       const user = await userFactory();
-      const entry = await entryFactory();
+      const entry = await postFactory();
 
       const req = request(app)
         .delete(`/api/playlist/${entry.id}`)

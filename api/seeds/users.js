@@ -27,8 +27,8 @@ function createSong(knex, song) {
   return knex('songs').insert(song, 'id');
 }
 
-function createEntry(knex, entry) {
-  return knex('playlist_entries').insert(entry);
+function createPost(knex, post) {
+  return knex('posts').insert(post);
 }
 
 exports.seed = async function(knex, Promise) {
@@ -53,16 +53,16 @@ exports.seed = async function(knex, Promise) {
   ]);
 
   await Promise.all([
-    Promise.all(songData.entries.map((e) => createEntry(knex, e))),
+    Promise.all(songData.posts.map((p) => createPost(knex, p))),
     knex.schema.raw(
-      `SELECT setval('playlist_entries_id_seq', ${songData.entries.length + 1})`
+      `SELECT setval('posts_id_seq', ${songData.posts.length + 1})`
     ),
   ]);
 
   const spotifySongs = await getSpotifySongs();
   for (let song of spotifySongs) {
     const [id] = await createSong(knex, song);
-    await createEntry(knex, {
+    await createPost(knex, {
       user_id: 5, // abe
       song_id: id,
       created_at: song.created_at,

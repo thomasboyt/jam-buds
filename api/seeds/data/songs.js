@@ -48,7 +48,7 @@ const songs = [
   },
 ];
 
-const entries = [
+const posts = [
   {
     song_id: 1,
     user_id: 2,
@@ -80,6 +80,6 @@ const entries = [
 ];
 
 module.exports = {
-  songs: songs,
-  entries: entries,
+  songs,
+  posts,
 };

@@ -9,7 +9,7 @@ import {
   uniqueString,
 } from '../../__tests__/factories';
 
-import { addSongToPlaylist } from '../../models/playlist';
+import { createPost } from '../../models/post';
 import { getLikesByUserId } from '../../models/like';
 
 const app = createApp();
@@ -21,14 +21,14 @@ describe('routes/likes', () => {
       const dan = await userFactory();
 
       const song = await songFactory();
-      const entry = await addSongToPlaylist({
+      const post = await createPost({
         songId: song.id,
         userId: dan.id,
         note: uniqueString(),
       });
 
       const req = request(app)
-        .put(`/api/likes/${entry.song.id}`)
+        .put(`/api/likes/${post.song.id}`)
         .set('X-Auth-Token', jeff!.authToken);
 
       const res = await req;
