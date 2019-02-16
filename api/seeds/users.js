@@ -1,4 +1,5 @@
 const songData = require('./data/songs');
+const getSpotifySongs = require('./data/spotifySongs');
 
 function createUser(knex, id, name, opts) {
   opts = opts || {};
@@ -23,42 +24,48 @@ function followUser(knex, userId, followingId) {
 }
 
 function createSong(knex, song) {
-  return knex('songs').insert(song);
+  return knex('songs').insert(song, 'id');
 }
 
 function createEntry(knex, entry) {
   return knex('playlist_entries').insert(entry);
 }
 
-exports.seed = function(knex, Promise) {
-  return Promise.all([
+exports.seed = async function(knex, Promise) {
+  await Promise.all([
     createUser(knex, 1, 'jeff'),
     createUser(knex, 2, 'dan'),
     createUser(knex, 3, 'brad'),
     createUser(knex, 4, 'vinny'),
-  ])
-    .then(() => {
-      return knex.schema.raw(`SELECT setval('users_id_seq', 5)`);
-    })
-    .then(() => {
-      // jeff follows dan and vinny
-      return Promise.all([followUser(knex, 1, 2), followUser(knex, 1, 4)]);
-    })
-    .then(() => {
-      return Promise.all([
-        Promise.all(songData.songs.map((s) => createSong(knex, s))),
-        knex.schema.raw(
-          `SELECT setval('songs_id_seq', ${songData.songs.length + 1})`
-        ),
-      ]);
-    })
-    .then(() => {
-      return Promise.all([
-        Promise.all(songData.entries.map((e) => createEntry(knex, e))),
-        knex.schema.raw(
-          `SELECT setval('playlist_entries_id_seq', ${songData.entries.length +
-            1})`
-        ),
-      ]);
+    createUser(knex, 5, 'abe'),
+  ]);
+
+  await knex.schema.raw(`SELECT setval('users_id_seq', 6)`);
+
+  // jeff follows dan and vinny
+  await Promise.all([followUser(knex, 1, 2), followUser(knex, 1, 4)]);
+
+  await Promise.all([
+    Promise.all(songData.songs.map((s) => createSong(knex, s))),
+    knex.schema.raw(
+      `SELECT setval('songs_id_seq', ${songData.songs.length + 1})`
+    ),
+  ]);
+
+  await Promise.all([
+    Promise.all(songData.entries.map((e) => createEntry(knex, e))),
+    knex.schema.raw(
+      `SELECT setval('playlist_entries_id_seq', ${songData.entries.length + 1})`
+    ),
+  ]);
+
+  const spotifySongs = await getSpotifySongs();
+  for (let song of spotifySongs) {
+    const [id] = await createSong(knex, song);
+    await createEntry(knex, {
+      user_id: 5, // abe
+      song_id: id,
+      created_at: song.created_at,
     });
+  }
 };

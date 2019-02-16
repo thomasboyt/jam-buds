@@ -21,6 +21,7 @@
     "@types/supertest": "^2.0.0",
     "@typescript-eslint/eslint-plugin": "^1.2.0",
     "@typescript-eslint/parser": "^1.2.0",
+    "csv-parse": "^4.3.3",
     "dotenv": "^2.0.0",
     "eslint": "^5.13.0",
     "eslint-config-prettier": "^4.0.0",
