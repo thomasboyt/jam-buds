@@ -1,8 +1,8 @@
 <template>
-  <img v-if="albumArt" class="playlist-entry--album-art" :src="albumArt" />
+  <img v-if="albumArt" class="playlist-song--album-art" :src="albumArt" />
   <icon
     v-else
-    class="playlist-entry--album-art -placeholder"
+    class="playlist-song--album-art -placeholder"
     :glyph="albumPlaceholderIcon"
   />
 </template>

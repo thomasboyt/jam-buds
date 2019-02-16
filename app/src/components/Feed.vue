@@ -3,6 +3,7 @@
     <h2>your feed</h2>
 
     <playlist
+      entry-type="post"
       :entries="entries"
       :entries-exhausted="feedEntriesExhausted"
       :loading-next-page="loadingNextPage"

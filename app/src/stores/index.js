@@ -5,7 +5,7 @@ Vue.use(Vuex);
 
 import auth from './modules/auth';
 import currentUser from './modules/currentUser';
-import playlistEntries from './modules/playlistEntries';
+import songs from './modules/songs';
 import playback from './modules/playback';
 import playlists from './modules/playlists';
 import profile from './modules/profile';
@@ -15,7 +15,7 @@ const root = {
   modules: {
     auth,
     currentUser,
-    playlistEntries,
+    songs,
     playback,
     playlists,
     profile,

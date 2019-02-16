@@ -1,6 +1,6 @@
 const playlistState = () => {
   return {
-    entryIds: [],
+    entries: [],
     entriesExhausted: false,
     url: null,
   };
@@ -10,6 +10,8 @@ const playlistState = () => {
  * TODO:
  * Consider collapsing key and url into the same field
  * Instead of having profilePosts/profileLikes, just have a buncha playlists
+ *
+ * A "playlist" is a list of [...], which each have a "song" component.
  */
 
 const playlists = {
@@ -23,7 +25,7 @@ const playlists = {
 
   mutations: {
     resetPlaylist(state, { key, url }) {
-      state[key].entryIds = [];
+      state[key].entries = [];
       state[key].entriesExhausted = false;
       if (url) {
         state[key].url = url;
@@ -31,12 +33,14 @@ const playlists = {
     },
 
     addPlaylistEntryToHead(state, { key, entry }) {
-      state[key].entryIds = [entry.id].concat(state[key].entryIds);
+      state[key].entries = [entry].concat(state[key].entries);
     },
 
+    /**
+     * Append a new page of entries to a playlist.
+     */
     pushPlaylist(state, { key, page }) {
-      const newIds = page.tracks.map((entry) => entry.id);
-      state[key].entryIds = state[key].entryIds.concat(newIds);
+      state[key].entries = state[key].entries.concat(page.tracks);
 
       if (page.tracks.length < page.limit) {
         state[key].entriesExhausted = true;
@@ -45,13 +49,9 @@ const playlists = {
 
     deletePlaylistEntry(state, id) {
       for (let key of Object.keys(state)) {
-        const index = state[key].entryIds.indexOf(id);
-
-        if (index === -1) {
-          return;
-        }
-
-        state[key].entryIds = state[key].entryIds.filter((val) => val !== id);
+        state[key].entries = state[key].entries.filter(
+          (entry) => entry.id !== id
+        );
       }
     },
   },
@@ -66,7 +66,8 @@ const playlists = {
         context.commit('resetPlaylist', { key, url });
       }
 
-      const previousId = context.state[key].entryIds.slice(-1)[0];
+      const previousEntry = context.state[key].entries.slice(-1)[0];
+      const previousId = previousEntry ? previousEntry.id : undefined;
 
       const resp = await this.$axios({
         url: context.state[key].url,
@@ -74,7 +75,7 @@ const playlists = {
         params: { previousId },
       });
 
-      context.commit('addPlaylistEntries', resp.data.tracks);
+      context.commit('addSongs', resp.data.tracks.map((entry) => entry.song));
       context.commit('pushPlaylist', { key, page: resp.data });
 
       return resp.data;
@@ -82,16 +83,14 @@ const playlists = {
   },
 
   getters: {
-    playlistEntries(state, getters, rootState) {
+    playlistEntries(state) {
       return (key) => {
         const playlist = state[key];
         if (!playlist) {
           throw new Error(`undefined playlist ${key}`);
         }
 
-        return playlist.entryIds.map((id) => {
-          return rootState.playlistEntries[id];
-        });
+        return playlist.entries;
       };
     },
   },

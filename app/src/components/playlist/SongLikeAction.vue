@@ -1,6 +1,6 @@
 <template>
   <button @click="handleToggleLike" :disabled="requestInFlight">
-    <icon v-if="entry.song.isLiked" :glyph="heartFilledIcon" />
+    <icon v-if="song.isLiked" :glyph="heartFilledIcon" />
     <icon v-else :glyph="heartOpenIcon" />
   </button>
 </template>
@@ -14,7 +14,7 @@ const heartFilledIcon = require('../../../assets/heart_filled.svg');
 export default {
   components: { Icon },
 
-  props: ['entry'],
+  props: ['song'],
 
   data() {
     return {
@@ -29,14 +29,12 @@ export default {
       e.preventDefault();
       e.stopPropagation();
 
-      const action = this.entry.song.isLiked
-        ? 'unlikePlaylistEntry'
-        : 'likePlaylistEntry';
+      const action = this.song.isLiked ? 'unlikeSong' : 'likeSong';
 
       this.requestInFlight = true;
 
       try {
-        await this.$store.dispatch(`${action}`, { id: this.entry.id });
+        await this.$store.dispatch(`${action}`, { id: this.song.id });
       } catch (err) {
         console.log('request error');
         console.log(err);

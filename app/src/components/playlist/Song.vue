@@ -1,23 +1,19 @@
 <template>
-  <div :class="['playlist-entry', { 'is-playing': isPlaying }]">
-    <div class="playlist-entry--main" @click="handleClick">
-      <album-art :album-art="entry.song.albumArt" />
+  <div :class="['playlist-song', { 'is-playing': isPlaying }]">
+    <div class="playlist-song--main" @click="handleClick">
+      <album-art :album-art="song.albumArt" />
 
       <div class="title">
         <div class="title-content">
-          <span class="title-artist">{{ entry.song.artists.join(',') }}</span>
+          <span class="title-artist">{{ song.artists.join(',') }}</span>
           <br />
-          {{ entry.song.title }}
+          {{ song.title }}
         </div>
       </div>
 
-      <span class="playlist-entry--actions">
-        <button v-if="entry.note" @click="handleOpenNote">
-          <icon :glyph="noteIcon" />
-        </button>
-
-        <entry-like-action v-if="showLikeButton" :entry="entry" />
-        <entry-delete-action v-if="showDeleteButton" :entry="entry" />
+      <span class="playlist-song--actions">
+        <song-like-action v-if="showLikeButton" :song="song" />
+        <!-- TODO: reintroduce entry deletes -->
 
         <button @click="handleToggleOpen" class="drawer-toggle">
           <icon
@@ -28,14 +24,10 @@
       </span>
     </div>
 
-    <div :class="['playlist-entry--detail', { open: isOpen }]">
-      <p v-if="entry.note" class="track-note">
-        {{ entry.note }}
-      </p>
-
+    <div :class="['playlist-song--detail', { open: isOpen }]">
       <p>
         <em>
-          <youtube-search-link :song="entry.song" />
+          <youtube-search-link :song="song" />
         </em>
       </p>
     </div>
@@ -46,8 +38,8 @@
 import Icon from '../Icon.vue';
 import AlbumArt from './AlbumArt.vue';
 import YoutubeSearchLink from './YoutubeSearchLink.vue';
-import EntryLikeAction from './EntryLikeAction.vue';
-import EntryDeleteAction from './EntryDeleteAction.vue';
+import SongLikeAction from './SongLikeAction.vue';
+// import EntryDeleteAction from './EntryDeleteAction.vue';
 
 const noteIcon = require('../../../assets/note.svg');
 const arrowIcon = require('../../../assets/arrow.svg');
@@ -56,12 +48,12 @@ export default {
   components: {
     AlbumArt,
     Icon,
-    EntryLikeAction,
-    EntryDeleteAction,
+    SongLikeAction,
+    // EntryDeleteAction,
     YoutubeSearchLink,
   },
 
-  props: ['entry', 'playbackSourceLabel', 'playbackSourcePath'],
+  props: ['song', 'playbackSourceLabel', 'playbackSourcePath'],
 
   data() {
     return {
@@ -79,21 +71,17 @@ export default {
     showLikeButton() {
       const { state } = this.$store;
 
-      // users can't like their own posts
-      return (
-        state.auth.authenticated &&
-        !(state.currentUser.id === this.entry.user.id)
-      );
+      return state.auth.authenticated;
     },
 
-    showDeleteButton() {
-      const { state } = this.$store;
+    // showDeleteButton() {
+    //   const { state } = this.$store;
 
-      // users can't delete other ppl's posts
-      return (
-        state.auth.authenticated && state.currentUser.id === this.entry.user.id
-      );
-    },
+    //   // users can't delete other ppl's posts
+    //   return (
+    //     state.auth.authenticated && state.currentUser.id === this.entry.user.id
+    //   );
+    // },
   },
 
   methods: {
@@ -101,7 +89,7 @@ export default {
       evt.preventDefault();
       this.isOpen = true;
       this.$store.dispatch('playback/playSong', {
-        entry: this.entry,
+        song: this.song,
         playbackSourceLabel: this.playbackSourceLabel,
         playbackSourcePath: this.playbackSourcePath,
       });
@@ -123,7 +111,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.playlist-entry {
+.playlist-song {
   color: var(--theme-text-color);
   border: 3px var(--theme-border-color) solid;
 
@@ -134,12 +122,12 @@ export default {
   display: block;
 }
 
-a.playlist-entry--main,
-a:visited.playlist-entry--main {
+a.playlist-song--main,
+a:visited.playlist-song--main {
   color: var(--theme-text-color);
 }
 
-.playlist-entry--main {
+.playlist-song--main {
   height: 64px;
 
   display: flex;
@@ -147,7 +135,7 @@ a:visited.playlist-entry--main {
   color: var(--theme-text-color);
   text-decoration: none;
 
-  .playlist-entry--album-art {
+  .playlist-song--album-art {
     height: 100%;
     flex: 0 0 64px;
     border-right: 3px var(--theme-border-color) solid;
@@ -186,7 +174,7 @@ a:visited.playlist-entry--main {
   }
 }
 
-.playlist-entry--actions {
+.playlist-song--actions {
   flex-grow: 0;
   flex-shrink: 0;
 
@@ -233,7 +221,7 @@ a:visited.playlist-entry--main {
   }
 }
 
-.playlist-entry--detail {
+.playlist-song--detail {
   max-height: 0px;
   overflow: hidden;
 

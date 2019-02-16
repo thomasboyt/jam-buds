@@ -6,9 +6,10 @@
   <div v-else>
     <ul class="playlist-entries">
       <li v-for="entry in entries" :key="entry.id">
-        <entry-posted-by :entry="entry" />
-        <playlist-entry
-          :entry="entry"
+        <entry-posted-by :entry="entry" v-if="entryType === 'post'" />
+
+        <song
+          :song="entry.song"
           :playback-source-label="playbackSourceLabel"
           :playback-source-path="playbackSourcePath"
         />
@@ -29,12 +30,13 @@
 
 <script>
 import EntryPostedBy from './EntryPostedBy.vue';
-import PlaylistEntry from './PlaylistEntry.vue';
+import Song from './Song.vue';
 
 export default {
-  components: { EntryPostedBy, PlaylistEntry },
+  components: { EntryPostedBy, Song },
 
   props: [
+    'entryType',
     'entries',
     'entriesExhausted',
     'loadingNextPage',
