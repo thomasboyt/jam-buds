@@ -1,99 +1,15 @@
 import { Router } from 'express';
-import wrapAsyncRoute from '../util/wrapAsyncRoute';
 
 import { User, getUserByName, getUserProfileForUser } from '../models/user';
-
-import {
-  getSongBySpotifyId,
-  createSongFromSpotifyResource,
-} from '../models/song';
-
-import {
-  createPost,
-  getPostsByUserId,
-  getFeedByUserId,
-  getPostById,
-  deletePostById,
-  CreatePostParams,
-} from '../models/post';
-
-import { ENTRY_PAGE_LIMIT } from '../constants';
-
-import { getUserFromRequest, isAuthenticated } from '../auth';
-
-import * as spotify from '../apis/spotify';
-import { postSongTweet } from '../apis/twitter';
-
-import { Playlist, Feed } from '../resources';
+import { getPostsByUserId, getFeedByUserId } from '../models/post';
 import { getLikesByUserId } from '../models/like';
 
+import { getUserFromRequest, isAuthenticated } from '../auth';
+import wrapAsyncRoute from '../util/wrapAsyncRoute';
+import { ENTRY_PAGE_LIMIT } from '../constants';
+import { Playlist, Feed } from '../resources';
+
 export default function registerPlaylistEndpoints(router: Router) {
-  // post a new song to your playlist
-  router.post(
-    '/playlist',
-    isAuthenticated,
-    wrapAsyncRoute(async (req, res) => {
-      const user: User = res.locals.user;
-
-      const spotifyId = req.body.spotifyId;
-
-      let song = await getSongBySpotifyId(spotifyId);
-
-      if (!song) {
-        const spotifyResource = await spotify.getTrackById(spotifyId);
-        song = await createSongFromSpotifyResource(spotifyResource);
-      }
-
-      const params: CreatePostParams = {
-        userId: user.id,
-        songId: song.id,
-        note: req.body.note,
-      };
-
-      const entry = await createPost(params);
-
-      if (req.body.tweet) {
-        await postSongTweet({
-          text: req.body.tweet,
-          user,
-        });
-      }
-
-      res.json(entry);
-    })
-  );
-
-  // delete a song from your playlist
-  router.delete(
-    '/playlist/:entryId',
-    isAuthenticated,
-    wrapAsyncRoute(async (req, res) => {
-      const user: User = res.locals.user;
-      const entryId: number = req.params.entryId;
-
-      // TODO: delete song by ID
-      const entry = await getPostById(entryId);
-
-      if (!entry) {
-        return res.status(404).json({
-          error: `No song found with id ${entryId}`,
-        });
-      }
-
-      if (entry.user.id !== user.id) {
-        return res.status(400).json({
-          error: "Cannot delete someone else's song",
-        });
-      }
-
-      await deletePostById(entryId);
-
-      res.json({
-        success: true,
-      });
-    })
-  );
-
   // get a user's playlist
   router.get(
     '/playlists/:userName',

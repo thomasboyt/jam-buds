@@ -84,7 +84,7 @@ export default {
       }
 
       const resp = await this.$axios({
-        url: '/playlist',
+        url: '/posts',
         method: 'POST',
         data: params,
       });

@@ -40,7 +40,7 @@ const songs = {
 
     // async deleteSong(context, { id }) {
     //   await this.$axios({
-    //     url: `/playlist/${id}`,
+    //     url: `/posts/${id}`,
     //     method: 'DELETE',
     //   });
     //   context.commit('deletePlaylistEntry', id);

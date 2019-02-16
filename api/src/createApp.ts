@@ -8,6 +8,7 @@ import registerAuthEndpoints from './routes/auth';
 import registerUserEndpoints from './routes/users';
 import registerSearchEndpoints from './routes/search';
 import registerPlaylistEndpoints from './routes/playlists';
+import registerPostEndpoints from './routes/posts';
 import registerLikesEndpoints from './routes/likes';
 import registerSettingsEndpoints from './routes/settings';
 import registerSpotifyAuthEndpoints from './routes/spotify-auth';
@@ -42,6 +43,7 @@ export default function createApp() {
   registerPlaylistEndpoints(apiRouter);
   registerLikesEndpoints(apiRouter);
   registerSettingsEndpoints(apiRouter);
+  registerPostEndpoints(apiRouter);
   app.use('/api', apiRouter);
 
   const authRouter = express.Router();
