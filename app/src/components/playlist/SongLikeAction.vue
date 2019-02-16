@@ -1,5 +1,9 @@
 <template>
-  <button @click="handleToggleLike" :disabled="requestInFlight">
+  <button
+    class="action-button"
+    @click="handleToggleLike"
+    :disabled="requestInFlight"
+  >
     <icon v-if="song.isLiked" :glyph="heartFilledIcon" />
     <icon v-else :glyph="heartOpenIcon" />
   </button>

@@ -1,6 +1,8 @@
 <template>
-  <div :class="['playlist-song', { 'is-playing': isPlaying }]">
-    <div class="playlist-song--main" @click="handleClick">
+  <div
+    :class="['playlist-song', { 'is-playing': isPlaying, 'can-play': canPlay }]"
+  >
+    <div class="playlist-song--main" @click="handlePlay">
       <album-art :album-art="song.albumArt" />
 
       <div class="title">
@@ -12,23 +14,27 @@
       </div>
 
       <span class="playlist-song--actions">
+        <song-play-action :song="song" @play="handlePlay" />
         <song-like-action v-if="showLikeButton" :song="song" />
         <!-- TODO: reintroduce entry deletes -->
-        <!-- TODO: include youtube icon here -->
       </span>
     </div>
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex';
+
 import AlbumArt from './AlbumArt.vue';
 import SongLikeAction from './SongLikeAction.vue';
+import SongPlayAction from './SongPlayAction.vue';
 // import EntryDeleteAction from './EntryDeleteAction.vue';
 
 export default {
   components: {
     AlbumArt,
     SongLikeAction,
+    SongPlayAction,
     // EntryDeleteAction,
   },
 
@@ -55,6 +61,11 @@ export default {
   },
 
   computed: {
+    ...mapState({
+      canPlay: (state) =>
+        state.auth.authenticated && state.currentUser.hasSpotify,
+    }),
+
     song() {
       return this.$store.state.songs[this.songId];
     },
@@ -76,26 +87,16 @@ export default {
   },
 
   methods: {
-    handleClick(evt) {
-      evt.preventDefault();
-      this.isOpen = true;
+    handlePlay() {
+      if (!this.canPlay) {
+        return;
+      }
+
       this.$store.dispatch('playback/playSong', {
         song: this.song,
         playbackSourceLabel: this.playbackSourceLabel,
         playbackSourcePath: this.playbackSourcePath,
       });
-    },
-
-    handleToggleOpen(evt) {
-      evt.preventDefault();
-      evt.stopPropagation();
-      this.isOpen = !this.isOpen;
-    },
-
-    handleOpenNote(evt) {
-      evt.preventDefault();
-      evt.stopPropagation();
-      this.isOpen = true;
     },
   },
 };
@@ -108,14 +109,13 @@ export default {
 
   &:hover {
     background: rgba(0, 0, 0, 0.1);
+
+    &.can-play {
+      cursor: pointer;
+    }
   }
   margin-bottom: 30px;
   display: block;
-}
-
-a.playlist-song--main,
-a:visited.playlist-song--main {
-  color: var(--theme-text-color);
 }
 
 .playlist-song--main {
@@ -172,10 +172,11 @@ a:visited.playlist-song--main {
   margin-left: auto;
   margin-right: 10px;
 
-  /deep/ button {
+  /deep/ .action-button {
     transition: transform 0.15s linear;
     transform: scale(1);
     padding: 0;
+    display: inline-block;
 
     &:hover,
     &:active {
@@ -193,40 +194,10 @@ a:visited.playlist-song--main {
       width: 30px;
       height: 30px;
 
-      transform: rotate(0deg);
-      transition: transform 0.3s ease-in-out;
-
       &.heart-filled path {
         fill: var(--theme-text-color);
       }
-
-      &.arrow-up {
-        transform: rotate(-180deg);
-      }
     }
-  }
-
-  .drawer-toggle {
-    margin-left: 20px;
-    margin-right: 10px;
-  }
-}
-
-.playlist-song--detail {
-  max-height: 0px;
-  overflow: hidden;
-
-  transition: max-height 0.5s ease;
-
-  &.open {
-    max-height: 300px;
-    overflow: auto;
-  }
-
-  padding: 0 10px;
-
-  > p:first-child {
-    padding-top: 20px;
   }
 }
 </style>
