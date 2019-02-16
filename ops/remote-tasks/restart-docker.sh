@@ -24,6 +24,7 @@ docker run \
   -p 6000:8080 \
   --network jambuds \
   -u node \
+  --restart always \
   -d jambuds-app
 
 docker run \
@@ -32,4 +33,5 @@ docker run \
   -p 6001:3000 \
   --network jambuds \
   -u node \
+  --restart always \
   -d jambuds-api
