@@ -15,17 +15,19 @@ const playlistEntries = {
       Vue.delete(state, id);
     },
     likePlaylistEntry(state, id) {
-      state[id].isLiked = true;
+      state[id].song.isLiked = true;
     },
     unlikePlaylistEntry(state, id) {
-      state[id].isLiked = false;
+      state[id].song.isLiked = false;
     },
   },
 
   actions: {
     async likePlaylistEntry(context, { id }) {
+      const songId = context.state[id].song.id;
+
       await this.$axios({
-        url: `/likes/${id}`,
+        url: `/likes/${songId}`,
         method: 'PUT',
       });
 
@@ -33,8 +35,10 @@ const playlistEntries = {
     },
 
     async unlikePlaylistEntry(context, { id }) {
+      const songId = context.state[id].song.id;
+
       await this.$axios({
-        url: `/likes/${id}`,
+        url: `/likes/${songId}`,
         method: 'DELETE',
       });
 

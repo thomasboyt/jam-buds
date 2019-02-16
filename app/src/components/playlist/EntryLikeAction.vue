@@ -1,6 +1,6 @@
 <template>
   <button @click="handleToggleLike" :disabled="requestInFlight">
-    <icon v-if="entry.isLiked" :glyph="heartFilledIcon" />
+    <icon v-if="entry.song.isLiked" :glyph="heartFilledIcon" />
     <icon v-else :glyph="heartOpenIcon" />
   </button>
 </template>
@@ -29,7 +29,7 @@ export default {
       e.preventDefault();
       e.stopPropagation();
 
-      const action = this.entry.isLiked
+      const action = this.entry.song.isLiked
         ? 'unlikePlaylistEntry'
         : 'likePlaylistEntry';
 
