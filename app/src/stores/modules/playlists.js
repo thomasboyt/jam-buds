@@ -78,7 +78,16 @@ const playlists = {
       context.commit('addSongs', resp.data.tracks.map((entry) => entry.song));
       context.commit('pushPlaylist', { key, page: resp.data });
 
-      return resp.data;
+      const tracks = resp.data.tracks.map((entry) => {
+        entry.songId = entry.song.id;
+        delete entry.song;
+        return entry;
+      });
+
+      return {
+        ...resp.data,
+        tracks,
+      };
     },
   },
 

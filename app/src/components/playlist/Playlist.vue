@@ -9,7 +9,7 @@
         <entry-posted-by :entry="entry" v-if="entryType === 'post'" />
 
         <song
-          :song="entry.song"
+          :song-id="entry.songId"
           :playback-source-label="playbackSourceLabel"
           :playback-source-path="playbackSourcePath"
         />

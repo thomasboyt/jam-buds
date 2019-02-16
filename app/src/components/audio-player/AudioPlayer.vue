@@ -2,14 +2,14 @@
   <div class="audio-player" v-if="spotifyEnabled">
     <spotify-player
       v-if="nowPlaying"
-      :spotify-id="nowPlaying.song.spotifyId"
+      :spotify-id="nowPlaying.spotifyId"
       :is-playing="isPlaying"
       @buffering="this.handleBufferingStart"
       @buffered="this.handleBufferingEnd"
       @ended="this.handlePlaybackEnded"
     />
 
-    <div class="audio-player--controls">
+    <div class="audio-player--controls" v-if="nowPlaying">
       <button
         class="play-pause-button"
         @click="handlePlayPauseClick"
@@ -18,20 +18,20 @@
         <icon :glyph="playPauseIcon" />
       </button>
 
-      <button
+      <!-- <button
         class="next-button"
         @click="handleNextClick"
         :disabled="!nowPlaying"
       >
         <icon :glyph="nextIcon" />
-      </button>
+      </button> -->
     </div>
 
-    <div class="audio-player--main">
+    <div class="audio-player--main" v-if="nowPlaying">
       <div>{{ title }}</div>
       <div>{{ artist }}</div>
 
-      <div v-if="nowPlaying">
+      <div>
         playing from
         <router-link :to="playbackSourcePath">{{
           playbackSourceLabel
@@ -46,11 +46,7 @@
         :src="albumArt"
         class="audio-player--art"
       />
-      <icon
-        v-else
-        class="audio-player--art-placeholder"
-        :glyph="albumPlaceholderIcon"
-      />
+      <img v-else :src="spotifyIcon" class="audio-player--art-placeholder" />
     </div>
   </div>
   <div class="audio-player" v-else-if="authenticated">
@@ -69,7 +65,7 @@ import ConnectButton from './ConnectButton.vue';
 const playIcon = require('../../../assets/play.svg');
 const pauseIcon = require('../../../assets/pause.svg');
 const nextIcon = require('../../../assets/next.svg');
-const albumPlaceholderIcon = require('../../../assets/record.svg');
+const spotifyIcon = require('../../../assets/Spotify_Icon_RGB_White.png');
 
 export default {
   components: { Icon, LoadingSpinner, SpotifyPlayer, ConnectButton },
@@ -79,7 +75,7 @@ export default {
       playIcon,
       pauseIcon,
       nextIcon,
-      albumPlaceholderIcon,
+      spotifyIcon,
       isBuffering: false,
     };
   },
@@ -102,27 +98,15 @@ export default {
     },
 
     artist() {
-      if (this.nowPlaying) {
-        return this.nowPlaying.song.artists[0];
-      } else {
-        return null;
-      }
+      return this.nowPlaying.artists[0];
     },
 
     title() {
-      if (this.nowPlaying) {
-        return this.nowPlaying.song.title;
-      } else {
-        return '(nothing playing)';
-      }
+      return this.nowPlaying.title;
     },
 
     albumArt() {
-      if (this.nowPlaying) {
-        return this.nowPlaying.song.albumArt;
-      } else {
-        return null;
-      }
+      return this.nowPlaying.albumArt;
     },
 
     embedProps() {

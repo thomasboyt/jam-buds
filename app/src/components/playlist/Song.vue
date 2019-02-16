@@ -14,60 +14,51 @@
       <span class="playlist-song--actions">
         <song-like-action v-if="showLikeButton" :song="song" />
         <!-- TODO: reintroduce entry deletes -->
-
-        <button @click="handleToggleOpen" class="drawer-toggle">
-          <icon
-            :glyph="arrowIcon"
-            :class="{ 'arrow-up': isOpen, 'arrow-down': !isOpen }"
-          />
-        </button>
+        <!-- TODO: include youtube icon here -->
       </span>
-    </div>
-
-    <div :class="['playlist-song--detail', { open: isOpen }]">
-      <p>
-        <em>
-          <youtube-search-link :song="song" />
-        </em>
-      </p>
     </div>
   </div>
 </template>
 
 <script>
-import Icon from '../Icon.vue';
 import AlbumArt from './AlbumArt.vue';
-import YoutubeSearchLink from './YoutubeSearchLink.vue';
 import SongLikeAction from './SongLikeAction.vue';
 // import EntryDeleteAction from './EntryDeleteAction.vue';
-
-const noteIcon = require('../../../assets/note.svg');
-const arrowIcon = require('../../../assets/arrow.svg');
 
 export default {
   components: {
     AlbumArt,
-    Icon,
     SongLikeAction,
     // EntryDeleteAction,
-    YoutubeSearchLink,
   },
 
-  props: ['song', 'playbackSourceLabel', 'playbackSourcePath'],
+  props: {
+    songId: {
+      type: Number,
+      required: true,
+    },
+    playbackSourceLabel: {
+      type: String,
+      required: true,
+    },
+    playbackSourcePath: {
+      type: String,
+      required: true,
+    },
+  },
 
   data() {
     return {
-      noteIcon,
-      arrowIcon,
-
-      isOpen: false,
-
       // TODO: get this from store
       isPlaying: false,
     };
   },
 
   computed: {
+    song() {
+      return this.$store.state.songs[this.songId];
+    },
+
     showLikeButton() {
       const { state } = this.$store;
 

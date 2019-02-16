@@ -11,11 +11,11 @@ const playback = {
   },
 
   mutations: {
-    playSong(state, { entry, playbackSourceLabel, playbackSourcePath }) {
-      // TODO: this could/should take ID instead of entry, and a getter would
-      // look it up from the playlistEntries store
-      // currently it's copying because I'm worried about a bunch of edge cases
-      state.nowPlaying = entry;
+    playSong(state, { song, playbackSourceLabel, playbackSourcePath }) {
+      // XXX: Eventually, this should take _entry ID_ instead of a song, for
+      // playlist-playback purposes
+      // (could also take song-and-playlist and find entry from playlist)
+      state.nowPlaying = song;
       state.isPlaying = true;
       state.playbackSourceLabel = playbackSourceLabel;
       state.playbackSourcePath = playbackSourcePath;
