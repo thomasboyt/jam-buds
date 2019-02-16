@@ -1,5 +1,5 @@
 import { User, createUser } from '../models/user';
-import { createSongFromManualEntry, Song } from '../models/song';
+import { createSongFromManualEntry, SongModel } from '../models/song';
 import { addSongToPlaylist } from '../models/playlist';
 import { PlaylistEntry } from '../resources';
 
@@ -27,7 +27,7 @@ export async function userFactory(
 export async function songFactory(
   artist: string = uniqueString(),
   title: string = uniqueString()
-): Promise<Song> {
+): Promise<SongModel> {
   const song = await createSongFromManualEntry(artist, title);
   return song;
 }

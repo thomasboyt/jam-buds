@@ -9,10 +9,8 @@ import {
   uniqueString,
 } from '../../__tests__/factories';
 
-import {
-  addSongToPlaylist,
-  getLikedEntriesByUserId,
-} from '../../models/playlist';
+import { addSongToPlaylist } from '../../models/playlist';
+import { getLikesByUserId } from '../../models/like';
 
 const app = createApp();
 
@@ -42,11 +40,11 @@ describe('routes/likes', () => {
         throw err;
       }
 
-      const likes = await getLikedEntriesByUserId(jeff!.id, {
+      const likes = await getLikesByUserId(jeff!.id, {
         currentUserId: jeff!.id,
       });
       expect(likes.length).toBe(1);
-      expect(likes[0].id).toBe(entry.id);
+      expect(likes[0].song.id).toBe(song.id);
       expect(likes[0].song.isLiked).toBe(true);
     });
   });

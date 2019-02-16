@@ -11,7 +11,6 @@ import {
 import {
   addSongToPlaylist,
   getPlaylistByUserId,
-  getLikedEntriesByUserId,
   getFeedByUserId,
   getPlaylistEntryById,
   deletePlaylistEntryById,
@@ -26,6 +25,7 @@ import * as spotify from '../apis/spotify';
 import { postSongTweet } from '../apis/twitter';
 
 import { Playlist, Feed } from '../resources';
+import { getLikesByUserId } from '../models/like';
 
 export default function registerPlaylistEndpoints(router: Router) {
   // post a new song to your playlist
@@ -146,7 +146,7 @@ export default function registerPlaylistEndpoints(router: Router) {
       const previousId =
         req.query.previousId && parseInt(req.query.previousId, 10);
 
-      const tracks = await getLikedEntriesByUserId(user.id, {
+      const tracks = await getLikesByUserId(user.id, {
         currentUserId: currentUser ? currentUser.id : undefined,
         previousId,
       });

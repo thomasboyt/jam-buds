@@ -63,16 +63,6 @@ describe('models/playlist', () => {
         expect(items[2].id).toBe(jeffEntry.id);
       });
     });
-
-    describe('getLikedEntriesByUserId', () => {
-      it("returns a user's liked entries", async () => {
-        await createLike({ userId: jeff.id, songId: danEntry.song.id });
-
-        const items = await playlist.getLikedEntriesByUserId(jeff.id);
-        expect(items.length).toBe(1);
-        expect(items[0].id).toBe(danEntry.id);
-      });
-    });
   });
 
   describe('deleteEntryById', () => {

@@ -8,10 +8,10 @@ export interface SearchResult {
 export interface Song {
   id: number;
   artists: string[];
-  album: string;
+  album: string | null;
   title: string;
-  albumArt: string;
-  spotifyId: string;
+  albumArt: string | null;
+  spotifyId: string | null;
   isLiked: boolean;
 }
 
@@ -21,6 +21,11 @@ export interface PlaylistEntry {
   added: string;
   song: Song;
   user: PublicUser;
+}
+
+export interface Like {
+  id: number;
+  song: Song;
 }
 
 export interface Feed {
@@ -50,7 +55,7 @@ export interface CurrentUser {
 
 export interface Playlist {
   userProfile: UserProfile;
-  tracks: PlaylistEntry[];
+  tracks: (PlaylistEntry | Like)[];
   limit: number;
 }
 

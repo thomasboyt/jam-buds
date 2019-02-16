@@ -1,8 +1,11 @@
 import { db } from '../db';
+import Knex from 'knex';
 import { camelizeKeys, decamelizeKeys } from 'humps';
 import { User, serializePublicUser } from './user';
 import { PlaylistEntry, Song } from '../resources';
 import { ENTRY_PAGE_LIMIT } from '../constants';
+import { joinSongsQuery, serializeSong } from './song';
+import { paginate } from './utils';
 
 export interface CreateEntryParams {
   userId: number;
@@ -24,20 +27,8 @@ export async function addSongToPlaylist(
   return entry!;
 }
 
-function serializeSong(song: any, isLiked: boolean): Song {
-  return {
-    id: song.id,
-    album: song.album,
-    artists: song.artists,
-    title: song.title,
-    albumArt: song.albumArt,
-    spotifyId: song.spotifyId,
-    isLiked,
-  };
-}
-
 function serializePlaylistEntry(row: any): PlaylistEntry {
-  const { song, entry, isLiked } = camelizeKeys(row) as any;
+  const { song, isLiked, entry } = camelizeKeys(row) as any;
   const user = serializePublicUser(camelizeKeys(row.user) as User);
 
   return {
@@ -62,37 +53,20 @@ function getBasePlaylistQuery(opts: QueryOptions) {
    * https://github.com/tgriesser/knex/issues/61#issuecomment-259176685
    * This may not be a great idea performance-wise.
    */
-  const select = [
-    db!.raw('to_json(playlist_entries.*) as entry'),
-    db!.raw('to_json(songs.*) as song'),
-    db!.raw('to_json(users.*) as user'),
-  ];
 
-  if (opts.currentUserId !== undefined) {
-    select.push(
-      db!.raw(
-        'EXISTS(SELECT 1 FROM likes WHERE user_id=? AND song_id=songs.id) AS is_liked',
-        [opts.currentUserId]
-      )
-    );
-  }
-
-  let query = db!
-    .select(select)
-    .from('playlist_entries')
-    .join('songs', {
-      'songs.id': 'playlist_entries.song_id',
-    })
+  let query = db!('playlist_entries')
+    .select(db!.raw('to_json(playlist_entries.*) as entry'))
     .join('users', {
       'users.id': 'playlist_entries.user_id',
-    })
-    .limit(ENTRY_PAGE_LIMIT);
+    });
 
-  if (opts.previousId !== undefined) {
-    query = query.where('playlist_entries.id', '<', opts.previousId);
-  }
-
-  return query;
+  return paginate(joinSongsQuery(query, opts), {
+    limit: ENTRY_PAGE_LIMIT,
+    previousId: opts.previousId,
+    idColumn: 'playlist_entries.id',
+  }).join('songs', {
+    'songs.id': 'playlist_entries.song_id',
+  });
 }
 
 export async function getPlaylistByUserId(
@@ -123,23 +97,6 @@ export async function getFeedByUserId(
       }).orWhere({ user_id: id });
     })
     .orderBy('playlist_entries.id', 'desc');
-
-  const rows = await query;
-
-  return rows.map((row: any) => serializePlaylistEntry(row));
-}
-
-export async function getLikedEntriesByUserId(
-  id: number,
-  opts: QueryOptions = {}
-): Promise<PlaylistEntry[]> {
-  const query = getBasePlaylistQuery(opts)
-    .select([db!.raw('to_json(likes.*) as like')])
-    .join('likes', {
-      'likes.song_id': 'songs.id',
-      'likes.user_id': id,
-    })
-    .orderBy('likes.id', 'desc');
 
   const rows = await query;
 
