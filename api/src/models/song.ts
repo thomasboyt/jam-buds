@@ -9,6 +9,20 @@ export interface Song {
   name: string;
 }
 
+export async function getSongById(id: number): Promise<Song | null> {
+  const query = db!('songs').where({ id });
+
+  let [row] = await query;
+
+  if (!row) {
+    return null;
+  }
+
+  const song = camelizeKeys(row) as Song;
+
+  return song;
+}
+
 export async function getSongBySpotifyId(
   spotifyId: number
 ): Promise<Song | null> {

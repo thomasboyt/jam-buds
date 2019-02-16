@@ -2,47 +2,29 @@ import { Router } from 'express';
 import wrapAsyncRoute from '../util/wrapAsyncRoute';
 
 import { User } from '../models/user';
-
-import {
-  likePlaylistEntry,
-  unlikePlaylistEntry,
-  getPlaylistEntryById,
-} from '../models/playlist';
+import { createLike, removeLike, likeExists } from '../models/like';
+import { getSongById } from '../models/song';
 
 import { isAuthenticated } from '../auth';
 
 export default function registerLikesEndpoints(router: Router) {
   // Like a song
   router.put(
-    '/likes/:entryId',
+    '/likes/:songId',
     isAuthenticated,
     wrapAsyncRoute(async (req, res) => {
-      const entryId = req.params.entryId as number;
+      const songId = req.params.songId as number;
       const user = res.locals.user as User;
 
-      const entry = await getPlaylistEntryById(entryId, {
-        currentUserId: user.id,
-      });
+      const song = await getSongById(songId);
 
-      if (!entry) {
+      if (!song) {
         return res.status(404).json({
-          error: `No song found with id ${entryId}`,
+          error: `No song found with id ${songId}`,
         });
       }
 
-      if (entry.isLiked) {
-        return res.status(400).json({
-          error: 'Cannot like the same song twice',
-        });
-      }
-
-      if (entry.user.id === user.id) {
-        return res.status(400).json({
-          error: 'Cannot like your own song',
-        });
-      }
-
-      await likePlaylistEntry(user.id, entryId);
+      await createLike({ userId: user.id, songId: song.id });
 
       res.json({
         success: true,
@@ -51,29 +33,29 @@ export default function registerLikesEndpoints(router: Router) {
   );
 
   router.delete(
-    '/likes/:entryId',
+    '/likes/:songId',
     isAuthenticated,
     wrapAsyncRoute(async (req, res) => {
-      const entryId = req.params.entryId as number;
+      const songId = req.params.songId as number;
       const user = res.locals.user as User;
 
-      const entry = await getPlaylistEntryById(entryId, {
-        currentUserId: user.id,
-      });
+      const song = await getSongById(songId);
 
-      if (!entry) {
+      if (!song) {
         return res.status(404).json({
-          error: `No song found with id ${entryId}`,
+          error: `No song found with id ${songId}`,
         });
       }
 
-      if (!entry.isLiked) {
+      const likeParams = { songId: song.id, userId: user.id };
+
+      if (!(await likeExists(likeParams))) {
         return res.status(400).json({
           error: "Cannot unlike a song you don't like",
         });
       }
 
-      await unlikePlaylistEntry(user.id, entryId);
+      await removeLike(likeParams);
 
       res.json({
         success: true,

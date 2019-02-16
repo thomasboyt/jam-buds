@@ -18,7 +18,7 @@ const app = createApp();
 
 describe('routes/likes', () => {
   describe('PUT /likes/:id', () => {
-    it('likes an entry by id', async () => {
+    it('likes a song by id', async () => {
       const jeff = await userFactory();
       const dan = await userFactory();
 
@@ -30,7 +30,7 @@ describe('routes/likes', () => {
       });
 
       const req = request(app)
-        .put(`/api/likes/${entry.id}`)
+        .put(`/api/likes/${entry.song.id}`)
         .set('X-Auth-Token', jeff!.authToken);
 
       const res = await req;
@@ -47,7 +47,7 @@ describe('routes/likes', () => {
       });
       expect(likes.length).toBe(1);
       expect(likes[0].id).toBe(entry.id);
-      expect(likes[0].isLiked).toBe(true);
+      expect(likes[0].song.isLiked).toBe(true);
     });
   });
 });

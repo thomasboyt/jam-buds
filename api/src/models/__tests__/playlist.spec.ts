@@ -2,13 +2,10 @@ import expect from 'expect';
 
 import { userFactory, entryFactory } from '../../__tests__/factories';
 import * as playlist from '../playlist';
-import { User } from '../../models/user';
-import {
-  likePlaylistEntry,
-  getPlaylistEntryById,
-  deletePlaylistEntryById,
-} from '../../models/playlist';
-import { followUser } from '../../models/following';
+import { User } from '../user';
+import { getPlaylistEntryById, deletePlaylistEntryById } from '../playlist';
+import { createLike } from '../like';
+import { followUser } from '../following';
 import { PlaylistEntry } from '../../resources';
 
 import { db } from '../../db';
@@ -69,7 +66,7 @@ describe('models/playlist', () => {
 
     describe('getLikedEntriesByUserId', () => {
       it("returns a user's liked entries", async () => {
-        await likePlaylistEntry(jeff.id, danEntry.id);
+        await createLike({ userId: jeff.id, songId: danEntry.song.id });
 
         const items = await playlist.getLikedEntriesByUserId(jeff.id);
         expect(items.length).toBe(1);

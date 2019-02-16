@@ -24,28 +24,29 @@ export async function addSongToPlaylist(
   return entry!;
 }
 
-function serializeSong(song: any): Song {
+function serializeSong(song: any, isLiked: boolean): Song {
   return {
+    id: song.id,
     album: song.album,
     artists: song.artists,
     title: song.title,
-    albumArt: song.album_art,
-    spotifyId: song.spotify_id,
+    albumArt: song.albumArt,
+    spotifyId: song.spotifyId,
+    isLiked,
   };
 }
 
 function serializePlaylistEntry(row: any): PlaylistEntry {
-  const { song, entry } = row;
+  const { song, entry, isLiked } = camelizeKeys(row) as any;
   const user = serializePublicUser(camelizeKeys(row.user) as User);
 
   return {
     id: entry.id,
 
     note: entry.note,
-    added: entry.created_at,
-    isLiked: row.is_liked,
+    added: entry.createdAt,
 
-    song: serializeSong(song) as Song,
+    song: serializeSong(song, isLiked),
     user,
   };
 }
@@ -70,7 +71,7 @@ function getBasePlaylistQuery(opts: QueryOptions) {
   if (opts.currentUserId !== undefined) {
     select.push(
       db!.raw(
-        'EXISTS(SELECT 1 FROM likes WHERE user_id=? AND entry_id=playlist_entries.id) AS is_liked',
+        'EXISTS(SELECT 1 FROM likes WHERE user_id=? AND song_id=songs.id) AS is_liked',
         [opts.currentUserId]
       )
     );
@@ -135,7 +136,8 @@ export async function getLikedEntriesByUserId(
   const query = getBasePlaylistQuery(opts)
     .select([db!.raw('to_json(likes.*) as like')])
     .join('likes', {
-      'likes.entry_id': 'playlist_entries.id',
+      'likes.song_id': 'songs.id',
+      'likes.user_id': id,
     })
     .orderBy('likes.id', 'desc');
 
@@ -157,32 +159,6 @@ export async function getPlaylistEntryById(
   }
 
   return serializePlaylistEntry(rows[0]);
-}
-
-export async function likePlaylistEntry(
-  userId: number,
-  entryId: number
-): Promise<void> {
-  const query = db!('likes').insert({
-    entry_id: entryId,
-    user_id: userId,
-  });
-
-  await query;
-}
-
-export async function unlikePlaylistEntry(
-  userId: number,
-  entryId: number
-): Promise<void> {
-  const query = db!('likes')
-    .where({
-      entry_id: entryId,
-      user_id: userId,
-    })
-    .delete();
-
-  await query;
 }
 
 export async function deletePlaylistEntryById(id: number): Promise<void> {

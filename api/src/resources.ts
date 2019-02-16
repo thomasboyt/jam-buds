@@ -6,18 +6,19 @@ export interface SearchResult {
 }
 
 export interface Song {
+  id: number;
   artists: string[];
   album: string;
   title: string;
   albumArt: string;
   spotifyId: string;
+  isLiked: boolean;
 }
 
 export interface PlaylistEntry {
   id: number;
   note: string | null;
   added: string;
-  isLiked: boolean;
   song: Song;
   user: PublicUser;
 }
