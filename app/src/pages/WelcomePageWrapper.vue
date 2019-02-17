@@ -27,6 +27,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '../../styles/mixins.scss';
+
 h2 {
   text-align: center;
   font-size: 48px;
@@ -37,7 +39,10 @@ h2 {
 .welcome-page-wrapper {
   background: linear-gradient(45deg, #ef32d9, #89fffd);
   flex: 1;
-  padding-top: 75px;
+
+  @media (min-width: $breakpoint-small) {
+    padding-top: 75px;
+  }
 }
 
 .fade-page {

@@ -5,10 +5,18 @@
 
       <spotify-connect redirect="/welcome/colors" />
 
-      <p>
-        (no streaming? no problem; just click the youtube button on a song to
-        search for it)
-      </p>
+      <div class="no-streaming">
+        <p>
+          <router-link to="/">
+            continue without connecting
+          </router-link>
+        </p>
+
+        <p>
+          (no streaming? no problem; just click the youtube button on a song to
+          search for it)
+        </p>
+      </div>
     </div>
   </div>
 </template>
@@ -31,10 +39,18 @@ export default {
   --theme-link-color: black;
 }
 
+a {
+  color: black;
+}
+
 h3 {
   font-size: 32px;
   line-height: 1em;
   margin-bottom: 24px;
   font-weight: normal;
+}
+
+.no-streaming {
+  margin-top: 50px;
 }
 </style>
