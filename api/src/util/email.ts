@@ -56,7 +56,10 @@ export async function sendEmail(
 
     const msg = {
       to: recipientEmail,
-      from: 'hello@jambuds.club',
+      from: {
+        email: 'hello@jambuds.club',
+        name: 'Jam Buds',
+      },
       subject,
       text: renderTxt(templateOptions),
       html: renderHtml(templateOptions, subject),
