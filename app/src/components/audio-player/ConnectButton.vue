@@ -16,9 +16,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '../../../styles/mixins.scss';
 $spotify-bright-green: #1ed760;
 
 a.connect-button {
+  display: none;
+
   color: white;
   border: 3px $spotify-bright-green solid;
 
