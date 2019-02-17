@@ -34,4 +34,5 @@ docker run \
   --network jambuds \
   -u node \
   --restart always \
+  -v $(pwd)/secrets/jam_buds_prod_key.p8:/home/node/jam_buds_prod_key.p8 \
   -d jambuds-api
