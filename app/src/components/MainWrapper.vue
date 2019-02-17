@@ -45,7 +45,7 @@ export default {
 
 <style lang="scss">
 .main {
-  background: var(--theme-background-color);
+  background-color: var(--theme-background-color);
   color: var(--theme-text-color);
 
   a {
