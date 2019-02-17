@@ -124,3 +124,58 @@ heroku run npx knex migrate:latest --app jambuds-api
 ### Configure CDN
 
 Jam Buds can utilize a CDN by changing the `STATIC_URL` path on the app server (as well as in Webpack builds). You can put `https://$APP_URL/assets` behind a CDN like Cloudfront, and then set `STATIC_URL` to be your Cloudfront host.
+
+### Provisioning External Services
+
+These services are required for running Jam Buds in production, as well as for running feature tests. Some are kind of tricky to set up. Pay close attention to the environment configuration.
+
+#### Spotify
+
+Create a Spotify app through Spotify's dev dashboard. Set the callback URL to:
+
+```
+http{s}://{YOUR_HOST}/auth/spotify-connect/cb
+```
+
+Runtime environment variables for Spotify:
+
+```
+# Spotify API key and secret
+SPOTIFY_CLIENT_ID=
+SPOTIFY_CLIENT_SECRET=
+```
+
+There is no additional build time configuration necessary.
+
+#### Twitter
+
+Create a Twitter app through Twitter's dev dashboard. Set the callback URL to:
+
+```
+http{s}://{YOUR_HOST}/auth/twitter-connect/cb
+```
+
+Runtime environment variables for Twitter:
+
+```
+```
+
+There is no additional build time configuration necessary.
+
+#### Apple Music
+
+This one completely sucks, not gonna lie. It also costs, like, $100, so if you're just trying to make a PR or something, you shouldn't need to do this. I'm working on making it easy to disable the Apple Music systems in development.
+
+You'll need to [create a MusicKit identifier](https://help.apple.com/developer-account/#/devce5522674), then generate and download a private key from the developer dashboard. Put this somewhere (I've `gitignored` the `secrets` folder for this).
+
+Update both `.env` and `.env.deploy` or whatever **build-time** configuration you have, as the Apple Music token is both an *API runtime* dependency (for track search) and an *App build-time* dependency (for the MusicKit JS player):
+
+```
+# Used for provisioning Apple Music. This path is used for the Webpack builds,
+which generate a JWT key at build time, in addition to the API, which uses it for search.
+MUSICKIT_PRIVATE_KEY_PATH=/path/to/secrets/your_key.p8
+MUSICKIT_TEAM_ID=
+MUSICKIT_KEY_ID=
+```
+
+If you're using the Docker scripts for prod, the private key on your host should be in `/path/to/jambuds/secrets/jam_buds_prod_key.p8`.
