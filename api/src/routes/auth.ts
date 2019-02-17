@@ -46,19 +46,22 @@ export default function registerAuthEndpoints(router: Router) {
       if (user) {
         const link = `${process.env.APP_URL}/auth/sign-in?t=${token}`;
 
-        await sendEmail(
-          email,
-          'Your sign-in link for jambuds.club',
-          `Welcome back! Click here to sign into Jam Buds: ${link}`
-        );
+        await sendEmail(email, 'Your sign-in link for jambuds.club', {
+          templateName: 'log-in',
+          data: {
+            name: user.name,
+            logInLink: link,
+          },
+        });
       } else {
         const link = `${process.env.APP_URL}/welcome/registration?t=${token}`;
 
-        await sendEmail(
-          email,
-          'Welcome to jambuds.club!',
-          `Hi! You must be new here. Click here to sign up for Jam Buds: ${link}`
-        );
+        await sendEmail(email, 'Welcome to jambuds.club!', {
+          templateName: 'sign-up',
+          data: {
+            registrationLink: link,
+          },
+        });
       }
 
       res.status(200).json({ success: true });

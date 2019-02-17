@@ -1,0 +1,3 @@
+Welcome to Jam Buds! Just click the link below to get started:
+
+{{registrationLink}}
