@@ -3,7 +3,10 @@ import Router from 'vue-router';
 
 import HomePage from '../pages/HomePage.vue';
 import AboutPage from '../pages/AboutPage.vue';
-import RegistrationPage from '../pages/RegistrationPage.vue';
+
+import WelcomePageWrapper from '../pages/WelcomePageWrapper.vue';
+import RegistrationPage from '../pages/welcome/RegistrationPage.vue';
+import ConnectPage from '../pages/welcome/ConnectPage.vue';
 
 import UserPageWrapper from '../pages/UserPageWrapper.vue';
 import UserPlaylistPage from '../pages/users/UserPlaylistPage.vue';
@@ -26,7 +29,14 @@ export default function createRouter() {
     routes: [
       { path: '/', component: HomePage },
       { path: '/about', component: AboutPage },
-      { path: '/registration', component: RegistrationPage },
+      {
+        path: '/welcome',
+        component: WelcomePageWrapper,
+        children: [
+          { path: 'registration', component: RegistrationPage },
+          { path: 'connect', component: ConnectPage },
+        ],
+      },
       {
         path: '/users/:id',
         component: UserPageWrapper,

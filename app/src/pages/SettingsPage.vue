@@ -5,7 +5,13 @@
 
       <h3>connect to streaming services</h3>
 
-      <spotify-connect />
+      <spotify-connect redirect="/settings" />
+
+      <p>
+        nb: i've got all the love in the world for all of y'all on google play
+        music, tidal, and... idk, whatever garbage streaming service amazon has?
+        unfortunately, none of these services have APIs for in-browser playback.
+      </p>
 
       <h3>connect to twitter</h3>
 

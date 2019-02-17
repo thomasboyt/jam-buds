@@ -20,12 +20,6 @@
 
       <settings-button disabled>apple music coming soon</settings-button>
     </p>
-
-    <p>
-      nb: i've got all the love in the world for all of y'all on google play
-      music, tidal, and... idk, whatever garbage streaming service amazon has?
-      unfortunately, none of these services have APIs for in-browser playback.
-    </p>
   </div>
 </template>
 

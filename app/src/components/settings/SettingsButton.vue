@@ -42,6 +42,7 @@ export default {
   display: inline-block;
   text-align: center;
   width: 260px;
+  height: 56px;
   margin-right: 25px;
   text-decoration: none;
 

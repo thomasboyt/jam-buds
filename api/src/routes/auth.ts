@@ -12,21 +12,6 @@ import { validEmail, validUsername } from '../util/validators';
 import { Fields, validate } from '../util/validation';
 import { sendEmail } from '../util/email';
 
-/*
- * Here's how Twitter auth works:
- *
- * 1. The app server *proxies* /auth to the API server /auth, so that cookies can be set on the app
- *    server's host, and the user never sees the API server address in links, etc.
- *
- * 2. User vists /auth/twitter-sign-in. This gets a request token and redirects you to
- *    twitter.com/oauth/authenticate?oauth_token=${token} to do the Twitter OAuth flow.
- *
- * 3. Twitter redirects to api/twitter-sign-in-callback (as defined in OAuth app config).
- *
- * 4. This endpoint looks for a user by Twitter ID, creating the user if they do not exist,
- *    and sets a cookie with the auth token.
- */
-
 export default function registerAuthEndpoints(router: Router) {
   /**
    * POST /sign-in-token
@@ -67,7 +52,7 @@ export default function registerAuthEndpoints(router: Router) {
           `Welcome back! Click here to sign into Jam Buds: ${link}`
         );
       } else {
-        const link = `${process.env.APP_URL}/registration?t=${token}`;
+        const link = `${process.env.APP_URL}/welcome/registration?t=${token}`;
 
         await sendEmail(
           email,

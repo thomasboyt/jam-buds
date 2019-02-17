@@ -1,11 +1,7 @@
 <template>
-  <sidebar-wrapper>
-    <main-wrapper>
-      <h2>get started</h2>
-
-      <p>
-        slam a name down and get started! you can change it later, don't stress.
-      </p>
+  <div>
+    <div class="registration-page">
+      <h3>pick a name!</h3>
 
       <form @submit="handleSubmit">
         <input type="text" v-model="name" />
@@ -16,24 +12,14 @@
       <p v-if="didError" style="color: red">
         Unknown error occurred
       </p>
-    </main-wrapper>
-  </sidebar-wrapper>
+    </div>
+  </div>
 </template>
 
 <script>
 import axios from 'axios';
 
-import SidebarWrapper from '../components/SidebarWrapper.vue';
-import MainWrapper from '../components/MainWrapper.vue';
-import titleMixin from '../util/titleMixin';
-
 export default {
-  components: { SidebarWrapper, MainWrapper },
-
-  mixins: [titleMixin],
-
-  title: 'Register',
-
   data() {
     return {
       name: '',
@@ -43,7 +29,7 @@ export default {
 
   created() {
     if (this.$store.state.auth.authenticated) {
-      this.$router.push('/');
+      this.$router.push('/welcome/connect');
     }
   },
 
@@ -66,7 +52,7 @@ export default {
       }
 
       if (resp.status === 200) {
-        document.location = '/';
+        document.location = '/welcome/connect';
       }
     },
   },
@@ -74,10 +60,54 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.registration-page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 10px;
+  text-align: center;
+}
+
+h3 {
+  font-size: 32px;
+  line-height: 1em;
+  margin-bottom: 24px;
+  font-weight: normal;
+}
+
+form {
+  display: flex;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+input {
+  flex: 1 1 auto;
+  min-width: 0px;
+  padding: 0px 5px;
+  margin-right: 5px;
+}
+
 .submit {
+  flex: 0 0 auto;
+  width: 100px;
+  padding: 0px;
+}
+
+input,
+.submit {
+  height: 45px;
+  font-family: 'Work Sans', sans-serif;
+}
+
+input {
+  font-size: 22px;
+}
+
+.submit {
+  font-size: 22px;
   background: yellow;
   color: black;
   font-weight: bold;
-  padding: 3px 5px;
 }
 </style>
