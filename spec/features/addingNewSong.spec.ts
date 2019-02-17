@@ -28,7 +28,7 @@ async function expectPlaylistEntry(page: puppeteer.Page, text: string) {
   await page.waitFor(1000); // eh
 
   const exists = await page.$$eval(
-    '.playlist-entry',
+    '.playlist-song',
     (entries, text) => {
       return Array.from(entries).some(
         (entry) => !!entry.innerHTML.match(new RegExp(text))

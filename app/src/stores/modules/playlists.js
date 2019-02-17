@@ -6,6 +6,12 @@ const playlistState = () => {
   };
 };
 
+function denormalizeEntry(entry) {
+  entry.songId = entry.song.id;
+  delete entry.song;
+  return entry;
+}
+
 /**
  * TODO:
  * Consider collapsing key and url into the same field
@@ -33,7 +39,7 @@ const playlists = {
     },
 
     addPlaylistEntryToHead(state, { key, entry }) {
-      state[key].entries = [entry].concat(state[key].entries);
+      state[key].entries = [denormalizeEntry(entry)].concat(state[key].entries);
     },
 
     /**
@@ -78,11 +84,7 @@ const playlists = {
       context.commit('addSongs', resp.data.tracks.map((entry) => entry.song));
       context.commit('pushPlaylist', { key, page: resp.data });
 
-      const tracks = resp.data.tracks.map((entry) => {
-        entry.songId = entry.song.id;
-        delete entry.song;
-        return entry;
-      });
+      const tracks = resp.data.tracks.map(denormalizeEntry);
 
       return {
         ...resp.data,

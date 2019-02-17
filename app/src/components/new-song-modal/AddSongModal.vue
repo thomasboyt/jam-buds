@@ -21,6 +21,7 @@
           <confirm-screen
             v-if="state === CONFIRM_STATE"
             :selected-song="selectedSong"
+            @finished="reset"
           />
         </div>
       </div>

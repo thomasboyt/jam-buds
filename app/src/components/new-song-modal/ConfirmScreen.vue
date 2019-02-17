@@ -90,6 +90,7 @@ export default {
       });
 
       this.$store.dispatch('didSubmitSong', resp.data);
+      this.$emit('finished');
     },
   },
 };

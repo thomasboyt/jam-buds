@@ -26,7 +26,7 @@ const addSong = {
     },
 
     didSubmitSong(context, entry) {
-      context.commit('addPlaylistEntries', [entry], { root: true });
+      context.commit('addSongs', [entry.song], { root: true });
 
       // Add the entry to the top of the user's feed
       context.commit(
