@@ -14,7 +14,7 @@
     </p>
 
     <p>
-      <settings-button tag="a" href="/auth/spotify-connect"
+      <settings-button tag="a" :href="spotifyConnectLink"
         >connect to spotify</settings-button
       >
 
@@ -37,15 +37,22 @@ import SettingsButton from './SettingsButton.vue';
 export default {
   components: { SettingsButton },
 
+  props: ['redirect'],
+
   data() {
     return {
       isDisconnecting: false,
     };
   },
 
-  computed: mapState({
-    hasSpotify: (state) => state.currentUser.hasSpotify,
-  }),
+  computed: {
+    ...mapState({
+      hasSpotify: (state) => state.currentUser.hasSpotify,
+    }),
+    spotifyConnectLink() {
+      return `/auth/spotify-connect?redirect=${this.redirect}`;
+    },
+  },
 
   methods: {
     async handleDisconnect() {

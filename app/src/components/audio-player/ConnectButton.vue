@@ -1,11 +1,18 @@
 <template>
-  <a class="button connect-button" href="/auth/spotify-connect">
+  <a class="button connect-button" :href="spotifyConnectLink">
     Connect to Spotify!
   </a>
 </template>
 
 <script>
-export default {};
+export default {
+  computed: {
+    spotifyConnectLink() {
+      const redirect = this.$route.path;
+      return `/auth/spotify-connect?redirect=${redirect}`;
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
