@@ -1,6 +1,6 @@
 import Knex from 'knex';
 import { db } from '../db';
-import { camelizeKeys } from 'humps';
+import { camelizeKeys, decamelizeKeys } from 'humps';
 import { Song } from '../resources';
 
 export interface SongModel {
@@ -9,6 +9,8 @@ export interface SongModel {
   title: string;
   albumArt: string | null;
   spotifyId: string | null;
+  appleMusicId: string | null;
+  isrcId: string | null;
   album: string | null;
 }
 
@@ -42,31 +44,11 @@ export async function getSongBySpotifyId(
   return song;
 }
 
-interface SpotifyResource {
-  name: string;
-  album: {
-    name: string;
-    images: { url: string }[];
-  };
-  artists: {
-    name: string;
-  }[];
-  id: string;
-}
-
-export async function createSongFromSpotifyResource(
-  res: SpotifyResource
+export async function createSong(
+  params: Partial<SongModel>
 ): Promise<SongModel> {
-  const values = {
-    spotify_id: res.id,
-    artists: res.artists.map((artist) => artist.name),
-    album: res.album.name,
-    title: res.name,
-    album_art: res.album.images[0].url,
-  };
-
   const query = db!
-    .insert(values)
+    .insert(decamelizeKeys(params))
     .returning('*')
     .into('songs');
 

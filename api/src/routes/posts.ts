@@ -1,10 +1,7 @@
 import { Router } from 'express';
 
 import { User } from '../models/user';
-import {
-  getSongBySpotifyId,
-  createSongFromSpotifyResource,
-} from '../models/song';
+import { getSongBySpotifyId, createSong } from '../models/song';
 import {
   CreatePostParams,
   createPost,
@@ -16,6 +13,7 @@ import { isAuthenticated } from '../auth';
 import wrapAsyncRoute from '../util/wrapAsyncRoute';
 import { postSongTweet } from '../apis/twitter';
 import * as spotify from '../apis/spotify';
+import { getAppleMusicIDByISRC } from '../apis/appleMusic';
 
 export default function registerPostEndpoints(router: Router) {
   // post a new song
@@ -31,7 +29,20 @@ export default function registerPostEndpoints(router: Router) {
 
       if (!song) {
         const spotifyResource = await spotify.getTrackById(spotifyId);
-        song = await createSongFromSpotifyResource(spotifyResource);
+
+        const isrc = spotifyResource.external_ids.isrc;
+
+        const params = {
+          spotifyId: spotifyResource.id,
+          artists: spotifyResource.artists.map((artist: any) => artist.name),
+          album: spotifyResource.album.name,
+          title: spotifyResource.name,
+          albumArt: spotifyResource.album.images[0].url,
+          isrcId: isrc,
+          appleMusicId: await getAppleMusicIDByISRC(isrc),
+        };
+
+        song = await createSong(params);
       }
 
       const params: CreatePostParams = {

@@ -33,6 +33,7 @@
   },
   "dependencies": {
     "@sendgrid/mail": "^6.3.1",
+    "@tboyt/music-kit-jwt": "^0.1.2",
     "@types/body-parser": "0.0.33",
     "@types/cheerio": "^0.17.31",
     "@types/cookie-parser": "^1.4.1",
