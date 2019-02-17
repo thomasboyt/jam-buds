@@ -1,6 +1,6 @@
-import { writeFileSync } from 'fs';
 import nunjucks from 'nunjucks';
 import sgMail from '@sendgrid/mail';
+import juice from 'juice';
 
 nunjucks.configure('emails');
 
@@ -27,10 +27,12 @@ type TemplateOptions = SignUpTemplateOptions | LogInTemplateOptions;
 
 function renderHtml(templateOptions: TemplateOptions, subject: string) {
   const name = `${templateOptions.templateName}.html`;
-  return nunjucks.render(name, {
-    ...templateOptions.data,
-    subject,
-  });
+  return juice(
+    nunjucks.render(name, {
+      ...templateOptions.data,
+      subject,
+    })
+  );
 }
 
 function renderTxt(templateOptions: TemplateOptions) {
