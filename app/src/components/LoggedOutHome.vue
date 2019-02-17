@@ -33,6 +33,10 @@
           <p>want to get started? <strong>sign up or log in below:</strong></p>
 
           <sign-in-form @sentMail="handleSentMail" />
+          <p class="email-note">
+            (fyi: your email is only used for signing up & logging in, and will
+            not be used for marketing or spam or any bullshit like that)
+          </p>
         </div>
       </div>
     </div>
@@ -143,6 +147,10 @@ h2 {
   @media (min-width: $breakpoint-small) {
     font-size: 72px;
   }
+}
+
+.email-note {
+  font-size: 12px;
 }
 
 footer {
