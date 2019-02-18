@@ -46,6 +46,7 @@ script:
 env:
   global:
     - NODE_ENV=test
+    - DISABLE_APPLE_MUSIC=true
 
     # In addition to these, API keys for feature tests are included in Travis's settings page
     - DATABASE_URL=postgres://postgres@localhost:5432/jambuds_test
