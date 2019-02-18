@@ -5,7 +5,7 @@ WORKDIR /home/node/app
 
 # Install dependencies
 COPY package*.json ./
-RUN npm install
+RUN npm install --production
 
 # Add the rest of the app
 COPY --chown=node:node . .
