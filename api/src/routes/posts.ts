@@ -12,8 +12,7 @@ import {
 import { isAuthenticated } from '../auth';
 import wrapAsyncRoute from '../util/wrapAsyncRoute';
 import { postSongTweet } from '../apis/twitter';
-import * as spotify from '../apis/spotify';
-import { getAppleMusicIDByISRC } from '../apis/appleMusic';
+import { getOrCreateSongCacheEntryWithExternalIds } from '../util/songSearchCache';
 
 export default function registerPostEndpoints(router: Router) {
   // post a new song
@@ -25,21 +24,34 @@ export default function registerPostEndpoints(router: Router) {
 
       const spotifyId = req.body.spotifyId;
 
+      // See if song has been submitted before
+      //
+      // TODO: This should "upsert" from the search cache, I think? Would
+      // basically allow for 'refreshing' of song details in some cases. Would
+      // still have to match on Spotify ID, though.
       let song = await getSongBySpotifyId(spotifyId);
 
       if (!song) {
-        const spotifyResource = await spotify.getTrackById(spotifyId);
+        const searchCacheEntry = await getOrCreateSongCacheEntryWithExternalIds(
+          req.body.spotifyId
+        );
 
-        const isrc = spotifyResource.external_ids.isrc;
+        if (!searchCacheEntry) {
+          return res.status(400).send({
+            error: `No track found for Spotify ID ${spotifyId}`,
+          });
+        }
+
+        const spotifyResource = searchCacheEntry.spotify;
 
         const params = {
           spotifyId: spotifyResource.id,
-          artists: spotifyResource.artists.map((artist: any) => artist.name),
+          artists: spotifyResource.artists.map((artist) => artist.name),
           album: spotifyResource.album.name,
           title: spotifyResource.name,
           albumArt: spotifyResource.album.images[0].url,
-          isrcId: isrc,
-          appleMusicId: await getAppleMusicIDByISRC(isrc),
+          isrcId: searchCacheEntry.isrc,
+          appleMusicId: searchCacheEntry.appleMusicId,
         };
 
         song = await createSong(params);

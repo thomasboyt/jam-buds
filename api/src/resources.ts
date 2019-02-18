@@ -1,7 +1,7 @@
 export interface SearchResult {
   artists: string[];
   album: string;
-  name: string;
+  title: string;
   spotifyId: string;
 }
 
