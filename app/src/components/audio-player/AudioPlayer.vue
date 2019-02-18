@@ -40,8 +40,10 @@
     </div>
 
     <div class="audio-player--main" v-if="nowPlaying">
+      <div :style="{ fontWeight: '500' }">
+        {{ artist }}
+      </div>
       <div>{{ title }}</div>
-      <div>{{ artist }}</div>
 
       <div>
         playing from
