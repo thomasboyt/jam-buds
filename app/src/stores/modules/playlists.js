@@ -7,9 +7,14 @@ const playlistState = () => {
 };
 
 function denormalizeEntry(entry) {
-  entry.songId = entry.song.id;
-  delete entry.song;
-  return entry;
+  const denormalizedEntry = {
+    ...entry,
+    songId: entry.song.id,
+  };
+
+  delete denormalizedEntry.song;
+
+  return denormalizedEntry;
 }
 
 /**
@@ -46,7 +51,9 @@ const playlists = {
      * Append a new page of entries to a playlist.
      */
     pushPlaylist(state, { key, page }) {
-      state[key].entries = state[key].entries.concat(page.tracks);
+      state[key].entries = state[key].entries.concat(
+        page.tracks.map((entry) => denormalizeEntry(entry))
+      );
 
       if (page.tracks.length < page.limit) {
         state[key].entriesExhausted = true;
@@ -84,12 +91,7 @@ const playlists = {
       context.commit('addSongs', resp.data.tracks.map((entry) => entry.song));
       context.commit('pushPlaylist', { key, page: resp.data });
 
-      const tracks = resp.data.tracks.map(denormalizeEntry);
-
-      return {
-        ...resp.data,
-        tracks,
-      };
+      return resp.data;
     },
   },
 
