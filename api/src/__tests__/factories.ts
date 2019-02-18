@@ -38,7 +38,6 @@ export async function postFactory(
   const defaults = {
     userId: (await userFactory()).id,
     songId: (await songFactory()).id,
-    note: uniqueString(),
   };
 
   const finalOpts = { ...defaults, ...opts };

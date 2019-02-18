@@ -22,7 +22,6 @@ export interface PlaylistEntry {
 }
 
 export interface Post extends PlaylistEntry {
-  note: string | null;
   added: string;
   user: PublicUser;
 }

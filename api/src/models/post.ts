@@ -9,7 +9,6 @@ import { paginate } from './utils';
 export interface CreatePostParams {
   userId: number;
   songId: number;
-  note: string;
 }
 
 export async function createPost(values: CreatePostParams): Promise<Post> {
@@ -30,10 +29,7 @@ function serializePost(row: any): Post {
 
   return {
     id: post.id,
-
-    note: post.note,
     added: post.createdAt,
-
     song: serializeSong(song, isLiked),
     user,
   };

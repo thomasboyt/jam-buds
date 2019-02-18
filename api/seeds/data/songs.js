@@ -75,7 +75,6 @@ const posts = [
     created_at: '2017-01-17T16:43:09.421355-05:00',
     song_id: 6,
     user_id: 1,
-    note: 'Here is a test note',
   },
 ];
 

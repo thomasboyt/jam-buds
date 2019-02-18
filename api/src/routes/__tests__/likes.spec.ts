@@ -24,7 +24,6 @@ describe('routes/likes', () => {
       const post = await createPost({
         songId: song.id,
         userId: dan.id,
-        note: uniqueString(),
       });
 
       const req = request(app)

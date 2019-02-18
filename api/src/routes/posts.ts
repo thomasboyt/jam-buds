@@ -60,7 +60,6 @@ export default function registerPostEndpoints(router: Router) {
       const params: CreatePostParams = {
         userId: user.id,
         songId: song.id,
-        note: req.body.note,
       };
 
       const entry = await createPost(params);
