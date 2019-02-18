@@ -1,7 +1,7 @@
 <template>
-  <a class="button connect-button" :href="spotifyConnectLink">
-    Connect to Spotify!
-  </a>
+  <router-link class="button connect-button" to="/settings">
+    Connect to Spotify or Apple!
+  </router-link>
 </template>
 
 <script>
@@ -20,8 +20,6 @@ export default {
 $spotify-bright-green: #1ed760;
 
 a.connect-button {
-  display: none;
-
   color: white;
   border: 3px $spotify-bright-green solid;
 
@@ -31,5 +29,9 @@ a.connect-button {
 
   padding: 15px 25px;
   text-decoration: none;
+
+  @media (max-width: $breakpoint-small) {
+    display: none;
+  }
 }
 </style>

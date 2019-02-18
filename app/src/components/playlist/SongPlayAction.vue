@@ -15,13 +15,11 @@
     target="_blank"
     rel="noopener noreferrer"
   >
-    <!-- TODO: youtube icon -->
     <icon :glyph="youtubeIcon" />
   </a>
 </template>
 
 <script>
-import { mapState } from 'vuex';
 import Icon from '../Icon.vue';
 
 const playIcon = require('../../../assets/play-outline.svg');
@@ -30,7 +28,7 @@ const youtubeIcon = require('../../../assets/youtube.svg');
 export default {
   components: { Icon },
 
-  props: ['song'],
+  props: ['song', 'canPlay'],
 
   data() {
     return {
@@ -40,11 +38,6 @@ export default {
   },
 
   computed: {
-    ...mapState({
-      canPlay: (state) =>
-        state.auth.authenticated && state.currentUser.hasSpotify,
-    }),
-
     searchUrl() {
       const query = encodeURIComponent(
         this.song.artists[0] + ' ' + this.song.title

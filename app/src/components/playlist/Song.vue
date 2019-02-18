@@ -14,7 +14,7 @@
       </div>
 
       <span class="playlist-song--actions">
-        <song-play-action :song="song" @play="handlePlay" />
+        <song-play-action :song="song" @play="handlePlay" :can-play="canPlay" />
         <song-like-action v-if="showLikeButton" :song="song" />
         <!-- TODO: reintroduce entry deletes -->
       </span>
@@ -62,8 +62,13 @@ export default {
 
   computed: {
     ...mapState({
-      canPlay: (state) =>
-        state.auth.authenticated && state.currentUser.hasSpotify,
+      canPlay(state) {
+        return (
+          state.auth.authenticated &&
+          ((state.currentUser.hasSpotify && this.song.spotifyId) ||
+            (state.currentUser.hasAppleMusic && this.song.appleMusicId))
+        );
+      },
     }),
 
     song() {
