@@ -75,7 +75,6 @@
     <!-- XXX: Apple Music doesn't load if a user has Spotify enabled already!
     -->
     <apple-music-loader />
-    <connect-button />
   </div>
 </template>
 
@@ -87,7 +86,6 @@ import SpotifyPlayer from './SpotifyPlayer.vue';
 import AppleMusicPlayer from './AppleMusicPlayer.vue';
 import AppleMusicLoader from './AppleMusicLoader.vue';
 import LoadingSpinner from './LoadingSpinner.vue';
-import ConnectButton from './ConnectButton.vue';
 
 const playIcon = require('../../../assets/play.svg');
 const pauseIcon = require('../../../assets/pause.svg');
@@ -100,7 +98,6 @@ export default {
     Icon,
     LoadingSpinner,
     SpotifyPlayer,
-    ConnectButton,
     AppleMusicPlayer,
     AppleMusicLoader,
   },
