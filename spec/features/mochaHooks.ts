@@ -82,7 +82,7 @@ async function startAppServer() {
     // continue
   }
 
-  const appServer = childProcess.spawn('npm', ['start'], {
+  const appServer = childProcess.spawn('npm', ['run', 'dev'], {
     cwd: path.join(__dirname, '../../app'),
     stdio: 'inherit',
     env: {
