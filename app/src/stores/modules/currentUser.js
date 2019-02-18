@@ -2,7 +2,10 @@ import Vue from 'vue';
 
 const currentUser = {
   state() {
-    return {};
+    return {
+      hasAppleMusic: false,
+      hasSpotify: false,
+    };
   },
 
   mutations: {
@@ -21,6 +24,12 @@ const currentUser = {
     },
     updateColorScheme(state, scheme) {
       state.colorScheme = scheme;
+    },
+    authorizedAppleMusic(state) {
+      state.hasAppleMusic = true;
+    },
+    unauthorizedAppleMusic(state) {
+      state.hasAppleMusic = false;
     },
     disconnectedSpotify(state) {
       state.hasSpotify = false;

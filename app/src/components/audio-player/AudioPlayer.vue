@@ -72,6 +72,9 @@
   </div>
 
   <div class="audio-player" v-else-if="authenticated">
+    <!-- XXX: Apple Music doesn't load if a user has Spotify enabled already!
+    -->
+    <apple-music-loader />
     <connect-button />
   </div>
 </template>
@@ -82,6 +85,7 @@ import Icon from '../Icon.vue';
 
 import SpotifyPlayer from './SpotifyPlayer.vue';
 import AppleMusicPlayer from './AppleMusicPlayer.vue';
+import AppleMusicLoader from './AppleMusicLoader.vue';
 import LoadingSpinner from './LoadingSpinner.vue';
 import ConnectButton from './ConnectButton.vue';
 
@@ -98,6 +102,7 @@ export default {
     SpotifyPlayer,
     ConnectButton,
     AppleMusicPlayer,
+    AppleMusicLoader,
   },
 
   data() {
