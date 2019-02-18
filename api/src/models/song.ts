@@ -120,6 +120,7 @@ export function serializeSong(song: SongModel, isLiked: boolean): Song {
     title: song.title,
     albumArt: song.albumArt,
     spotifyId: song.spotifyId,
+    appleMusicId: song.appleMusicId,
     isLiked,
   };
 }

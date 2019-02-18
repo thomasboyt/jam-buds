@@ -12,6 +12,7 @@ export interface Song {
   title: string;
   albumArt: string | null;
   spotifyId: string | null;
+  appleMusicId: string | null;
   isLiked: boolean;
 }
 
