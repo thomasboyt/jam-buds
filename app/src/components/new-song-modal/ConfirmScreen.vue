@@ -1,30 +1,60 @@
 <template>
-  <div class="confirm-screen">
+  <div
+    class="confirm-screen"
+    :style="{ minHeight: '100%', display: 'flex', flexFlow: 'column' }"
+  >
     <p>
       you're posting <strong>{{ songLabel }}</strong>
     </p>
 
-    <div class="note-box">
-      <textarea
-        v-model="noteText"
-        placeholder="(optional) Write a note about this song!"
-      />
-    </div>
+    <template v-if="loadedDetails">
+      <div>
+        <p>your pals will be able to stream this song on:</p>
 
-    <div v-if="hasTwitter">
-      <p>
-        <label>
-          <input type="checkbox" v-model="twitterPostEnabled" />
-          cross-post to twitter
-        </label>
-      </p>
+        <ul class="service-list">
+          <li>
+            <span v-if="details.spotifyId">✅</span
+            ><span v-else>❌</span> spotify
+          </li>
+          <li>
+            <span v-if="details.appleMusicId">✅</span
+            ><span v-else>❌</span> apple music
+          </li>
+          <li>
+            ✅ youtube
+            <a
+              :href="youtubeSearchUrl"
+              target="_blank"
+              rel="noopener noreferrer"
+              >(preview search)</a
+            >
+          </li>
+        </ul>
 
-      <twitter-share-field v-if="twitterPostEnabled" v-model="tweetText" />
-    </div>
+        <div v-if="hasTwitter">
+          <p>
+            <label>
+              <input type="checkbox" v-model="twitterPostEnabled" />
+              cross-post to twitter
+            </label>
+          </p>
 
-    <button @click="handleSubmit" class="submit" data-test="add-song-confirm">
-      post it!!
-    </button>
+          <twitter-share-field v-if="twitterPostEnabled" v-model="tweetText" />
+        </div>
+      </div>
+
+      <button
+        @click="handleSubmit"
+        class="submit"
+        data-test="add-song-confirm"
+        :style="{ marginTop: 'auto' }"
+      >
+        post it!!
+      </button>
+    </template>
+    <template v-else>
+      <div>loading...</div>
+    </template>
   </div>
 </template>
 
@@ -32,6 +62,7 @@
 import { mapState } from 'vuex';
 
 import serializeSongLabel from '../../util/serializeSongLabel';
+import getYoutubeSearchUrl from '../../util/getYoutubeSearchUrl';
 import TwitterShareField from './TwitterShareField.vue';
 import {
   getDefaultTweet,
@@ -46,32 +77,50 @@ export default {
 
   data() {
     return {
-      noteText: '',
+      loadedDetails: false,
+      details: null,
       tweetText: '',
       twitterPostEnabled: false,
       songLabel: serializeSongLabel(this.selectedSong),
     };
   },
 
-  computed: mapState({
-    hasTwitter: (state) => !!state.currentUser.twitterName,
-  }),
+  computed: {
+    ...mapState({
+      hasTwitter: (state) => !!state.currentUser.twitterName,
+    }),
+    youtubeSearchUrl() {
+      return getYoutubeSearchUrl(this.selectedSong);
+    },
+  },
 
   mounted() {
+    this.loadSongDetails();
+
     this.tweetText = getDefaultTweet(
       this.selectedSong.artists[0],
-      this.selectedSong.name
+      this.selectedSong.title
     );
   },
 
   methods: {
+    async loadSongDetails() {
+      const resp = await this.$axios({
+        url: `/spotify-details/${this.selectedSong.spotifyId}`,
+        method: 'GET',
+      });
+
+      this.details = resp.data;
+
+      this.loadedDetails = true;
+    },
+
     async handleSubmit(evt) {
       evt.preventDefault();
 
       const params = {
         source: 'spotify',
         spotifyId: this.selectedSong.spotifyId,
-        note: this.noteText === '' ? null : this.noteText,
       };
 
       if (this.twitterPostEnabled) {
@@ -95,3 +144,12 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.service-list {
+  text-align: left;
+  li {
+    line-height: 2em;
+  }
+}
+</style>

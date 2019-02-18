@@ -5,15 +5,14 @@
 </template>
 
 <script>
+import getYoutubeSearchUrl from '../../util/getYoutubeSearchUrl';
+
 export default {
   props: ['song'],
 
   computed: {
     searchUrl() {
-      const query = encodeURIComponent(
-        this.song.artists[0] + ' ' + this.song.title
-      );
-      return `https://www.youtube.com/results?search_query=${query}`;
+      return getYoutubeSearchUrl(this.song);
     },
   },
 };

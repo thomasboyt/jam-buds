@@ -75,6 +75,10 @@ $modal-height: 450px;
 }
 
 .add-song-screen {
+  min-height: 100%;
+  display: flex;
+  flex-flow: column;
+
   a, a:visited, a:hover, a:active {
     color: darkblue;
   }
@@ -187,6 +191,9 @@ $modal-height: 450px;
 
   .confirm-screen {
     text-align: center;
+    display: flex;
+    flex-flow: column;
+    min-height: 100%;
   }
 
   .tweet-box, .note-box {

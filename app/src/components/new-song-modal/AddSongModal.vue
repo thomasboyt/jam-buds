@@ -14,15 +14,17 @@
           </div>
 
           <!-- state router -->
-          <initial-screen
-            v-if="state === INITIAL_STATE"
-            @selectedSong="handleSelectedSong"
-          />
-          <confirm-screen
-            v-if="state === CONFIRM_STATE"
-            :selected-song="selectedSong"
-            @finished="reset"
-          />
+          <div :style="{ flex: '1 0 auto' }">
+            <initial-screen
+              v-if="state === INITIAL_STATE"
+              @selectedSong="handleSelectedSong"
+            />
+            <confirm-screen
+              v-if="state === CONFIRM_STATE"
+              :selected-song="selectedSong"
+              @finished="reset"
+            />
+          </div>
         </div>
       </div>
     </div>
