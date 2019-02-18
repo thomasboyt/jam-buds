@@ -38,7 +38,7 @@ export default {
 .follow-toggle {
   border: 3px var(--theme-border-color) solid;
   padding: 10px 15px;
-  width: 120px;
+  width: 130px;
 
   font-weight: bold;
   font-size: 16px;
