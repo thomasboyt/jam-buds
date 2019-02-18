@@ -50,7 +50,7 @@ async function resetDb() {
 async function startApiServer() {
   console.log('Starting API server');
 
-  const apiServer = childProcess.spawn('npm', ['start'], {
+  const apiServer = childProcess.spawn('npm', ['run', 'dev'], {
     cwd: path.join(__dirname, '../../api'),
     stdio: 'inherit',
     env: {
@@ -82,7 +82,7 @@ async function startAppServer() {
     // continue
   }
 
-  const appServer = childProcess.spawn('npm', ['run', 'dev'], {
+  const appServer = childProcess.spawn('npm', ['start'], {
     cwd: path.join(__dirname, '../../app'),
     stdio: 'inherit',
     env: {
