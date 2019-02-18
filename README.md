@@ -158,6 +158,8 @@ http{s}://{YOUR_HOST}/auth/twitter-connect/cb
 Runtime environment variables for Twitter:
 
 ```
+TWITTER_API_KEY=
+TWITTER_API_SECRET=
 ```
 
 There is no additional build time configuration necessary.
