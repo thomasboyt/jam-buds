@@ -15,9 +15,7 @@
 
     "strictNullChecks": true,
     "noImplicitAny": true,
-    "noImplicitThis": true,
-
-    "outDir": "build"
+    "noImplicitThis": true
   },
   "include": [
     "src/**/*"
