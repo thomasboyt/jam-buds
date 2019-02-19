@@ -2,7 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import Sentry from '@sentry/node';
+import * as Sentry from '@sentry/node';
 
 import registerAuthEndpoints from './routes/auth';
 import registerUserEndpoints from './routes/users';
