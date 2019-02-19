@@ -1,5 +1,6 @@
-const webpack = require('webpack');
 const path = require('path');
+const webpack = require('webpack');
+const merge = require('webpack-merge');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const dotenv = require('dotenv');
@@ -24,18 +25,12 @@ if (process.env.NODE_ENV !== 'production') {
 //   return execSync('git rev-parse --short HEAD', {encoding: 'utf8'}).trim();
 // }
 
-let envVars = {
-  NODE_ENV: `"${process.env.NODE_ENV}"`,
+const baseEnvVars = {
+  NODE_ENV: process.env.NODE_ENV,
+  SENTRY_PUBLIC_DSN_APP: process.env.SENTRY_PUBLIC_DSN_APP,
 };
 
-if (process.env.NODE_ENV === 'production') {
-  envVars = {
-    ...envVars,
-    SENTRY_PUBLIC_DSN_APP: `"${process.env.SENTRY_PUBLIC_DSN_APP}"`,
-  };
-}
-
-module.exports = {
+const baseConfig = {
   mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
 
   output: {
@@ -85,8 +80,26 @@ module.exports = {
   plugins: [
     new ExtractTextPlugin('[name].[chunkhash].css'),
     new VueLoaderPlugin(),
-    new webpack.DefinePlugin({
-      'process.env': envVars,
-    }),
   ],
+};
+
+module.exports = (envConfig, environmentEnvVars) => {
+  const envVars = {
+    ...baseEnvVars,
+    ...environmentEnvVars,
+  };
+
+  for (let key of Object.keys(envVars)) {
+    // DefinePlugin interpolates strings without surrounding quotation marks;
+    // this is an easy way to re-add them where needed
+    envVars[key] = JSON.stringify(envVars[key]);
+  }
+
+  return merge(baseConfig, envConfig, {
+    plugins: [
+      new webpack.DefinePlugin({
+        'process.env': envVars,
+      }),
+    ],
+  });
 };

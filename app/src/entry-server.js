@@ -1,3 +1,5 @@
+import './configureSentry';
+
 import sprite from 'svg-sprite-loader/runtime/sprite.build';
 
 import createApp from './createApp';

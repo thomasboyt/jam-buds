@@ -1,8 +1,6 @@
-const webpack = require('webpack');
-const merge = require('webpack-merge');
 const VueSSRClientPlugin = require('vue-server-renderer/client-plugin');
 
-const baseConfig = require('./base.js');
+const mergeBase = require('./base.js');
 
 let musicKitAuthToken = '';
 if (!process.env.DISABLE_APPLE_MUSIC) {
@@ -14,7 +12,12 @@ if (!process.env.DISABLE_APPLE_MUSIC) {
   });
 }
 
-module.exports = merge(baseConfig, {
+const envVars = {
+  VUE_ENV: `"client"`,
+  MUSICKIT_AUTH_TOKEN: `"${musicKitAuthToken}"`,
+};
+
+const config = {
   entry: {
     app: ['@babel/polyfill', './src/entry-client.js'],
   },
@@ -33,14 +36,7 @@ module.exports = merge(baseConfig, {
     },
   },
 
-  plugins: [
-    new VueSSRClientPlugin(),
+  plugins: [new VueSSRClientPlugin()],
+};
 
-    new webpack.DefinePlugin({
-      'process.env': {
-        VUE_ENV: `"client"`,
-        MUSICKIT_AUTH_TOKEN: `"${musicKitAuthToken}"`,
-      },
-    }),
-  ],
-});
+module.exports = mergeBase(config, envVars);

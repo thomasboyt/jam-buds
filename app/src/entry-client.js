@@ -1,14 +1,7 @@
-import Raven from 'raven-js';
-import RavenVue from 'raven-js/plugins/vue';
+import './configureSentry';
 
-if (process.env.SENTRY_PUBLIC_DSN_APP) {
-  Raven.config(process.env.SENTRY_PUBLIC_DSN_APP)
-    .addPlugin(RavenVue, Vue)
-    .install();
-}
-
-import Vue from 'vue';
 import createApp from './createApp';
+import Vue from 'vue';
 
 import ProgressBar from './components/ProgressBar.vue';
 const bar = new Vue(ProgressBar).$mount();

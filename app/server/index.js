@@ -1,9 +1,14 @@
+process.on('unhandledRejection', (err) => {
+  console.error('\n*** Unhandled rejection:');
+  console.error(err);
+});
+
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const proxy = require('http-proxy-middleware');
 const { createBundleRenderer } = require('vue-server-renderer');
-const Raven = require('raven');
 const { renderTemplate, templates } = require('./templates');
+const Sentry = require('@sentry/node');
 
 const AUTH_TOKEN_COOKIE = 'jamBudsAuthToken';
 
@@ -11,10 +16,14 @@ const app = express();
 
 const isProd = process.env.NODE_ENV === 'production';
 const useDevServer = !(isProd || process.env.CI);
+const useSentry = process.env.SENTRY_PUBLIC_DSN_APP;
 
-if (isProd) {
-  Raven.config(process.env.SENTRY_DSN_APP).install();
-  app.use(Raven.requestHandler());
+if (useSentry) {
+  Sentry.init({
+    dsn: process.env.SENTRY_PUBLIC_DSN_APP,
+  });
+
+  app.use(Sentry.Handlers.requestHandler());
 }
 
 function createRenderer(bundle, clientManifest) {
@@ -68,18 +77,29 @@ async function main() {
     res.send(renderTemplate('webpack-error', { buildErrors }));
   }
 
+  /**
+   * Application errors currently do _not_ bring the server down, but instead
+   * result in a user-facing error message and a Sentry report.
+   */
   function renderAppError(req, res, err) {
+    console.error(`\n *** Error during render : ${req.url}`);
+
     if (err.url) {
       res.redirect(err.url);
     } else if (
       err.code === 404 ||
       (err.response && err.response.status === 404)
     ) {
+      // - Route just straight-up doesn't exist
+      // - Upstream 404 errors in asyncData()
       res.status(404);
 
       res.send(renderTemplate('404'));
     } else {
-      // Render Error Page or Redirect
+      // - Server-side rendering errors
+      // - asyncData errors
+      //   - Upstream 500 errors
+      //   - ECONNREFUSED errors (API server is unreachable)
       res.status(500);
 
       if (!isProd) {
@@ -88,8 +108,8 @@ async function main() {
         res.send(renderTemplate('500'));
       }
 
-      console.error(`error during render : ${req.url}`);
-      console.error(err.stack);
+      // rethrow so it's caught and sent off to the express sentry middleware
+      throw err;
     }
   }
 
@@ -105,11 +125,18 @@ async function main() {
       productionScripts: isProd ? templates['production-scripts'] : '',
     };
 
-    renderer.renderToString(context, (err, html) => {
-      if (err) {
-        return renderAppError(req, res, err, context);
-      }
-      res.send(html);
+    return new Promise((resolve, reject) => {
+      renderer.renderToString(context, (err, html) => {
+        if (err) {
+          try {
+            renderAppError(req, res, err, context);
+          } catch (err) {
+            reject(err);
+          }
+        }
+        res.send(html);
+        resolve();
+      });
     });
   }
 
@@ -154,20 +181,24 @@ async function main() {
     })
   );
 
-  app.get('*', (req, res) => {
+  app.get('*', (req, res, next) => {
     if (useDevServer) {
       if (buildErrors) {
         renderWebpackError(req, res, buildErrors);
       } else {
-        readyPromise.then(() => render(req, res));
+        readyPromise
+          .then(() => render(req, res))
+          .catch((err) => {
+            next(err);
+          });
       }
     } else {
       return render(req, res);
     }
   });
 
-  if (isProd) {
-    app.use(Raven.errorHandler());
+  if (useSentry) {
+    app.use(Sentry.Handlers.errorHandler());
   }
 
   const port = process.env.PORT || 8080;
