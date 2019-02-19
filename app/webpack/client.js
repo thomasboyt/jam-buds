@@ -13,8 +13,8 @@ if (!process.env.DISABLE_APPLE_MUSIC) {
 }
 
 const envVars = {
-  VUE_ENV: `"client"`,
-  MUSICKIT_AUTH_TOKEN: `"${musicKitAuthToken}"`,
+  VUE_ENV: 'client',
+  MUSICKIT_AUTH_TOKEN: musicKitAuthToken,
 };
 
 const config = {
