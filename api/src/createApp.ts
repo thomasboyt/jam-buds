@@ -2,7 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import Raven from 'raven';
+import Sentry from '@sentry/node';
 
 import registerAuthEndpoints from './routes/auth';
 import registerUserEndpoints from './routes/users';
@@ -17,14 +17,16 @@ import registerTwitterAuthEndpoints from './routes/twitter-auth';
 const env = process.env.NODE_ENV;
 
 if (env === 'production') {
-  Raven.config(process.env.SENTRY_DSN_API).install();
+  Sentry.init({
+    dsn: process.env.SENTRY_DSN_API,
+  });
 }
 
 export default function createApp() {
   const app = express();
 
   if (env === 'production') {
-    app.use(Raven.requestHandler());
+    app.use(Sentry.Handlers.requestHandler());
   }
 
   app.use(bodyParser.json());
@@ -54,7 +56,7 @@ export default function createApp() {
   app.use('/auth', authRouter);
 
   if (env === 'production') {
-    app.use(Raven.errorHandler());
+    app.use(Sentry.Handlers.errorHandler());
   }
 
   const errorLogger: express.ErrorRequestHandler = (err, req, res, next) => {
