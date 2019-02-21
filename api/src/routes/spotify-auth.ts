@@ -10,7 +10,10 @@ import {
   updateRefreshedSpotifyCredentialsForUser,
 } from '../models/user';
 import { getUserFromCookie, isAuthenticated } from '../auth';
-import genAuthToken from '../util/genAuthToken';
+import {
+  createOAuthState,
+  getAndClearOAuthState,
+} from '../util/oauthStateCache';
 
 const redirectUri = `${process.env.APP_URL}/auth/spotify-connect/cb`;
 
@@ -19,14 +22,11 @@ const spotifyApi = new SpotifyWebApi({
   clientId: process.env.SPOTIFY_CLIENT_ID,
 });
 
-const appRedirects: { [key: string]: string } = {};
-
 export default function registerSpotifyAuthEndpoints(router: Router) {
   router.get(
     '/spotify-connect',
     wrapAsyncRoute(async (req, res) => {
-      const state = await genAuthToken();
-      appRedirects[state] = req.query.redirect || '/';
+      const state = await createOAuthState(req.query.redirect || '/');
 
       res.redirect(
         spotifyApi.createAuthorizeURL(
@@ -47,12 +47,11 @@ export default function registerSpotifyAuthEndpoints(router: Router) {
     wrapAsyncRoute(async (req, res) => {
       const state = req.query.state;
 
-      if (!appRedirects[state]) {
+      const redirect = await getAndClearOAuthState(state);
+
+      if (!redirect) {
         return res.status(400).send('Invalid state param');
       }
-
-      const redirect = appRedirects[state];
-      delete appRedirects[state];
 
       const user = await getUserFromCookie(req);
 

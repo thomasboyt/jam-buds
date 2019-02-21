@@ -14,13 +14,14 @@
     </p>
 
     <p>
-      <settings-button tag="a" :href="spotifyConnectLink"
-        >connect to spotify</settings-button
-      >
+      <spotify-connect-button redirect="/settings" />
 
-      <settings-button @click="handleConnectAppleMusic"
-        >connect to apple music</settings-button
-      >
+      <apple-music-connect-button />
+    </p>
+    <p>
+      nb: i've got all the love in the world for all of y'all on google play
+      music, tidal, and... idk, whatever garbage streaming service amazon has?
+      unfortunately, none of these services have APIs for in-browser playback.
     </p>
   </div>
 </template>
@@ -30,12 +31,12 @@
 
 import { mapState } from 'vuex';
 
+import SpotifyConnectButton from './SpotifyConnectButton.vue';
+import AppleMusicConnectButton from './AppleMusicConnectButton.vue';
 import SettingsButton from './SettingsButton.vue';
 
 export default {
-  components: { SettingsButton },
-
-  props: ['redirect'],
+  components: { SettingsButton, AppleMusicConnectButton, SpotifyConnectButton },
 
   data() {
     return {
@@ -50,17 +51,9 @@ export default {
       serviceName: (state) =>
         state.currentUser.hasSpotify ? 'Spotify' : 'Apple Music',
     }),
-    spotifyConnectLink() {
-      return `/auth/spotify-connect?redirect=${this.redirect}`;
-    },
   },
 
   methods: {
-    async handleConnectAppleMusic() {
-      await MusicKit.getInstance().authorize();
-      this.$store.commit('authorizedAppleMusic');
-    },
-
     handleDisconnect() {
       if (this.hasSpotify) {
         this.handleDisconnectSpotify();

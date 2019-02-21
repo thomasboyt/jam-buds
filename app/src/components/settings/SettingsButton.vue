@@ -1,6 +1,7 @@
 <template>
   <component
     :is="tag"
+    :to="to"
     class="settings-button"
     :disabled="isSaving || disabled"
     @click="handleClick"
@@ -11,6 +12,9 @@
 <script>
 export default {
   props: {
+    to: {
+      type: String,
+    },
     tag: {
       type: String,
       default: 'button',
@@ -43,7 +47,7 @@ export default {
   text-align: center;
   width: 260px;
   height: 56px;
-  margin-right: 25px;
+  margin: 0 10px;
   text-decoration: none;
 
   &:disabled {

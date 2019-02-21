@@ -7,6 +7,10 @@ import {
   deleteTwitterCredentialsFromUser,
 } from '../models/user';
 import { getUserFromCookie, isAuthenticated } from '../auth';
+import {
+  createOAuthState,
+  getAndClearOAuthState,
+} from '../util/oauthStateCache';
 
 /*
  * Here's how Twitter auth works:
@@ -25,78 +29,99 @@ import { getUserFromCookie, isAuthenticated } from '../auth';
  * 4. The user is updated with their Twitter information.
  */
 
-export default function registerTwitterAuthEndpoints(router: Router) {
-  const oa = new OAuth(
+function createOAuthClient(stateToken: string): OAuth {
+  return new OAuth(
     'https://api.twitter.com/oauth/request_token',
     'https://api.twitter.com/oauth/access_token',
     process.env.TWITTER_API_KEY!,
     process.env.TWITTER_API_SECRET!,
     '1.0A',
-    `${process.env.APP_URL}/auth/twitter-connect/cb`,
+    `${process.env.APP_URL}/auth/twitter-connect/cb?state=${stateToken}`,
     'HMAC-SHA1'
   );
+}
 
-  router.get('/twitter-connect', (req, res) => {
-    oa.getOAuthRequestToken((err: any, token: string) => {
-      if (err) {
-        console.error(`Twitter request token error`);
-        console.error(err);
-        res.sendStatus(500);
-        return;
-      }
+export default function registerTwitterAuthEndpoints(router: Router) {
+  router.get(
+    '/twitter-connect',
+    wrapAsyncRoute(async (req, res) => {
+      const state = await createOAuthState(req.query.redirect || '/');
+
+      const token = await new Promise((resolve, reject) => {
+        createOAuthClient(state).getOAuthRequestToken(
+          (err: any, token: string) => {
+            if (err) {
+              console.error(`Twitter request token error`);
+              return reject(err);
+            }
+            resolve(token);
+          }
+        );
+      });
 
       const authUrl = `https://twitter.com/oauth/authenticate?oauth_token=${token}`;
 
       res.redirect(authUrl);
-    });
-  });
+    })
+  );
 
   router.get(
     '/twitter-connect/cb',
     wrapAsyncRoute(async (req, res) => {
+      const state = req.query.state;
+      const redirect = await getAndClearOAuthState(state);
+
+      if (!redirect) {
+        return res.status(400).send('Invalid state param');
+      }
+
       const user = await getUserFromCookie(req);
 
-      oa.getOAuthAccessToken(
-        req.query.oauth_token,
-        '',
-        req.query.oauth_verifier,
-        (err: any, token: string, secret: string) => {
-          if (err) {
-            console.error(`Twitter access token error`);
-            console.error(err);
-            res.sendStatus(500);
-            return;
-          }
+      const oa = createOAuthClient(state);
 
-          // Get Twitter name and ID
-          oa.get(
-            'https://api.twitter.com/1.1/account/verify_credentials.json',
-            token,
-            secret,
-            async (err: any, data: any) => {
-              if (err) {
-                console.error(`Twitter user fetch error`);
-                console.error(err);
-                res.sendStatus(500);
-                return;
-              }
-
-              const twitterData = JSON.parse(data);
-              const twitterId = twitterData.id_str;
-              const twitterName = twitterData.screen_name;
-
-              await updateTwitterCredentials(user, {
-                twitterId,
-                twitterName,
-                twitterToken: token,
-                twitterSecret: secret,
-              });
-
-              res.redirect(`${process.env.APP_URL}/settings`);
+      const { token, secret } = await new Promise((resolve, reject) => {
+        oa.getOAuthAccessToken(
+          req.query.oauth_token,
+          '',
+          req.query.oauth_verifier,
+          (err: any, token: string, secret: string) => {
+            if (err) {
+              console.error(`Twitter access token error`);
+              return reject(err);
             }
-          );
-        }
-      );
+            resolve({ token, secret });
+          }
+        );
+      });
+
+      // Get Twitter name and ID
+      const data = await new Promise<string>((resolve, reject) => {
+        oa.get(
+          'https://api.twitter.com/1.1/account/verify_credentials.json',
+          token,
+          secret,
+          (err, data) => {
+            if (err) {
+              console.error(`Twitter user fetch error`);
+              return reject(err);
+            }
+            resolve(data as string);
+          }
+        );
+      });
+
+      const twitterData = JSON.parse(data);
+      const twitterId = twitterData.id_str;
+      const twitterName = twitterData.screen_name;
+
+      await updateTwitterCredentials(user, {
+        twitterId,
+        twitterName,
+        twitterToken: token,
+        twitterSecret: secret,
+      });
+
+      res.redirect(`${process.env.APP_URL}${redirect}`);
     })
   );
 

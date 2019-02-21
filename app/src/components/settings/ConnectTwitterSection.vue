@@ -17,9 +17,7 @@
       find you. you can also cross-post to twitter when posting a song
     </p>
 
-    <settings-button tag="a" href="/auth/twitter-connect"
-      >connect to twitter</settings-button
-    >
+    <twitter-connect-button redirect="/settings" />
   </div>
 </template>
 
@@ -27,9 +25,10 @@
 import { mapState } from 'vuex';
 
 import SettingsButton from './SettingsButton.vue';
+import TwitterConnectButton from './TwitterConnectButton.vue';
 
 export default {
-  components: { SettingsButton },
+  components: { SettingsButton, TwitterConnectButton },
 
   data() {
     return {

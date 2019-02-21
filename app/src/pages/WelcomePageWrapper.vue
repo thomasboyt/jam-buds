@@ -41,7 +41,7 @@ h2 {
   flex: 1;
 
   @media (min-width: $breakpoint-small) {
-    padding-top: 75px;
+    padding-top: 25px;
   }
 }
 
