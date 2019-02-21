@@ -19,8 +19,10 @@ if (process.env.NODE_ENV !== 'production' && !process.env.CI) {
 import createApp from './createApp';
 
 import { configureDatabase } from './db';
+import { configureRedis } from './redis';
 
 configureDatabase();
+configureRedis();
 
 const app = createApp();
 

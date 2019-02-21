@@ -8,3 +8,6 @@ createdb jambuds
 dropdb jambuds_test
 createdb jambuds_test
 # we don't run migrations here because the tests handle that :>
+
+# reset redis
+redis-cli flushdb

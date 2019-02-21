@@ -11,6 +11,11 @@ import { isAuthenticated } from '../auth';
 import { validEmail, validUsername } from '../util/validators';
 import { Fields, validate } from '../util/validation';
 import { sendEmail } from '../util/email';
+import {
+  setSignUpReferral,
+  getAndClearSignUpReferral,
+} from '../models/cache/signUpReferralCache';
+import { followUser } from '../models/following';
 
 export default function registerAuthEndpoints(router: Router) {
   /**
@@ -21,6 +26,8 @@ export default function registerAuthEndpoints(router: Router) {
    *
    * Params:
    * - email (string)
+   * - signupReferral (string) - optional, saves a referral for the sign up
+   *   token who will get automatically followed on sign up
    */
   router.post(
     '/sign-in-token',
@@ -54,6 +61,10 @@ export default function registerAuthEndpoints(router: Router) {
           },
         });
       } else {
+        if (req.body.signupReferral) {
+          await setSignUpReferral(token, req.body.signupReferral);
+        }
+
         const link = `${process.env.APP_URL}/welcome/registration?t=${token}`;
 
         await sendEmail(email, 'Welcome to jambuds.club!', {
@@ -166,6 +177,16 @@ export default function registerAuthEndpoints(router: Router) {
 
       await deleteSignInToken(token);
       res.cookie(AUTH_TOKEN_COOKIE, user.authToken);
+
+      // auto follow referral if present
+      const referral = await getAndClearSignUpReferral(token);
+
+      if (referral) {
+        const referralUser = await getUserByName(referral);
+        if (referralUser) {
+          await followUser(user.id, referralUser.id);
+        }
+      }
 
       res.status(200).json({ success: true });
     })

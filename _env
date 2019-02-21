@@ -9,6 +9,8 @@ NODE_ENV=development
 # The URL of the database. This is set automatically by Heroku.
 DATABASE_URL=postgres://your_name_here@localhost:5432/jambuds
 
+REDIS_URL=redis://localhost:6379
+
 # Twitter API key and secret, used for Twitter OAuth.
 TWITTER_API_KEY=
 TWITTER_API_SECRET=
