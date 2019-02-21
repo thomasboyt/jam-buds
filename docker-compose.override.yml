@@ -1,0 +1,30 @@
+version: '3'
+services:
+  # Stub out App service, which gets run outside of containers in dev.
+  #
+  # TODO:
+  # - figure out how to do dev builds outside of containers?
+  #   - ooor just never unstub this
+  #   - basically would want to have the devServer.js bit live outside of
+  #     docker, and send the bundles up into the container, and also somehow
+  #     proxy asset requests from ssr server to devServer.js :\
+  jambuds-app:
+    image: tianon/true
+    # build: ./app
+
+  # Stub out API service, which gets run outside of containers in dev.
+  #
+  # TODO
+  # - https://github.com/Microsoft/vscode-recipes/tree/master/Docker-TypeScript
+  # - Do builds outside of Docker
+  jambuds-api:
+    image: tianon/true
+    # build: ./api
+
+  redis:
+    ports:
+      - "6380:6379"
+  db:
+    # uses the default-created volume for data
+    ports:
+      - "5433:5432"

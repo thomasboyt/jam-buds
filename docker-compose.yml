@@ -1,36 +1,21 @@
 version: '3'
 services:
   jambuds-app:
-    # build: ./app
     image: jambuds-app:latest
-    ports:
-      - "6000:8080"
     depends_on:
       - jambuds-api
-    restart: always
     env_file: .env
   jambuds-api:
-    # build: ./api
     image: jambuds-api:latest
-    ports:
-      - "6001:3000"
     depends_on:
-      # - db
+      - db
       - redis
-    restart: always
     env_file: .env
-    volumes:
-      - "./secrets/jam_buds_prod_key.p8:/home/node/jam_buds_prod_key.p8"
   redis:
     image: redis:5.0.3-alpine
-    restart: always
     env_file: .env
-  # some day:
-  # db:
-  #   image: postgres:11.2-alpine
-  #   restart: always
-  #   env_file: .env
-  #   environment:
-  #     POSTGRES_DB: jambuds
-  #   volumes:
-  #     - "~/jambuds-db/data:/var/lib/postgresql/data"
+  db:
+    image: postgres:11.2-alpine
+    env_file: .env
+    environment:
+      POSTGRES_DB: jambuds
