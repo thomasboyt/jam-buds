@@ -7,14 +7,19 @@ dotenv.config({
 });
 
 import { db, configureDatabase } from '../db';
+import { configureRedis, redis } from '../redis';
 
 before(async () => {
   configureDatabase();
+  configureRedis();
 
   // reset schema and run all migrations
   await db!.raw('DROP SCHEMA public CASCADE;');
   await db!.raw('CREATE SCHEMA public;');
   await db!.migrate.latest();
+
+  // reset redis
+  await redis!.flushdb();
 });
 
 beforeEach(async () => {
