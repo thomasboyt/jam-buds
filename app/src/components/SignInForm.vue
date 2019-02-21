@@ -30,6 +30,7 @@ export default {
       try {
         await axios.post('/auth/sign-in-token', {
           email,
+          signupReferral: this.$route.query['signup-ref'],
         });
       } catch (err) {
         console.log(err.response);
