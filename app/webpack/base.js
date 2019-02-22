@@ -1,8 +1,8 @@
 const path = require('path');
 const webpack = require('webpack');
 const merge = require('webpack-merge');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const dotenv = require('dotenv');
 
 if (process.env.NODE_ENV !== 'production') {
@@ -59,7 +59,22 @@ const baseConfig = {
 
       {
         test: /\.scss$/,
-        use: ExtractTextPlugin.extract(['css-loader', 'sass-loader']),
+        use: [
+          process.env.NODE_ENV !== 'production'
+            ? 'vue-style-loader'
+            : MiniCssExtractPlugin.loader,
+          'css-loader',
+          'sass-loader',
+        ],
+      },
+      {
+        test: /\.css$/,
+        use: [
+          process.env.NODE_ENV !== 'production'
+            ? 'vue-style-loader'
+            : MiniCssExtractPlugin.loader,
+          'css-loader',
+        ],
       },
 
       {
@@ -78,7 +93,10 @@ const baseConfig = {
   },
 
   plugins: [
-    new ExtractTextPlugin('[name].[chunkhash].css'),
+    new MiniCssExtractPlugin({
+      filename: '[name].[chunkhash].css',
+      chunkFilename: '[name].[chunkhash].css',
+    }),
     new VueLoaderPlugin(),
   ],
 };

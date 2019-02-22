@@ -1,3 +1,5 @@
+import '../styles/main.scss';
+
 import Vue from 'vue';
 import { sync } from 'vuex-router-sync';
 
@@ -5,8 +7,6 @@ import App from './App.vue';
 import createStore from './stores';
 import createRouter from './router';
 import injectAxios from './util/injectAxios';
-
-import '../styles/main.scss';
 
 export default function createApp() {
   const store = createStore();

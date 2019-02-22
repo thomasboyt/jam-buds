@@ -11,7 +11,11 @@ const config = {
   target: 'node',
 
   entry: {
-    app: ['@babel/polyfill', './src/entry-server.js'],
+    app: [
+      '@babel/polyfill',
+      'normalize.css/normalize.css',
+      './src/entry-server.js',
+    ],
   },
 
   output: {

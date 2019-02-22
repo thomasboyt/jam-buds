@@ -19,14 +19,25 @@ const envVars = {
 
 const config = {
   entry: {
-    app: ['@babel/polyfill', './src/entry-client.js'],
+    app: [
+      '@babel/polyfill',
+      'normalize.css/normalize.css',
+      './src/entry-client.js',
+    ],
   },
 
   optimization: {
     splitChunks: {
       cacheGroups: {
         vendor: {
-          test: /node_modules/,
+          test: (module) => {
+            if (!module.nameForCondition) {
+              return false;
+            }
+
+            const name = module.nameForCondition();
+            return /node_modules/.test(name) && !/\.css$/.test(name);
+          },
           chunks: 'initial',
           name: 'vendor',
           priority: 10,
