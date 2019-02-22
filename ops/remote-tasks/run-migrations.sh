@@ -5,4 +5,4 @@ trap 'echo "Aborting due to errexit on line $LINENO. Exit code: $?" >&2' ERR
 
 cd $JAMBUDS_REMOTE_PATH
 
-docker-compose exec jambuds-api npx knex migrate:latest
+docker-compose exec -T jambuds-api npx knex migrate:latest
