@@ -10,7 +10,7 @@ import { getUserFromCookie, isAuthenticated } from '../auth';
 import {
   createOAuthState,
   getAndClearOAuthState,
-} from '../util/oauthStateCache';
+} from '../models/cache/oauthStateCache';
 
 /*
  * Here's how Twitter auth works:

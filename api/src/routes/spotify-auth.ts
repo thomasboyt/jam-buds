@@ -13,7 +13,7 @@ import { getUserFromCookie, isAuthenticated } from '../auth';
 import {
   createOAuthState,
   getAndClearOAuthState,
-} from '../util/oauthStateCache';
+} from '../models/cache/oauthStateCache';
 
 const redirectUri = `${process.env.APP_URL}/auth/spotify-connect/cb`;
 
