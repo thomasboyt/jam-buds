@@ -10,6 +10,8 @@ services:
     restart: always
     volumes:
       - "./secrets/jam_buds_prod_key.p8:/home/node/jam_buds_prod_key.p8"
+    environment:
+      MUSICKIT_PRIVATE_KEY_PATH: "/home/node/jam_buds_prod_key.p8"
   redis:
     restart: always
   db:
