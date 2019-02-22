@@ -23,8 +23,11 @@ const auth = {
         method: 'GET',
       });
 
-      const user = resp.data.user;
-      context.commit('setCurrentUser', user);
+      // GET /api/me returns null if invalid or expired token
+      if (resp.data.user) {
+        const user = resp.data.user;
+        context.commit('setCurrentUser', user);
+      }
     },
   },
 };
