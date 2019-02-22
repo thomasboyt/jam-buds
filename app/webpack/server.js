@@ -24,7 +24,7 @@ const config = {
 
   externals: [
     nodeExternals({
-      whitelist: /\.css$/,
+      whitelist: [/\.css$/, /\?vue&type=style/],
     }),
   ],
 
