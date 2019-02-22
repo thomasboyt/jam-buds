@@ -14,4 +14,4 @@ set +o allexport
 
 ssh $JAMBUDS_SSH_REMOTE \
   JAMBUDS_REMOTE_PATH=$JAMBUDS_REMOTE_PATH \
-  'docker exec jambuds-api npx knex migrate:latest'
+  'bash -s' < ops/remote-tasks/run-migrations.sh
