@@ -7,6 +7,7 @@
 # These are environment variables used only in tests
 
 DATABASE_URL=postgres://your_name_here@localhost:5432/jambuds_test
+REDIS_URL=redis://localhost:6379/1
 
 # Values used for feature testing, so feature test servers can run alongside dev servers
 PORT=3001
