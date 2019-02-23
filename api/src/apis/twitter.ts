@@ -1,12 +1,12 @@
-import { User } from '../models/user';
 import Twit from 'twit';
+import { UserModel } from '../models/user';
 
 interface PostSongTweetParams {
   text: string;
-  user: User;
+  user: UserModel;
 }
 
-function getTwitterClient(user: User): Twit {
+function getTwitterClient(user: UserModel): Twit {
   // TODO: This should probably be raised up out of this getter thingy
   if (!process.env.TWITTER_API_KEY || !process.env.TWITTER_API_SECRET) {
     throw new Error(
@@ -36,7 +36,7 @@ export async function postSongTweet({ text, user }: PostSongTweetParams) {
   });
 }
 
-export async function getTwitterFriendIds(user: User): Promise<string[]> {
+export async function getTwitterFriendIds(user: UserModel): Promise<string[]> {
   // the twit type defs are real bad so this is ugly
   const resp = await getTwitterClient(user).get('friends/ids', {
     stringify_ids: true,

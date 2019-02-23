@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { User } from '../models/user';
+import { UserModel } from '../models/user';
 import { getSongBySpotifyId, createSong } from '../models/song';
 import {
   CreatePostParams,
@@ -20,7 +20,7 @@ export default function registerPostEndpoints(router: Router) {
     '/posts',
     isAuthenticated,
     wrapAsyncRoute(async (req, res) => {
-      const user: User = res.locals.user;
+      const user: UserModel = res.locals.user;
 
       const spotifyId = req.body.spotifyId;
 
@@ -80,7 +80,7 @@ export default function registerPostEndpoints(router: Router) {
     '/posts/:entryId',
     isAuthenticated,
     wrapAsyncRoute(async (req, res) => {
-      const user: User = res.locals.user;
+      const user: UserModel = res.locals.user;
       const entryId: number = req.params.entryId;
 
       const entry = await getPostById(entryId);

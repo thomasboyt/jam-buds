@@ -1,4 +1,4 @@
-import { User, createUser } from '../models/user';
+import { UserModel, createUser } from '../models/user';
 import { createSongFromManualEntry, SongModel } from '../models/song';
 import { createPost } from '../models/post';
 import { Post } from '../resources';
@@ -12,7 +12,7 @@ export function uniqueString() {
 
 export async function userFactory(
   opts: Record<string, any> = {}
-): Promise<User> {
+): Promise<UserModel> {
   const defaults = {
     name: uniqueString(),
     email: `${uniqueString()}@example.example`,

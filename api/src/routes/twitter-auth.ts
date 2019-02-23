@@ -3,7 +3,7 @@ import wrapAsyncRoute from '../util/wrapAsyncRoute';
 import { OAuth } from 'oauth';
 import {
   updateTwitterCredentials,
-  User,
+  UserModel,
   deleteTwitterCredentialsFromUser,
 } from '../models/user';
 import { getUserFromCookie, isAuthenticated } from '../auth';
@@ -129,7 +129,7 @@ export default function registerTwitterAuthEndpoints(router: Router) {
     '/twitter-connect',
     isAuthenticated,
     wrapAsyncRoute(async (req, res) => {
-      const user: User = res.locals.user;
+      const user: UserModel = res.locals.user;
 
       await deleteTwitterCredentialsFromUser(user);
 

@@ -1,4 +1,5 @@
 import knex from 'knex';
+import knexStringcase from 'knex-stringcase';
 
 export let db: knex | undefined;
 
@@ -16,5 +17,5 @@ export function configureDatabase() {
     };
   }
 
-  db = knex(config);
+  db = knex(knexStringcase(config));
 }

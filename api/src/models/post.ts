@@ -1,6 +1,6 @@
 import { db } from '../db';
 import { camelizeKeys, decamelizeKeys } from 'humps';
-import { User, serializePublicUser } from './user';
+import { UserModel, serializePublicUser } from './user';
 import { Post } from '../resources';
 import { ENTRY_PAGE_LIMIT } from '../constants';
 import { joinSongsQuery, serializeSong } from './song';
@@ -25,7 +25,7 @@ export async function createPost(values: CreatePostParams): Promise<Post> {
 
 function serializePost(row: any): Post {
   const { song, isLiked, post } = camelizeKeys(row) as any;
-  const user = serializePublicUser(camelizeKeys(row.user) as User);
+  const user = serializePublicUser(camelizeKeys(row.user) as UserModel);
 
   return {
     id: post.id,

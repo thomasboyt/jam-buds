@@ -2,7 +2,7 @@ import expect from 'expect';
 
 import { userFactory, postFactory } from '../../__tests__/factories';
 import * as playlist from '../post';
-import { User } from '../user';
+import { UserModel } from '../user';
 import { getPostById, deletePostById } from '../post';
 import { followUser } from '../following';
 import { Post } from '../../resources';
@@ -19,9 +19,9 @@ async function setEntryCreated(id: number, createdAt: string) {
 
 describe('models/post', () => {
   describe('querying', () => {
-    let jeff: User;
-    let vinny: User;
-    let dan: User;
+    let jeff: UserModel;
+    let vinny: UserModel;
+    let dan: UserModel;
     let jeffEntry: Post;
     let vinnyEntry: Post;
     let danEntry: Post;

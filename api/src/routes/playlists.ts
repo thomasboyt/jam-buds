@@ -1,6 +1,10 @@
 import { Router } from 'express';
 
-import { User, getUserByName, getUserProfileForUser } from '../models/user';
+import {
+  UserModel,
+  getUserByName,
+  getUserProfileForUser,
+} from '../models/user';
 import { getPostsByUserId, getFeedByUserId } from '../models/post';
 import { getLikesByUserId } from '../models/like';
 
@@ -81,7 +85,7 @@ export default function registerPlaylistEndpoints(router: Router) {
     '/feed',
     isAuthenticated,
     wrapAsyncRoute(async (req, res) => {
-      const user: User = res.locals.user;
+      const user: UserModel = res.locals.user;
 
       const previousId =
         req.query.previousId && parseInt(req.query.previousId, 10);

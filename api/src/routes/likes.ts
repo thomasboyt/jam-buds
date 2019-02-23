@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import wrapAsyncRoute from '../util/wrapAsyncRoute';
 
-import { User } from '../models/user';
+import { UserModel } from '../models/user';
 import { createLike, removeLike, likeExists } from '../models/like';
 import { getSongById } from '../models/song';
 
@@ -14,7 +14,7 @@ export default function registerLikesEndpoints(router: Router) {
     isAuthenticated,
     wrapAsyncRoute(async (req, res) => {
       const songId = req.params.songId as number;
-      const user = res.locals.user as User;
+      const user = res.locals.user as UserModel;
 
       const song = await getSongById(songId);
 
@@ -37,7 +37,7 @@ export default function registerLikesEndpoints(router: Router) {
     isAuthenticated,
     wrapAsyncRoute(async (req, res) => {
       const songId = req.params.songId as number;
-      const user = res.locals.user as User;
+      const user = res.locals.user as UserModel;
 
       const song = await getSongById(songId);
 

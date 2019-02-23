@@ -1,7 +1,7 @@
 import { Router } from 'express';
 
 import {
-  User,
+  UserModel,
   getUserByName,
   serializePublicUser,
   getUnfollowedUsersByTwitterIds,
@@ -46,7 +46,7 @@ export default function registerUserEndpoints(router: Router) {
     '/following',
     isAuthenticated,
     wrapAsyncRoute(async (req, res) => {
-      const user: User = res.locals.user;
+      const user: UserModel = res.locals.user;
       const followingName: string = req.body.userName;
 
       if (!followingName) {
@@ -80,7 +80,7 @@ export default function registerUserEndpoints(router: Router) {
     '/following/:followingName',
     isAuthenticated,
     wrapAsyncRoute(async (req, res) => {
-      const user: User = res.locals.user;
+      const user: UserModel = res.locals.user;
       const followingName: string = req.params.followingName;
 
       const followingUser = await getUserByName(followingName);

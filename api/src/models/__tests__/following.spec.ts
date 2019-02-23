@@ -1,7 +1,7 @@
 import expect from 'expect';
 
 import { userFactory } from '../../__tests__/factories';
-import { User } from '../../models/user';
+import { UserModel } from '../../models/user';
 import {
   followUser,
   getFollowersForUserId,
@@ -10,9 +10,9 @@ import {
 
 describe('models/following', () => {
   describe('querying', () => {
-    let jeff: User;
-    let vinny: User;
-    let dan: User;
+    let jeff: UserModel;
+    let vinny: UserModel;
+    let dan: UserModel;
 
     beforeEach(async () => {
       jeff = await userFactory();

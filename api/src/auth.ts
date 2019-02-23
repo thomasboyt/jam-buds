@@ -1,12 +1,14 @@
 import { Request, Response } from 'express';
-import { User, getUserByAuthToken } from './models/user';
+import { UserModel, getUserByAuthToken } from './models/user';
 import { AUTH_TOKEN_COOKIE } from './constants';
 
 /**
  * Given a request object, return a User.
  */
-export async function getUserFromRequest(req: Request): Promise<User | null> {
-  let user: User | null = null;
+export async function getUserFromRequest(
+  req: Request
+): Promise<UserModel | null> {
+  let user: UserModel | null = null;
 
   const token = req.get('X-Auth-Token');
   if (token) {
@@ -24,7 +26,7 @@ export async function getUserFromRequest(req: Request): Promise<User | null> {
  * REQUESTS, as it has no CSRF protection. We're only using it for managing the
  * session when going through external resources auth flows.
  */
-export async function getUserFromCookie(req: Request): Promise<User> {
+export async function getUserFromCookie(req: Request): Promise<UserModel> {
   const token = req.cookies[AUTH_TOKEN_COOKIE];
 
   if (!token) {

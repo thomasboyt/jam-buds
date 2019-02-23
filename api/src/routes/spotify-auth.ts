@@ -6,7 +6,7 @@ import wrapAsyncRoute from '../util/wrapAsyncRoute';
 import {
   addSpotifyCredentialsToUser,
   deleteSpotifyCredentialsFromUser,
-  User,
+  UserModel,
   updateRefreshedSpotifyCredentialsForUser,
 } from '../models/user';
 import { getUserFromCookie, isAuthenticated } from '../auth';
@@ -91,7 +91,7 @@ export default function registerSpotifyAuthEndpoints(router: Router) {
     '/spotify-connect/token',
     isAuthenticated,
     wrapAsyncRoute(async (req, res) => {
-      const user: User = res.locals.user;
+      const user: UserModel = res.locals.user;
 
       const auth =
         process.env.SPOTIFY_CLIENT_ID + ':' + process.env.SPOTIFY_CLIENT_SECRET;
@@ -133,7 +133,7 @@ export default function registerSpotifyAuthEndpoints(router: Router) {
     '/spotify-connect',
     isAuthenticated,
     wrapAsyncRoute(async (req, res) => {
-      const user: User = res.locals.user;
+      const user: UserModel = res.locals.user;
 
       await deleteSpotifyCredentialsFromUser(user);
 

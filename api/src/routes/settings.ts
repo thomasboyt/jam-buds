@@ -5,14 +5,14 @@ import wrapAsyncRoute from '../util/wrapAsyncRoute';
 
 import { setColorSchemeForUserId } from '../models/colorSchemes';
 import { ColorScheme } from '../resources';
-import { User } from '../models/user';
+import { UserModel } from '../models/user';
 
 export default function registerSettingsEndpoints(router: Router) {
   router.post(
     '/settings/color-scheme',
     isAuthenticated,
     wrapAsyncRoute(async (req, res) => {
-      const user: User = res.locals.user;
+      const user: UserModel = res.locals.user;
 
       const colorScheme = getColorSchemeFromBody(req.body);
 

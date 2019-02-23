@@ -1,30 +1,27 @@
+import * as t from 'io-ts';
+import { date as dateType } from 'io-ts-types';
 import { db } from '../db';
 import genAuthToken from '../util/genAuthToken';
-import { camelizeKeys, decamelizeKeys } from 'humps';
+import validateOrThrow from '../util/validateOrThrow';
 import { PublicUser, CurrentUser, UserProfile } from '../resources';
 import { getFollowingForUserId } from './following';
 import { getColorSchemeForUserId } from './colorSchemes';
 
-export interface User {
-  id: number;
-  authToken: string;
-  name: string;
-  email: string;
-  twitterName: string | null;
-  twitterId: string | null;
-  twitterToken: string | null;
-  twitterSecret: string | null;
-  spotifyAccessToken: string | null;
-  spotifyRefreshToken: string | null;
-  spotifyExpiresAt: Date | null;
-}
+const UserModelV = t.type({
+  id: t.number,
+  authToken: t.string,
+  name: t.string,
+  email: t.string,
+  twitterName: t.union([t.string, t.null]),
+  twitterId: t.union([t.string, t.null]),
+  twitterToken: t.union([t.string, t.null]),
+  twitterSecret: t.union([t.string, t.null]),
+  spotifyAccessToken: t.union([t.string, t.null]),
+  spotifyRefreshToken: t.union([t.string, t.null]),
+  spotifyExpiresAt: t.union([dateType, t.null]),
+});
 
-export function serializePublicUser(user: User): PublicUser {
-  return {
-    id: user.id,
-    name: user.name,
-  };
-}
+export type UserModel = t.TypeOf<typeof UserModelV>;
 
 interface CreateUserOptions {
   name: string;
@@ -34,49 +31,23 @@ interface CreateUserOptions {
 export async function createUser(opts: CreateUserOptions) {
   const authToken = await genAuthToken();
 
-  const insert = Object.assign({ authToken }, opts);
+  const insert: Partial<UserModel> = {
+    authToken,
+    ...opts,
+  };
 
   const query = db!
-    .insert(decamelizeKeys(insert))
+    .insert(insert)
     .returning('*')
     .into('users');
 
   const [row] = await query;
-  const user = camelizeKeys(row) as User;
+  const user = validateOrThrow(UserModelV, row);
 
   return user;
 }
 
-interface UpdateTwitterCredentialsOptions {
-  twitterId: string;
-  twitterName: string;
-  twitterToken: string;
-  twitterSecret: string;
-}
-
-export async function updateTwitterCredentials(
-  user: User,
-  twitterParams: UpdateTwitterCredentialsOptions
-) {
-  return db!('users')
-    .where({ id: user.id })
-    .update(decamelizeKeys(twitterParams));
-}
-
-export async function deleteTwitterCredentialsFromUser(user: User) {
-  const updateParams: Partial<User> = {
-    twitterId: null,
-    twitterName: null,
-    twitterSecret: null,
-    twitterToken: null,
-  };
-
-  return db!('users')
-    .where({ id: user.id })
-    .update(decamelizeKeys(updateParams));
-}
-
-async function getUserWhere(params: any) {
+async function getUserWhere(params: Partial<UserModel>) {
   const query = db!('users').where(params);
 
   const [row] = await query;
@@ -85,56 +56,63 @@ async function getUserWhere(params: any) {
     return null;
   }
 
-  const user = camelizeKeys(row) as User;
+  const user = validateOrThrow(UserModelV, row);
 
   return user;
 }
 
 export async function getUserByAuthToken(
   authToken: string
-): Promise<User | null> {
-  return await getUserWhere({ auth_token: authToken });
+): Promise<UserModel | null> {
+  return await getUserWhere({ authToken });
 }
 
-export async function getUserByTwitterId(id: string): Promise<User | null> {
-  return await getUserWhere({ twitter_id: id });
+export async function getUserByTwitterId(
+  twitterId: string
+): Promise<UserModel | null> {
+  return await getUserWhere({ twitterId });
 }
 
-export async function getUserByName(name: string): Promise<User | null> {
+export async function getUserByName(name: string): Promise<UserModel | null> {
   return await getUserWhere({ name });
 }
 
-export async function getUserByUserId(id: number): Promise<User | null> {
+export async function getUserByUserId(id: number): Promise<UserModel | null> {
   return await getUserWhere({ id });
 }
 
-export async function getUserByEmail(email: string): Promise<User | null> {
+export async function getUserByEmail(email: string): Promise<UserModel | null> {
   return await getUserWhere({ email });
 }
 
+// TODO: move to following.ts
 export async function getUnfollowedUsersByTwitterIds(
   userId: number,
   twitterIds: string[]
-): Promise<User[]> {
+): Promise<UserModel[]> {
   const followQuery = db!
-    .select('following_id')
+    .select('followingId')
     .from('following')
-    .where({ user_id: userId })
+    .where({ userId })
     .join('users', { 'users.id': 'following.following_id' });
 
   const query = db!
     .select('*')
     .from('users')
-    .whereIn('twitter_id', twitterIds)
+    .whereIn('twitterId', twitterIds)
     .where('id', 'not in', followQuery);
 
   const rows = await query;
-  const users: User[] = rows.map((row: any) => camelizeKeys(row));
+  const users: UserModel[] = rows.map((row: any) =>
+    validateOrThrow(UserModelV, row)
+  );
 
   return users;
 }
 
-export async function getUserProfileForUser(user: User): Promise<UserProfile> {
+export async function getUserProfileForUser(
+  user: UserModel
+): Promise<UserProfile> {
   const colorScheme = await getColorSchemeForUserId(user.id);
 
   return {
@@ -144,7 +122,20 @@ export async function getUserProfileForUser(user: User): Promise<UserProfile> {
   };
 }
 
-export async function serializeCurrentUser(user: User): Promise<CurrentUser> {
+//
+// Serialization methods
+//
+
+export function serializePublicUser(user: UserModel): PublicUser {
+  return {
+    id: user.id,
+    name: user.name,
+  };
+}
+
+export async function serializeCurrentUser(
+  user: UserModel
+): Promise<CurrentUser> {
   const colorScheme = await getColorSchemeForUserId(user.id);
   const followingUsers = await getFollowingForUserId(user.id);
   const serializedUsers: PublicUser[] = followingUsers.map(serializePublicUser);
@@ -159,6 +150,43 @@ export async function serializeCurrentUser(user: User): Promise<CurrentUser> {
   };
 }
 
+//
+// Twitter credentials
+//
+
+interface UpdateTwitterCredentialsOptions extends Partial<UserModel> {
+  twitterId: string;
+  twitterName: string;
+  twitterToken: string;
+  twitterSecret: string;
+}
+
+export async function updateTwitterCredentials(
+  user: UserModel,
+  twitterParams: UpdateTwitterCredentialsOptions
+) {
+  return db!('users')
+    .where({ id: user.id })
+    .update(twitterParams);
+}
+
+export async function deleteTwitterCredentialsFromUser(user: UserModel) {
+  const updateParams: Partial<UserModel> = {
+    twitterId: null,
+    twitterName: null,
+    twitterSecret: null,
+    twitterToken: null,
+  };
+
+  return db!('users')
+    .where({ id: user.id })
+    .update(updateParams);
+}
+
+//
+// Spotify credentials
+//
+
 interface SpotifyCredentials {
   accessToken: string;
   refreshToken: string;
@@ -169,10 +197,10 @@ const toExpiresAt = (expiresInSec: number) =>
   new Date(Date.now() + expiresInSec * 1000);
 
 export async function addSpotifyCredentialsToUser(
-  user: User,
+  user: UserModel,
   spotifyCredentials: SpotifyCredentials
 ): Promise<void> {
-  const updateParams: Partial<User> = {
+  const updateParams: Partial<UserModel> = {
     spotifyAccessToken: spotifyCredentials.accessToken,
     spotifyRefreshToken: spotifyCredentials.refreshToken,
     spotifyExpiresAt: toExpiresAt(spotifyCredentials.expiresIn),
@@ -180,7 +208,7 @@ export async function addSpotifyCredentialsToUser(
 
   return db!('users')
     .where({ id: user.id })
-    .update(decamelizeKeys(updateParams));
+    .update(updateParams);
 }
 
 interface SpotifyRefreshCredentials {
@@ -189,21 +217,21 @@ interface SpotifyRefreshCredentials {
 }
 
 export async function updateRefreshedSpotifyCredentialsForUser(
-  user: User,
+  user: UserModel,
   spotifyCredentials: SpotifyRefreshCredentials
 ): Promise<void> {
-  const updateParams: Partial<User> = {
+  const updateParams: Partial<UserModel> = {
     spotifyAccessToken: spotifyCredentials.accessToken,
     spotifyExpiresAt: toExpiresAt(spotifyCredentials.expiresIn),
   };
 
   return db!('users')
     .where({ id: user.id })
-    .update(decamelizeKeys(updateParams));
+    .update(updateParams);
 }
 
-export async function deleteSpotifyCredentialsFromUser(user: User) {
-  const updateParams: Partial<User> = {
+export async function deleteSpotifyCredentialsFromUser(user: UserModel) {
+  const updateParams: Partial<UserModel> = {
     spotifyAccessToken: null,
     spotifyRefreshToken: null,
     spotifyExpiresAt: null,
@@ -211,5 +239,5 @@ export async function deleteSpotifyCredentialsFromUser(user: User) {
 
   return db!('users')
     .where({ id: user.id })
-    .update(decamelizeKeys(updateParams));
+    .update(updateParams);
 }
