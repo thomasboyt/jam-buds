@@ -1,3 +1,7 @@
+import * as t from 'io-ts';
+import { date as dateType } from 'io-ts-types';
+import camelcaseKeys from 'camelcase-keys';
+
 import { db } from '../db';
 import { serializePublicUser, UserModelV } from './user';
 import { Post } from '../resources';
@@ -5,12 +9,26 @@ import { ENTRY_PAGE_LIMIT } from '../constants';
 import { joinSongsQuery, serializeSong, SongModelV } from './song';
 import { paginate } from './utils';
 import validateOrThrow from '../util/validateOrThrow';
-import camelcaseKeys from 'camelcase-keys';
+
+export const PostModelV = t.type({
+  id: t.number,
+  songId: t.number,
+  userId: t.number,
+  createdAt: dateType,
+});
+
+export type PostModel = t.TypeOf<typeof PostModelV>;
 
 export interface CreatePostParams {
   userId: number;
   songId: number;
 }
+
+// XXX: Post is a weird "model" because it's basically only ever serialized
+// along with the song and user it's associated with. This sort of exposes how
+// awkward the "model" interfaces are (and how they should really be named
+// "Schema" or "Table") or something, and the potential for higher-level models.
+// Or, y'know, an ORM. Or Prisma?
 
 export async function createPost(values: CreatePostParams): Promise<Post> {
   const query = db!
@@ -26,7 +44,17 @@ export async function createPost(values: CreatePostParams): Promise<Post> {
 
 function serializePost(row: any): Post {
   const { isLiked } = row;
-  const post = camelcaseKeys(row.post);
+  const post = validateOrThrow(
+    PostModelV,
+    camelcaseKeys({
+      ...row.post,
+      // XXX: okay, so, this is really weird, but: `createdAt` gets converted
+      // into a string when to_json() is used to namespace the table, because
+      // the to_json solution is a completely garbage hack that should die in a
+      // fire. This is the worst.
+      createdAt: new Date(row.post.created_at),
+    })
+  );
   const song = serializeSong(
     validateOrThrow(SongModelV, camelcaseKeys(row.song)),
     isLiked
@@ -37,7 +65,7 @@ function serializePost(row: any): Post {
 
   return {
     id: post.id,
-    added: post.createdAt,
+    added: post.createdAt.toISOString(),
     song: song,
     user,
   };
