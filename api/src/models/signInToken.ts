@@ -1,15 +1,12 @@
 import { db } from '../db';
-import { decamelizeKeys } from 'humps';
 import genAuthToken from '../util/genAuthToken';
 
 export async function createSignInToken(email: string): Promise<string> {
   const [row] = await db!
-    .insert(
-      decamelizeKeys({
-        email,
-        token: await genAuthToken(),
-      })
-    )
+    .insert({
+      email,
+      token: await genAuthToken(),
+    })
     .returning('*')
     .into('sign_in_tokens');
 

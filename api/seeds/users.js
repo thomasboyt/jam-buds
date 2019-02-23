@@ -10,6 +10,7 @@ function createUser(knex, id, name, opts) {
         id,
         name,
         auth_token: name,
+        email: `${name}@jambuds.club`,
       },
       opts
     )

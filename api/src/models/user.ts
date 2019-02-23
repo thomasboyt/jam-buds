@@ -7,7 +7,7 @@ import { PublicUser, CurrentUser, UserProfile } from '../resources';
 import { getFollowingForUserId } from './following';
 import { getColorSchemeForUserId } from './colorSchemes';
 
-const UserModelV = t.type({
+export const UserModelV = t.type({
   id: t.number,
   authToken: t.string,
   name: t.string,

@@ -1,6 +1,6 @@
 import { db } from '../db';
-import { camelizeKeys } from 'humps';
-import { UserModel } from './user';
+import { UserModel, UserModelV } from './user';
+import validateOrThrow from '../util/validateOrThrow';
 
 export async function followUser(userId: number, followingId: number) {
   const query = db!
@@ -33,7 +33,9 @@ export async function getFollowingForUserId(
 
   const rows = await query;
 
-  const users = rows.map((row: any) => camelizeKeys(row) as UserModel);
+  const users: UserModel[] = rows.map((row: any) =>
+    validateOrThrow(UserModelV, row)
+  );
 
   return users;
 }
@@ -47,7 +49,9 @@ export async function getFollowersForUserId(
 
   const rows = await query;
 
-  const users = rows.map((row: any) => camelizeKeys(row) as UserModel);
+  const users: UserModel[] = rows.map((row: any) =>
+    validateOrThrow(UserModelV, row)
+  );
 
   return users;
 }

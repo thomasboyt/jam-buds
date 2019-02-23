@@ -1,9 +1,10 @@
 import { db } from '../db';
 import { paginate } from './utils';
 import { ENTRY_PAGE_LIMIT } from '../constants';
-import { joinSongsQuery, serializeSong, SongModel } from './song';
+import { joinSongsQuery, serializeSong, SongModelV } from './song';
 import { Like } from '../resources';
-import { camelizeKeys } from 'humps';
+import validateOrThrow from '../util/validateOrThrow';
+import camelcaseKeys from 'camelcase-keys';
 
 interface LikeModel {
   id: number;
@@ -53,11 +54,13 @@ interface GetLikesOptions {
 }
 
 function serializeLike(row: any): Like {
-  row = camelizeKeys(row);
-
+  const song = serializeSong(
+    validateOrThrow(SongModelV, camelcaseKeys(row.song)),
+    row.isLiked
+  );
   return {
     id: row.like.id,
-    song: serializeSong(row.song, row.isLiked),
+    song,
   };
 }
 

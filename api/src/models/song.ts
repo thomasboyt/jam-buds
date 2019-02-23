@@ -1,18 +1,21 @@
 import Knex from 'knex';
+import * as t from 'io-ts';
 import { db } from '../db';
-import { camelizeKeys, decamelizeKeys } from 'humps';
 import { Song } from '../resources';
+import validateOrThrow from '../util/validateOrThrow';
 
-export interface SongModel {
-  id: number;
-  artists: string[];
-  title: string;
-  albumArt: string | null;
-  spotifyId: string | null;
-  appleMusicId: string | null;
-  isrcId: string | null;
-  album: string | null;
-}
+export const SongModelV = t.type({
+  id: t.number,
+  artists: t.array(t.string),
+  title: t.string,
+  albumArt: t.union([t.string, t.null]),
+  spotifyId: t.union([t.string, t.null]),
+  appleMusicId: t.union([t.string, t.null]),
+  isrcId: t.union([t.string, t.null]),
+  album: t.union([t.string, t.null]),
+});
+
+export type SongModel = t.TypeOf<typeof SongModelV>;
 
 export async function getSongById(id: number): Promise<SongModel | null> {
   const query = db!('songs').where({ id });
@@ -23,9 +26,7 @@ export async function getSongById(id: number): Promise<SongModel | null> {
     return null;
   }
 
-  const song = camelizeKeys(row) as SongModel;
-
-  return song;
+  return validateOrThrow(SongModelV, row);
 }
 
 export async function getSongBySpotifyId(
@@ -39,23 +40,19 @@ export async function getSongBySpotifyId(
     return null;
   }
 
-  const song = camelizeKeys(row) as SongModel;
-
-  return song;
+  return validateOrThrow(SongModelV, row);
 }
 
 export async function createSong(
   params: Partial<SongModel>
 ): Promise<SongModel> {
   const query = db!
-    .insert(decamelizeKeys(params))
+    .insert(params)
     .returning('*')
     .into('songs');
 
   const [row] = await query;
-  const song = camelizeKeys(row) as SongModel;
-
-  return song;
+  return validateOrThrow(SongModelV, row);
 }
 
 export async function createSongFromManualEntry(
@@ -73,9 +70,7 @@ export async function createSongFromManualEntry(
     .into('songs');
 
   const [row] = await query;
-  const song = camelizeKeys(row) as SongModel;
-
-  return song;
+  return validateOrThrow(SongModelV, row);
 }
 
 interface SongsQueryOptions {
@@ -95,6 +90,7 @@ export function joinSongsQuery(
    * https://github.com/tgriesser/knex/issues/61#issuecomment-259176685
    * This may not be a great idea performance-wise.
    */
+
   const select = [
     db!.raw('to_json(songs.*) as song'),
     db!.raw('to_json(users.*) as user'),

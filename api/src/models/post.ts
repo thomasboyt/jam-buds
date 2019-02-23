@@ -1,10 +1,11 @@
 import { db } from '../db';
-import { camelizeKeys, decamelizeKeys } from 'humps';
-import { UserModel, serializePublicUser } from './user';
+import { serializePublicUser, UserModelV } from './user';
 import { Post } from '../resources';
 import { ENTRY_PAGE_LIMIT } from '../constants';
-import { joinSongsQuery, serializeSong } from './song';
+import { joinSongsQuery, serializeSong, SongModelV } from './song';
 import { paginate } from './utils';
+import validateOrThrow from '../util/validateOrThrow';
+import camelcaseKeys from 'camelcase-keys';
 
 export interface CreatePostParams {
   userId: number;
@@ -13,7 +14,7 @@ export interface CreatePostParams {
 
 export async function createPost(values: CreatePostParams): Promise<Post> {
   const query = db!
-    .insert(decamelizeKeys(values))
+    .insert(values)
     .into('posts')
     .returning('id');
 
@@ -24,13 +25,20 @@ export async function createPost(values: CreatePostParams): Promise<Post> {
 }
 
 function serializePost(row: any): Post {
-  const { song, isLiked, post } = camelizeKeys(row) as any;
-  const user = serializePublicUser(camelizeKeys(row.user) as UserModel);
+  const { isLiked } = row;
+  const post = camelcaseKeys(row.post);
+  const song = serializeSong(
+    validateOrThrow(SongModelV, camelcaseKeys(row.song)),
+    isLiked
+  );
+  const user = serializePublicUser(
+    validateOrThrow(UserModelV, camelcaseKeys(row.user))
+  );
 
   return {
     id: post.id,
     added: post.createdAt,
-    song: serializeSong(song, isLiked),
+    song: song,
     user,
   };
 }
