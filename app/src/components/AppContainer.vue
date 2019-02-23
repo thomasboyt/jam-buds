@@ -19,17 +19,20 @@
     </div>
 
     <add-song-modal v-if="authenticated" />
+
+    <apple-music-loader v-if="authenticated" />
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex';
 import SidebarToggle from './SidebarToggle.vue';
+import AppleMusicLoader from './AppleMusicLoader.vue';
 import AudioPlayer from './audio-player/AudioPlayer.vue';
 import AddSongModal from './new-song-modal/AddSongModal.vue';
 
 export default {
-  components: { SidebarToggle, AudioPlayer, AddSongModal },
+  components: { SidebarToggle, AudioPlayer, AddSongModal, AppleMusicLoader },
 
   computed: mapState({
     authenticated: (state) => state.auth.authenticated,
