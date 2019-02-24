@@ -18,7 +18,10 @@ export const UserModelV = t.type({
   twitterSecret: t.union([t.string, t.null]),
   spotifyAccessToken: t.union([t.string, t.null]),
   spotifyRefreshToken: t.union([t.string, t.null]),
-  spotifyExpiresAt: t.union([dateType, t.null]),
+
+  // XXX: we let this be t.string because of weird to_json issues... really need
+  // to fix that whole system
+  spotifyExpiresAt: t.union([dateType, t.string, t.null]),
 });
 
 export type UserModel = t.TypeOf<typeof UserModelV>;
