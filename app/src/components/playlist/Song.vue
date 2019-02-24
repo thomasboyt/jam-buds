@@ -110,10 +110,11 @@ export default {
 <style scoped lang="scss">
 .playlist-song {
   color: var(--theme-text-color);
-  border: 3px var(--theme-border-color) solid;
+  background: var(--theme-card-background-color);
+  padding: 3px;
 
   &:hover {
-    background: rgba(0, 0, 0, 0.1);
+    background: var(--theme-card-background-color-hover);
 
     &.can-play {
       cursor: pointer;
@@ -134,7 +135,6 @@ export default {
   .playlist-song--album-art {
     height: 100%;
     flex: 0 0 64px;
-    border-right: 3px var(--theme-border-color) solid;
 
     &.-placeholder {
       height: 80%;

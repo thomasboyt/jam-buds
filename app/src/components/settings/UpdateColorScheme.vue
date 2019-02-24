@@ -22,8 +22,8 @@
         <input type="text" v-model.lazy="colorScheme.backgroundColor" />
       </label>
       <label>
-        <a href="#">link color</a>
-        <input type="text" v-model.lazy="colorScheme.linkColor" />
+        card background color
+        <input type="text" v-model.lazy="colorScheme.cardBackgroundColor" />
       </label>
 
       <settings-button class="settings-button" type="submit"

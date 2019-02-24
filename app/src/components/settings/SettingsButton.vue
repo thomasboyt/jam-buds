@@ -40,8 +40,13 @@ export default {
 <style lang="scss" scoped>
 .settings-button {
   padding: 15px 25px;
-  color: var(--theme-link-color);
-  border: 3px var(--theme-link-color) solid;
+
+  background: var(--theme-card-background-color);
+  color: var(--theme-text-color);
+  border: 3px var(--theme-text-color) solid;
+  &:hover {
+    background: var(--theme-card-background-color-hover);
+  }
 
   display: inline-block;
   text-align: center;

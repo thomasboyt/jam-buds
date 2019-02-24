@@ -35,10 +35,8 @@ export default {
 
 <style lang="scss" scoped>
 .posted-by {
-  border: 3px var(--theme-border-color) solid;
   display: inline-block;
-  padding: 5px 15px;
-  border-bottom: 0;
+  padding: 5px 0px;
 
   a {
     color: var(--theme-link-color);

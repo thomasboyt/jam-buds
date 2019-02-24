@@ -68,6 +68,6 @@ export type Following = Followers;
 
 export interface ColorScheme {
   backgroundColor: string;
+  cardBackgroundColor: string;
   textColor: string;
-  linkColor: string;
 }

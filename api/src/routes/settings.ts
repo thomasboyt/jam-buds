@@ -36,13 +36,18 @@ function getColorSchemeFromBody(reqBody: any): ColorScheme | null {
     return null;
   }
 
-  const required = ['backgroundColor', 'textColor', 'linkColor'];
+  const colorScheme = _.pick(reqBody, [
+    'backgroundColor',
+    'textColor',
+    'cardBackgroundColor',
+  ]);
 
-  for (let key of required) {
-    if (!reqBody[key]) {
+  for (let key of Object.keys(colorScheme)) {
+    // XXX: this is kinda weird but eh
+    if (!(colorScheme as any)[key]) {
       return null;
     }
   }
 
-  return _.pick(reqBody, required) as ColorScheme;
+  return colorScheme;
 }
