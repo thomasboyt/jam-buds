@@ -34,8 +34,14 @@ function createPost(knex, post) {
 
 exports.seed = async function(knex, Promise) {
   await Promise.all([
-    createUser(knex, 1, 'jeff'),
-    createUser(knex, 2, 'dan'),
+    createUser(knex, 1, 'jeff', {
+      twitter_id: '12223',
+      twitter_name: 'jeffgerstmann',
+    }),
+    createUser(knex, 2, 'dan', {
+      twitter_id: '36311369',
+      twitter_name: 'danryckert',
+    }),
     createUser(knex, 3, 'brad'),
     createUser(knex, 4, 'vinny'),
     createUser(knex, 5, 'abe'),
