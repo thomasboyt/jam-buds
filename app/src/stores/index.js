@@ -35,6 +35,11 @@ const root = {
     closeSidebar(state) {
       state.isSidebarOpen = false;
     },
+    showErrorModal(state, errMsg) {
+      const msg = errMsg || 'An unknown error occurred! Please try again.';
+      // TODO: obviously there should be a better error modal
+      alert(msg);
+    },
   },
 
   actions: {},

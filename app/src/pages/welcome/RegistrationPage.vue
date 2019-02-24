@@ -9,9 +9,11 @@
         <button type="submit" class="submit">gogogo</button>
       </form>
 
-      <p v-if="didError" style="color: red">
-        Unknown error occurred
-      </p>
+      <field-error-display
+        :errors="errors"
+        name="name"
+        :style="{ marginTop: '20px' }"
+      />
     </div>
   </div>
 </template>
@@ -19,11 +21,16 @@
 <script>
 import axios from 'axios';
 
+import FieldErrorDisplay from '../../components/FieldErrorDisplay.vue';
+
 export default {
+  components: { FieldErrorDisplay },
+
   data() {
     return {
       name: '',
       didError: false,
+      errors: null,
     };
   },
 
@@ -37,6 +44,9 @@ export default {
     async handleSubmit(evt) {
       evt.preventDefault();
 
+      this.errors = null;
+      this.didError = false;
+
       const name = this.name;
 
       let resp;
@@ -46,8 +56,12 @@ export default {
           token: this.$route.query.t,
         });
       } catch (err) {
-        console.log(err);
-        this.didError = true;
+        if (err.response && err.response.data && err.response.data.errors) {
+          this.errors = err.response.data.errors;
+        } else {
+          this.$store.commit('showErrorModal');
+        }
+
         return;
       }
 
