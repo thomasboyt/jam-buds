@@ -36,7 +36,13 @@ export default {
 
 <style lang="scss" scoped>
 .follow-toggle {
-  border: 3px var(--theme-border-color) solid;
+  background: var(--theme-card-background-color);
+  color: var(--theme-text-color);
+  border: 3px var(--theme-text-color) solid;
+  &:hover {
+    background: var(--theme-card-background-color-hover);
+  }
+
   padding: 10px 15px;
   width: 130px;
 
