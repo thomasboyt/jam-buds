@@ -1,13 +1,19 @@
 #!/bin/bash
+set -Eeuo pipefail
+trap 'echo "Aborting due to errexit on line $LINENO. Exit code: $?" >&2' ERR
 
-dropdb jambuds
-createdb jambuds
+# set pwd to root folder of the project
+SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
+cd $SCRIPTPATH/../..
+
+# Load env vars for build & deploy
+set -o allexport
+source .env
+set +o allexport
+
+cd api
 ./node_modules/.bin/knex migrate:latest
 ./node_modules/.bin/knex seed:run
 
-dropdb jambuds_test
-createdb jambuds_test
-# we don't run migrations here because the tests handle that :>
-
 # reset redis
-redis-cli flushdb
+redis-cli -u $REDIS_URL flushdb
