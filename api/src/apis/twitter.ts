@@ -1,5 +1,9 @@
 import Twit from 'twit';
 import { UserModel } from '../models/user';
+import {
+  getTwitterFollowingCache,
+  setTwitterFollowingCache,
+} from '../models/cache/twitterFollowingCache';
 
 interface PostSongTweetParams {
   text: string;
@@ -37,6 +41,11 @@ export async function postSongTweet({ text, user }: PostSongTweetParams) {
 }
 
 export async function getTwitterFriendIds(user: UserModel): Promise<string[]> {
+  const cachedIds = await getTwitterFollowingCache(user.id);
+  if (cachedIds) {
+    return cachedIds;
+  }
+
   // the twit type defs are real bad so this is ugly
   const resp = await getTwitterClient(user).get('friends/ids', {
     stringify_ids: true,
@@ -47,7 +56,8 @@ export async function getTwitterFriendIds(user: UserModel): Promise<string[]> {
     throw new Error('Error communicating with Twitter API');
   }
 
-  const users: string[] = (resp.data as any).ids;
+  const ids: string[] = (resp.data as any).ids;
+  await setTwitterFollowingCache(user.id, ids);
 
-  return users;
+  return ids;
 }

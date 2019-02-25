@@ -107,7 +107,6 @@ export default function registerUserEndpoints(router: Router) {
     '/friend-suggestions',
     isAuthenticated,
     wrapAsyncRoute(async (req, res) => {
-      // get a list of twitter IDs!
       const ids = await getTwitterFriendIds(res.locals.user);
 
       const users = await getUnfollowedUsersByTwitterIds(
