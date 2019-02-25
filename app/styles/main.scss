@@ -69,15 +69,8 @@ a:hover, a:active {
   background: rgba(0, 0, 0, 0.2);
 }
 
-.sidebar {
-  flex: 0 0 250px;
-}
-
 .main {
-  flex: 1;
-
-  // this rule allows this to properly shrink/apply overflow to playlist items on mobile
-  min-width: 0;
+  width: 100%;
 
   h2 {
     margin-top: 0px;
@@ -88,10 +81,6 @@ a:hover, a:active {
     margin-top: 100px;
   }
 }
-
-/*
- * Sidebar
- */
 
 button, .button {
   -webkit-appearance: none;

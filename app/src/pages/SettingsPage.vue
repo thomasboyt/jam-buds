@@ -1,6 +1,6 @@
 <template>
-  <sidebar-wrapper>
-    <main-wrapper>
+  <sidebar-wrapper v-slot="{ withSidebar }">
+    <main-wrapper :with-sidebar="withSidebar">
       <h2>your settings</h2>
 
       <h3>connect to streaming services</h3>

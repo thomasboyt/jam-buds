@@ -8,7 +8,7 @@
       @click="handleClickSidebarOverlay"
     />
 
-    <slot />
+    <slot :with-sidebar="hasSidebar" />
   </div>
 </template>
 
@@ -22,7 +22,12 @@ export default {
     isSidebarOpen() {
       return this.$store.state.isSidebarOpen;
     },
+
+    hasSidebar() {
+      return this.$store.state.auth.authenticated;
+    },
   },
+
   methods: {
     handleClickSidebarOverlay() {
       this.$store.commit('closeSidebar');

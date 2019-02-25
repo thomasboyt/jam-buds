@@ -85,9 +85,12 @@ export default {
 .sidebar {
   padding: 10px 20px;
   background: lighten($black, 5%);
-  position: relative;
   font-family: 'Open Sans', sans-serif;
   color: white;
+
+  position: fixed;
+  height: 100%;
+  width: $sidebar-width;
 
   @media (max-width: $breakpoint-small) {
     position: fixed;

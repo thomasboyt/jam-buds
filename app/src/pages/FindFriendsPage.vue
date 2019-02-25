@@ -1,6 +1,6 @@
 <template>
-  <sidebar-wrapper>
-    <main-wrapper>
+  <sidebar-wrapper v-slot="{ withSidebar }">
+    <main-wrapper :with-sidebar="withSidebar">
       <h2>Find Friends</h2>
 
       <div v-if="showTwitterSuggestions">

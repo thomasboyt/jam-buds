@@ -1,5 +1,5 @@
 <template>
-  <div class="main" :style="cssTheme">
+  <div :class="['main', { 'with-sidebar': withSidebar }]" :style="cssTheme">
     <div class="main-inner">
       <slot />
     </div>
@@ -11,7 +11,7 @@ import { mapState } from 'vuex';
 import getCSSVariablesFromColorScheme from '../util/getCSSVariablesFromColorScheme';
 
 export default {
-  props: ['colorScheme'],
+  props: ['colorScheme', 'withSidebar'],
 
   computed: {
     ...mapState({
@@ -40,6 +40,8 @@ export default {
 </script>
 
 <style lang="scss">
+@import '../../styles/mixins.scss';
+
 .main {
   background-color: var(--theme-body-background-color);
   color: var(--theme-text-color);
@@ -52,6 +54,12 @@ export default {
     fill: var(--theme-text-color);
     stroke: var(--theme-text-color);
     color: var(--theme-text-color);
+  }
+
+  @media (min-width: $breakpoint-small) {
+    &.with-sidebar {
+      margin-left: $sidebar-width;
+    }
   }
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
-  <sidebar-wrapper v-if="authenticated">
-    <main-wrapper>
+  <sidebar-wrapper v-if="authenticated" v-slot="{ withSidebar }">
+    <main-wrapper :with-sidebar="withSidebar">
       <feed />
     </main-wrapper>
   </sidebar-wrapper>

@@ -1,6 +1,6 @@
 <template>
-  <sidebar-wrapper>
-    <main-wrapper :color-scheme="colorScheme">
+  <sidebar-wrapper v-slot="{ withSidebar }">
+    <main-wrapper :with-sidebar="withSidebar" :color-scheme="colorScheme">
       <router-view />
     </main-wrapper>
   </sidebar-wrapper>
