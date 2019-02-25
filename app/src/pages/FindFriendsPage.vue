@@ -10,10 +10,12 @@
         <twitter-users-list v-else :users="friendSuggestions" />
       </div>
       <div v-else class="main-placeholder">
-        You can find your friends on Twitter by
-        <router-link to="/settings"
-          >connecting your Twitter account to Jam Buds!</router-link
-        >
+        <p>
+          You can find your friends on Twitter by connecting your Twitter
+          account to Jam Buds!
+        </p>
+
+        <twitter-connect-button redirect="/find-friends" />
       </div>
     </main-wrapper>
   </sidebar-wrapper>
@@ -24,10 +26,16 @@ import { mapState } from 'vuex';
 import MainWrapper from '../components/MainWrapper.vue';
 import SidebarWrapper from '../components/SidebarWrapper.vue';
 import TwitterUsersList from '../components/TwitterUsersList.vue';
+import TwitterConnectButton from '../components/settings/TwitterConnectButton.vue';
 import titleMixin from '../util/titleMixin';
 
 export default {
-  components: { SidebarWrapper, MainWrapper, TwitterUsersList },
+  components: {
+    SidebarWrapper,
+    MainWrapper,
+    TwitterUsersList,
+    TwitterConnectButton,
+  },
 
   mixins: [titleMixin],
 
