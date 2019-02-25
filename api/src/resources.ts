@@ -44,6 +44,10 @@ export interface PublicUser {
   name: string;
 }
 
+export interface PublicUserWithTwitter extends PublicUser {
+  twitterName: string | null;
+}
+
 export interface UserProfile {
   id: number;
   name: string;

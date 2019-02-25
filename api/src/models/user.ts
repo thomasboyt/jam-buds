@@ -3,7 +3,12 @@ import { date as dateType } from 'io-ts-types';
 import { db } from '../db';
 import genAuthToken from '../util/genAuthToken';
 import validateOrThrow from '../util/validateOrThrow';
-import { PublicUser, CurrentUser, UserProfile } from '../resources';
+import {
+  PublicUser,
+  CurrentUser,
+  UserProfile,
+  PublicUserWithTwitter,
+} from '../resources';
 import { getFollowingForUserId } from './following';
 import { getColorSchemeForUserId } from './colorSchemes';
 
@@ -133,6 +138,15 @@ export function serializePublicUser(user: UserModel): PublicUser {
   return {
     id: user.id,
     name: user.name,
+  };
+}
+
+export function serializePublicUserWithTwitterName(
+  user: UserModel
+): PublicUserWithTwitter {
+  return {
+    ...serializePublicUser(user),
+    twitterName: user.twitterName,
   };
 }
 

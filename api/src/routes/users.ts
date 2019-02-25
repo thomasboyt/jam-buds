@@ -7,6 +7,7 @@ import {
   getUnfollowedUsersByTwitterIds,
   getUserProfileForUser,
   serializeCurrentUser,
+  serializePublicUserWithTwitterName,
 } from '../models/user';
 
 import {
@@ -114,7 +115,9 @@ export default function registerUserEndpoints(router: Router) {
         ids
       );
 
-      const publicUsers = users.map((row) => serializePublicUser(row));
+      const publicUsers = users.map((row) =>
+        serializePublicUserWithTwitterName(row)
+      );
 
       res.status(200).send({
         users: publicUsers,
