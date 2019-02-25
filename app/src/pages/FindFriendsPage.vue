@@ -7,7 +7,7 @@
         <div v-if="friendSuggestions.length === 0" class="main-placeholder">
           No suggestions found! Try inviting your Twitter friends to Jam Buds!
         </div>
-        <users-list v-else :users="friendSuggestions" />
+        <twitter-users-list v-else :users="friendSuggestions" />
       </div>
       <div v-else class="main-placeholder">
         You can find your friends on Twitter by
@@ -23,11 +23,11 @@
 import { mapState } from 'vuex';
 import MainWrapper from '../components/MainWrapper.vue';
 import SidebarWrapper from '../components/SidebarWrapper.vue';
-import UsersList from '../components/UsersList.vue';
+import TwitterUsersList from '../components/TwitterUsersList.vue';
 import titleMixin from '../util/titleMixin';
 
 export default {
-  components: { SidebarWrapper, MainWrapper, UsersList },
+  components: { SidebarWrapper, MainWrapper, TwitterUsersList },
 
   mixins: [titleMixin],
 
