@@ -49,6 +49,8 @@ h2 {
 }
 
 .welcome-page-wrapper {
+  --theme-text-color: black;
+
   flex: 1;
 
   @media (max-width: $breakpoint-small) {

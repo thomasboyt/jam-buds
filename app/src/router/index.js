@@ -7,6 +7,7 @@ import AboutPage from '../pages/AboutPage.vue';
 import WelcomePageWrapper from '../pages/WelcomePageWrapper.vue';
 import RegistrationPage from '../pages/welcome/RegistrationPage.vue';
 import ConnectPage from '../pages/welcome/ConnectPage.vue';
+import ConnectTwitterPage from '../pages/welcome/ConnectTwitterPage.vue';
 
 import UserPageWrapper from '../pages/UserPageWrapper.vue';
 import UserPlaylistPage from '../pages/users/UserPlaylistPage.vue';
@@ -35,6 +36,7 @@ export default function createRouter() {
         children: [
           { path: 'registration', component: RegistrationPage },
           { path: 'connect', component: ConnectPage },
+          { path: 'connect-twitter', component: ConnectTwitterPage },
         ],
       },
       {

@@ -8,7 +8,7 @@
         </h3>
       </template>
       <template v-else>
-        <h3>connect a streaming service</h3>
+        <h3>connect a streaming service <small>(optional!)</small></h3>
 
         <p>
           the best way to listen on jam buds is to use a spotify or apple music
@@ -58,7 +58,7 @@ export default {
 
   data() {
     return {
-      nextPage: '/',
+      nextPage: '/welcome/connect-twitter',
     };
   },
 
@@ -81,8 +81,6 @@ export default {
   margin: 0 auto;
   padding: 0 10px;
   text-align: center;
-
-  --theme-text-color: black;
 }
 
 a {
