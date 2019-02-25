@@ -60,6 +60,7 @@ export default {
           this.errors = err.response.data.errors;
         } else {
           this.$store.commit('showErrorModal');
+          throw err;
         }
 
         return;

@@ -12,18 +12,18 @@
       >; it enforces accessibility which is neat
     </p>
 
-    <form @submit="handleSubmit">
+    <form @submit="handleSubmit" class="color-form" :style="colorSchemeStyle">
       <label>
         text color
-        <input type="text" v-model.lazy="colorScheme.textColor" />
+        <color-picker-input v-model="colorScheme.textColor" />
       </label>
       <label>
         background color
-        <input type="text" v-model.lazy="colorScheme.backgroundColor" />
+        <color-picker-input v-model="colorScheme.backgroundColor" />
       </label>
       <label>
         card background color
-        <input type="text" v-model.lazy="colorScheme.cardBackgroundColor" />
+        <color-picker-input v-model="colorScheme.cardBackgroundColor" />
       </label>
 
       <settings-button class="settings-button" type="submit"
@@ -35,9 +35,13 @@
 
 <script>
 import SettingsButton from './SettingsButton.vue';
+import ColorPickerInput from '../ColorPickerInput.vue';
+import getCSSVariablesFromColorScheme from '../../util/getCSSVariablesFromColorScheme';
+
 export default {
   components: {
     SettingsButton,
+    ColorPickerInput,
   },
 
   data() {
@@ -49,18 +53,28 @@ export default {
     };
   },
 
+  computed: {
+    colorSchemeStyle() {
+      return getCSSVariablesFromColorScheme(this.colorScheme);
+    },
+  },
+
   methods: {
     async handleSubmit(e) {
       e.preventDefault();
 
-      this.$axios({
-        url: '/settings/color-scheme',
-        method: 'POST',
-        data: this.colorScheme,
-      });
+      try {
+        this.$axios({
+          url: '/settings/color-scheme',
+          method: 'POST',
+          data: this.colorScheme,
+        });
+      } catch (err) {
+        this.$store.commit('showErrorModal');
+        throw err;
+      }
 
-      this.$store.commit('updateColorScheme', this.colorScheme);
-      // TODO
+      this.$store.commit('updateColorScheme', { ...this.colorScheme });
     },
   },
 };
@@ -69,5 +83,10 @@ export default {
 <style lang="scss" scoped>
 label {
   display: block;
+}
+
+.color-form {
+  background-color: var(--theme-body-background-color);
+  color: var(--theme-text-color);
 }
 </style>

@@ -111,7 +111,7 @@ export default {
 .playlist-song {
   color: var(--theme-text-color);
   background: var(--theme-card-background-color);
-  padding: 3px;
+  border: 3px var(--theme-text-color) solid;
 
   &:hover {
     background: var(--theme-card-background-color-hover);

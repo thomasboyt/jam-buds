@@ -7,21 +7,8 @@
 </template>
 
 <script>
-import tinycolor from 'tinycolor2';
 import { mapState } from 'vuex';
-
-function getHoverColor(color) {
-  const isDark = tinycolor(color).isDark();
-  if (isDark) {
-    return tinycolor(color)
-      .lighten()
-      .toHexString();
-  } else {
-    return tinycolor(color)
-      .darken()
-      .toHexString();
-  }
-}
+import getCSSVariablesFromColorScheme from '../util/getCSSVariablesFromColorScheme';
 
 export default {
   props: ['colorScheme'],
@@ -46,16 +33,7 @@ export default {
         };
       }
 
-      return {
-        '--theme-body-background-color': colorScheme.backgroundColor,
-        '--theme-card-background-color': colorScheme.cardBackgroundColor,
-        '--theme-card-background-color-hover': getHoverColor(
-          colorScheme.cardBackgroundColor
-        ),
-        '--theme-border-color': colorScheme.textColor,
-        '--theme-text-color': colorScheme.textColor,
-        '--theme-link-color': colorScheme.textColor,
-      };
+      return getCSSVariablesFromColorScheme(colorScheme);
     },
   },
 };
