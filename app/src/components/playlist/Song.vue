@@ -120,7 +120,7 @@ export default {
       cursor: pointer;
     }
   }
-  margin-bottom: 30px;
+  margin-bottom: 15px;
   display: block;
 }
 
