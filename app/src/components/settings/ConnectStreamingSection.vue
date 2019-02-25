@@ -13,7 +13,7 @@
       account, if you have one.
     </p>
 
-    <p>
+    <p class="button-group">
       <spotify-connect-button redirect="/settings" />
 
       <apple-music-connect-button />
@@ -87,3 +87,17 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.button-group {
+  display: flex;
+
+  /deep/ .settings-button {
+    flex: 0 0 auto;
+    margin-left: 10px;
+    &:first-child {
+      margin-left: 0px;
+    }
+  }
+}
+</style>

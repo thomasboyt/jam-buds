@@ -15,7 +15,7 @@
           account, if you have one.
         </p>
 
-        <div>
+        <div class="button-group">
           <spotify-connect-button redirect="/welcome/connect" />
           <apple-music-connect-button
             @connectedAppleMusic="handleConnectedAppleMusic"
@@ -82,7 +82,7 @@ export default {
   padding: 0 10px;
   text-align: center;
 
-  --theme-link-color: black;
+  --theme-text-color: black;
 }
 
 a {
@@ -98,5 +98,16 @@ h3 {
 
 .lower {
   margin-top: 50px;
+}
+
+.button-group {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /deep/ .settings-button {
+    flex: 0 0 auto;
+    margin: 0 10px;
+  }
 }
 </style>

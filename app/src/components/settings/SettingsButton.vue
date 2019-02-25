@@ -52,7 +52,6 @@ export default {
   text-align: center;
   width: 260px;
   height: 56px;
-  margin: 0 10px;
   text-decoration: none;
 
   &:disabled {
