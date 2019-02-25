@@ -14,19 +14,31 @@
 
     <form @submit="handleSubmit" class="color-form" :style="colorSchemeStyle">
       <label>
-        text color
-        <color-picker-input v-model="colorScheme.textColor" />
+        <div class="field-label">
+          text color
+        </div>
+        <div class="field-control">
+          <color-picker-input v-model="colorScheme.textColor" />
+        </div>
       </label>
       <label>
-        background color
-        <color-picker-input v-model="colorScheme.backgroundColor" />
+        <div class="field-label">
+          background color
+        </div>
+        <div class="field-control">
+          <color-picker-input v-model="colorScheme.backgroundColor" />
+        </div>
       </label>
       <label>
-        card background color
-        <color-picker-input v-model="colorScheme.cardBackgroundColor" />
+        <div class="field-label">
+          card background color
+        </div>
+        <div class="field-control">
+          <color-picker-input v-model="colorScheme.cardBackgroundColor" />
+        </div>
       </label>
 
-      <settings-button class="settings-button" type="submit"
+      <settings-button type="submit" :style="{ marginTop: '10px' }"
         >save</settings-button
       >
     </form>
@@ -83,6 +95,7 @@ export default {
 <style lang="scss" scoped>
 label {
   display: block;
+  margin-bottom: 10px;
 }
 
 .color-form {
