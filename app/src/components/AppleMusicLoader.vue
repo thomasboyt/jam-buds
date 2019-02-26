@@ -6,6 +6,10 @@
 /* global MusicKit */
 export default {
   mounted() {
+    if (process.env.DISABLE_APPLE_MUSIC) {
+      return;
+    }
+
     if (MusicKit) {
       this.loaded();
     }

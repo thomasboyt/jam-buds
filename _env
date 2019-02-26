@@ -36,3 +36,6 @@ which generate a JWT key at build time, in addition to the API, which uses it fo
 MUSICKIT_PRIVATE_KEY_PATH=/path/to/secrets/jam_buds_dev_key.p8
 MUSICKIT_TEAM_ID=
 MUSICKIT_KEY_ID=
+
+# Set true to skip Apple Music stuff in API and app
+DISABLE_APPLE_MUSIC=

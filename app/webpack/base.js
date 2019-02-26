@@ -28,6 +28,7 @@ if (process.env.NODE_ENV !== 'production') {
 const baseEnvVars = {
   NODE_ENV: process.env.NODE_ENV,
   SENTRY_PUBLIC_DSN_APP: process.env.SENTRY_PUBLIC_DSN_APP,
+  DISABLE_APPLE_MUSIC: process.env.DISABLE_APPLE_MUSIC,
 };
 
 const baseConfig = {
