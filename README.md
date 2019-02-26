@@ -26,6 +26,7 @@ Base requirements:
 * Node: 8.x or higher is probably fine.
 * NPM: 5.x or higher is a-ok.
 * Postgres: 10.x recommended, but 9.x is probably fine too. Currently runs in 9.6 on CI because of Travis woes anyways.
+* Redis: 5.x recommended
 
 Everything else is handled by NPM. Make sure your editor is configured to prefer local versions of dev depdendencies (TypeScript, ESLint, Prettier...).
 
@@ -51,8 +52,6 @@ Make sure your `.env` has your username replaced for the DB connection, then set
 
 ```
 cd api
-createdb jambuds
-./node_modules/.bin/knex init
 npm run resetdb
 ```
 
