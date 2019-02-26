@@ -1,4 +1,4 @@
-import './utils/loadDotEnv';
+import './util/loadDotEnv';
 
 import createApp from './createApp';
 
