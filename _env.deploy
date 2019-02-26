@@ -5,6 +5,8 @@ NODE_ENV=production
 STATIC_URL=https://jambuds.club/assets/
 SENTRY_PUBLIC_DSN_APP=
 MUSICKIT_PRIVATE_KEY_PATH=/path/to/secrets/jam_buds_prod_key.p8
+MUSICKIT_TEAM_ID=
+MUSICKIT_KEY_ID=
 
 # Stuff used by the deploy scripts
 JAMBUDS_SSH_REMOTE=you@yoursite.whatever
