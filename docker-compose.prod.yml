@@ -20,12 +20,3 @@ services:
       - "~/jambuds-db/data:/var/lib/postgresql/data"
     ports:
       - "6002:5432"
-  # some day:
-  # db:
-  #   image: postgres:11.2-alpine
-  #   restart: always
-  #   env_file: .env
-  #   environment:
-  #     POSTGRES_DB: jambuds
-  #   volumes:
-  #     - "~/jambuds-db/data:/var/lib/postgresql/data"
