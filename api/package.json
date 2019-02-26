@@ -8,6 +8,7 @@
   },
   "scripts": {
     "dev": "nodemon --watch 'src/**/*.ts' --watch 'emails/**/*.*' --exec 'ts-node' src/entry.ts",
+    "dev-no-watch": "ts-node src/entry.ts",
     "resetdb": "ts-node ./scripts/resetdb.ts",
     "start": "node build/entry.js",
     "build-prod": "tsc -p tsconfig.build.json",

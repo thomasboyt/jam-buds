@@ -41,8 +41,6 @@ async function expectPlaylistEntry(page: puppeteer.Page, text: string) {
 }
 
 describe('posting a new song', function() {
-  this.timeout(10000);
-
   describe('via spotify', () => {
     it('creates an entry in your feed', async () => {
       const page = await getPage('/');
