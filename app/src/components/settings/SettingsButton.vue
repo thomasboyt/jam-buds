@@ -2,7 +2,7 @@
   <component
     :is="tag"
     :to="to"
-    class="settings-button"
+    class="button settings-button"
     :disabled="isSaving || disabled"
     @click="handleClick"
     ><slot
@@ -50,7 +50,7 @@ export default {
 
   display: inline-block;
   text-align: center;
-  width: 260px;
+  width: 250px;
   height: 56px;
   text-decoration: none;
 
