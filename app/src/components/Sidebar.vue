@@ -89,7 +89,7 @@ export default {
   color: white;
 
   position: fixed;
-  height: 100%;
+  height: calc(100vh - #{$header-height});
   width: $sidebar-width;
 
   @media (max-width: $breakpoint-small) {
