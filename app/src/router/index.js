@@ -17,6 +17,8 @@ import UserFollowersPage from '../pages/users/UserFollowersPage.vue';
 import FindFriendsPage from '../pages/FindFriendsPage.vue';
 import SettingsPage from '../pages/SettingsPage.vue';
 
+import AddSongPage from '../pages/AddSongPage.vue';
+
 // import NotFoundPage from '../pages/NotFoundPage.vue';
 
 Vue.use(Router);
@@ -49,6 +51,7 @@ export default function createRouter() {
       },
       { path: '/find-friends', component: FindFriendsPage },
       { path: '/settings', component: SettingsPage },
+      { path: '/add-song', component: AddSongPage },
       // {path: '*', component: NotFoundPage},
     ],
   });

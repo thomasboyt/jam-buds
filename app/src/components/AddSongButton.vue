@@ -5,10 +5,18 @@
 </template>
 
 <script>
+import isMobile from '../util/isMobile';
+
 export default {
   methods: {
     handleClick() {
-      this.$store.dispatch('showAddSong');
+      if (isMobile()) {
+        this.$router.push('/add-song');
+      } else {
+        this.$store.dispatch('showAddSong');
+      }
+
+      this.$emit('click');
     },
   },
 };

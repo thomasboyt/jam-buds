@@ -2,41 +2,44 @@
   <div v-if="authenticated" :class="['sidebar', { '-open': open }]">
     <p>
       what up,
-      <router-link :to="`/users/${currentUserName}`">
+      <router-link :to="`/users/${currentUserName}`" @click="handleClick">
         {{ currentUserName }}
       </router-link>
     </p>
 
-    <add-song-button />
+    <add-song-button @click="handleClick" />
 
     <ul>
       <li>
-        <router-link to="/">
+        <router-link to="/" @click="handleClick">
           your feed
         </router-link>
       </li>
       <li>
-        <router-link :to="`/users/${currentUserName}`">
+        <router-link :to="`/users/${currentUserName}`" @click="handleClick">
           your playlist
         </router-link>
       </li>
       <li>
-        <router-link :to="`/users/${currentUserName}/liked`">
+        <router-link
+          :to="`/users/${currentUserName}/liked`"
+          @click="handleClick"
+        >
           your liked tracks
         </router-link>
       </li>
       <li>
-        <router-link to="/find-friends">
+        <router-link to="/find-friends" @click="handleClick">
           find twitter friends
         </router-link>
       </li>
       <li>
-        <router-link to="/settings">
+        <router-link to="/settings" @click="handleClick">
           your settings
         </router-link>
       </li>
       <li>
-        <router-link to="/about">
+        <router-link to="/about" @click="handleClick">
           about jam buds
         </router-link>
       </li>
@@ -74,6 +77,10 @@ export default {
       });
 
       document.location.href = '/';
+    },
+
+    handleClick() {
+      this.$store.commit('closeSidebar');
     },
   },
 };
