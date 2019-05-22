@@ -15,7 +15,7 @@ function serializeFeedEntry(row: any): FeedEntry {
       isLiked
     ),
     postedBy: row.userNames,
-    timestamp: row.earliestPosted,
+    timestamp: row.earliestPosted.toISOString(),
   };
 }
 
@@ -33,7 +33,18 @@ export async function getFeedByUserId(
   let query = db!('songs')
     .select([
       db!.raw('to_json(songs.*) as song'),
-      db!.raw('MIN(posts.created_at) as earliest_posted'),
+      // This wacky subquery (which probably performs like ass) ensures that the
+      // "timestamp" of a song that _you've_ posted is always set to the time
+      // _you_ posted it.
+      db!.raw(
+        `COALESCE(
+          (
+            SELECT posts.created_at FROM posts WHERE user_id=? AND song_id=songs.id
+          ),
+          MIN(posts.created_at)
+        ) as earliest_posted`,
+        [opts.currentUserId]
+      ),
       db!.raw('ARRAY_AGG(users.name) as user_names'),
       db!.raw(
         'EXISTS(SELECT 1 FROM likes WHERE user_id=? AND song_id=songs.id) AS is_liked',

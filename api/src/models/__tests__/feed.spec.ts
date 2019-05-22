@@ -74,5 +74,21 @@ describe('models/feed', () => {
       expect(items[1].postedBy).toInclude(dan.name);
       expect(items[1].postedBy).toInclude(vinny.name);
     });
+
+    it('uses the time the current user posted a song as an aggregated entry timestamp', async () => {
+      await followUser(jeff.id, dan.id);
+      const dupEntry = await postFactory({
+        userId: jeff.id,
+        songId: vinnyEntry.song.id,
+      });
+      const now = new Date().toISOString();
+      await setEntryCreated(dupEntry.id, now);
+
+      const items = await getFeedByUserId(jeff.id);
+
+      expect(items.length).toBe(3);
+      expect(items[0].song.id).toBe(vinnyEntry.song.id);
+      expect(items[0].timestamp).toBe(now);
+    });
   });
 });
