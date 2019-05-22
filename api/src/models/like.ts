@@ -61,7 +61,7 @@ function serializeLike(row: any): LikeEntry {
 
   return {
     song,
-    likedAt: row.like.createdAt,
+    timestamp: row.like.created_at,
   };
 }
 

@@ -57,7 +57,7 @@ function serializePlaylistEntry(row: any): PlaylistEntry {
   );
 
   return {
-    postedAt: post.createdAt.toISOString(),
+    timestamp: post.createdAt.toISOString(),
     song: song,
     id: post.id,
   };

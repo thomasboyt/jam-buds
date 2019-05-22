@@ -15,7 +15,7 @@ function serializeFeedEntry(row: any): FeedEntry {
       isLiked
     ),
     postedBy: row.userNames,
-    firstPostedAt: row.earliestPosted,
+    timestamp: row.earliestPosted,
   };
 }
 

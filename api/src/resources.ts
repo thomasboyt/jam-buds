@@ -29,7 +29,7 @@ export interface PlaylistEntry {
   /**
    * When the post was created.
    */
-  postedAt: string;
+  timestamp: string;
 
   /**
    * The ID of the underlying Post. Not sure this should actually be exposed.
@@ -59,7 +59,7 @@ export interface FeedEntry {
    * and B, and they both post the song, the earliest of the two posts's created
    * timestamps will be listed here.
    */
-  firstPostedAt: string;
+  timestamp: string;
 }
 
 /**
@@ -74,7 +74,7 @@ export interface LikeEntry {
   /**
    * When the like was created.
    */
-  likedAt: string;
+  timestamp: string;
 }
 
 export interface Feed {
