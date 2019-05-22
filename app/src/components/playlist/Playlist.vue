@@ -6,7 +6,7 @@
   <div v-else>
     <ul class="playlist-entries">
       <li v-for="entry in entries" :key="entry.id">
-        <entry-posted-by :entry="entry" v-if="entryType === 'post'" />
+        <entry-posted-by :entry="entry" :entry-type="entryType" />
 
         <song
           :song-id="entry.songId"
