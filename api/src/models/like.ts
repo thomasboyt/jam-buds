@@ -2,7 +2,7 @@ import { db } from '../db';
 import { paginate } from './utils';
 import { ENTRY_PAGE_LIMIT } from '../constants';
 import { joinSongsQuery, serializeSong, SongModelV } from './song';
-import { Like } from '../resources';
+import { LikeEntry } from '../resources';
 import validateOrThrow from '../util/validateOrThrow';
 import camelcaseKeys from 'camelcase-keys';
 
@@ -53,21 +53,22 @@ interface GetLikesOptions {
   previousId?: number;
 }
 
-function serializeLike(row: any): Like {
+function serializeLike(row: any): LikeEntry {
   const song = serializeSong(
     validateOrThrow(SongModelV, camelcaseKeys(row.song)),
     row.isLiked
   );
+
   return {
-    id: row.like.id,
     song,
+    likedAt: row.like.createdAt,
   };
 }
 
 export async function getLikesByUserId(
   userId: number,
   opts: GetLikesOptions
-): Promise<Like[]> {
+): Promise<LikeEntry[]> {
   const { currentUserId, previousId } = opts;
 
   const query = joinSongsQuery(db!('likes'), { currentUserId })

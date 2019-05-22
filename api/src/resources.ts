@@ -16,26 +16,75 @@ export interface Song {
   isLiked: boolean;
 }
 
+/**
+ * A PlaylistEntry maps to a Post object internally. It's used for representing
+ * a post from a specific user.
+ */
 export interface PlaylistEntry {
-  id: number;
+  /**
+   * The Song object.
+   */
   song: Song;
+
+  /**
+   * When the post was created.
+   */
+  postedAt: string;
+
+  /**
+   * The ID of the underlying Post. Not sure this should actually be exposed.
+   * Maybe useful for deletes?
+   */
+  id: number;
 }
 
-export interface Post extends PlaylistEntry {
-  added: string;
-  user: PublicUser;
+/**
+ * A FeedEntry object is an aggregated entry that could be posted by multiple
+ * users. They're pretty similar and could probably be deduped a bit, but they
+ * are sourced from different places.
+ */
+export interface FeedEntry {
+  /**
+   * The Song object.
+   */
+  song: Song;
+
+  /**
+   * A list of names of users who posted the song.
+   */
+  postedBy: string[];
+
+  /**
+   * The first time a song was added to your feed. If you follow both users A
+   * and B, and they both post the song, the earliest of the two posts's created
+   * timestamps will be listed here.
+   */
+  firstPostedAt: string;
 }
 
-export type Like = PlaylistEntry;
+/**
+ * Represents a song that was "liked" by a given user.
+ */
+export interface LikeEntry {
+  /**
+   * The Song object.
+   */
+  song: Song;
+
+  /**
+   * When the like was created.
+   */
+  likedAt: string;
+}
 
 export interface Feed {
-  tracks: Post[];
+  tracks: FeedEntry[];
   limit: number;
 }
 
 export interface Playlist {
   userProfile: UserProfile;
-  tracks: PlaylistEntry[];
+  tracks: PlaylistEntry[] | LikeEntry[];
   limit: number;
 }
 

@@ -1,7 +1,7 @@
 import { UserModel, createUser } from '../models/user';
 import { createSongFromManualEntry, SongModel } from '../models/song';
-import { createPost } from '../models/post';
-import { Post } from '../resources';
+import { postSong } from '../models/post';
+import { PlaylistEntry } from '../resources';
 
 // SHRUG
 let uniqueCounter = 0;
@@ -34,7 +34,7 @@ export async function songFactory(
 
 export async function postFactory(
   opts: Record<string, any> = {}
-): Promise<Post> {
+): Promise<PlaylistEntry> {
   const defaults = {
     userId: (await userFactory()).id,
     songId: (await songFactory()).id,
@@ -42,7 +42,7 @@ export async function postFactory(
 
   const finalOpts = { ...defaults, ...opts };
 
-  const post = await createPost(finalOpts);
+  const post = await postSong(finalOpts);
 
   return post;
 }

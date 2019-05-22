@@ -5,7 +5,8 @@ import {
   getUserByName,
   getUserProfileForUser,
 } from '../models/user';
-import { getPostsByUserId, getFeedByUserId } from '../models/post';
+import { getPlaylistEntriesByUserId } from '../models/post';
+import { getFeedByUserId } from '../models/feed';
 import { getLikesByUserId } from '../models/like';
 
 import { getUserFromRequest, isAuthenticated } from '../auth';
@@ -33,7 +34,7 @@ export default function registerPlaylistEndpoints(router: Router) {
       const previousId =
         req.query.previousId && parseInt(req.query.previousId, 10);
 
-      const tracks = await getPostsByUserId(user.id, {
+      const tracks = await getPlaylistEntriesByUserId(user.id, {
         currentUserId: currentUser ? currentUser.id : undefined,
         previousId,
       });
@@ -87,12 +88,12 @@ export default function registerPlaylistEndpoints(router: Router) {
     wrapAsyncRoute(async (req, res) => {
       const user: UserModel = res.locals.user;
 
-      const previousId =
-        req.query.previousId && parseInt(req.query.previousId, 10);
+      // TODO: validate
+      const beforeTimestamp = req.query.beforeTimestamp;
 
       const items = await getFeedByUserId(user.id, {
         currentUserId: user.id,
-        previousId,
+        beforeTimestamp,
       });
 
       const feed: Feed = {

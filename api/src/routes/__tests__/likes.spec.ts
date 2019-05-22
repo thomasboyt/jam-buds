@@ -3,13 +3,9 @@ import request from 'supertest';
 
 import createApp from '../../createApp';
 
-import {
-  userFactory,
-  songFactory,
-  uniqueString,
-} from '../../__tests__/factories';
+import { userFactory, songFactory } from '../../__tests__/factories';
 
-import { createPost } from '../../models/post';
+import { postSong } from '../../models/post';
 import { getLikesByUserId } from '../../models/like';
 
 const app = createApp();
@@ -21,7 +17,7 @@ describe('routes/likes', () => {
       const dan = await userFactory();
 
       const song = await songFactory();
-      const post = await createPost({
+      const post = await postSong({
         songId: song.id,
         userId: dan.id,
       });

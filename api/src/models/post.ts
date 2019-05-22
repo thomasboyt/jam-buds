@@ -3,8 +3,7 @@ import { date as dateType } from 'io-ts-types';
 import camelcaseKeys from 'camelcase-keys';
 
 import { db } from '../db';
-import { serializePublicUser, UserModelV } from './user';
-import { Post } from '../resources';
+import { PlaylistEntry } from '../resources';
 import { ENTRY_PAGE_LIMIT } from '../constants';
 import { joinSongsQuery, serializeSong, SongModelV } from './song';
 import { paginate } from './utils';
@@ -17,32 +16,29 @@ export const PostModelV = t.type({
   createdAt: dateType,
 });
 
+/**
+ * The underlying `post` table.
+ */
 export type PostModel = t.TypeOf<typeof PostModelV>;
 
-export interface CreatePostParams {
+export interface PostSongParams {
   userId: number;
   songId: number;
 }
 
-// XXX: Post is a weird "model" because it's basically only ever serialized
-// along with the song and user it's associated with. This sort of exposes how
-// awkward the "model" interfaces are (and how they should really be named
-// "Schema" or "Table") or something, and the potential for higher-level models.
-// Or, y'know, an ORM. Or Prisma?
-
-export async function createPost(values: CreatePostParams): Promise<Post> {
+export async function postSong(values: PostSongParams): Promise<PlaylistEntry> {
   const query = db!
     .insert(values)
     .into('posts')
     .returning('id');
 
   const [id] = await query;
-  const post = await getPostById(id);
+  const post = await getPlaylistEntryById(id);
 
   return post!;
 }
 
-function serializePost(row: any): Post {
+function serializePlaylistEntry(row: any): PlaylistEntry {
   const { isLiked } = row;
   const post = validateOrThrow(
     PostModelV,
@@ -59,15 +55,11 @@ function serializePost(row: any): Post {
     validateOrThrow(SongModelV, camelcaseKeys(row.song)),
     isLiked
   );
-  const user = serializePublicUser(
-    validateOrThrow(UserModelV, camelcaseKeys(row.user))
-  );
 
   return {
-    id: post.id,
-    added: post.createdAt.toISOString(),
+    postedAt: post.createdAt.toISOString(),
     song: song,
-    user,
+    id: post.id,
   };
 }
 
@@ -98,47 +90,23 @@ function getBasePostsQuery(opts: QueryOptions) {
   });
 }
 
-export async function getPostsByUserId(
+export async function getPlaylistEntriesByUserId(
   id: number,
   opts: QueryOptions = {}
-): Promise<Post[]> {
+): Promise<PlaylistEntry[]> {
   const query = getBasePostsQuery(opts)
     .where({ user_id: id })
     .orderBy('posts.id', 'desc');
 
   const rows = await query;
 
-  return rows.map((row: any) => serializePost(row));
+  return rows.map((row: any) => serializePlaylistEntry(row));
 }
 
-/**
- * "Feed" is a list of posts, so it's here for convenience.
- */
-export async function getFeedByUserId(
+export async function getPlaylistEntryById(
   id: number,
   opts: QueryOptions = {}
-): Promise<Post[]> {
-  opts.currentUserId = id;
-
-  const query = getBasePostsQuery(opts)
-    .where(function() {
-      this.whereIn('user_id', function() {
-        this.select('following_id')
-          .from('following')
-          .where({ user_id: id });
-      }).orWhere({ user_id: id });
-    })
-    .orderBy('posts.id', 'desc');
-
-  const rows = await query;
-
-  return rows.map((row: any) => serializePost(row));
-}
-
-export async function getPostById(
-  id: number,
-  opts: QueryOptions = {}
-): Promise<Post | null> {
+): Promise<PlaylistEntry | null> {
   const query = getBasePostsQuery(opts).where({ 'posts.id': id });
 
   const rows = await query;
@@ -147,7 +115,22 @@ export async function getPostById(
     return null;
   }
 
-  return serializePost(rows[0]);
+  return serializePlaylistEntry(rows[0]);
+}
+
+/**
+ * Returns a raw `PostModel`.
+ */
+export async function getPostById(id: number): Promise<PostModel | null> {
+  const query = db!('posts').where({ id });
+
+  const rows = await query;
+
+  if (!rows[0]) {
+    return null;
+  }
+
+  return rows[0];
 }
 
 export async function deletePostById(id: number): Promise<void> {
