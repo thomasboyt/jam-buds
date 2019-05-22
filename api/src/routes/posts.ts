@@ -5,7 +5,7 @@ import { getSongBySpotifyId, createSong } from '../models/song';
 import {
   PostSongParams,
   postSong,
-  getPostById,
+  getOwnPostForSongId,
   deletePostById,
 } from '../models/post';
 
@@ -77,27 +77,24 @@ export default function registerPostEndpoints(router: Router) {
 
   // delete a post
   router.delete(
-    '/posts/:postId',
+    '/posts/:songId',
     isAuthenticated,
     wrapAsyncRoute(async (req, res) => {
       const user: UserModel = res.locals.user;
-      const postId: number = req.params.postId;
+      const songId: number = req.params.songId;
 
-      const post = await getPostById(postId);
+      const post = await getOwnPostForSongId({
+        userId: user.id,
+        songId,
+      });
 
       if (!post) {
         return res.status(404).json({
-          error: `No post found with id ${postId}`,
+          error: `No post found with song id ${songId} for this user`,
         });
       }
 
-      if (post.userId !== user.id) {
-        return res.status(400).json({
-          error: "Cannot delete someone else's post",
-        });
-      }
-
-      await deletePostById(postId);
+      await deletePostById(post.id);
 
       res.json({
         success: true,

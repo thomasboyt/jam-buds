@@ -1,8 +1,8 @@
 import { db } from '../db';
 import { paginate } from './utils';
 import { ENTRY_PAGE_LIMIT } from '../constants';
-import { joinSongsQuery, serializeSong, SongModelV } from './song';
-import { LikeEntry } from '../resources';
+import { selectSongsQuery, serializeSong, SongModelV } from './song';
+import { PlaylistEntry } from '../resources';
 import validateOrThrow from '../util/validateOrThrow';
 import camelcaseKeys from 'camelcase-keys';
 
@@ -53,7 +53,7 @@ interface GetLikesOptions {
   previousId?: number;
 }
 
-function serializeLike(row: any): LikeEntry {
+function serializeLike(row: any): PlaylistEntry {
   const song = serializeSong(
     validateOrThrow(SongModelV, camelcaseKeys(row.song)),
     row.isLiked
@@ -61,18 +61,22 @@ function serializeLike(row: any): LikeEntry {
 
   return {
     song,
-    timestamp: row.like.created_at,
+    timestamp: row.timestamp.toISOString(),
+    userNames: [row.userName],
   };
 }
 
 export async function getLikesByUserId(
   userId: number,
   opts: GetLikesOptions
-): Promise<LikeEntry[]> {
+): Promise<PlaylistEntry[]> {
   const { currentUserId, previousId } = opts;
 
-  const query = joinSongsQuery(db!('likes'), { currentUserId })
-    .select(db!.raw('to_json(likes.*) as like'))
+  const query = selectSongsQuery(db!('likes'), { currentUserId })
+    .select([
+      db!.raw('likes.created_at as timestamp'),
+      db!.raw('users.name as user_name'),
+    ])
     .join('songs', {
       'songs.id': 'likes.song_id',
     })

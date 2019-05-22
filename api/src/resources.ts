@@ -17,8 +17,13 @@ export interface Song {
 }
 
 /**
- * A PlaylistEntry maps to a Post object internally. It's used for representing
- * a post from a specific user.
+ * A PlaylistEntry represents a song in a playlist. It can be from one of several sources:
+ *
+ * - An aggregated "feed entry," when viewing your feed.
+ * - A `post` row, used when viewing a user's playlist
+ * - A `like` row, used when viewing a user's likes
+ *
+ * The goal of this resource is to be one-size-fits-all.
  */
 export interface PlaylistEntry {
   /**
@@ -27,64 +32,29 @@ export interface PlaylistEntry {
   song: Song;
 
   /**
-   * When the post was created.
+   * A list of names of users who posted or liked the song.
    */
-  timestamp: string;
+  userNames: string[];
 
   /**
-   * The ID of the underlying Post. Not sure this should actually be exposed.
-   * Maybe useful for deletes?
-   */
-  id: number;
-}
-
-/**
- * A FeedEntry object is an aggregated entry that could be posted by multiple
- * users. They're pretty similar and could probably be deduped a bit, but they
- * are sourced from different places.
- */
-export interface FeedEntry {
-  /**
-   * The Song object.
-   */
-  song: Song;
-
-  /**
-   * A list of names of users who posted the song.
-   */
-  postedBy: string[];
-
-  /**
-   * The first time a song was added to your feed. If you follow both users A
-   * and B, and they both post the song, the earliest of the two posts's created
-   * timestamps will be listed here.
-   */
-  timestamp: string;
-}
-
-/**
- * Represents a song that was "liked" by a given user.
- */
-export interface LikeEntry {
-  /**
-   * The Song object.
-   */
-  song: Song;
-
-  /**
-   * When the like was created.
+   * Has several meanings depending on type:
+   *
+   * - For feed posts: the earliest time a song was posted by someone you
+   *   follow, or the time _you_ posted the song
+   * - For a playlist: the time the playlist user posted the song
+   * - For a like: the time the like song was liked
    */
   timestamp: string;
 }
 
 export interface Feed {
-  tracks: FeedEntry[];
+  tracks: PlaylistEntry[];
   limit: number;
 }
 
 export interface Playlist {
   userProfile: UserProfile;
-  tracks: PlaylistEntry[] | LikeEntry[];
+  tracks: PlaylistEntry[];
   limit: number;
 }
 

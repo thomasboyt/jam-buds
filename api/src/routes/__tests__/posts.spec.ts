@@ -53,7 +53,7 @@ describe('routes/posts', () => {
       expect(beforePlaylist.length).toBe(1);
 
       const req = request(app)
-        .delete(`/api/posts/${entry.id}`)
+        .delete(`/api/posts/${entry.song.id}`)
         .set('X-Auth-Token', user.authToken);
 
       const res = await req;
@@ -69,12 +69,12 @@ describe('routes/posts', () => {
       const entry = await postFactory();
 
       const req = request(app)
-        .delete(`/api/posts/${entry.id}`)
+        .delete(`/api/posts/${entry.song.id}`)
         .set('X-Auth-Token', user.authToken);
 
       const res = await req;
 
-      expectStatus(res, 400);
+      expectStatus(res, 404);
     });
 
     it('returns 404 when a requested song does not exist', async () => {

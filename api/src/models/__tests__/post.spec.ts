@@ -1,17 +1,31 @@
 import expect from 'expect';
 
 import { userFactory, postFactory } from '../../__tests__/factories';
-import { getPlaylistEntryById, deletePostById } from '../post';
+import {
+  deletePostById,
+  getOwnPostForSongId,
+  getPlaylistEntryBySongId,
+} from '../post';
 
 describe('models/post', () => {
   describe('deleteEntryById', () => {
     it('deletes a posted entry', async () => {
       const user = await userFactory();
       const entry = await postFactory({ userId: user.id });
+      const post = await getOwnPostForSongId({
+        userId: user.id,
+        songId: entry.song.id,
+      });
 
-      await deletePostById(entry.id);
+      expect(
+        await getPlaylistEntryBySongId(entry.song.id, user.id, user.id)
+      ).toExist();
 
-      expect(await getPlaylistEntryById(entry.id)).toNotExist();
+      await deletePostById(post!.id);
+
+      expect(
+        await getPlaylistEntryBySongId(entry.song.id, user.id, user.id)
+      ).toNotExist();
     });
   });
 });

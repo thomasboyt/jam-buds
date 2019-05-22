@@ -2,11 +2,11 @@ import camelcaseKeys from 'camelcase-keys';
 
 import { db } from '../db';
 import { ENTRY_PAGE_LIMIT } from '../constants';
-import { FeedEntry } from '../resources';
-import { serializeSong, SongModelV } from './song';
+import { PlaylistEntry } from '../resources';
+import { serializeSong, SongModelV, selectSongsQuery } from './song';
 import validateOrThrow from '../util/validateOrThrow';
 
-function serializeFeedEntry(row: any): FeedEntry {
+function serializeFeedEntry(row: any): PlaylistEntry {
   const { isLiked } = row;
 
   return {
@@ -14,8 +14,8 @@ function serializeFeedEntry(row: any): FeedEntry {
       validateOrThrow(SongModelV, camelcaseKeys(row.song)),
       isLiked
     ),
-    postedBy: row.userNames,
-    timestamp: row.earliestPosted.toISOString(),
+    userNames: row.userNames,
+    timestamp: row.timestamp.toISOString(),
   };
 }
 
@@ -27,12 +27,11 @@ interface QueryOptions {
 export async function getFeedByUserId(
   id: number,
   opts: QueryOptions = {}
-): Promise<FeedEntry[]> {
+): Promise<PlaylistEntry[]> {
   opts.currentUserId = id;
 
-  let query = db!('songs')
+  let query = selectSongsQuery(db!('songs'), opts)
     .select([
-      db!.raw('to_json(songs.*) as song'),
       // This wacky subquery (which probably performs like ass) ensures that the
       // "timestamp" of a song that _you've_ posted is always set to the time
       // _you_ posted it.
@@ -42,14 +41,10 @@ export async function getFeedByUserId(
             SELECT posts.created_at FROM posts WHERE user_id=? AND song_id=songs.id
           ),
           MIN(posts.created_at)
-        ) as earliest_posted`,
+        ) as timestamp`,
         [opts.currentUserId]
       ),
       db!.raw('ARRAY_AGG(users.name) as user_names'),
-      db!.raw(
-        'EXISTS(SELECT 1 FROM likes WHERE user_id=? AND song_id=songs.id) AS is_liked',
-        [opts.currentUserId]
-      ),
     ])
     .join('posts', { 'songs.id': 'posts.song_id' })
     .join('users', { 'users.id': 'posts.user_id' })
@@ -61,10 +56,10 @@ export async function getFeedByUserId(
       }).orWhere({ user_id: id });
     })
     .groupBy('songs.id')
-    .orderBy('earliest_posted', 'desc');
+    .orderBy('timestamp', 'desc');
 
   if (opts.beforeTimestamp) {
-    query = query.where('earliest_posted', '<', opts.beforeTimestamp);
+    query = query.where('timestamp', '<', opts.beforeTimestamp);
   }
 
   query = query.limit(ENTRY_PAGE_LIMIT);

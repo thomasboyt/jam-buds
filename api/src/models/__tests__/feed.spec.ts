@@ -1,18 +1,30 @@
 import expect from 'expect';
 
-import { userFactory, postFactory } from '../../__tests__/factories';
+import { db } from '../../db';
+import {
+  userFactory,
+  postFactory,
+  PlaylistEntryWithPostId,
+} from '../../__tests__/factories';
 import { getFeedByUserId } from '../feed';
 import { UserModel } from '../user';
 import { followUser } from '../following';
-import { PlaylistEntry } from '../../resources';
 
-import { db } from '../../db';
+import { getOwnPostForSongId } from '../post';
 
-async function setEntryCreated(id: number, createdAt: string) {
+/**
+ * XXX: This works around an issue where entries get created with the same
+ * timestamp within a transaction, because database time is the same within a
+ * transaction, and the post table uses `CURRENT_TIMESTAMP` for createdAt.
+ *
+ * There might be better ways to fix this. I think Rails does so by just, like,
+ * not using SQL's built-in `NOW` or `CURRENT_TIMESTAMP`?
+ */
+async function setPostCreated(id: number) {
   await db!('posts')
     .where({ id })
     .update({
-      created_at: createdAt,
+      created_at: new Date().toISOString(),
     });
 }
 
@@ -21,9 +33,9 @@ describe('models/feed', () => {
     let jeff: UserModel;
     let vinny: UserModel;
     let dan: UserModel;
-    let jeffEntry: PlaylistEntry;
-    let vinnyEntry: PlaylistEntry;
-    let danEntry: PlaylistEntry;
+    let jeffEntry: PlaylistEntryWithPostId;
+    let vinnyEntry: PlaylistEntryWithPostId;
+    let danEntry: PlaylistEntryWithPostId;
 
     beforeEach(async () => {
       jeff = await userFactory();
@@ -33,12 +45,13 @@ describe('models/feed', () => {
       await followUser(jeff.id, vinny.id);
 
       jeffEntry = await postFactory({ userId: jeff.id });
-      await setEntryCreated(jeffEntry.id, '2016-11-01T00:04:03.059656-05:00');
+      setPostCreated(jeffEntry.postId);
 
       vinnyEntry = await postFactory({ userId: vinny.id });
-      await setEntryCreated(vinnyEntry.id, '2016-12-01T00:04:03.059656-05:00');
+      setPostCreated(vinnyEntry.postId);
 
       danEntry = await postFactory({ userId: dan.id });
+      setPostCreated(danEntry.postId);
     });
 
     it("only returns items in a user's following list, plus their own entries", async () => {
@@ -62,33 +75,39 @@ describe('models/feed', () => {
 
     it('aggregates songs posted by multiple users', async () => {
       await followUser(jeff.id, dan.id);
-      await postFactory({
+      const dupEntry = await postFactory({
         userId: dan.id,
         songId: vinnyEntry.song.id,
       });
+      setPostCreated(dupEntry.postId);
 
       const items = await getFeedByUserId(jeff.id);
 
       expect(items.length).toBe(3);
       expect(items[1].song.id).toBe(vinnyEntry.song.id);
-      expect(items[1].postedBy).toInclude(dan.name);
-      expect(items[1].postedBy).toInclude(vinny.name);
+      expect(items[1].userNames).toInclude(dan.name);
+      expect(items[1].userNames).toInclude(vinny.name);
     });
 
     it('uses the time the current user posted a song as an aggregated entry timestamp', async () => {
       await followUser(jeff.id, dan.id);
+
       const dupEntry = await postFactory({
         userId: jeff.id,
         songId: vinnyEntry.song.id,
       });
-      const now = new Date().toISOString();
-      await setEntryCreated(dupEntry.id, now);
+      setPostCreated(dupEntry.postId);
+
+      const post = await getOwnPostForSongId({
+        songId: dupEntry.song.id,
+        userId: jeff.id,
+      });
 
       const items = await getFeedByUserId(jeff.id);
 
       expect(items.length).toBe(3);
       expect(items[0].song.id).toBe(vinnyEntry.song.id);
-      expect(items[0].timestamp).toBe(now);
+      expect(items[0].timestamp).toBe(post!.createdAt.toISOString());
     });
   });
 });

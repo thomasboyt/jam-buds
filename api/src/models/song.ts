@@ -81,7 +81,7 @@ interface SongsQueryOptions {
  * i'm not even sure what this is yet, some day this doc string should exist
  * though
  */
-export function joinSongsQuery(
+export function selectSongsQuery(
   baseQuery: Knex.QueryBuilder,
   opts: SongsQueryOptions
 ): Knex.QueryBuilder {
@@ -91,10 +91,7 @@ export function joinSongsQuery(
    * This may not be a great idea performance-wise.
    */
 
-  const select = [
-    db!.raw('to_json(songs.*) as song'),
-    db!.raw('to_json(users.*) as user'),
-  ];
+  const select = [db!.raw('to_json(songs.*) as song')];
 
   if (opts.currentUserId !== undefined) {
     select.push(

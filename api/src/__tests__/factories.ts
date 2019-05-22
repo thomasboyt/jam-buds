@@ -1,6 +1,6 @@
 import { UserModel, createUser } from '../models/user';
 import { createSongFromManualEntry, SongModel } from '../models/song';
-import { postSong } from '../models/post';
+import { postSong, getOwnPostForSongId } from '../models/post';
 import { PlaylistEntry } from '../resources';
 
 // SHRUG
@@ -32,9 +32,13 @@ export async function songFactory(
   return song;
 }
 
+export interface PlaylistEntryWithPostId extends PlaylistEntry {
+  postId: number;
+}
+
 export async function postFactory(
   opts: Record<string, any> = {}
-): Promise<PlaylistEntry> {
+): Promise<PlaylistEntryWithPostId> {
   const defaults = {
     userId: (await userFactory()).id,
     songId: (await songFactory()).id,
@@ -42,7 +46,11 @@ export async function postFactory(
 
   const finalOpts = { ...defaults, ...opts };
 
-  const post = await postSong(finalOpts);
+  const entry = await postSong(finalOpts);
+  const post = await getOwnPostForSongId({
+    songId: entry.song.id,
+    userId: finalOpts.userId,
+  });
 
-  return post;
+  return { ...entry, postId: post!.id };
 }
