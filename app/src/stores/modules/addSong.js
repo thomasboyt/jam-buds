@@ -36,7 +36,10 @@ const addSong = {
       );
 
       // Add the entry to the top of the user's playlist if they're on that page
-      if (_get(context.rootState.profile.user, 'name') === entry.user.name) {
+      if (
+        _get(context.rootState.profile.user, 'name') ===
+        context.rootState.currentUser.name
+      ) {
         context.commit(
           'addPlaylistEntryToHead',
           { key: 'profilePosts', entry },

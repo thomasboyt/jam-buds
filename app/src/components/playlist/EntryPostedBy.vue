@@ -1,7 +1,7 @@
 <template>
   <div class="posted-by">
     <template v-if="entryType === 'feed-entry'">
-      <names-list :names="entry.postedBy" />
+      <names-list :names="entry.userNames" />
       posted ({{ timestamp }} ago)
     </template>
     <template v-if="entryType === 'like-entry'">
