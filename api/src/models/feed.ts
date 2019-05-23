@@ -30,20 +30,27 @@ export async function getFeedByUserId(
 ): Promise<PlaylistEntry[]> {
   opts.currentUserId = id;
 
+  // XXX: This wacky subquery (which probably performs like ass) ensures that
+  // the "timestamp" of a song that _you've_ posted is always set to the time
+  // _you_ posted it.
+  //
+  // It's used in two places: first in the `select` statement to actually get
+  // the timestamp in the resulting row, and second in the `where` statement to
+  // filter for paguination. This is because Postgres does not support using an
+  // aliased result column in a `where` clause:
+  // https://stackoverflow.com/a/3241389
+  const timestampQuery = `
+    COALESCE(
+      (
+        SELECT posts.created_at FROM posts WHERE user_id=? AND song_id=songs.id
+      ),
+      MIN(posts.created_at)
+    )
+  `;
+
   let query = selectSongsQuery(db!('songs'), opts)
     .select([
-      // This wacky subquery (which probably performs like ass) ensures that the
-      // "timestamp" of a song that _you've_ posted is always set to the time
-      // _you_ posted it.
-      db!.raw(
-        `COALESCE(
-          (
-            SELECT posts.created_at FROM posts WHERE user_id=? AND song_id=songs.id
-          ),
-          MIN(posts.created_at)
-        ) as timestamp`,
-        [opts.currentUserId]
-      ),
+      db!.raw(`${timestampQuery} as timestamp`, [opts.currentUserId]),
       db!.raw('ARRAY_AGG(users.name) as user_names'),
     ])
     .join('posts', { 'songs.id': 'posts.song_id' })
@@ -58,8 +65,11 @@ export async function getFeedByUserId(
     .groupBy('songs.id')
     .orderBy('timestamp', 'desc');
 
-  if (opts.beforeTimestamp) {
-    query = query.where('timestamp', '<', opts.beforeTimestamp);
+  if (opts.beforeTimestamp !== undefined) {
+    query = query.havingRaw(`${timestampQuery} < ?`, [
+      opts.currentUserId,
+      opts.beforeTimestamp,
+    ]);
   }
 
   query = query.limit(ENTRY_PAGE_LIMIT);

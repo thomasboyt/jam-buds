@@ -48,11 +48,6 @@ export async function removeLike(params: LikeParams): Promise<void> {
   await query;
 }
 
-interface GetLikesOptions {
-  currentUserId: number | undefined;
-  previousId?: number;
-}
-
 function serializeLike(row: any): PlaylistEntry {
   const song = serializeSong(
     validateOrThrow(SongModelV, camelcaseKeys(row.song)),
@@ -66,11 +61,16 @@ function serializeLike(row: any): PlaylistEntry {
   };
 }
 
+interface GetLikesOptions {
+  currentUserId: number | undefined;
+  beforeTimestamp?: string;
+}
+
 export async function getLikesByUserId(
   userId: number,
   opts: GetLikesOptions
 ): Promise<PlaylistEntry[]> {
-  const { currentUserId, previousId } = opts;
+  const { currentUserId } = opts;
 
   const query = selectSongsQuery(db!('likes'), { currentUserId })
     .select([
@@ -90,8 +90,8 @@ export async function getLikesByUserId(
 
   const rows = await paginate(query, {
     limit: ENTRY_PAGE_LIMIT,
-    previousId,
-    idColumn: 'likes.id',
+    before: opts.beforeTimestamp,
+    columnName: 'likes.created_at',
   });
 
   return rows.map(serializeLike);

@@ -59,7 +59,7 @@ function serializePlaylistEntry(row: any): PlaylistEntry {
 
 interface QueryOptions {
   currentUserId?: number;
-  previousId?: number;
+  beforeTimestamp?: string;
 }
 
 /**
@@ -97,8 +97,8 @@ export async function getPlaylistEntriesByUserId(
 
   query = paginate(query, {
     limit: ENTRY_PAGE_LIMIT,
-    previousId: opts.previousId,
-    idColumn: 'posts.id',
+    before: opts.beforeTimestamp,
+    columnName: 'posts.created_at',
   });
 
   const rows = await query;

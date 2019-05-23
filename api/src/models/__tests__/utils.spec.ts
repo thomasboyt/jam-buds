@@ -16,7 +16,7 @@ describe('models/utils', () => {
       const songQuery = db!('songs');
       const rows = await paginate(songQuery, {
         limit: 5,
-        idColumn: 'id',
+        columnName: 'id',
       }).orderBy('id', 'desc');
       expect(rows.length).toBe(5);
     });
@@ -24,13 +24,13 @@ describe('models/utils', () => {
     it('starts at offset specified', async () => {
       const songQuery = db!('songs');
 
-      // get max ID
-      const lastId = (await songQuery.orderBy('id', 'desc').limit(1))[0].id;
+      const newestSong = (await songQuery.orderBy('id', 'desc').limit(1))[0];
+      const lastId = newestSong.id;
 
       const query = paginate(songQuery, {
         limit: 5,
-        previousId: lastId,
-        idColumn: 'id',
+        columnName: 'id',
+        before: lastId,
       }).orderBy('id', 'desc');
 
       const rows = await query;

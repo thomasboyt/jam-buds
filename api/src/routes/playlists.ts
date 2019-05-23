@@ -31,12 +31,11 @@ export default function registerPlaylistEndpoints(router: Router) {
         return;
       }
 
-      const previousId =
-        req.query.previousId && parseInt(req.query.previousId, 10);
+      const beforeTimestamp = req.query.before;
 
       const tracks = await getPlaylistEntriesByUserId(user.id, {
         currentUserId: currentUser ? currentUser.id : undefined,
-        previousId,
+        beforeTimestamp,
       });
 
       const resp: Playlist = {
@@ -64,12 +63,11 @@ export default function registerPlaylistEndpoints(router: Router) {
         return;
       }
 
-      const previousId =
-        req.query.previousId && parseInt(req.query.previousId, 10);
+      const beforeTimestamp = req.query.before;
 
       const tracks = await getLikesByUserId(user.id, {
         currentUserId: currentUser ? currentUser.id : undefined,
-        previousId,
+        beforeTimestamp,
       });
 
       const resp: Playlist = {
@@ -89,7 +87,7 @@ export default function registerPlaylistEndpoints(router: Router) {
       const user: UserModel = res.locals.user;
 
       // TODO: validate
-      const beforeTimestamp = req.query.beforeTimestamp;
+      const beforeTimestamp = req.query.before;
 
       const items = await getFeedByUserId(user.id, {
         currentUserId: user.id,

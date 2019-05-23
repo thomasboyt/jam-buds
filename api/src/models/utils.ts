@@ -2,13 +2,13 @@ import Knex from 'knex';
 
 interface PaginationOptions {
   limit: number;
-  idColumn: string;
-  previousId?: number;
+  columnName: string;
+  before?: string;
 }
 
 export function paginate(query: Knex.QueryBuilder, opts: PaginationOptions) {
-  if (opts.previousId !== undefined) {
-    query = query.where(opts.idColumn, '<', opts.previousId);
+  if (opts.before !== undefined) {
+    query = query.where(opts.columnName, '<', opts.before);
   }
 
   query = query.limit(opts.limit);
