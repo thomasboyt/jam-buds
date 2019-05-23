@@ -1,6 +1,5 @@
 import expect from 'expect';
 
-import { db } from '../../db';
 import {
   userFactory,
   postFactory,
@@ -11,22 +10,6 @@ import { UserModel } from '../user';
 import { followUser } from '../following';
 
 import { getOwnPostForSongId } from '../post';
-
-/**
- * XXX: This works around an issue where entries get created with the same
- * timestamp within a transaction, because database time is the same within a
- * transaction, and the post table uses `CURRENT_TIMESTAMP` for createdAt.
- *
- * There might be better ways to fix this. I think Rails does so by just, like,
- * not using SQL's built-in `NOW` or `CURRENT_TIMESTAMP`?
- */
-async function setPostCreated(id: number) {
-  await db!('posts')
-    .where({ id })
-    .update({
-      created_at: new Date().toISOString(),
-    });
-}
 
 describe('models/feed', () => {
   describe('querying the feed', () => {
@@ -45,13 +28,8 @@ describe('models/feed', () => {
       await followUser(jeff.id, vinny.id);
 
       jeffEntry = await postFactory({ userId: jeff.id });
-      setPostCreated(jeffEntry.postId);
-
       vinnyEntry = await postFactory({ userId: vinny.id });
-      setPostCreated(vinnyEntry.postId);
-
       danEntry = await postFactory({ userId: dan.id });
-      setPostCreated(danEntry.postId);
     });
 
     it("only returns items in a user's following list, plus their own entries", async () => {
@@ -75,11 +53,10 @@ describe('models/feed', () => {
 
     it('aggregates songs posted by multiple users', async () => {
       await followUser(jeff.id, dan.id);
-      const dupEntry = await postFactory({
+      await postFactory({
         userId: dan.id,
         songId: vinnyEntry.song.id,
       });
-      setPostCreated(dupEntry.postId);
 
       const items = await getFeedByUserId(jeff.id);
 
@@ -96,7 +73,6 @@ describe('models/feed', () => {
         userId: jeff.id,
         songId: vinnyEntry.song.id,
       });
-      setPostCreated(dupEntry.postId);
 
       const post = await getOwnPostForSongId({
         songId: dupEntry.song.id,
