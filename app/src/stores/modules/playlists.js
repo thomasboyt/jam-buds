@@ -99,12 +99,14 @@ const playlists = {
       }
 
       const previousEntry = context.state[key].entries.slice(-1)[0];
-      const previousId = previousEntry ? previousEntry.id : undefined;
+      const previousTimestamp = previousEntry
+        ? previousEntry.timestamp
+        : undefined;
 
       const resp = await this.$axios({
         url: context.state[key].url,
         method: 'GET',
-        params: { previousId },
+        params: { before: previousTimestamp },
       });
 
       context.commit('addSongs', resp.data.tracks.map((entry) => entry.song));
