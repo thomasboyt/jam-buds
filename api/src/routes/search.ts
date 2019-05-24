@@ -9,6 +9,36 @@ import {
   getOrCreateSongCacheEntryWithExternalIds,
 } from '../util/songSearchCache';
 
+/**
+ * Many songs on Spotify have multiple entries for e.g. deluxe editions, or live
+ * albums that are also on deluxe editions, or whatnot. This simply filters out
+ * some of these entries by seeing if they have the same ISRC.
+ *
+ * This generally doesn't (and shouldn't) filter out e.g. clean versions of
+ * explicit songs, or remastered versions of songs on later rereleases.
+ */
+const dedupeResultsByISRC = (results: spotify.SpotifySongResource[]) => {
+  const dedupedResults = [];
+
+  const seenISRCs = new Set<string>();
+
+  for (let result of results) {
+    const isrc = result.external_ids.isrc;
+
+    if (isrc) {
+      if (seenISRCs.has(isrc)) {
+        continue;
+      } else {
+        seenISRCs.add(isrc);
+      }
+    }
+
+    dedupedResults.push(result);
+  }
+
+  return dedupedResults;
+};
+
 function serializeSpotifyResult(
   result: spotify.SpotifySongResource
 ): SearchResult {
@@ -43,13 +73,14 @@ export default function registerSearchEndpoints(router: Router) {
       }
 
       const results = await spotify.search(query);
+      const dedupedResults = dedupeResultsByISRC(results);
 
-      for (let result of results) {
+      for (let result of dedupedResults) {
         await cacheSongFromSearchResult(result.id, result);
       }
 
       res.send({
-        songs: serializeSpotifyResults(results),
+        songs: serializeSpotifyResults(dedupedResults),
       });
     })
   );
