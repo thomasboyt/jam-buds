@@ -16,42 +16,63 @@
 $modal-width: 450px;
 $modal-height: 450px;
 
-/* Remove scroll on the body when react-modal is open */
-.ReactModal__Body--open {
-    overflow: hidden;
-}
-
 .modal-content {
-  z-index: $z-modal;
-
   overflow: auto;
 
   background: skyblue;
   box-shadow: yellow 15px 15px;
 
   position: absolute;
-  width: $modal-width;
-  height: $modal-height;
-  top: 50%;
-  left: 50%;
-  margin-top: -$modal-height/2 - 20px;
-  margin-left: -$modal-width/2 - 20px;
+  z-index: $z-modal;
+
+  @media (max-width: $breakpoint-small) {
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+
+  @media (min-width: $breakpoint-small) {
+    width: $modal-width;
+    height: $modal-height;
+    top: 50%;
+    left: 50%;
+    margin-top: -$modal-height/2 - 20px;
+    margin-left: -$modal-width/2 - 20px;
+  }
 
   padding: 20px;
 
   outline: none;
 }
 
-.modal-open-enter-active .modal-content {
-  animation: flyIn ease-in-out 1.5s;
+@media (max-width: $breakpoint-small) {
+  .modal-open-enter-active .modal-content {
+    transition: transform 400ms cubic-bezier(0, 0, 0.2, 1);
+  }
+
+  .modal-open-leave-active .modal-content {
+    transition: transform 250ms cubic-bezier(0.4, 0, 1, 1);
+  }
+
+  .modal-open-enter .modal-content,
+  .modal-open-leave-to .modal-content {
+    transform: translate3d(0, 100vh, 0);
+  }
 }
 
-.modal-open-leave-active .modal-content {
-  animation: flyOut ease-in-out 1s reverse;
-}
+@media (min-width: $breakpoint-small) {
+  .modal-open-enter-active .modal-content {
+    animation: flyIn ease-in-out 1.5s;
+  }
 
-.modal-open-leave-to .modal-content {
-  transform: scale(0);
+  .modal-open-leave-active .modal-content {
+    animation: flyOut ease-in-out 1s reverse;
+  }
+
+  .modal-open-leave-to .modal-content {
+    transform: scale(0);
+  }
 }
 
 @keyframes flyIn {
@@ -79,7 +100,10 @@ $modal-height: 450px;
   display: flex;
   flex-flow: column;
 
-  a, a:visited, a:hover, a:active {
+  a,
+  a:visited,
+  a:hover,
+  a:active {
     color: darkblue;
   }
 
@@ -99,6 +123,25 @@ $modal-height: 450px;
     padding: 10px 20px;
   }
 
+  .modal-top-row {
+    position: relative;
+  }
+
+  .modal-close-button {
+    position: absolute;
+    top: 5px;
+    padding: 0px;
+
+    svg {
+      width: 30px;
+      height: 30px;
+    }
+
+    @media (min-width: $breakpoint-small) {
+      right: 0px;
+    }
+  }
+
   .submit-box {
     display: flex;
 
@@ -111,11 +154,8 @@ $modal-height: 450px;
       flex: 1 0 0px;
     }
 
-    input, button {
-      height: 100%;
-    }
-
     input {
+      height: 100%;
       width: 100%;
       padding: 0 10px;
 
@@ -124,51 +164,17 @@ $modal-height: 450px;
         border: 2px red solid;
       }
     }
-
-    button {
-      margin-left: 10px;
-      padding: 0px 0px;
-      width: 145px;
-
-      &:disabled {
-        cursor: default;
-      }
-
-      &:active:enabled {
-        transform: translate3d(4px, 4px, 0px);
-      }
-    }
-
-    button.submit-song {
-      span {
-        display: none;
-      }
-
-      &:after {
-        content: 'is my shit';
-      }
-
-      &:enabled:hover:after {
-        content: 'yeah!!!!';
-      }
-
-      &.invalid {
-        background-color: red;
-
-        &:after {
-          content: 'invalid url!';
-        }
-      }
-    }
   }
+  .cta-button {
+    margin-left: 10px;
+    height: 100%;
+    padding: 10px 20px;
 
-  button {
     display: block;
     background-color: hotpink;
     color: black;
     font-weight: bold;
     font-size: 1.5em;
-    padding: 10px 20px;
 
     &:disabled {
       cursor: default;
@@ -179,7 +185,29 @@ $modal-height: 450px;
     }
   }
 
-  button.submit {
+  button.submit-search {
+    span {
+      display: none;
+    }
+
+    &:after {
+      content: 'is my shit';
+    }
+
+    &:enabled:hover:after {
+      content: 'yeah!!!!';
+    }
+
+    &.invalid {
+      background-color: red;
+
+      &:after {
+        content: 'invalid url!';
+      }
+    }
+  }
+
+  button.submit-song {
     margin: 0 auto;
   }
 

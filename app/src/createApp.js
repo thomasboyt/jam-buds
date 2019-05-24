@@ -2,6 +2,7 @@ import '../styles/main.scss';
 
 import Vue from 'vue';
 import { sync } from 'vuex-router-sync';
+import VueMq from 'vue-mq';
 
 import App from './App.vue';
 import createStore from './stores';
@@ -9,6 +10,14 @@ import createRouter from './router';
 import injectAxios from './util/injectAxios';
 
 export default function createApp() {
+  Vue.use(VueMq, {
+    breakpoints: {
+      phone: 768,
+      desktop: Infinity,
+    },
+    defaultBreakpoint: 'desktop',
+  });
+
   const store = createStore();
   const router = createRouter();
 

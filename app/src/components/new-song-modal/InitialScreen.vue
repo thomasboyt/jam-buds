@@ -19,7 +19,7 @@
       <button
         type="submit"
         :disabled="buttonDisabled"
-        :class="['submit-song', { invalid }]"
+        :class="['submit-search', 'cta-button', { invalid }]"
       >
         <span>is my shit</span>
       </button>

@@ -49,7 +49,7 @@
 
       <button
         @click="handleSubmit"
-        class="submit"
+        class="cta-button submit-song"
         data-test="add-song-confirm"
         :style="{ marginTop: 'auto' }"
       >
