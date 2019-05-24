@@ -6,8 +6,8 @@ agent:
     os_image: ubuntu1804
 
 promotions:
-  - name: Docker push
-    pipeline_file: docker-push.yml
+  - name: Deploy
+    pipeline_file: deploy.yml
 
 blocks:
   - name: "Install dependencies"
