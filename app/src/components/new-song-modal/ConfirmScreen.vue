@@ -138,8 +138,9 @@ export default {
         params.tweet = this.tweetText === '' ? null : this.tweetText;
       }
 
+      let resp;
       try {
-        var resp = await this.$axios({
+        resp = await this.$axios({
           url: '/posts',
           method: 'POST',
           data: params,
