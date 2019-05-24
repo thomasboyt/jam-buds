@@ -10,28 +10,31 @@ promotions:
     pipeline_file: docker-push.yml
 
 blocks:
-  - name: "Set Up"
+  - name: "Install dependencies"
     task:
       prologue:
         commands:
+          - checkout
           - sem-version node 10
       jobs:
-      - name: "npm install"
+      - name: "API: npm install"
         commands:
-          - checkout
-          # TODO: use a shell script to dedupe this?
           - cd api
           - cache restore node-modules-api-$SEMAPHORE_GIT_BRANCH-$(checksum package-lock.json),node-modules-api-$SEMAPHORE_GIT_BRANCH,node-modules-api-master
           - npm install
           - cache store node-modules-api-$SEMAPHORE_GIT_BRANCH-$(checksum package-lock.json) node_modules
-          - cd ../spec
-          - cache restore node-modules-spec-$SEMAPHORE_GIT_BRANCH-$(checksum package-lock.json),node-modules-spec-$SEMAPHORE_GIT_BRANCH,node-modules-spec-master
-          - npm install
-          - cache store node-modules-spec-$SEMAPHORE_GIT_BRANCH-$(checksum package-lock.json) node_modules
-          - cd ../app
+      - name: "App: npm install"
+        commands:
+          - cd app
           - cache restore node-modules-app-$SEMAPHORE_GIT_BRANCH-$(checksum package-lock.json),node-modules-app-$SEMAPHORE_GIT_BRANCH,node-modules-app-master
           - npm install
           - cache store node-modules-app-$SEMAPHORE_GIT_BRANCH-$(checksum package-lock.json) node_modules
+      - name: "Spec: npm install"
+        commands:
+          - cd spec
+          - cache restore node-modules-spec-$SEMAPHORE_GIT_BRANCH-$(checksum package-lock.json),node-modules-spec-$SEMAPHORE_GIT_BRANCH,node-modules-spec-master
+          - npm install
+          - cache store node-modules-spec-$SEMAPHORE_GIT_BRANCH-$(checksum package-lock.json) node_modules
 
   - name: "Unit Tests"
     task:
