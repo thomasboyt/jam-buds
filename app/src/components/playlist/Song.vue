@@ -14,7 +14,12 @@
       </div>
 
       <span class="playlist-song--actions">
-        <song-play-action :song="song" @play="handlePlay" :can-play="canPlay" />
+        <song-play-action
+          v-if="!isPlaying"
+          :song="song"
+          @play="handlePlay"
+          :can-play="canPlay"
+        />
         <song-like-action v-if="showLikeButton" :song="song" />
         <!-- TODO: reintroduce entry deletes -->
       </span>
@@ -53,13 +58,6 @@ export default {
     },
   },
 
-  data() {
-    return {
-      // TODO: get this from store
-      isPlaying: false,
-    };
-  },
-
   computed: {
     ...mapState({
       canPlay(state) {
@@ -69,18 +67,25 @@ export default {
             (state.currentUser.hasAppleMusic && this.song.appleMusicId))
         );
       },
+
+      isPlaying(state) {
+        const nowPlaying = state.playback.nowPlaying;
+
+        if (!nowPlaying) {
+          return false;
+        }
+
+        return nowPlaying.id === this.song.id;
+      },
+
+      song(state) {
+        return state.songs[this.songId];
+      },
+
+      showLikeButton(state) {
+        return state.auth.authenticated;
+      },
     }),
-
-    song() {
-      return this.$store.state.songs[this.songId];
-    },
-
-    showLikeButton() {
-      const { state } = this.$store;
-
-      return state.auth.authenticated;
-    },
-
     // showDeleteButton() {
     //   const { state } = this.$store;
 
