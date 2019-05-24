@@ -55,6 +55,19 @@ export default function registerPostEndpoints(router: Router) {
         };
 
         song = await createSong(params);
+      } else {
+        // If the song already exists, check to make sure this user hasn't
+        // posted it before
+        const existingPost = await getOwnPostForSongId({
+          songId: song.id,
+          userId: user.id,
+        });
+
+        if (existingPost) {
+          return res
+            .status(400)
+            .json({ error: 'You have already posted this song' });
+        }
       }
 
       const params: PostSongParams = {

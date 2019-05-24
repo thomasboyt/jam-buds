@@ -1,8 +1,12 @@
 import expect from 'expect';
 import request from 'supertest';
 
-import { userFactory, postFactory } from '../../__tests__/factories';
-import { getPlaylistEntriesByUserId } from '../../models/post';
+import {
+  userFactory,
+  postFactory,
+  songFactory,
+} from '../../__tests__/factories';
+import { getPlaylistEntriesByUserId, postSong } from '../../models/post';
 
 import createApp from '../../createApp';
 const app = createApp();
@@ -17,30 +21,24 @@ function expectStatus(res: request.Response, status: number) {
 }
 
 describe('routes/posts', () => {
-  // describe('POST /posts', () => {
-  //   it('creates a manually-entered song when manualEntry is true', async () => {
-  //     const user = await userFactory();
+  describe('POST /posts', () => {
+    it('rejects a song that has already been posted by the current user', async () => {
+      const user = await userFactory();
+      const song = await songFactory();
 
-  //     const req = request(app)
-  //       .post('/api/playlist')
-  //       .set('X-Auth-Token', user.authToken)
-  //       .send({
-  //         manualEntry: true,
-  //         artist: 'Taeko Onuki',
-  //         title: '4:00 AM',
-  //         youtubeUrl: 'https://www.youtube.com/watch?v=YixAD9GIAuY',
-  //         source: 'youtube',
-  //       });
+      await postSong({ userId: user.id, songId: song.id });
 
-  //     const res = await req;
+      const req = request(app)
+        .post('/api/posts')
+        .set('X-Auth-Token', user.authToken)
+        .send({
+          spotifyId: song.spotifyId,
+        });
 
-  //     expectStatus(res, 200);
-
-  //     const playlist = await getPlaylistByUserId(user.id);
-  //     expect(playlist[0].song.artists[0]).toBe('Taeko Onuki');
-  //     expect(playlist[0].song.title).toBe('4:00 AM');
-  //   });
-  // });
+      const res = await req;
+      expectStatus(res, 400);
+    });
+  });
 
   describe('DELETE /posts/:id', () => {
     it('deletes a song', async () => {
