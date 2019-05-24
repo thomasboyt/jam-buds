@@ -16,20 +16,39 @@ export interface Song {
   isLiked: boolean;
 }
 
+/**
+ * A PlaylistEntry represents a song in a playlist. It can be from one of several sources:
+ *
+ * - An aggregated "feed entry," when viewing your feed.
+ * - A `post` row, used when viewing a user's playlist
+ * - A `like` row, used when viewing a user's likes
+ *
+ * The goal of this resource is to be one-size-fits-all.
+ */
 export interface PlaylistEntry {
-  id: number;
+  /**
+   * The Song object.
+   */
   song: Song;
-}
 
-export interface Post extends PlaylistEntry {
-  added: string;
-  user: PublicUser;
-}
+  /**
+   * A list of names of users who posted or liked the song.
+   */
+  userNames: string[];
 
-export type Like = PlaylistEntry;
+  /**
+   * Has several meanings depending on type:
+   *
+   * - For feed posts: the earliest time a song was posted by someone you
+   *   follow, or the time _you_ posted the song
+   * - For a playlist: the time the playlist user posted the song
+   * - For a like: the time the like song was liked
+   */
+  timestamp: string;
+}
 
 export interface Feed {
-  tracks: Post[];
+  tracks: PlaylistEntry[];
   limit: number;
 }
 

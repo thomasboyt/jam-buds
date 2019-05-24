@@ -18,10 +18,10 @@ function expectStatus(res: request.Response, status: number) {
 
 describe('routes/playlists', () => {
   describe('GET /playlists/:name', () => {
-    it('supports pagination', async () => {
+    it('supports pagination', async function() {
       const user = await userFactory();
 
-      for (let i = 0; i < 100; i += 1) {
+      for (let i = 0; i < 40; i += 1) {
         await postFactory({ userId: user.id });
       }
 
@@ -34,14 +34,14 @@ describe('routes/playlists', () => {
 
       expectStatus(firstPageRes, 200);
 
-      const previousId = firstPageRes.body.tracks.slice(-1)[0].id;
-      console.log(firstPageRes.body.tracks.map((track: any) => track.id));
+      const lastTimestampFirstPage = firstPageRes.body.tracks.slice(-1)[0]
+        .timestamp;
 
       const secondPageReq = request(app)
         .get(`/api/playlists/${user.name}`)
         .set('X-Auth-Token', user.authToken)
         .query({
-          previousId,
+          before: lastTimestampFirstPage,
         });
 
       const secondPageRes = await secondPageReq;
@@ -49,8 +49,11 @@ describe('routes/playlists', () => {
       expectStatus(secondPageRes, 200);
 
       // TODO: Assert that these are the next 20 items
-      const nextId = secondPageRes.body.tracks[0].id;
-      expect(nextId).toBeLessThan(previousId);
+      const lastTimestampSecondPage = secondPageRes.body.tracks.slice(-1)[0]
+        .timestamp;
+      expect(new Date(lastTimestampSecondPage).valueOf()).toBeLessThan(
+        new Date(lastTimestampFirstPage).valueOf()
+      );
     });
   });
 });

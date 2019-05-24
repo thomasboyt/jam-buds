@@ -44,7 +44,26 @@ const playlists = {
     },
 
     addPlaylistEntryToHead(state, { key, entry }) {
-      state[key].entries = [denormalizeEntry(entry)].concat(state[key].entries);
+      const denormalizedEntry = denormalizeEntry(entry);
+
+      const existing = state[key].entries.find(
+        (playlistEntry) => playlistEntry.songId === denormalizedEntry.songId
+      );
+
+      if (existing) {
+        // remove old record
+        state[key].entries = state[key].entries.filter(
+          (playlistEntry) => playlistEntry.songId !== denormalizedEntry.songId
+        );
+
+        // XXX: The entry returned from the post endpoint currently only
+        // includes the current user's name, so we add the rest here
+        denormalizedEntry.userNames = denormalizedEntry.userNames.concat(
+          existing.userNames
+        );
+      }
+
+      state[key].entries = [denormalizedEntry].concat(state[key].entries);
     },
 
     /**
@@ -80,12 +99,14 @@ const playlists = {
       }
 
       const previousEntry = context.state[key].entries.slice(-1)[0];
-      const previousId = previousEntry ? previousEntry.id : undefined;
+      const previousTimestamp = previousEntry
+        ? previousEntry.timestamp
+        : undefined;
 
       const resp = await this.$axios({
         url: context.state[key].url,
         method: 'GET',
-        params: { previousId },
+        params: { before: previousTimestamp },
       });
 
       context.commit('addSongs', resp.data.tracks.map((entry) => entry.song));

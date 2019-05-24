@@ -1,33 +1,31 @@
 <template>
   <div class="posted-by">
-    <router-link :to="`/users/${entry.user.name}`">{{
-      displayName
-    }}</router-link>
-    posted ({{ timestamp }} ago)
+    <template v-if="entryType === 'feed-entry'">
+      <names-list :names="entry.userNames" />
+      posted ({{ timestamp }} ago)
+    </template>
+    <template v-if="entryType === 'like-entry'">
+      Liked {{ timestamp }} ago
+    </template>
+    <template v-if="entryType === 'playlist-entry'">
+      Posted {{ timestamp }} ago
+    </template>
   </div>
 </template>
 
 <script>
-import _get from 'lodash/get';
 import distanceInWords from 'date-fns/distance_in_words';
+import NamesList from './NamesList.vue';
 
 export default {
-  props: ['entry'],
+  components: { NamesList },
+
+  props: ['entry', 'entryType'],
 
   computed: {
     timestamp() {
-      const addedDate = new Date(this.entry.added);
+      const addedDate = new Date(this.entry.timestamp);
       return distanceInWords(new Date(), addedDate);
-    },
-
-    displayName() {
-      const currentUserId = _get(this.$store.state.currentUser, 'id');
-
-      if (currentUserId === this.entry.user.id) {
-        return 'You';
-      } else {
-        return this.entry.user.name;
-      }
     },
   },
 };

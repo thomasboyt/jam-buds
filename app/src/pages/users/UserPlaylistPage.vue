@@ -2,7 +2,7 @@
   <div>
     <profile-nav :title="title" />
     <playlist
-      entry-type="post"
+      entry-type="playlist-entry"
       :entries="entries"
       :entries-exhausted="entriesExhausted"
       :loading-next-page="loadingNextPage"

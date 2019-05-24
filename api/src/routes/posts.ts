@@ -3,9 +3,9 @@ import { Router } from 'express';
 import { UserModel } from '../models/user';
 import { getSongBySpotifyId, createSong } from '../models/song';
 import {
-  CreatePostParams,
-  createPost,
-  getPostById,
+  PostSongParams,
+  postSong,
+  getOwnPostForSongId,
   deletePostById,
 } from '../models/post';
 
@@ -57,12 +57,12 @@ export default function registerPostEndpoints(router: Router) {
         song = await createSong(params);
       }
 
-      const params: CreatePostParams = {
+      const params: PostSongParams = {
         userId: user.id,
         songId: song.id,
       };
 
-      const entry = await createPost(params);
+      const entry = await postSong(params);
 
       if (req.body.tweet) {
         await postSongTweet({
@@ -77,27 +77,24 @@ export default function registerPostEndpoints(router: Router) {
 
   // delete a post
   router.delete(
-    '/posts/:entryId',
+    '/posts/:songId',
     isAuthenticated,
     wrapAsyncRoute(async (req, res) => {
       const user: UserModel = res.locals.user;
-      const entryId: number = req.params.entryId;
+      const songId: number = req.params.songId;
 
-      const entry = await getPostById(entryId);
+      const post = await getOwnPostForSongId({
+        userId: user.id,
+        songId,
+      });
 
-      if (!entry) {
+      if (!post) {
         return res.status(404).json({
-          error: `No song found with id ${entryId}`,
+          error: `No post found with song id ${songId} for this user`,
         });
       }
 
-      if (entry.user.id !== user.id) {
-        return res.status(400).json({
-          error: "Cannot delete someone else's song",
-        });
-      }
-
-      await deletePostById(entryId);
+      await deletePostById(post.id);
 
       res.json({
         success: true,

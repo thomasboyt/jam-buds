@@ -2,7 +2,7 @@ import expect from 'expect';
 import request from 'supertest';
 
 import { userFactory, postFactory } from '../../__tests__/factories';
-import { getPostsByUserId } from '../../models/post';
+import { getPlaylistEntriesByUserId } from '../../models/post';
 
 import createApp from '../../createApp';
 const app = createApp();
@@ -49,18 +49,18 @@ describe('routes/posts', () => {
         userId: user.id,
       });
 
-      const beforePlaylist = await getPostsByUserId(user.id);
+      const beforePlaylist = await getPlaylistEntriesByUserId(user.id);
       expect(beforePlaylist.length).toBe(1);
 
       const req = request(app)
-        .delete(`/api/posts/${entry.id}`)
+        .delete(`/api/posts/${entry.song.id}`)
         .set('X-Auth-Token', user.authToken);
 
       const res = await req;
 
       expectStatus(res, 200);
 
-      const afterPlaylist = await getPostsByUserId(user.id);
+      const afterPlaylist = await getPlaylistEntriesByUserId(user.id);
       expect(afterPlaylist.length).toBe(0);
     });
 
@@ -69,12 +69,12 @@ describe('routes/posts', () => {
       const entry = await postFactory();
 
       const req = request(app)
-        .delete(`/api/posts/${entry.id}`)
+        .delete(`/api/posts/${entry.song.id}`)
         .set('X-Auth-Token', user.authToken);
 
       const res = await req;
 
-      expectStatus(res, 400);
+      expectStatus(res, 404);
     });
 
     it('returns 404 when a requested song does not exist', async () => {

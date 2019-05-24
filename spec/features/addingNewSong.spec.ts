@@ -1,16 +1,9 @@
 import expect from 'expect';
 import puppeteer from 'puppeteer';
 
-import { getPage } from './browser';
-import './mochaHooks';
-
-async function asBigJeffrey(page: puppeteer.Page) {
-  await page.evaluate(() => {
-    (window as any).setDevUser('jeff');
-  });
-  // TODO: replace this with something faster?
-  await page.waitFor(1000);
-}
+import { getPage } from '../support/browser';
+import { asBigJeffrey } from '../support/utils';
+import '../support/mochaHooks';
 
 async function searchForSong(page: puppeteer.Page, query: string) {
   await page.waitFor('[data-test="add-song"]');
