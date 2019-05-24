@@ -43,6 +43,10 @@
         </div>
       </div>
 
+      <p v-if="error" class="error">
+        {{ error }}
+      </p>
+
       <button
         @click="handleSubmit"
         class="submit"
@@ -59,6 +63,7 @@
 </template>
 
 <script>
+import _get from 'lodash/get';
 import { mapState } from 'vuex';
 
 import serializeSongLabel from '../../util/serializeSongLabel';
@@ -82,6 +87,7 @@ export default {
       tweetText: '',
       twitterPostEnabled: false,
       songLabel: serializeSongLabel(this.selectedSong),
+      error: null,
     };
   },
 
@@ -132,11 +138,21 @@ export default {
         params.tweet = this.tweetText === '' ? null : this.tweetText;
       }
 
-      const resp = await this.$axios({
-        url: '/posts',
-        method: 'POST',
-        data: params,
-      });
+      try {
+        var resp = await this.$axios({
+          url: '/posts',
+          method: 'POST',
+          data: params,
+        });
+      } catch (err) {
+        const error = _get(err.response.data, 'error');
+        if (error) {
+          this.error = error;
+        } else {
+          this.error = 'An unexpected error occurred.';
+        }
+        return;
+      }
 
       this.$store.dispatch('didSubmitSong', resp.data);
       this.$emit('finished');
@@ -151,5 +167,9 @@ export default {
   li {
     line-height: 2em;
   }
+}
+.error {
+  color: red;
+  font-weight: bold;
 }
 </style>
