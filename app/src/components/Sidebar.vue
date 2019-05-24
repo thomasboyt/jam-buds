@@ -2,41 +2,50 @@
   <div v-if="authenticated" :class="['sidebar', { '-open': open }]">
     <p>
       what up,
-      <router-link :to="`/users/${currentUserName}`">
+      <router-link
+        :to="`/users/${currentUserName}`"
+        @click.native="handleClick"
+      >
         {{ currentUserName }}
       </router-link>
     </p>
 
-    <add-song-button />
+    <add-song-button @click.native="handleClick" />
 
     <ul>
       <li>
-        <router-link to="/">
+        <router-link to="/" @click.native="handleClick">
           your feed
         </router-link>
       </li>
       <li>
-        <router-link :to="`/users/${currentUserName}`">
+        <router-link
+          :to="`/users/${currentUserName}`"
+          @click.native="handleClick"
+        >
           your playlist
         </router-link>
       </li>
       <li>
-        <router-link :to="`/users/${currentUserName}/liked`">
+        <router-link
+          :to="`/users/${currentUserName}/liked`"
+          @click.native="handleClick"
+        >
           your liked tracks
         </router-link>
       </li>
       <li>
-        <router-link to="/find-friends">
+        <router-link to="/find-friends" @click.native="handleClick">
           find twitter friends
         </router-link>
       </li>
       <li>
-        <router-link to="/settings">
+        <router-link to="/settings" @click.native="handleClick">
           your settings
         </router-link>
       </li>
       <li>
-        <router-link to="/about">
+        <router-link to="/about" @click.native="handleClick">
           about jam buds
         </router-link>
       </li>
@@ -64,6 +73,10 @@ export default {
   },
 
   methods: {
+    handleClick() {
+      this.$store.commit('closeSidebar');
+    },
+
     async handleSignOut(evt) {
       evt.preventDefault();
 
