@@ -21,8 +21,7 @@
           :can-play="canPlay"
         />
         <song-like-action v-if="showLikeButton" :song="song" />
-        <song-dropdown-menu :song="song" />
-        <!-- TODO: reintroduce entry deletes -->
+        <song-dropdown-menu :song="song" :show-delete="showDeleteMenuItem" />
       </span>
     </div>
   </div>
@@ -35,7 +34,6 @@ import AlbumArt from './AlbumArt.vue';
 import SongLikeAction from './SongLikeAction.vue';
 import SongPlayAction from './SongPlayAction.vue';
 import SongDropdownMenu from './SongDropdownMenu.vue';
-// import EntryDeleteAction from './EntryDeleteAction.vue';
 
 export default {
   components: {
@@ -43,7 +41,6 @@ export default {
     SongLikeAction,
     SongPlayAction,
     SongDropdownMenu,
-    // EntryDeleteAction,
   },
 
   props: {
@@ -58,6 +55,9 @@ export default {
     playbackSourcePath: {
       type: String,
       required: true,
+    },
+    postedUserNames: {
+      type: Array,
     },
   },
 
@@ -88,15 +88,19 @@ export default {
       showLikeButton(state) {
         return state.auth.authenticated;
       },
-    }),
-    // showDeleteButton() {
-    //   const { state } = this.$store;
 
-    //   // users can't delete other ppl's posts
-    //   return (
-    //     state.auth.authenticated && state.currentUser.id === this.entry.user.id
-    //   );
-    // },
+      showDeleteMenuItem(state) {
+        // users can't delete other ppl's posts
+        return (
+          state.auth.authenticated &&
+          // TODO: this is a good argument for turning the userNames on a
+          // playlist entry resource into only users who have _posted_ a song so
+          // it doesn't mix up w/ likes...
+          this.postedUserNames &&
+          this.postedUserNames.includes(state.currentUser.name)
+        );
+      },
+    }),
   },
 
   methods: {
