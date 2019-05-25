@@ -1,11 +1,11 @@
 @import './mixins';
 @import './z-index';
 
-@import "./playlist.scss";
-@import "./header.scss";
-@import "./add-song.scss";
-@import "./audio-player.scss";
-@import "./settings.scss";
+@import './playlist.scss';
+@import './header.scss';
+@import './add-song.scss';
+@import './audio-player.scss';
+@import './settings.scss';
 
 * {
   box-sizing: border-box;
@@ -26,7 +26,8 @@ p {
   margin-bottom: 1em;
 }
 
-a:hover, a:active {
+a:hover,
+a:active {
   text-decoration: none;
 }
 
@@ -77,7 +78,8 @@ a:hover, a:active {
   }
 }
 
-button, .button {
+button,
+.button {
   -webkit-appearance: none;
   border: none;
   outline: none;
@@ -86,7 +88,8 @@ button, .button {
   font-family: inherit;
 }
 
-button:active, .button:active {
+button:active,
+.button:active {
   box-shadow: none;
   transform: translate(2px, 2px);
 }

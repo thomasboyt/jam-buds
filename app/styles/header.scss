@@ -10,7 +10,8 @@
 
   padding: 0 20px;
 
-  a, a:visited {
+  a,
+  a:visited {
     color: yellow;
   }
 
@@ -69,7 +70,9 @@ h1 {
   font-weight: bold;
   transform: skewY(-5deg);
 
-  a { text-decoration: none; }
+  a {
+    text-decoration: none;
+  }
 }
 
 h1:hover {
