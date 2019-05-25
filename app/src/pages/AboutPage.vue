@@ -12,13 +12,26 @@
         everyone you know is listening to.
       </p>
 
+      <h2>something's broken / i have an idea</h2>
+
+      <p>
+        jam buds is under active development and exists in a constant state of
+        on-fire-ness. you can check
+        <a
+          href="https://www.notion.so/thomasboyt/d4cf1e506401423094ff46ea977451b0?v=6f1d9cb6cfe44adabd4cd8f4f2072da9"
+          >the public issue tracker</a
+        >
+        to see if your idea is on the drawing board, or if the bug you noticed
+        is already known. otherwise, feel free to reach out at
+        <a href="mailto:hello@jambuds.club">hello@jambuds.club</a>!
+      </p>
+
       <h2>who's responsible for this mess</h2>
 
       <p>
-        this site was built by <a href="https://thomasboyt.com/">thomas</a>. if
-        you want to yell at him, you can do so on
-        <a href="https://twitter.com/thomasABoyt">twitter</a>. you can also
-        <router-link to="/users/thomasABoyt">follow him on here</router-link> if
+        this site was built by <a href="https://thomasboyt.com/">thomas</a>, who
+        feels weird writing this in the third person. you can also
+        <router-link to="/users/thomas">follow him on here</router-link> if
         you'd like.
       </p>
 
@@ -30,7 +43,7 @@
 
       <ul>
         <li>
-          very good dog by
+          very good dog(s) by
           <a href="http://twitter.com/rainbowfission">@rainbowfission</a>
         </li>
       </ul>

@@ -13,6 +13,12 @@
             <strong>{{ sentMailAddress }}</strong>
             for a link to sign in or sign up.
           </p>
+          <p class="email-note">
+            please allow up to 15 minutes for the email to arrive. due to
+            strange forces of computers outside of our control, sometimes our
+            emails may go to your "spam" folder, or, in Gmail, the "Promotions"
+            tab.
+          </p>
         </div>
 
         <div v-else>
@@ -44,12 +50,11 @@
     <footer>
       <span class="credits">
         site by
-        <a href="https://twitter.com/thomasABoyt">thomas</a>
-        &middot; good doggo by
-        <a href="http://twitter.com/rainbowfission">@rainbowfission</a>
+        <a href="https://jambuds.club/users/thomas">thomas</a>
         &middot;
       </span>
-      <router-link to="/about">about jam buds</router-link>
+      <router-link to="/about">about jam buds</router-link> &middot;
+      <a href="mailto:hello@jambuds.club">hello@jambuds.club</a>
     </footer>
   </div>
 </template>
