@@ -24,9 +24,14 @@
 <script>
 import { mapState } from 'vuex';
 import Playlist from './playlist/Playlist.vue';
+import titleMixin from '../util/titleMixin';
 
 export default {
   components: { Playlist },
+
+  mixins: [titleMixin],
+
+  title: 'Feed',
 
   data() {
     return {

@@ -16,8 +16,6 @@ import LoggedOutHome from '../components/LoggedOutHome.vue';
 import MainWrapper from '../components/MainWrapper.vue';
 import SidebarWrapper from '../components/SidebarWrapper.vue';
 
-import titleMixin from '../util/titleMixin';
-
 export default {
   components: {
     Feed,
@@ -25,10 +23,6 @@ export default {
     SidebarWrapper,
     LoggedOutHome,
   },
-
-  mixins: [titleMixin],
-
-  title: 'Feed',
 
   async asyncData({ store }) {
     if (store.state.auth.authenticated) {
