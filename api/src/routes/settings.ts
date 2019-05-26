@@ -36,11 +36,7 @@ function getColorSchemeFromBody(reqBody: any): ColorScheme | null {
     return null;
   }
 
-  const colorScheme = _.pick(reqBody, [
-    'backgroundColor',
-    'textColor',
-    'cardBackgroundColor',
-  ]);
+  const colorScheme = _.pick(reqBody, ['textColor', 'backgroundGradientName']);
 
   for (let key of Object.keys(colorScheme)) {
     // XXX: this is kinda weird but eh

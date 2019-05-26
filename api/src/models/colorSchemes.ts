@@ -1,14 +1,12 @@
 import * as t from 'io-ts';
 import { db } from '../db';
 import { ColorScheme } from '../resources';
-import { defaultColorScheme } from '../constants';
 import validateOrThrow from '../util/validateOrThrow';
 
 const ColorSchemeModelV = t.type({
   id: t.number,
   userId: t.number,
-  backgroundColor: t.string,
-  cardBackgroundColor: t.string,
+  backgroundGradientName: t.string,
   textColor: t.string,
 });
 
@@ -16,7 +14,7 @@ type ColorSchemeModel = t.TypeOf<typeof ColorSchemeModelV>;
 
 export async function getColorSchemeForUserId(
   userId: number
-): Promise<ColorScheme> {
+): Promise<ColorScheme | null> {
   const query = db!
     .select('*')
     .from('color_schemes')
@@ -25,7 +23,7 @@ export async function getColorSchemeForUserId(
   const [row] = await query;
 
   if (!row) {
-    return defaultColorScheme;
+    return null;
   }
 
   const colorSchemeModel = validateOrThrow(ColorSchemeModelV, row);
@@ -59,8 +57,7 @@ function serializeColorScheme(colorSchemeModel: ColorSchemeModel): ColorScheme {
   // XXX: Manually "serializing" to an object literal like this seems to be the
   // only way in TS to error if extra props are present
   const scheme: ColorScheme = {
-    backgroundColor: colorSchemeModel.backgroundColor,
-    cardBackgroundColor: colorSchemeModel.cardBackgroundColor,
+    backgroundGradientName: colorSchemeModel.backgroundGradientName,
     textColor: colorSchemeModel.textColor,
   };
 
