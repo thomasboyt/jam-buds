@@ -145,6 +145,7 @@ export default {
     &.-placeholder {
       height: 80%;
       text-align: center;
+      border: none;
 
       svg {
         height: 100%;
