@@ -70,14 +70,14 @@ export interface PublicUserWithTwitter extends PublicUser {
 export interface UserProfile {
   id: number;
   name: string;
-  colorScheme: ColorScheme;
+  colorScheme: ColorScheme | null;
 }
 
 export interface CurrentUser {
   id: number;
   name: string;
   following: PublicUser[];
-  colorScheme: ColorScheme;
+  colorScheme: ColorScheme | null;
   twitterName: string | null;
   hasSpotify: boolean;
 }
@@ -90,7 +90,6 @@ export interface Followers {
 export type Following = Followers;
 
 export interface ColorScheme {
-  backgroundColor: string;
-  cardBackgroundColor: string;
+  backgroundGradientName: string;
   textColor: string;
 }

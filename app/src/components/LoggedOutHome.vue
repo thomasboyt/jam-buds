@@ -1,5 +1,5 @@
 <template>
-  <div class="logged-out-home" :style="{ background: rainbow }">
+  <div class="logged-out-home" :style="{ background: gradient }">
     <div class="logged-out-main">
       <div class="left-drawing">
         <img :src="corgi" />
@@ -62,6 +62,7 @@
 <script>
 import SignInForm from './SignInForm.vue';
 import corgi from '../../assets/ghettoblaster_corgi.png';
+import gradients from '../util/gradients';
 
 export default {
   components: { SignInForm },
@@ -69,7 +70,7 @@ export default {
   data() {
     return {
       corgi,
-      rainbow: 'linear-gradient(45deg, #ef32d9, #89fffd)',
+      gradient: gradients['jam buds'],
       sentMailAddress: null,
     };
   },

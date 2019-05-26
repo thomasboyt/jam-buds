@@ -34,10 +34,10 @@ export default {
 <style lang="scss" scoped>
 .posted-by {
   display: inline-block;
-  padding: 5px 0px;
+  padding: 5px 10px;
 
   a {
-    color: var(--theme-link-color);
+    color: var(--theme-text-color);
     font-weight: 500;
   }
 }
