@@ -114,18 +114,18 @@ export default {
 
 <style scoped lang="scss">
 .playlist-song {
-  color: var(--theme-text-color);
-  background: var(--theme-card-background-color);
-  border: 3px var(--theme-text-color) solid;
+  border-top: 1px var(--theme-text-color) solid;
+  padding: 10px;
 
   &:hover {
-    background: var(--theme-card-background-color-hover);
+    background: rgba(0, 0, 0, 0.1);
 
     &.can-play {
       cursor: pointer;
     }
   }
-  margin-bottom: 15px;
+
+  margin-bottom: 10px;
   display: block;
 }
 
@@ -140,6 +140,7 @@ export default {
   .playlist-song--album-art {
     height: 100%;
     flex: 0 0 64px;
+    border: 1px black solid;
 
     &.-placeholder {
       height: 80%;
@@ -203,10 +204,12 @@ export default {
     .icon {
       width: 30px;
       height: 30px;
+    }
 
-      &.heart-filled path {
-        fill: var(--theme-text-color);
-      }
+    svg {
+      fill: var(--theme-text-color);
+      stroke: var(--theme-text-color);
+      color: var(--theme-text-color);
     }
   }
 }

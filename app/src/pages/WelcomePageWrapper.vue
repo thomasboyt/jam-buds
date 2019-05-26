@@ -1,5 +1,5 @@
 <template>
-  <div class="welcome-page-wrapper">
+  <div class="welcome-page-wrapper" :style="{ background: gradient }">
     <h2>
       <span v-if="name">welcome, {{ name }}!</span>
       <span v-else>welcome!</span>
@@ -14,11 +14,18 @@
 <script>
 import { mapState } from 'vuex';
 import titleMixin from '../util/titleMixin';
+import gradients from '../util/gradients';
 
 export default {
   mixins: [titleMixin],
 
   title: 'Welcome',
+
+  data() {
+    return {
+      gradient: gradients['jam buds'],
+    };
+  },
 
   computed: mapState({
     name: (state) => state.auth.authenticated && state.currentUser.name,
@@ -37,7 +44,6 @@ h2 {
 }
 
 .welcome-page-wrapper {
-  background: linear-gradient(45deg, #ef32d9, #89fffd);
   flex: 1;
 
   @media (min-width: $breakpoint-small) {
