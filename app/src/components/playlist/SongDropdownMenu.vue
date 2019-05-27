@@ -25,7 +25,9 @@
           >
         </li>
         <li class="menu-item" v-if="showDelete">
-          <button @click="handleClickDelete">Delete</button>
+          <button data-test="delete-song" @click="handleClickDelete">
+            Delete
+          </button>
         </li>
       </ul>
     </div>
