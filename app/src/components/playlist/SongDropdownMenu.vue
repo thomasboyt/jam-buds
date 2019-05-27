@@ -62,10 +62,9 @@ export default {
   },
 
   beforeDestroy() {
-    this.querySelector('html').removeEventListener(
-      'click',
-      this.handleClickOutside
-    );
+    document
+      .querySelector('html')
+      .removeEventListener('click', this.handleClickOutside);
   },
 
   methods: {
