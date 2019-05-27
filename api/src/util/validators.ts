@@ -6,6 +6,5 @@ export function validEmail(email: string): boolean {
 }
 
 export function validUsername(username: string): boolean {
-  // TODO: further validation here, probably
-  return !username.match(/\s/);
+  return !!username.match(/^[a-zA-Z0-9_]+$/) && username.length <= 16;
 }
