@@ -2,6 +2,7 @@ import expect from 'expect';
 import request from 'supertest';
 
 import { userFactory, postFactory } from '../../__tests__/factories';
+import { createAuthTokenForUserId } from '../../models/authTokens';
 
 import createApp from '../../createApp';
 
@@ -27,7 +28,7 @@ describe('routes/playlists', () => {
 
       const firstPageReq = request(app)
         .get(`/api/playlists/${user.name}`)
-        .set('X-Auth-Token', user.authToken);
+        .set('X-Auth-Token', await createAuthTokenForUserId(user.id));
 
       // TODO: Assert that these are the newest 20 items
       const firstPageRes = await firstPageReq;
@@ -39,7 +40,7 @@ describe('routes/playlists', () => {
 
       const secondPageReq = request(app)
         .get(`/api/playlists/${user.name}`)
-        .set('X-Auth-Token', user.authToken)
+        .set('X-Auth-Token', await createAuthTokenForUserId(user.id))
         .query({
           before: lastTimestampFirstPage,
         });

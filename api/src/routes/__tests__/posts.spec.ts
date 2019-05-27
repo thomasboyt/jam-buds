@@ -7,8 +7,10 @@ import {
   songFactory,
 } from '../../__tests__/factories';
 import { getPlaylistEntriesByUserId, postSong } from '../../models/post';
+import { createAuthTokenForUserId } from '../../models/authTokens';
 
 import createApp from '../../createApp';
+
 const app = createApp();
 
 function expectStatus(res: request.Response, status: number) {
@@ -30,7 +32,7 @@ describe('routes/posts', () => {
 
       const req = request(app)
         .post('/api/posts')
-        .set('X-Auth-Token', user.authToken)
+        .set('X-Auth-Token', await createAuthTokenForUserId(user.id))
         .send({
           spotifyId: song.spotifyId,
         });
@@ -52,7 +54,7 @@ describe('routes/posts', () => {
 
       const req = request(app)
         .delete(`/api/posts/${entry.song.id}`)
-        .set('X-Auth-Token', user.authToken);
+        .set('X-Auth-Token', await createAuthTokenForUserId(user.id));
 
       const res = await req;
 
@@ -68,7 +70,7 @@ describe('routes/posts', () => {
 
       const req = request(app)
         .delete(`/api/posts/${entry.song.id}`)
-        .set('X-Auth-Token', user.authToken);
+        .set('X-Auth-Token', await createAuthTokenForUserId(user.id));
 
       const res = await req;
 
@@ -80,7 +82,7 @@ describe('routes/posts', () => {
 
       const req = request(app)
         .delete('/api/playlist/42069')
-        .set('X-Auth-Token', user.authToken);
+        .set('X-Auth-Token', await createAuthTokenForUserId(user.id));
 
       const res = await req;
 

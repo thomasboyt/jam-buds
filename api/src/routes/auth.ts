@@ -16,6 +16,10 @@ import {
   getAndClearSignUpReferral,
 } from '../models/cache/signUpReferralCache';
 import { followUser } from '../models/following';
+import {
+  createAuthTokenForUserId,
+  deleteAuthToken,
+} from '../models/authTokens';
 
 export default function registerAuthEndpoints(router: Router) {
   /**
@@ -112,8 +116,11 @@ export default function registerAuthEndpoints(router: Router) {
         return;
       }
 
+      // Redeem sign-in token for auth token
+      const authToken = await createAuthTokenForUserId(user.id);
+      res.cookie(AUTH_TOKEN_COOKIE, authToken);
       await deleteSignInToken(token);
-      res.cookie(AUTH_TOKEN_COOKIE, user.authToken);
+
       res.redirect(process.env.APP_URL!);
     })
   );
@@ -175,8 +182,10 @@ export default function registerAuthEndpoints(router: Router) {
         name: req.body.name,
       });
 
+      // Redeem sign-in token for auth token
+      const authToken = await createAuthTokenForUserId(user.id);
+      res.cookie(AUTH_TOKEN_COOKIE, authToken);
       await deleteSignInToken(token);
-      res.cookie(AUTH_TOKEN_COOKIE, user.authToken);
 
       // auto follow referral if present
       const referral = await getAndClearSignUpReferral(token);
@@ -196,7 +205,7 @@ export default function registerAuthEndpoints(router: Router) {
     '/sign-out',
     isAuthenticated,
     wrapAsyncRoute(async (req, res) => {
-      // TODO: This should also delete the auth token from the database!
+      await deleteAuthToken(req.cookies[AUTH_TOKEN_COOKIE]);
       res.clearCookie(AUTH_TOKEN_COOKIE);
       res.send(200);
     })

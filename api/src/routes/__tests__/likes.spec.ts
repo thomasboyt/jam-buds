@@ -7,6 +7,7 @@ import { userFactory, songFactory } from '../../__tests__/factories';
 
 import { postSong } from '../../models/post';
 import { getLikesByUserId } from '../../models/like';
+import { createAuthTokenForUserId } from '../../models/authTokens';
 
 const app = createApp();
 
@@ -24,7 +25,7 @@ describe('routes/likes', () => {
 
       const req = request(app)
         .put(`/api/likes/${post.song.id}`)
-        .set('X-Auth-Token', jeff!.authToken);
+        .set('X-Auth-Token', await createAuthTokenForUserId(jeff.id));
 
       const res = await req;
 
