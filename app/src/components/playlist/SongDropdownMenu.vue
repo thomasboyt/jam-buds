@@ -69,7 +69,8 @@ export default {
   },
 
   methods: {
-    handleToggleMenu() {
+    handleToggleMenu(e) {
+      e.stopPropagation();
       this.isOpen = !this.isOpen;
     },
 
