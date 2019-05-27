@@ -63,7 +63,7 @@ export default {
       e.preventDefault();
 
       try {
-        this.$axios({
+        await this.$axios({
           url: '/settings/color-scheme',
           method: 'POST',
           data: this.colorScheme,

@@ -40,8 +40,8 @@ export default {
       try {
         await this.$store.dispatch(`${action}`, { id: this.song.id });
       } catch (err) {
-        console.log('request error');
-        console.log(err);
+        this.$store.commit('showErrorModal');
+        throw err;
       } finally {
         this.requestInFlight = false;
       }

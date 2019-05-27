@@ -131,7 +131,10 @@ export default {
 
       if (this.twitterPostEnabled) {
         if (getTweetLength(this.tweetText) > TWEET_LENGTH) {
-          alert('Yo your twitter message is too long');
+          this.$store.commit(
+            'showErrorModal',
+            'Yo your twitter message is too long'
+          );
           return;
         }
 

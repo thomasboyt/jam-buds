@@ -51,8 +51,8 @@ export default {
           method: 'DELETE',
         });
       } catch (err) {
-        console.error(err);
-        return;
+        this.$store.commit('showErrorModal');
+        throw err;
       }
 
       this.$store.commit('disconnectedTwitter');

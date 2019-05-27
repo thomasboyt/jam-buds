@@ -24,7 +24,8 @@ export default {
       // remove "failed-spotify-connect" from path to prevent re-triggering
       this.$router.replace(this.$route.path);
 
-      alert(
+      this.$store.commit(
+        'showErrorModal',
         "Error connecting Spotify: You must have a premium (paid) Spotify account to stream to it from Jam Buds.\n\nSorry, I don't make the rules :("
       );
     }

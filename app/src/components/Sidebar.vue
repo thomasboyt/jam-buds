@@ -80,11 +80,16 @@ export default {
     async handleSignOut(evt) {
       evt.preventDefault();
 
-      await this.$axios({
-        baseURL: null,
-        url: '/auth/sign-out',
-        method: 'POST',
-      });
+      try {
+        await this.$axios({
+          baseURL: null,
+          url: '/auth/sign-out',
+          method: 'POST',
+        });
+      } catch (err) {
+        this.$store.commit('showErrorModal');
+        throw err;
+      }
 
       document.location.href = '/';
     },

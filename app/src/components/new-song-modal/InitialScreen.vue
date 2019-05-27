@@ -85,9 +85,9 @@ export default {
           params: { query: this.songInput },
         });
       } catch (err) {
-        console.error('error getting results');
-        console.error(err);
+        this.$store.commit('showErrorModal');
         this.requestInFlight = false;
+        throw err;
       }
 
       this.searchResults = resp.data.songs;
