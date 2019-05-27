@@ -9,6 +9,7 @@ import {
 } from '../../models/signInToken';
 import { AUTH_TOKEN_COOKIE } from '../../constants';
 import { getUserByEmail } from '../../models/user';
+import { db } from '../../db';
 
 const app = createApp();
 
@@ -73,19 +74,21 @@ describe('routes/auth', () => {
 
       expect(res.status).toBe(200);
 
-      let token = await getSignInTokenByEmail(user.email!);
+      let signInToken = await getSignInTokenByEmail(user.email!);
 
       res = await request(app)
         .get('/auth/sign-in')
-        .query({ t: token });
+        .query({ t: signInToken });
       expect(res.status).toBe(302);
 
-      user = (await getUserByEmail(user.email!))!;
-      const cookieRe = new RegExp(`${AUTH_TOKEN_COOKIE}=${user.authToken}`);
+      const { authToken } = (await db!('auth_tokens').where({
+        userId: user.id,
+      }))[0];
+      const cookieRe = new RegExp(`${AUTH_TOKEN_COOKIE}=${authToken}`);
       expect(res.header['set-cookie']).toMatch(cookieRe);
 
-      token = await getSignInTokenByEmail(user.email!);
-      expect(token).toNotExist();
+      signInToken = await getSignInTokenByEmail(user.email!);
+      expect(signInToken).toNotExist();
     });
   });
 
@@ -116,8 +119,13 @@ describe('routes/auth', () => {
 
       expect(await getSignInTokenByEmail(email)).toBe(null);
 
-      const user = (await getUserByEmail(email))!;
-      const cookieRe = new RegExp(`${AUTH_TOKEN_COOKIE}=${user.authToken}`);
+      const user = await getUserByEmail('example@example.example');
+
+      const { authToken } = (await db!('auth_tokens').where({
+        userId: user!.id,
+      }))[0];
+
+      const cookieRe = new RegExp(`${AUTH_TOKEN_COOKIE}=${authToken}`);
       expect(res.header['set-cookie']).toMatch(cookieRe);
     });
 
