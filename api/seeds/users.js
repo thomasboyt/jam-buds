@@ -1,20 +1,24 @@
 const songData = require('./data/songs');
 const getSpotifySongs = require('./data/spotifySongs');
 
-function createUser(knex, id, name, opts) {
+async function createUser(knex, id, name, opts) {
   opts = opts || {};
 
-  return knex('users').insert(
+  await knex('users').insert(
     Object.assign(
       {
         id,
         name,
-        auth_token: name,
         email: `${name}@jambuds.club`,
       },
       opts
     )
   );
+
+  await knex('auth_tokens').insert({
+    auth_token: name,
+    user_id: id,
+  });
 }
 
 function followUser(knex, userId, followingId) {

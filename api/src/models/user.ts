@@ -1,7 +1,6 @@
 import * as t from 'io-ts';
 import { date as dateType } from 'io-ts-types';
 import { db } from '../db';
-import genAuthToken from '../util/genAuthToken';
 import validateOrThrow from '../util/validateOrThrow';
 import {
   PublicUser,
@@ -14,7 +13,6 @@ import { getColorSchemeForUserId } from './colorSchemes';
 
 export const UserModelV = t.type({
   id: t.number,
-  authToken: t.string,
   name: t.string,
   email: t.string,
   twitterName: t.union([t.string, t.null]),
@@ -37,15 +35,8 @@ interface CreateUserOptions {
 }
 
 export async function createUser(opts: CreateUserOptions) {
-  const authToken = await genAuthToken();
-
-  const insert: Partial<UserModel> = {
-    authToken,
-    ...opts,
-  };
-
   const query = db!
-    .insert(insert)
+    .insert(opts)
     .returning('*')
     .into('users');
 
@@ -72,7 +63,19 @@ async function getUserWhere(params: Partial<UserModel>) {
 export async function getUserByAuthToken(
   authToken: string
 ): Promise<UserModel | null> {
-  return await getUserWhere({ authToken });
+  const query = db!('users')
+    .join('auth_tokens', { 'users.id': 'auth_tokens.user_id' })
+    .where({ authToken });
+
+  const [row] = await query;
+
+  if (!row) {
+    return null;
+  }
+
+  const user = validateOrThrow(UserModelV, row);
+
+  return user;
 }
 
 export async function getUserByTwitterId(
