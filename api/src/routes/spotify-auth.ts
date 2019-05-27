@@ -77,6 +77,17 @@ export default function registerSpotifyAuthEndpoints(router: Router) {
       const refreshToken = resp.data['refresh_token'];
       const expiresIn = resp.data['expires_in'];
 
+      const spotifyClient = new SpotifyWebApi();
+      spotifyClient.setAccessToken(accessToken);
+      const userInformation = await spotifyClient.getMe();
+
+      if (userInformation.body.product !== 'premium') {
+        res.redirect(
+          `${process.env.APP_URL}${redirect}?failed-spotify-connect`
+        );
+        return;
+      }
+
       await addSpotifyCredentialsToUser(user, {
         accessToken,
         refreshToken,
