@@ -38,13 +38,16 @@ const songs = {
       context.commit('unlikeSong', id);
     },
 
-    // async deleteSong(context, { id }) {
-    //   await this.$axios({
-    //     url: `/posts/${id}`,
-    //     method: 'DELETE',
-    //   });
-    //   context.commit('deletePlaylistEntry', id);
-    // },
+    async deleteSong(context, { id }) {
+      await this.$axios({
+        url: `/posts/${id}`,
+        method: 'DELETE',
+      });
+      context.commit('deleteOwnPlaylistEntry', {
+        songId: id,
+        currentUserName: context.rootState.currentUser.name,
+      });
+    },
   },
 };
 

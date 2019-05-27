@@ -24,9 +24,11 @@
             >Open in Apple Music</a
           >
         </li>
-        <!-- <li class="menu-item">
-          <button @click="handleClickDelete">Delete</button>
-        </li> -->
+        <li class="menu-item" v-if="showDelete">
+          <button data-test="delete-song" @click="handleClickDelete">
+            Delete
+          </button>
+        </li>
       </ul>
     </div>
   </span>
@@ -34,13 +36,12 @@
 
 <script>
 import Icon from '../Icon.vue';
-
 import dropdownIcon from '../../../assets/kebab-vertical.svg';
 
 export default {
   components: { Icon },
 
-  props: ['song'],
+  props: ['song', 'showDelete'],
 
   data() {
     return {
@@ -82,7 +83,24 @@ export default {
       this.isOpen = false;
     },
 
-    // handleClickDelete() {},
+    async handleClickDelete() {
+      const confirmedDelete = window.confirm(
+        'Are you sure you want to remove your post of this song?'
+      );
+
+      this.isOpen = false;
+
+      if (confirmedDelete) {
+        try {
+          await this.$store.dispatch('deleteSong', {
+            id: this.song.id,
+          });
+        } catch (err) {
+          this.$store.commit('showErrorModal');
+          throw err;
+        }
+      }
+    },
   },
 };
 </script>

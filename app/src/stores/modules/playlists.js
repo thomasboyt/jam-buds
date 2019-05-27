@@ -79,11 +79,28 @@ const playlists = {
       }
     },
 
-    deletePlaylistEntry(state, id) {
+    deleteOwnPlaylistEntry(state, { songId, currentUserName }) {
+      // After you delete your post of a song, remove the song from any playlist
+      // where the only poster was you
       for (let key of Object.keys(state)) {
-        state[key].entries = state[key].entries.filter(
-          (entry) => entry.id !== id
+        const existingIdx = state[key].entries.findIndex(
+          (entry) => entry.songId === songId
         );
+
+        if (existingIdx !== -1) {
+          const entries = state[key].entries.slice();
+
+          if (entries[existingIdx].userNames.length === 1) {
+            // current user was the only poster, so remove
+            entries.splice(existingIdx, 1);
+          } else {
+            entries[existingIdx].userNames = entries[
+              existingIdx
+            ].userNames.filter((name) => name !== currentUserName);
+          }
+
+          state[key].entries = entries;
+        }
       }
     },
   },

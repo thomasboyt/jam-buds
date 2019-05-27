@@ -12,6 +12,9 @@
           :song-id="entry.songId"
           :playback-source-label="playbackSourceLabel"
           :playback-source-path="playbackSourcePath"
+          :posted-user-names="
+            entryType !== 'like-entry' ? entry.userNames : null
+          "
         />
       </li>
     </ul>

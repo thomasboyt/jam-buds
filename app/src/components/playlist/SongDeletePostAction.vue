@@ -1,5 +1,9 @@
 <template>
-  <button @click="handleDelete" :disabled="requestInFlight">
+  <button
+    class="action-button"
+    @click="handleDelete"
+    :disabled="requestInFlight"
+  >
     <icon :glyph="closeIcon" />
   </button>
 </template>
@@ -12,7 +16,7 @@ const closeIcon = require('../../../assets/close.svg');
 export default {
   components: { Icon },
 
-  props: ['entry'],
+  props: ['song'],
 
   data() {
     return {
@@ -27,15 +31,15 @@ export default {
       e.stopPropagation();
 
       const confirmedDelete = window.confirm(
-        'Are you sure you want to delete this entry?'
+        'Are you sure you want to remove your post of this song?'
       );
 
       if (confirmedDelete) {
         this.requestInFlight = true;
 
         try {
-          await this.$store.dispatch('deletePlaylistEntry', {
-            id: this.entry.id,
+          await this.$store.dispatch('deleteSong', {
+            id: this.song.id,
           });
         } catch (err) {
           console.log('request error');
