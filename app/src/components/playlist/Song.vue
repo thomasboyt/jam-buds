@@ -2,7 +2,7 @@
   <div
     :class="['playlist-song', { 'is-playing': isPlaying, 'can-play': canPlay }]"
   >
-    <div class="playlist-song--main" @click="handlePlay">
+    <div class="playlist-song--main" @click="handleClick">
       <album-art :album-art="song.albumArt" />
 
       <div class="title">
@@ -104,6 +104,16 @@ export default {
   },
 
   methods: {
+    handleClick(e) {
+      // Don't trigger playback if user was clicking on one of the action
+      // buttons
+      if (e.target.closest('.playlist-song--actions')) {
+        return;
+      }
+
+      this.handlePlay();
+    },
+
     handlePlay() {
       if (!this.canPlay) {
         return;
