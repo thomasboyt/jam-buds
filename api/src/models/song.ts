@@ -11,6 +11,7 @@ export const SongModelV = t.type({
   albumArt: t.union([t.string, t.null]),
   spotifyId: t.union([t.string, t.null]),
   appleMusicId: t.union([t.string, t.null]),
+  appleMusicUrl: t.union([t.string, t.null]),
   isrcId: t.union([t.string, t.null]),
   album: t.union([t.string, t.null]),
 });
@@ -114,6 +115,7 @@ export function serializeSong(song: SongModel, isLiked: boolean): Song {
     albumArt: song.albumArt,
     spotifyId: song.spotifyId,
     appleMusicId: song.appleMusicId,
+    appleMusicUrl: song.appleMusicUrl,
     isLiked,
   };
 }

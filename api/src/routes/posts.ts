@@ -52,6 +52,7 @@ export default function registerPostEndpoints(router: Router) {
           albumArt: spotifyResource.album.images[0].url,
           isrcId: searchCacheEntry.isrc,
           appleMusicId: searchCacheEntry.appleMusicId,
+          appleMusicUrl: searchCacheEntry.appleMusicUrl,
         };
 
         song = await createSong(params);

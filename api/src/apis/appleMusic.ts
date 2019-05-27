@@ -16,12 +16,18 @@ function getToken(): string {
   return cachedToken;
 }
 
+export interface AppleMusicInfo {
+  id: string;
+  url: string;
+}
+
 /**
- * Returns an Apple Music ID given a song's ISRC.
+ * Looks up a Apple Music song resource given a song's ISRC. Returns subset of
+ * info that needs to be stored in the DB.
  */
-export async function getAppleMusicIDByISRC(
+export async function getAppleMusicInfoByISRC(
   isrc: string
-): Promise<string | null> {
+): Promise<AppleMusicInfo | null> {
   if (process.env.NODE_ENV === 'test' || process.env.DISABLE_APPLE_MUSIC) {
     return null;
   }
@@ -41,6 +47,9 @@ export async function getAppleMusicIDByISRC(
   if (!song) {
     return null;
   } else {
-    return song.id;
+    return {
+      id: song.id,
+      url: song.attributes.url,
+    };
   }
 }

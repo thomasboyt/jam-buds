@@ -1,5 +1,5 @@
 import * as spotify from '../apis/spotify';
-import { getAppleMusicIDByISRC } from '../apis/appleMusic';
+import { getAppleMusicInfoByISRC, AppleMusicInfo } from '../apis/appleMusic';
 
 // result format, currently
 interface CacheEntry {
@@ -10,6 +10,7 @@ interface CacheEntry {
   // external ids
   didHydrateExternalIds: boolean;
   appleMusicId?: string;
+  appleMusicUrl?: string;
 }
 
 // TODO: move this whole fuckin thing to redis
@@ -35,9 +36,9 @@ export async function cacheSongFromSearchResult(
   return searchCache[id];
 }
 
-async function updateCacheWithAppleMusicId(
+async function updateCacheWithAppleMusicInfo(
   spotifyId: string,
-  appleMusicId: string
+  appleMusicInfo: AppleMusicInfo
 ): Promise<CacheEntry> {
   const cached = searchCache[spotifyId];
 
@@ -48,7 +49,8 @@ async function updateCacheWithAppleMusicId(
   searchCache[spotifyId] = {
     ...cached,
     didHydrateExternalIds: true,
-    appleMusicId,
+    appleMusicId: appleMusicInfo.id,
+    appleMusicUrl: appleMusicInfo.url,
   };
 
   return searchCache[spotifyId];
@@ -81,12 +83,12 @@ export async function getOrCreateSongCacheEntryWithExternalIds(
     return cacheEntry;
   }
 
-  const appleMusicId = cacheEntry.isrc
-    ? await getAppleMusicIDByISRC(cacheEntry.isrc)
+  const appleMusicInfo = cacheEntry.isrc
+    ? await getAppleMusicInfoByISRC(cacheEntry.isrc)
     : null;
 
-  if (appleMusicId) {
-    return await updateCacheWithAppleMusicId(spotifyId, appleMusicId);
+  if (appleMusicInfo) {
+    return await updateCacheWithAppleMusicInfo(spotifyId, appleMusicInfo);
   }
 
   return cacheEntry;
