@@ -69,8 +69,8 @@ export default {
       try {
         await this.$store.dispatch('loadPlaylistPage', { key: 'profileLikes' });
       } catch (err) {
-        console.log('request error');
-        console.log(err);
+        this.$store.commit('showErrorModal');
+        throw err;
       } finally {
         this.loadingNextPage = false;
       }

@@ -33,9 +33,8 @@ export default {
           signupReferral: this.$route.query['signup-ref'],
         });
       } catch (err) {
-        console.log(err.response);
-        this.error = true;
-        return;
+        this.$store.commit('showErrorModal');
+        throw err;
       }
 
       this.didSignIn = true;
