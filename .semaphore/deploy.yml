@@ -54,7 +54,7 @@ blocks:
               'bash -s' < ops/remote-tasks/docker-pull.sh
             - ssh $SSH_REMOTE \
               JAMBUDS_REMOTE_PATH=$JAMBUDS_REMOTE_PATH \
-              'bash -s' < ops/remote-tasks/run-migrations.sh
+              'bash -s' < ops/remote-tasks/restart-docker.sh
             - ssh $SSH_REMOTE \
               JAMBUDS_REMOTE_PATH=$JAMBUDS_REMOTE_PATH \
-              'bash -s' < ops/remote-tasks/restart-docker.sh
+              'bash -s' < ops/remote-tasks/run-migrations.sh
