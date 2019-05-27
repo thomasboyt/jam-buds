@@ -111,10 +111,16 @@ export default {
 
   methods: {
     async loadSongDetails() {
-      const resp = await this.$axios({
-        url: `/spotify-details/${this.selectedSong.spotifyId}`,
-        method: 'GET',
-      });
+      let resp;
+
+      try {
+        resp = await this.$axios({
+          url: `/spotify-details/${this.selectedSong.spotifyId}`,
+          method: 'GET',
+        });
+      } catch (err) {
+        this.$store.commit('showErrorModal');
+      }
 
       this.details = resp.data;
 

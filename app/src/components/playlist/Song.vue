@@ -21,6 +21,7 @@
           :can-play="canPlay"
         />
         <song-like-action v-if="showLikeButton" :song="song" />
+        <song-dropdown-menu :song="song" />
         <!-- TODO: reintroduce entry deletes -->
       </span>
     </div>
@@ -33,6 +34,7 @@ import { mapState } from 'vuex';
 import AlbumArt from './AlbumArt.vue';
 import SongLikeAction from './SongLikeAction.vue';
 import SongPlayAction from './SongPlayAction.vue';
+import SongDropdownMenu from './SongDropdownMenu.vue';
 // import EntryDeleteAction from './EntryDeleteAction.vue';
 
 export default {
@@ -40,6 +42,7 @@ export default {
     AlbumArt,
     SongLikeAction,
     SongPlayAction,
+    SongDropdownMenu,
     // EntryDeleteAction,
   },
 

@@ -31,7 +31,6 @@ export default {
   methods: {
     async handleToggleLike(e) {
       e.preventDefault();
-      e.stopPropagation();
 
       const action = this.song.isLiked ? 'unlikeSong' : 'likeSong';
 
