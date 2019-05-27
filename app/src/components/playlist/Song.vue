@@ -7,7 +7,7 @@
 
       <div class="title">
         <div class="title-content">
-          <span class="title-artist">{{ song.artists.join(',') }}</span>
+          <span class="title-artist">{{ song.artists.join(', ') }}</span>
           <br />
           {{ song.title }}
         </div>
