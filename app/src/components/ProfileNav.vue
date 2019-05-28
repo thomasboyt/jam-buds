@@ -78,6 +78,27 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.user-header {
+  margin-bottom: 30px;
+
+  .user-header-top {
+    display: flex;
+    align-items: center;
+
+    > * {
+      flex: 0 0 auto;
+    }
+
+    .follow-toggle {
+      margin-left: auto;
+    }
+  }
+
+  .user-links a.router-link-exact-active {
+    font-weight: 600;
+  }
+}
+
 .share-banner {
   font-size: 18px;
   line-height: 24px;

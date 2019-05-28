@@ -1,7 +1,6 @@
 @import './mixins';
 @import './z-index';
 
-@import './playlist.scss';
 @import './header.scss';
 @import './add-song.scss';
 @import './audio-player.scss';
@@ -19,6 +18,9 @@ body {
 
 h2 {
   font-weight: 600;
+  font-size: 40px;
+  line-height: 1em;
+  margin-bottom: 24px;
 }
 
 p {
@@ -67,10 +69,6 @@ a:active {
 
 .main {
   width: 100%;
-
-  h2 {
-    margin-top: 0px;
-  }
 
   .main-placeholder {
     text-align: center;
