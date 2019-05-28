@@ -23,15 +23,7 @@
           :to="`/users/${currentUserName}`"
           @click.native="handleClick"
         >
-          your playlist
-        </router-link>
-      </li>
-      <li>
-        <router-link
-          :to="`/users/${currentUserName}/liked`"
-          @click.native="handleClick"
-        >
-          your liked tracks
+          your profile
         </router-link>
       </li>
       <li>

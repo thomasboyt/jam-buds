@@ -20,7 +20,15 @@ h2 {
   font-weight: 600;
   font-size: 40px;
   line-height: 1em;
+
+  margin-top: 0px;
   margin-bottom: 24px;
+
+  @media (max-width: $breakpoint-small) {
+    font-size: 32px;
+    margin-top: 0px;
+    margin-bottom: 16px;
+  }
 }
 
 p {
@@ -45,6 +53,10 @@ a:active {
 .main {
   padding: 10px;
   padding-top: 20px;
+
+  @media (min-width: $breakpoint-small) {
+    padding-top: 40px;
+  }
 }
 
 .main-inner {

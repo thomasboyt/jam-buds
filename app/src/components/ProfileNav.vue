@@ -16,7 +16,7 @@
 
     <div class="user-header-top">
       <h2>
-        {{ title }}
+        {{ name }}
       </h2>
 
       <follow-toggle v-if="showFollowToggle" :name="name" />
@@ -83,7 +83,7 @@ export default {
 
   .user-header-top {
     display: flex;
-    align-items: center;
+    align-items: start;
 
     > * {
       flex: 0 0 auto;
