@@ -65,6 +65,8 @@ function connectPlayer(opts) {
     if (!connected) {
       reject();
     }
+
+    spotifyPlayerConnected = true;
   });
 }
 
