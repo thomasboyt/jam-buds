@@ -1,51 +1,12 @@
 <template>
   <div class="audio-player" v-if="hasStreamingService">
-    <!-- TODO: There is an obvious edge case here of someone having both
-    services. It'd be nice to support for rare cases of songs being on one but
-    not the other, but, ehhhh -->
-    <spotify-player
-      v-if="hasSpotify && nowPlaying"
-      :spotify-id="nowPlaying.spotifyId"
-      :is-playing="isPlaying"
-      @buffering="this.handleBufferingStart"
-      @buffered="this.handleBufferingEnd"
-      @ended="this.handlePlaybackEnded"
-    />
-
-    <apple-music-player
-      v-if="hasAppleMusic && nowPlaying"
-      :apple-music-id="nowPlaying.appleMusicId"
-      :is-playing="isPlaying"
-      @buffering="this.handleBufferingStart"
-      @buffered="this.handleBufferingEnd"
-      @ended="this.handlePlaybackEnded"
-    />
-
     <transition name="audio-player-open">
       <div class="audio-player--bar" v-if="nowPlaying">
-        <div class="audio-player--song-display">
-          <div class="audio-player--art-container">
-            <img v-if="albumArt" :src="albumArt" class="audio-player--art" />
-            <icon
-              v-else
-              :glyph="placeholderIcon"
-              class="audio-player--art-placeholder"
-            />
-          </div>
-          <div class="audio-player--label-container">
-            <div :style="{ fontWeight: '600' }">
-              {{ artist }}
-            </div>
-            <div>{{ title }}</div>
-
-            <div>
-              playing from
-              <router-link :to="playbackSourcePath">{{
-                playbackSourceLabel
-              }}</router-link>
-            </div>
-          </div>
-        </div>
+        <audio-player-song-display
+          :song="nowPlaying"
+          :playback-source-path="playbackSourcePath"
+          :playback-source-label="playbackSourceLabel"
+        />
 
         <div class="audio-player--controls" v-if="nowPlaying">
           <loading-spinner v-if="isBuffering" />
@@ -73,23 +34,20 @@
 
 <script>
 import { mapState } from 'vuex';
-import Icon from '../Icon.vue';
 
-import SpotifyPlayer from './SpotifyPlayer.vue';
-import AppleMusicPlayer from './AppleMusicPlayer.vue';
+import Icon from '../Icon.vue';
+import AudioPlayerSongDisplay from './AudioPlayerSongDisplay.vue';
 import LoadingSpinner from './LoadingSpinner.vue';
 
 const playIcon = require('../../../assets/play.svg');
 const pauseIcon = require('../../../assets/pause.svg');
 const nextIcon = require('../../../assets/next.svg');
-const placeholderIcon = require('../../../assets/record.svg');
 
 export default {
   components: {
     Icon,
     LoadingSpinner,
-    SpotifyPlayer,
-    AppleMusicPlayer,
+    AudioPlayerSongDisplay,
   },
 
   data() {
@@ -97,8 +55,6 @@ export default {
       playIcon,
       pauseIcon,
       nextIcon,
-      placeholderIcon,
-      isBuffering: false,
     };
   },
 
@@ -106,6 +62,7 @@ export default {
     ...mapState('playback', [
       'nowPlaying',
       'isPlaying',
+      'isBuffering',
       'playbackSourcePath',
       'playbackSourceLabel',
     ]),
@@ -121,41 +78,11 @@ export default {
     playPauseIcon() {
       return this.isPlaying ? pauseIcon : playIcon;
     },
-
-    artist() {
-      return this.nowPlaying.artists[0];
-    },
-
-    title() {
-      return this.nowPlaying.title;
-    },
-
-    albumArt() {
-      return this.nowPlaying.albumArt;
-    },
-
-    embedProps() {
-      return {
-        isPlaying: this.isPlaying,
-        'v-on:ended': this.handlePlaybackEnded,
-      };
-    },
   },
 
   methods: {
     handlePlayPauseClick() {
       this.$store.dispatch('playback/togglePlayback');
-    },
-    handleNextClick() {},
-    handlePlaybackEnded() {
-      this.$store.dispatch('playback/clearPlayback');
-      this.isBuffering = false;
-    },
-    handleBufferingStart() {
-      this.isBuffering = true;
-    },
-    handleBufferingEnd() {
-      this.isBuffering = false;
     },
   },
 };
@@ -233,51 +160,6 @@ export default {
     width: 40px;
     height: 40px;
     fill: white;
-  }
-}
-
-.audio-player--song-display {
-  display: flex;
-  min-width: 0;
-  max-width: 100%;
-}
-
-.audio-player--label-container {
-  // needed for proper wrapping
-  max-width: 100%;
-
-  color: white;
-  padding: 10px 15px;
-  font-size: 14px;
-
-  > div {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  a {
-    color: $yellow;
-  }
-}
-
-.audio-player--art-container {
-  flex: 0 0 80px;
-  height: 100%;
-  width: 80px;
-  padding: 10px;
-
-  .audio-player--art {
-    width: 100%;
-  }
-
-  img.audio-player--art-placeholder {
-    padding: 10px;
-    width: 100%;
-  }
-
-  @media (max-width: $breakpoint-small) {
-    display: none;
   }
 }
 </style>

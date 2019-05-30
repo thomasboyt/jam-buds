@@ -1,16 +1,24 @@
+import { getOrCreatePlayer } from '../../players';
+
 const playback = {
   namespaced: true,
 
   state() {
     return {
       isPlaying: false,
+      isBuffering: false,
       nowPlaying: null,
       playbackSourceLabel: null,
       playbackSourcePath: null,
+      player: null,
     };
   },
 
   mutations: {
+    setPlayer(state, player) {
+      state.player = player;
+    },
+
     playSong(state, { song, playbackSourceLabel, playbackSourcePath }) {
       // XXX: Eventually, this should take _entry ID_ instead of a song, for
       // playlist-playback purposes
@@ -32,21 +40,45 @@ const playback = {
       state.playbackSourcePath = null;
     },
 
-    sync(state, { isPaused }) {
-      state.isPlaying = !isPaused;
+    sync(state, syncState) {
+      for (let key of Object.keys(syncState)) {
+        state[key] = syncState[key];
+      }
     },
   },
 
   actions: {
-    playSong(context, payload) {
+    async playSong(context, payload) {
+      const player = context.rootState.currentUser.hasSpotify
+        ? 'spotify'
+        : 'applemusic';
+
+      context.commit('setPlayer', player);
       context.commit('playSong', payload);
+
+      const playerInstance = await getOrCreatePlayer(player, {
+        store: this,
+      });
+
+      playerInstance.setSong(payload.song);
     },
-    togglePlayback(context) {
-      context.commit('togglePlayback');
+
+    async togglePlayback(context) {
+      const playerInstance = await getOrCreatePlayer(context.state.player, {
+        store: this,
+      });
+
+      if (context.state.isPlaying) {
+        playerInstance.pause();
+      } else {
+        playerInstance.play();
+      }
     },
+
     clearPlayback(context) {
       context.commit('clearPlayback');
     },
+
     sync(context, payload) {
       context.commit('sync', payload);
     },
