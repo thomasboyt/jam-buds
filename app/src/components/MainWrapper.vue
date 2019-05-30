@@ -1,5 +1,7 @@
 <template>
   <div :class="['main', { 'with-sidebar': withSidebar }]" :style="cssTheme">
+    <logged-out-header v-if="!authenticated" />
+
     <div class="main-inner">
       <slot />
     </div>
@@ -10,13 +12,18 @@
 import { mapState } from 'vuex';
 import getCSSVariablesFromColorScheme from '../util/getCSSVariablesFromColorScheme';
 import { defaultColorScheme } from '../util/gradients';
+import LoggedOutHeader from './LoggedOutHeader.vue';
 
 export default {
+  components: {
+    LoggedOutHeader,
+  },
   props: ['colorScheme', 'withSidebar'],
 
   computed: {
     ...mapState({
       currentUserScheme: (state) => state.currentUser.colorScheme,
+      authenticated: (state) => state.auth.authenticated,
     }),
 
     cssTheme() {

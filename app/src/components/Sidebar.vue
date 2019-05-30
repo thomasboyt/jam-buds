@@ -1,5 +1,9 @@
 <template>
   <div v-if="authenticated" :class="['sidebar', { '-open': open }]">
+    <div class="logo-container">
+      <logo />
+    </div>
+
     <p>
       what up,
       <router-link
@@ -49,9 +53,10 @@
 
 <script>
 import AddSongButton from './AddSongButton.vue';
+import Logo from './Logo.vue';
 
 export default {
-  components: { AddSongButton },
+  components: { AddSongButton, Logo },
 
   props: ['open'],
 
@@ -99,7 +104,7 @@ export default {
   color: white;
 
   position: fixed;
-  height: calc(100vh - #{$header-height});
+  height: 100vh;
   width: $sidebar-width;
 
   @media (max-width: $breakpoint-small) {
@@ -115,6 +120,15 @@ export default {
     &.-open {
       left: 0;
     }
+
+    .logo-container {
+      display: none;
+    }
+  }
+
+  .logo-container {
+    margin: 20px auto 40px;
+    text-align: center;
   }
 
   a,

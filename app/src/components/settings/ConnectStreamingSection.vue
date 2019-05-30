@@ -91,13 +91,12 @@ export default {
 <style lang="scss" scoped>
 .button-group {
   display: flex;
+  flex-wrap: wrap;
+  margin: -10px -10px 1em -10px;
 
   /deep/ .settings-button {
     flex: 0 0 auto;
-    margin-left: 10px;
-    &:first-child {
-      margin-left: 0px;
-    }
+    margin: 10px;
   }
 }
 </style>

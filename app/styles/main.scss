@@ -1,9 +1,7 @@
 @import './mixins';
 @import './z-index';
 
-@import './header.scss';
 @import './add-song.scss';
-@import './audio-player.scss';
 @import './settings.scss';
 
 * {
@@ -44,16 +42,18 @@ a:active {
 .page-container {
   display: flex;
   flex-flow: column;
-
   margin: 0 auto;
-  padding-top: $header-height;
   min-height: 100vh;
 }
 
-.main {
+.main,
+.logged-out-main {
   padding: 10px;
   padding-top: 20px;
 
+  @media (max-width: $breakpoint-small) {
+    padding-top: $header-height + 20px;
+  }
   @media (min-width: $breakpoint-small) {
     padding-top: 40px;
   }
