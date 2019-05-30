@@ -173,12 +173,12 @@ export default {
   align-items: center;
 
   &.audio-player-open-enter-active,
-  .audio-player-open-leave-active {
+  &.audio-player-open-leave-active {
     transition: 0.2s bottom cubic-bezier(0, 0, 0.2, 1);
   }
 
   &.audio-player-open-enter,
-  .audio-player-open-leave-to {
+  &.audio-player-open-leave-to {
     bottom: -80px;
   }
 
