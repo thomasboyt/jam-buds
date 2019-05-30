@@ -61,7 +61,18 @@ export default {
         this.$emit('buffered');
       }
 
+      // XXX: This is a stupid fucking workaround to a stupid fucking bug:
+      // https://forums.developer.apple.com/thread/117043
       if (evt.state === MusicKit.PlaybackStates.ended) {
+        this.ended = true;
+      }
+      if (evt.state === MusicKit.PlaybackStates.waiting && this.ended) {
+        console.log('Preventing replaying just-ended song!');
+        this.music.stop();
+        this.$emit('ended');
+      }
+      // just in case apple ever fixes this bug, this should work
+      if (evt.state === MusicKit.PlaybackStates.completed) {
         this.$emit('ended');
       }
     },
