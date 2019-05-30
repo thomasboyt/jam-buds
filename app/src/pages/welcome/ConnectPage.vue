@@ -102,12 +102,13 @@ h3 {
 
 .button-group {
   display: flex;
-  align-items: center;
   justify-content: center;
+  flex-wrap: wrap;
+  margin: -10px;
 
   /deep/ .settings-button {
     flex: 0 0 auto;
-    margin: 0 10px;
+    margin: 10px;
   }
 }
 </style>

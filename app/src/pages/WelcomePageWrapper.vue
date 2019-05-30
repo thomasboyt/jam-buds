@@ -1,5 +1,7 @@
 <template>
   <div class="welcome-page-wrapper" :style="{ background: gradient }">
+    <logged-out-header />
+
     <h2>
       <span v-if="name">welcome, {{ name }}!</span>
       <span v-else>welcome!</span>
@@ -15,8 +17,11 @@
 import { mapState } from 'vuex';
 import titleMixin from '../util/titleMixin';
 import gradients from '../util/gradients';
+import LoggedOutHeader from '../components/LoggedOutHeader.vue';
 
 export default {
+  components: { LoggedOutHeader },
+
   mixins: [titleMixin],
 
   title: 'Welcome',
@@ -46,6 +51,9 @@ h2 {
 .welcome-page-wrapper {
   flex: 1;
 
+  @media (max-width: $breakpoint-small) {
+    padding-top: 100px;
+  }
   @media (min-width: $breakpoint-small) {
     padding-top: 25px;
   }

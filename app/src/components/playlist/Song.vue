@@ -130,6 +130,8 @@ export default {
 </script>
 
 <style scoped lang="scss">
+@import '../../../styles/mixins.scss';
+
 .playlist-song {
   border-top: 1px var(--theme-text-color) solid;
   padding: 10px;
@@ -158,6 +160,7 @@ export default {
     height: 100%;
     flex: 0 0 64px;
     border: 1px black solid;
+    margin-right: 20px;
 
     &.-placeholder {
       height: 80%;
@@ -167,6 +170,10 @@ export default {
       svg {
         height: 100%;
       }
+    }
+
+    @media (max-width: $breakpoint-small) {
+      display: none;
     }
   }
 
@@ -189,7 +196,7 @@ export default {
     max-width: 100%;
     min-width: 0;
 
-    padding: 0 20px;
+    margin-right: 10px;
     line-height: 24px;
   }
 }
