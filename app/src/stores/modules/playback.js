@@ -31,6 +31,10 @@ const playback = {
       state.playbackSourceLabel = null;
       state.playbackSourcePath = null;
     },
+
+    sync(state, { isPaused }) {
+      state.isPlaying = !isPaused;
+    },
   },
 
   actions: {
@@ -42,6 +46,9 @@ const playback = {
     },
     clearPlayback(context) {
       context.commit('clearPlayback');
+    },
+    sync(context, payload) {
+      context.commit('sync', payload);
     },
   },
 };

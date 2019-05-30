@@ -128,6 +128,40 @@ export default {
     this.ready = true;
 
     this.setSong(this.spotifyId);
+
+    spotifyPlayer.addListener('player_state_changed', (playbackState) => {
+      if (!playbackState) {
+        return;
+      }
+
+      // song ended: https://github.com/spotify/web-playback-sdk/issues/35#issuecomment-469834686
+      if (
+        playbackState.paused &&
+        playbackState.position === 0 &&
+        playbackState.restrictions.disallow_resuming_reasons &&
+        playbackState.restrictions.disallow_resuming_reasons[0] === 'not_paused'
+      ) {
+        this.$emit('ended');
+        return;
+      }
+
+      // TODO: if we use a newVal != oldVal strategy this could be busted? we
+      // wouldn't want sync to cause updates here...
+      //
+      // store "last synced" state locally here, and compare locally? don't
+      // update if same as last synced state? does that make sense? edge cases?
+      // setting progress back to exactly what last synced was is one... unset
+      // last synced state later? aaaaaaaaaaaaaa
+      this.$store.dispatch('playback/sync', {
+        isPaused: playbackState.paused,
+        // position: playbackState.position,
+      });
+
+      // idea: if an "external" song gets played, break the player?
+      if (playbackState.track_window.current_track.id !== this.spotifyId) {
+        this.$emit('spotifyLostSync');
+      }
+    });
   },
 
   methods: {
