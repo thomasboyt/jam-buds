@@ -99,7 +99,7 @@ export default {
 
 .sidebar {
   padding: 10px 20px;
-  background: lighten($black, 5%);
+  background: $lighter-black;
   font-family: 'Open Sans', sans-serif;
   color: white;
 

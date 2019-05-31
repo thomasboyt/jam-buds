@@ -19,8 +19,10 @@ $modal-height: 450px;
 .modal-content {
   overflow: auto;
 
-  background: skyblue;
-  box-shadow: yellow 15px 15px;
+  background: $lighter-black;
+  color: rgb(225, 225, 225);
+
+  border-radius: 10px;
 
   position: absolute;
   z-index: $z-modal;
@@ -37,8 +39,8 @@ $modal-height: 450px;
     height: $modal-height;
     top: 50%;
     left: 50%;
-    margin-top: -$modal-height/2 - 20px;
-    margin-left: -$modal-width/2 - 20px;
+    margin-top: -$modal-height/2;
+    margin-left: -$modal-width/2;
   }
 
   padding: 20px;
@@ -63,35 +65,37 @@ $modal-height: 450px;
 
 @media (min-width: $breakpoint-small) {
   .modal-open-enter-active .modal-content {
-    animation: flyIn ease-in-out 1.5s;
+    animation: desktopModalAppear 400ms cubic-bezier(0, 0, 0.2, 1);
   }
 
   .modal-open-leave-active .modal-content {
-    animation: flyOut ease-in-out 1s reverse;
+    animation: desktopModalLeave 250ms cubic-bezier(0.4, 0, 1, 1);
   }
 
   .modal-open-leave-to .modal-content {
-    transform: scale(0);
+    opacity: 0;
   }
 }
 
-@keyframes flyIn {
+@keyframes desktopModalAppear {
   0% {
-    transform: rotate(-180deg) scale(0);
+    opacity: 0;
+    transform: translateY(-30px);
   }
 
   100% {
-    transform: rotate(720deg) scale(1);
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-@keyframes flyOut {
-  100% {
-    transform: rotate(720deg) scale(1);
+@keyframes desktopModalLeave {
+  0% {
+    opacity: 1;
   }
 
-  0% {
-    transform: rotate(-180deg) scale(0);
+  100% {
+    opacity: 0;
   }
 }
 
@@ -104,7 +108,7 @@ $modal-height: 450px;
   a:visited,
   a:hover,
   a:active {
-    color: darkblue;
+    color: rgb(225, 225, 225);
   }
 
   .header-container {
@@ -115,12 +119,11 @@ $modal-height: 450px;
     display: inline-block;
     margin-top: 0;
     margin-bottom: 25px;
-
-    transform: skew(-15deg);
-
-    font-weight: bold;
-    background: yellow;
-    padding: 10px 20px;
+    font-size: 32px;
+    line-height: 40px;
+    background: linear-gradient(to right, yellow, hotpink);
+    background-clip: text;
+    color: rgba(255, 255, 255, 0.1);
   }
 
   .modal-top-row {
@@ -131,6 +134,7 @@ $modal-height: 450px;
     position: absolute;
     top: 5px;
     padding: 0px;
+    color: white;
 
     svg {
       width: 30px;

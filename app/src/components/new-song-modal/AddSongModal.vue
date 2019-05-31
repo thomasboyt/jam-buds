@@ -1,5 +1,5 @@
 <template>
-  <transition name="modal-open" :duration="transitionDurations">
+  <transition name="modal-open" :duration="{ enter: 400, leave: 400 }">
     <div
       v-if="showAddSongModal"
       class="modal-overlay"
@@ -22,12 +22,6 @@ export default {
     ...mapState({
       showAddSongModal: (state) => state.addSong.showModal,
     }),
-    transitionDurations() {
-      // keep in sync with add-song.scss
-      return this.$mq === 'phone'
-        ? { enter: 400, leave: 250 }
-        : { enter: 1500, leave: 1000 };
-    },
   },
 
   methods: {
