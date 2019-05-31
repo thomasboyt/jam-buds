@@ -10,7 +10,7 @@
       <loading-spinner v-if="isBuffering" />
       <button
         v-else
-        class="play-pause-button"
+        :class="{ 'play-pause-button': true, play: !isPlaying }"
         @click="handlePlayPauseClick"
         :disabled="!nowPlaying"
       >
@@ -120,9 +120,11 @@ export default {
 
     .audio-player--controls {
       margin-left: auto;
+      margin-right: 10px;
+
       .loading-spinner {
         // XXX: not sure why this is needed :\
-        margin-right: 36px;
+        margin-right: 26px;
       }
     }
   }
@@ -145,9 +147,11 @@ export default {
   button {
     flex: 0 0 auto;
 
-    height: 60px;
-    width: 60px;
-    border-radius: 60px;
+    height: 45px;
+    width: 45px;
+    border-radius: 45px;
+
+    border: 1px #ccc solid;
 
     display: block;
     background: none;
@@ -163,9 +167,14 @@ export default {
   }
 
   .icon {
-    width: 40px;
-    height: 40px;
+    width: 100%;
+    height: 100%;
     fill: white;
+  }
+
+  button.play icon {
+    // idk why this makes it seem more centered but it does
+    margin-left: 2px;
   }
 }
 </style>
