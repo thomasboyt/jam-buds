@@ -147,11 +147,11 @@ export default {
   button {
     flex: 0 0 auto;
 
-    height: 45px;
-    width: 45px;
-    border-radius: 45px;
+    height: 40px;
+    width: 40px;
+    border-radius: 40px;
 
-    border: 1px #ccc solid;
+    border: 2px #aaa solid;
 
     display: block;
     background: none;
@@ -159,6 +159,7 @@ export default {
     &:hover,
     &:active {
       background: white;
+      border-color: white;
 
       .icon {
         fill: black;
@@ -172,9 +173,9 @@ export default {
     fill: white;
   }
 
-  button.play icon {
+  button.play .icon {
     // idk why this makes it seem more centered but it does
-    margin-left: 2px;
+    margin-left: 1px;
   }
 }
 </style>
