@@ -121,9 +121,9 @@ $modal-height: 450px;
     margin-bottom: 25px;
     font-size: 32px;
     line-height: 40px;
-    background: linear-gradient(to right, yellow, hotpink);
+    background: $post-song-gradient;
     background-clip: text;
-    color: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.2);
   }
 
   .modal-top-row {

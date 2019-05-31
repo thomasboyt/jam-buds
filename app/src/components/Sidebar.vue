@@ -14,8 +14,6 @@
       </router-link>
     </p>
 
-    <add-song-button @click.native="handleClick" />
-
     <ul>
       <li>
         <router-link to="/" @click.native="handleClick">
@@ -52,11 +50,10 @@
 </template>
 
 <script>
-import AddSongButton from './AddSongButton.vue';
 import Logo from './Logo.vue';
 
 export default {
-  components: { AddSongButton, Logo },
+  components: { Logo },
 
   props: ['open'],
 

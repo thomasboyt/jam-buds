@@ -1,165 +1,21 @@
 <template>
-  <div class="audio-player" v-if="hasStreamingService">
-    <transition name="audio-player-open">
-      <div class="audio-player--bar" v-if="nowPlaying">
-        <audio-player-song-display
-          :song="nowPlaying"
-          :playback-source-path="playbackSourcePath"
-          :playback-source-label="playbackSourceLabel"
-        />
-
-        <div class="audio-player--controls" v-if="nowPlaying">
-          <loading-spinner v-if="isBuffering" />
-          <button
-            v-else
-            class="play-pause-button"
-            @click="handlePlayPauseClick"
-            :disabled="!nowPlaying"
-          >
-            <icon :glyph="playPauseIcon" />
-          </button>
-
-          <!-- <button
-          class="next-button"
-          @click="handleNextClick"
-          :disabled="!nowPlaying"
-        >
-          <icon :glyph="nextIcon" />
-        </button> -->
-        </div>
-      </div>
-    </transition>
-  </div>
+  <transition name="audio-player-open">
+    <audio-player-bar v-if="nowPlaying" />
+  </transition>
 </template>
 
 <script>
 import { mapState } from 'vuex';
 
-import Icon from '../Icon.vue';
-import AudioPlayerSongDisplay from './AudioPlayerSongDisplay.vue';
-import LoadingSpinner from './LoadingSpinner.vue';
-
-const playIcon = require('../../../assets/play.svg');
-const pauseIcon = require('../../../assets/pause.svg');
-const nextIcon = require('../../../assets/next.svg');
+import AudioPlayerBar from './AudioPlayerBar.vue';
 
 export default {
   components: {
-    Icon,
-    LoadingSpinner,
-    AudioPlayerSongDisplay,
-  },
-
-  data() {
-    return {
-      playIcon,
-      pauseIcon,
-      nextIcon,
-    };
+    AudioPlayerBar,
   },
 
   computed: {
-    ...mapState('playback', [
-      'nowPlaying',
-      'isPlaying',
-      'isBuffering',
-      'playbackSourcePath',
-      'playbackSourceLabel',
-    ]),
-
-    ...mapState({
-      hasStreamingService: (state) =>
-        state.currentUser.hasSpotify || state.currentUser.hasAppleMusic,
-      hasSpotify: (state) => state.currentUser.hasSpotify,
-      hasAppleMusic: (state) => state.currentUser.hasAppleMusic,
-      authenticated: (state) => state.auth.authenticated,
-    }),
-
-    playPauseIcon() {
-      return this.isPlaying ? pauseIcon : playIcon;
-    },
-  },
-
-  methods: {
-    handlePlayPauseClick() {
-      this.$store.dispatch('playback/togglePlayback');
-    },
+    ...mapState('playback', ['nowPlaying']),
   },
 };
 </script>
-
-<style lang="scss" scoped>
-@import '../../../styles/mixins.scss';
-
-.audio-player--bar {
-  background: $black;
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  height: 80px; // TODO: smaller on mobile
-  align-items: center;
-
-  &.audio-player-open-enter-active,
-  &.audio-player-open-leave-active {
-    transition: 0.2s bottom cubic-bezier(0, 0, 0.2, 1);
-  }
-
-  &.audio-player-open-enter,
-  &.audio-player-open-leave-to {
-    bottom: -80px;
-  }
-
-  @media (max-width: $breakpoint-small) {
-    display: flex;
-
-    .audio-player--controls {
-      margin-left: auto;
-      .loading-spinner {
-        // XXX: not sure why this is needed :\
-        margin-right: 36px;
-      }
-    }
-  }
-
-  @media (min-width: $breakpoint-small) {
-    display: grid;
-    justify-items: center;
-    grid-column-gap: 5px;
-    grid-template-columns: 1fr 1fr 1fr;
-
-    .audio-player--song-display {
-      margin-right: auto; // right align this guy
-    }
-  }
-}
-
-.audio-player--controls {
-  display: flex;
-
-  button {
-    flex: 0 0 auto;
-
-    height: 60px;
-    width: 60px;
-    border-radius: 60px;
-
-    display: block;
-    background: none;
-
-    &:hover,
-    &:active {
-      background: white;
-
-      .icon {
-        fill: black;
-      }
-    }
-  }
-
-  .icon {
-    width: 40px;
-    height: 40px;
-    fill: white;
-  }
-}
-</style>

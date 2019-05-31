@@ -50,7 +50,7 @@ a:active {
 .logged-out-main {
   padding: 10px;
   padding-top: 20px;
-  padding-bottom: 100px;
+  padding-bottom: 140px; // room for audio player + FAB
 
   @media (max-width: $breakpoint-small) {
     padding-top: $header-height + 20px;

@@ -1,6 +1,11 @@
 <template>
   <div class="playlist">
-    <h2>your feed</h2>
+    <div class="header-row">
+      <h2>your feed</h2>
+      <div class="header-row-button-container">
+        <add-song-button />
+      </div>
+    </div>
 
     <playlist
       entry-type="feed-entry"
@@ -25,9 +30,10 @@
 import { mapState } from 'vuex';
 import Playlist from './playlist/Playlist.vue';
 import titleMixin from '../util/titleMixin';
+import AddSongButton from './AddSongButton.vue';
 
 export default {
-  components: { Playlist },
+  components: { Playlist, AddSongButton },
 
   mixins: [titleMixin],
 
@@ -64,3 +70,12 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.header-row {
+  display: flex;
+}
+.header-row-button-container {
+  margin-left: auto;
+}
+</style>
