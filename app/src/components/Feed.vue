@@ -29,15 +29,14 @@
 <script>
 import { mapState } from 'vuex';
 import Playlist from './playlist/Playlist.vue';
-import titleMixin from '../util/titleMixin';
 import AddSongButton from './AddSongButton.vue';
 
 export default {
   components: { Playlist, AddSongButton },
 
-  mixins: [titleMixin],
-
-  title: 'Feed',
+  metaInfo: {
+    title: 'Feed',
+  },
 
   data() {
     return {

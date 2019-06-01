@@ -21,7 +21,6 @@
 <script>
 import MainWrapper from '../components/MainWrapper.vue';
 import SidebarWrapper from '../components/SidebarWrapper.vue';
-import titleMixin from '../util/titleMixin';
 
 import ConnectStreamingSection from '../components/settings/ConnectStreamingSection.vue';
 import ConnectTwitterSection from '../components/settings/ConnectTwitterSection.vue';
@@ -36,8 +35,8 @@ export default {
     UpdateColorScheme,
   },
 
-  mixins: [titleMixin],
-
-  title: 'Settings',
+  metaInfo: {
+    title: 'Settings',
+  },
 };
 </script>

@@ -21,7 +21,6 @@
 import { mapState } from 'vuex';
 import ProfileNav from '../../components/ProfileNav.vue';
 import Playlist from '../../components/playlist/Playlist.vue';
-import titleMixin from '../../util/titleMixin';
 
 export default {
   components: {
@@ -29,11 +28,11 @@ export default {
     Playlist,
   },
 
-  title() {
-    return this.title;
+  metaInfo() {
+    return {
+      title: this.title,
+    };
   },
-
-  mixins: [titleMixin],
 
   async asyncData({ store, route }) {
     await store.dispatch('loadProfileLikesPlaylist', route.params.id);

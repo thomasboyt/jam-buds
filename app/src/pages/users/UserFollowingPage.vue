@@ -9,7 +9,6 @@
 import { mapState } from 'vuex';
 import ProfileNav from '../../components/ProfileNav.vue';
 import UsersList from '../../components/UsersList.vue';
-import titleMixin from '../../util/titleMixin';
 
 export default {
   components: {
@@ -17,10 +16,10 @@ export default {
     UsersList,
   },
 
-  mixins: [titleMixin],
-
-  title() {
-    return this.title;
+  metaInfo() {
+    return {
+      title: this.title,
+    };
   },
 
   async asyncData({ store, route }) {

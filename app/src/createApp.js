@@ -3,6 +3,7 @@ import '../styles/main.scss';
 import Vue from 'vue';
 import { sync } from 'vuex-router-sync';
 import VueMq from 'vue-mq';
+import Meta from 'vue-meta';
 
 import App from './App.vue';
 import createStore from './stores';
@@ -17,6 +18,8 @@ export default function createApp() {
     },
     defaultBreakpoint: 'desktop',
   });
+
+  Vue.use(Meta);
 
   const store = createStore();
   const router = createRouter();

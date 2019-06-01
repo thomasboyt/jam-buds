@@ -11,6 +11,9 @@ export default async function(context) {
   const { app, router, store } = createApp();
   const { url, authToken, apiUrl } = context;
 
+  // TODO: is this the right place for this?
+  context.meta = app.$meta();
+
   app.$axios.defaults.baseURL = `${apiUrl}/api/`;
 
   if (authToken) {

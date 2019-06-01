@@ -21,7 +21,6 @@
 import { mapState } from 'vuex';
 import ProfileNav from '../../components/ProfileNav.vue';
 import Playlist from '../../components/playlist/Playlist.vue';
-import titleMixin from '../../util/titleMixin';
 
 export default {
   components: {
@@ -29,7 +28,11 @@ export default {
     Playlist,
   },
 
-  mixins: [titleMixin],
+  metaInfo() {
+    return {
+      title: this.title,
+    };
+  },
 
   title() {
     return this.title;

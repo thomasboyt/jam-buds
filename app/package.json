@@ -59,6 +59,7 @@
     "tinycolor2": "^1.4.1",
     "vanilla-picker": "^2.7.2",
     "vue": "^2.6.7",
+    "vue-meta": "^2.0.0-rc.1",
     "vue-mq": "^1.0.1",
     "vue-router": "^3.0.1",
     "vue-server-renderer": "^2.6.7",

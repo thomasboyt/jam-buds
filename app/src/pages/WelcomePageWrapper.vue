@@ -15,16 +15,15 @@
 
 <script>
 import { mapState } from 'vuex';
-import titleMixin from '../util/titleMixin';
 import gradients from '../util/gradients';
 import LoggedOutHeader from '../components/LoggedOutHeader.vue';
 
 export default {
   components: { LoggedOutHeader },
 
-  mixins: [titleMixin],
-
-  title: 'Welcome',
+  metaInfo: {
+    title: 'Welcome',
+  },
 
   data() {
     return {

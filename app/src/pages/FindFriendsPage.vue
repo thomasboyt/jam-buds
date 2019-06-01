@@ -27,7 +27,6 @@ import MainWrapper from '../components/MainWrapper.vue';
 import SidebarWrapper from '../components/SidebarWrapper.vue';
 import TwitterUsersList from '../components/TwitterUsersList.vue';
 import TwitterConnectButton from '../components/settings/TwitterConnectButton.vue';
-import titleMixin from '../util/titleMixin';
 
 export default {
   components: {
@@ -37,9 +36,9 @@ export default {
     TwitterConnectButton,
   },
 
-  mixins: [titleMixin],
-
-  title: 'Find Friends',
+  metaInfo: {
+    title: 'Find Friends',
+  },
 
   async asyncData({ store }) {
     if (store.state.currentUser.twitterName) {
