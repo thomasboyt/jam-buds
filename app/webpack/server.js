@@ -1,4 +1,3 @@
-const path = require('path');
 const nodeExternals = require('webpack-node-externals');
 const VueSSRServerPlugin = require('vue-server-renderer/server-plugin');
 
@@ -19,19 +18,13 @@ const config = {
     ],
   },
 
-  resolve: {
-    alias: {
-      'vanilla-picker$': path.resolve(__dirname, '../src/ssr-stub.js'),
-    },
-  },
-
   output: {
     libraryTarget: 'commonjs2',
   },
 
   externals: [
     nodeExternals({
-      whitelist: [/\.css$/, /\?vue&type=style/, 'vanilla-picker'],
+      whitelist: [/\.css$/, /\?vue&type=style/],
     }),
   ],
 
