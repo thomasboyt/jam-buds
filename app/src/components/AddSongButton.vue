@@ -36,6 +36,7 @@ button.add-song {
 
   .label {
     background: $post-song-gradient;
+    -webkit-backdrop-clip: text;
     background-clip: text;
     color: rgba(255, 255, 255, 0.2);
   }
