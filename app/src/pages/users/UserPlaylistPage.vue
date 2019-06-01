@@ -31,6 +31,14 @@ export default {
   metaInfo() {
     return {
       title: this.title,
+      meta: [
+        { vmid: 'title', name: 'og:title', content: `${this.name}'s playlist` },
+        {
+          vmid: 'description',
+          name: 'og:description',
+          content: 'check out this playlist on jam buds!',
+        },
+      ],
     };
   },
 

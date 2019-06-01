@@ -32,8 +32,12 @@ export default {
     titleTemplate: (title) => (title ? `${title} | Jam Buds` : 'Jam Buds'),
     meta: [
       { name: 'twitter:card', content: 'summary' },
-      { name: 'og:title', content: 'jam buds!' },
-      { name: 'og:description', content: 'share some music, I dunno!!' },
+      { vmid: 'title', name: 'og:title', content: 'jam buds!' },
+      {
+        vmid: 'description',
+        name: 'og:description',
+        content: 'share some music, I dunno!!',
+      },
       {
         name: 'og:image',
         content: `${process.env.STATIC_URL}/corgi_icon_square.png`,
