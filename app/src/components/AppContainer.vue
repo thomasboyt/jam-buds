@@ -30,6 +30,11 @@ export default {
 
   metaInfo: {
     titleTemplate: (title) => (title ? `${title} | Jam Buds` : 'Jam Buds'),
+    meta: [
+      { name: 'twitter:card', content: 'summary' },
+      { name: 'og:title', content: 'jam buds!' },
+      { name: 'og:description', content: 'share some music, I dunno!!' },
+    ],
   },
 
   computed: mapState({
