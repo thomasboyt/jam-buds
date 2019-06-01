@@ -122,7 +122,7 @@ $modal-height: 450px;
     font-size: 32px;
     line-height: 40px;
     background: $post-song-gradient;
-    -webkit-backdrop-clip: text;
+    -webkit-background-clip: text;
     background-clip: text;
     color: rgba(255, 255, 255, 0.2);
   }
