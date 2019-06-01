@@ -36,7 +36,7 @@ export default {
       {
         vmid: 'description',
         name: 'og:description',
-        content: 'share some music, I dunno!!',
+        content: 'a place for sharing music with your friends!',
       },
       {
         name: 'og:image',
