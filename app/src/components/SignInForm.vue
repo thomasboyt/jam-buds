@@ -7,7 +7,9 @@
       aria-label="Email"
     />
 
-    <button type="submit" class="submit">let's go!</button>
+    <button type="submit" class="submit" :disabled="requestInFlight">
+      let's go!
+    </button>
   </form>
 </template>
 
@@ -18,6 +20,7 @@ export default {
   data() {
     return {
       email: '',
+      requestInFlight: false,
     };
   },
 
@@ -28,11 +31,15 @@ export default {
       const email = this.email;
 
       try {
+        this.requestInFlight = true;
+
         await axios.post('/auth/sign-in-token', {
           email,
           signupReferral: this.$route.query['signup-ref'],
         });
       } catch (err) {
+        this.requestInFlight = false;
+
         this.$store.commit('showErrorModal');
         throw err;
       }
