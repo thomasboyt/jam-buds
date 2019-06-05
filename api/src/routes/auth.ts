@@ -8,7 +8,11 @@ import {
   deleteSignInToken,
 } from '../models/signInToken';
 import { isAuthenticated } from '../auth';
-import { validEmail, validUsername } from '../util/validators';
+import {
+  validEmail,
+  validUsernameCharacters,
+  validUsernameLength,
+} from '../util/validators';
 import { Fields, validate } from '../util/validation';
 import { sendEmail } from '../util/email';
 import {
@@ -153,8 +157,13 @@ export default function registerAuthEndpoints(router: Router) {
           label: 'Name',
           rules: [
             {
-              text: 'Username is invalid',
-              isValid: validUsername,
+              text: 'Username is too long!',
+              isValid: validUsernameLength,
+            },
+            {
+              text:
+                'Username has invalid characters. Stick to A-z, 0-9, and underscores, please!',
+              isValid: validUsernameCharacters,
             },
             {
               text: 'This username has already been taken',

@@ -1,27 +1,29 @@
 import expect from 'expect';
-import { validUsername } from '../validators';
+import { validUsernameCharacters, validUsernameLength } from '../validators';
 
-describe('validUsername', () => {
+describe('validUsernameCharacters', () => {
   it('returns true for valid names', () => {
-    expect(validUsername('abc')).toEqual(true);
-    expect(validUsername('ABC')).toEqual(true);
-    expect(validUsername('123')).toEqual(true);
+    expect(validUsernameCharacters('abc')).toEqual(true);
+    expect(validUsernameCharacters('ABC')).toEqual(true);
+    expect(validUsernameCharacters('123')).toEqual(true);
   });
 
   it('does not allow empty string', () => {
-    expect(validUsername('')).toEqual(false);
+    expect(validUsernameCharacters('')).toEqual(false);
   });
 
   it('does not allow spaces', () => {
-    expect(validUsername('a b c')).toEqual(false);
+    expect(validUsernameCharacters('a b c')).toEqual(false);
   });
 
   it('does not allow non-alphanumeric characters', () => {
-    expect(validUsername('abc😀def')).toEqual(false);
+    expect(validUsernameCharacters('abc😀def')).toEqual(false);
   });
+});
 
+describe('validUsernameLength', () => {
   it('does not allow names over 16 characters', () => {
-    expect(validUsername('1234567890123456')).toEqual(true);
-    expect(validUsername('12345678901234567')).toEqual(false);
+    expect(validUsernameLength('1234567890123456')).toEqual(true);
+    expect(validUsernameLength('12345678901234567')).toEqual(false);
   });
 });
