@@ -143,7 +143,9 @@ export default {
       text-decoration: none;
       padding: 8px 0;
 
-      &.router-link-exact-active {
+      &.router-link-exact-active,
+      // prevent "your feed" from always being highlighted!
+      &.router-link-active:not([href='/']) {
         color: white;
         font-weight: 600;
       }
