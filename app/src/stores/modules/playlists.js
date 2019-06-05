@@ -29,6 +29,7 @@ const playlists = {
   state() {
     return {
       feed: { ...playlistState(), url: '/feed' },
+      publicFeed: { ...playlistState(), url: '/public-feed' },
       profilePosts: playlistState(),
       profileLikes: playlistState(),
     };

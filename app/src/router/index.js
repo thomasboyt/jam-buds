@@ -15,6 +15,7 @@ import UserLikedPage from '../pages/users/UserLikedPage.vue';
 import UserFollowingPage from '../pages/users/UserFollowingPage.vue';
 import UserFollowersPage from '../pages/users/UserFollowersPage.vue';
 
+import PublicFeedPage from '../pages/PublicFeedPage.vue';
 import FindFriendsPage from '../pages/FindFriendsPage.vue';
 
 import SettingsPageWrapper from '../pages/SettingsPageWrapper.vue';
@@ -54,6 +55,8 @@ export default function createRouter() {
       },
 
       { path: '/find-friends', component: FindFriendsPage },
+
+      { path: '/public-feed', component: PublicFeedPage },
 
       {
         path: '/settings',
