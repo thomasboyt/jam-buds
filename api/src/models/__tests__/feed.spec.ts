@@ -5,8 +5,8 @@ import {
   postFactory,
   PlaylistEntryWithPostId,
 } from '../../__tests__/factories';
-import { getFeedByUserId } from '../feed';
-import { UserModel } from '../user';
+import { getFeedByUserId, getPublicFeed } from '../feed';
+import { UserModel, setUserFeedToPublic } from '../user';
 import { followUser } from '../following';
 
 import { getOwnPostForSongId } from '../post';
@@ -84,6 +84,33 @@ describe('models/feed', () => {
       expect(items.length).toBe(3);
       expect(items[0].song.id).toBe(vinnyEntry.song.id);
       expect(items[0].timestamp).toBe(post!.createdAt.toISOString());
+    });
+  });
+
+  describe('querying the public feed', () => {
+    let jeff: UserModel;
+    let vinny: UserModel;
+
+    beforeEach(async () => {
+      jeff = await userFactory();
+      vinny = await userFactory();
+    });
+
+    it('only shows posts from users with public feed enabled', async () => {
+      await setUserFeedToPublic(vinny);
+
+      await postFactory({
+        userId: jeff.id,
+      });
+
+      const vinEntry = await postFactory({
+        userId: vinny.id,
+      });
+
+      const items = await getPublicFeed();
+
+      expect(items.length).toBe(1);
+      expect(items[0].song.id).toBe(vinEntry.song.id);
     });
   });
 });

@@ -6,7 +6,7 @@ import {
   getUserProfileForUser,
 } from '../models/user';
 import { getPlaylistEntriesByUserId } from '../models/post';
-import { getFeedByUserId } from '../models/feed';
+import { getFeedByUserId, getPublicFeed } from '../models/feed';
 import { getLikesByUserId } from '../models/like';
 
 import { getUserFromRequest, isAuthenticated } from '../auth';
@@ -91,6 +91,28 @@ export default function registerPlaylistEndpoints(router: Router) {
 
       const items = await getFeedByUserId(user.id, {
         currentUserId: user.id,
+        beforeTimestamp,
+      });
+
+      const feed: Feed = {
+        tracks: items,
+        limit: ENTRY_PAGE_LIMIT,
+      };
+
+      res.json(feed);
+    })
+  );
+
+  router.get(
+    '/public-feed',
+    wrapAsyncRoute(async (req, res) => {
+      const user: UserModel = res.locals.user;
+
+      // TODO: validate
+      const beforeTimestamp = req.query.before;
+
+      const items = await getPublicFeed({
+        currentUserId: user ? user.id : undefined,
         beforeTimestamp,
       });
 

@@ -78,3 +78,30 @@ export async function getFeedByUserId(
 
   return rows.map((row: any) => serializeFeedEntry(row));
 }
+
+export async function getPublicFeed(
+  opts: QueryOptions = {}
+): Promise<PlaylistEntry[]> {
+  let query = selectSongsQuery(db!('songs'), opts)
+    .select([
+      db!.raw(`MIN(posts.created_at) as timestamp`),
+      db!.raw('ARRAY_AGG(users.name) as user_names'),
+    ])
+    .join('posts', { 'songs.id': 'posts.song_id' })
+    .join('users', { 'users.id': 'posts.user_id' })
+    .where({ show_in_public_feed: true })
+    .groupBy('songs.id')
+    .orderBy('timestamp', 'desc');
+
+  if (opts.beforeTimestamp !== undefined) {
+    query = query.havingRaw(`MIN(posts.created_at) < ?`, [
+      opts.beforeTimestamp,
+    ]);
+  }
+
+  query = query.limit(ENTRY_PAGE_LIMIT);
+
+  const rows = await query;
+
+  return rows.map((row: any) => serializeFeedEntry(row));
+}
