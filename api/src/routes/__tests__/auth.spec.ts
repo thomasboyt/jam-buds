@@ -144,7 +144,7 @@ describe('routes/auth', () => {
       expect(res.body.error).toBe('User already exists');
     });
 
-    it('returns an error given an invalid username', async () => {
+    it('returns an error given no username', async () => {
       const res = await request(app)
         .post('/auth/registration')
         .send({
@@ -152,7 +152,7 @@ describe('routes/auth', () => {
         });
 
       expect(res.status).toBe(400);
-      expect(res.body.errors[0].text).toBe('Name is required');
+      expect(res.body.errors[0].text).toBe('Username is required');
     });
   });
 });
