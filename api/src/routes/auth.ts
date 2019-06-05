@@ -154,7 +154,7 @@ export default function registerAuthEndpoints(router: Router) {
       const fields: Fields = {
         name: {
           required: true,
-          label: 'Name',
+          label: 'Username',
           rules: [
             {
               text: 'Username is too long!',
@@ -189,6 +189,7 @@ export default function registerAuthEndpoints(router: Router) {
       const user = await createUser({
         email,
         name: req.body.name,
+        showInPublicFeed: req.body.showInPublicFeed,
       });
 
       // Redeem sign-in token for auth token

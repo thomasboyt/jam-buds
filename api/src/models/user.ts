@@ -34,6 +34,7 @@ export type UserModel = t.TypeOf<typeof UserModelV>;
 interface CreateUserOptions {
   name: string;
   email: string;
+  showInPublicFeed?: boolean;
 }
 
 export async function createUser(opts: CreateUserOptions) {
