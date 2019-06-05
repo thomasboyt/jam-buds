@@ -122,7 +122,9 @@ export default function registerAuthEndpoints(router: Router) {
 
       // Redeem sign-in token for auth token
       const authToken = await createAuthTokenForUserId(user.id);
-      res.cookie(AUTH_TOKEN_COOKIE, authToken);
+      res.cookie(AUTH_TOKEN_COOKIE, authToken, {
+        maxAge: 1000 * 60 * 60 * 24 * 365,
+      });
       await deleteSignInToken(token);
 
       res.redirect(process.env.APP_URL!);
@@ -194,7 +196,9 @@ export default function registerAuthEndpoints(router: Router) {
 
       // Redeem sign-in token for auth token
       const authToken = await createAuthTokenForUserId(user.id);
-      res.cookie(AUTH_TOKEN_COOKIE, authToken);
+      res.cookie(AUTH_TOKEN_COOKIE, authToken, {
+        maxAge: 1000 * 60 * 60 * 24 * 365,
+      });
       await deleteSignInToken(token);
 
       // auto follow referral if present
