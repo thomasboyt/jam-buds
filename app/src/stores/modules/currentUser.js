@@ -37,6 +37,9 @@ const currentUser = {
     disconnectedTwitter(state) {
       state.twitterName = null;
     },
+    updateUserPrivacy(state, { showInPublicFeed }) {
+      state.showInPublicFeed = showInPublicFeed;
+    },
   },
 
   actions: {

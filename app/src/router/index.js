@@ -16,7 +16,10 @@ import UserFollowingPage from '../pages/users/UserFollowingPage.vue';
 import UserFollowersPage from '../pages/users/UserFollowersPage.vue';
 
 import FindFriendsPage from '../pages/FindFriendsPage.vue';
-import SettingsPage from '../pages/SettingsPage.vue';
+
+import SettingsPageWrapper from '../pages/SettingsPageWrapper.vue';
+import ConnectionSettingsPage from '../pages/settings/ConnectionSettingsPage.vue';
+import ProfileSettingsPage from '../pages/settings/ProfileSettingsPage.vue';
 
 // import NotFoundPage from '../pages/NotFoundPage.vue';
 
@@ -49,8 +52,17 @@ export default function createRouter() {
           { path: 'followers', component: UserFollowersPage },
         ],
       },
+
       { path: '/find-friends', component: FindFriendsPage },
-      { path: '/settings', component: SettingsPage },
+
+      {
+        path: '/settings',
+        component: SettingsPageWrapper,
+        children: [
+          { path: '/', component: ConnectionSettingsPage },
+          { path: 'profile', component: ProfileSettingsPage },
+        ],
+      },
       // {path: '*', component: NotFoundPage},
     ],
   });
