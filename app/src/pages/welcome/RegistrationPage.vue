@@ -1,19 +1,27 @@
 <template>
   <div>
     <div class="registration-page">
-      <h3>pick a name!</h3>
+      <p>we're glad to have you!</p>
 
       <form @submit="handleSubmit">
-        <input type="text" v-model="name" />
+        <label>
+          <div class="label-text">your name</div>
+          <input type="text" v-model="name" />
+        </label>
+
+        <label>
+          <input type="checkbox" v-model="showInPublicFeed" />
+          show your posts in the public feed
+        </label>
+
+        <field-error-display
+          :errors="errors"
+          name="name"
+          :style="{ marginTop: '20px' }"
+        />
 
         <button type="submit" class="submit">gogogo</button>
       </form>
-
-      <field-error-display
-        :errors="errors"
-        name="name"
-        :style="{ marginTop: '20px' }"
-      />
     </div>
   </div>
 </template>
@@ -29,6 +37,7 @@ export default {
   data() {
     return {
       name: '',
+      showInPublicFeed: false,
       didError: false,
       errors: null,
     };
@@ -47,12 +56,11 @@ export default {
       this.errors = null;
       this.didError = false;
 
-      const name = this.name;
-
       let resp;
       try {
         resp = await axios.post('/auth/registration', {
-          name,
+          name: this.name,
+          showInPublicFeed: this.showInPublicFeed,
           token: this.$route.query.t,
         });
       } catch (err) {
@@ -76,7 +84,7 @@ export default {
 
 <style lang="scss" scoped>
 .registration-page {
-  max-width: 800px;
+  max-width: 400px;
   margin: 0 auto;
   padding: 0 10px;
   text-align: center;
@@ -89,18 +97,16 @@ h3 {
   font-weight: normal;
 }
 
-form {
-  display: flex;
-  width: 100%;
-  max-width: 500px;
-  margin: 0 auto;
+label {
+  display: block;
+  margin-bottom: 20px;
+  text-align: left;
 }
 
-input {
-  flex: 1 1 auto;
-  min-width: 0px;
-  padding: 0px 5px;
-  margin-right: 5px;
+.label-text {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
 }
 
 .submit {
@@ -109,17 +115,20 @@ input {
   padding: 0px;
 }
 
-input,
+input:not([type='checkbox']),
 .submit {
   height: 45px;
   font-family: 'Work Sans', sans-serif;
 }
 
-input {
+input:not([type='checkbox']) {
   font-size: 22px;
+  padding: 0px 5px;
+  width: 100%;
 }
 
 .submit {
+  margin-top: 20px;
   font-size: 22px;
   background: yellow;
   color: black;
