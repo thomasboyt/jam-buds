@@ -22,23 +22,17 @@
       <follow-toggle v-if="showFollowToggle" :name="name" />
     </div>
 
-    <div class="user-links">
-      <span v-for="(link, idx) of links" :key="link.to">
-        <router-link :to="`/users/${name}${link.to}`">{{
-          link.label
-        }}</router-link>
-        <span v-if="idx !== links.length - 1">/&nbsp;</span>
-      </span>
-    </div>
+    <link-tabs :link-prefix="`/users/${name}`" :links="links" />
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex';
 import FollowToggle from './FollowToggle.vue';
+import LinkTabs from './LinkTabs.vue';
 
 export default {
-  components: { FollowToggle },
+  components: { FollowToggle, LinkTabs },
 
   props: ['title'],
 
@@ -92,10 +86,6 @@ export default {
     .follow-toggle {
       margin-left: auto;
     }
-  }
-
-  .user-links a.router-link-exact-active {
-    font-weight: 600;
   }
 }
 
