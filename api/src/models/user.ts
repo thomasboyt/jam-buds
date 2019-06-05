@@ -170,6 +170,7 @@ export async function serializeCurrentUser(
     twitterName: user.twitterName,
     hasSpotify: !!user.spotifyAccessToken,
     showInPublicFeed: !!user.showInPublicFeed,
+    email: user.email,
   };
 }
 

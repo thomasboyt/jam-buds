@@ -82,6 +82,7 @@ export interface CurrentUser {
   twitterName: string | null;
   hasSpotify: boolean;
   showInPublicFeed: boolean;
+  email: string;
 }
 
 export interface Followers {
