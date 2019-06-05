@@ -91,6 +91,7 @@ export default class SpotifyPlayer {
         const token = await this._getOAuthToken();
         cb(token);
       },
+      volume: 0.5,
     });
 
     return new Promise(async (resolve, reject) => {
