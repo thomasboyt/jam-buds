@@ -81,6 +81,7 @@ export interface CurrentUser {
   colorScheme: ColorScheme | null;
   twitterName: string | null;
   hasSpotify: boolean;
+  showInPublicFeed: boolean;
 }
 
 export interface Followers {

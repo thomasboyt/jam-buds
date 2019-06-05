@@ -25,6 +25,8 @@ export const UserModelV = t.type({
   // XXX: we let this be t.string because of weird to_json issues... really need
   // to fix that whole system
   spotifyExpiresAt: t.union([dateType, t.string, t.null]),
+
+  showInPublicFeed: t.union([t.boolean, t.null]),
 });
 
 export type UserModel = t.TypeOf<typeof UserModelV>;
@@ -167,6 +169,7 @@ export async function serializeCurrentUser(
     colorScheme,
     twitterName: user.twitterName,
     hasSpotify: !!user.spotifyAccessToken,
+    showInPublicFeed: !!user.showInPublicFeed,
   };
 }
 
@@ -260,4 +263,16 @@ export async function deleteSpotifyCredentialsFromUser(user: UserModel) {
   return db!('users')
     .where({ id: user.id })
     .update(updateParams);
+}
+
+export async function setUserFeedToPublic(user: UserModel) {
+  return db!('users')
+    .where({ id: user.id })
+    .update({ showInPublicFeed: true });
+}
+
+export async function setUserFeedToPrivate(user: UserModel) {
+  return db!('users')
+    .where({ id: user.id })
+    .update({ showInPublicFeed: false });
 }

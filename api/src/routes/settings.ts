@@ -5,7 +5,11 @@ import wrapAsyncRoute from '../util/wrapAsyncRoute';
 
 import { setColorSchemeForUserId } from '../models/colorSchemes';
 import { ColorScheme } from '../resources';
-import { UserModel } from '../models/user';
+import {
+  UserModel,
+  setUserFeedToPublic,
+  setUserFeedToPrivate,
+} from '../models/user';
 
 export default function registerSettingsEndpoints(router: Router) {
   router.post(
@@ -23,6 +27,35 @@ export default function registerSettingsEndpoints(router: Router) {
       }
 
       await setColorSchemeForUserId(user.id, colorScheme);
+
+      res.json({
+        success: true,
+      });
+    })
+  );
+
+  // XXX: this is kinda silly but safe I guess
+  router.post(
+    '/settings/go-public',
+    isAuthenticated,
+    wrapAsyncRoute(async (req, res) => {
+      const user: UserModel = res.locals.user;
+
+      await setUserFeedToPublic(user);
+
+      res.json({
+        success: true,
+      });
+    })
+  );
+
+  router.post(
+    '/settings/go-private',
+    isAuthenticated,
+    wrapAsyncRoute(async (req, res) => {
+      const user: UserModel = res.locals.user;
+
+      await setUserFeedToPrivate(user);
 
       res.json({
         success: true,
