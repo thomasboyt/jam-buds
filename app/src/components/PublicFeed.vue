@@ -10,9 +10,10 @@
 
     <p v-if="authenticated">
       you have public posts
-      <strong>{{ publicPostsStatus }}</strong> and will show up in this feed.
-      you can change that
-      <router-link to="/settings/profile">here</router-link> if you'd like.
+      <strong>{{ publicPostsStatus }}</strong> and will
+      <span v-if="!enabledPublicPosts">not</span> show up in this feed. you can
+      change that <router-link to="/settings/profile">here</router-link> if
+      you'd like.
     </p>
 
     <playlist
