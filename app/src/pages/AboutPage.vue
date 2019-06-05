@@ -1,7 +1,9 @@
 <template>
   <sidebar-wrapper v-slot="{ withSidebar }">
     <main-wrapper :with-sidebar="withSidebar">
-      <h2>what is this thing</h2>
+      <h2>about jam buds</h2>
+
+      <h3>what is this thing</h3>
 
       <p>
         this is <strong>jam buds</strong>, a site to share music with friends
@@ -12,7 +14,22 @@
         everyone you know is listening to.
       </p>
 
-      <h2>something's broken / i have an idea</h2>
+      <h3>the rules of the place</h3>
+
+      <p>
+        we don't currently have a proper code of conduct in place, but we do
+        have a simple, enforced rule of <strong>don't be a dick.</strong> we
+        take user safety seriously here, and are quick to ban if necessary.
+      </p>
+
+      <p>
+        we'll have a real code of conduct, as well as a real reporting system,
+        in place once more of the social features of the site are built out. in
+        the mean time, if someone's being a jerk, please reach out to us at
+        <a href="mailto:hello@jambuds.club">hello@jambuds.club</a>.
+      </p>
+
+      <h3>something's broken / i have an idea</h3>
 
       <p>
         jam buds is under active development and exists in a constant state of
@@ -26,11 +43,11 @@
         <a href="mailto:hello@jambuds.club">hello@jambuds.club</a>!
       </p>
 
-      <h2>who's responsible for this mess</h2>
+      <h3>who's responsible for this mess</h3>
 
       <p>
         this site was built by <a href="https://thomasboyt.com/">thomas</a>, who
-        feels weird writing this in the third person. you can also
+        feels weird writing this in the third person. you can
         <router-link to="/users/thomas">follow him on here</router-link> if
         you'd like.
       </p>
@@ -39,7 +56,7 @@
         in addition, this site uses the following assets:
       </p>
 
-      <h3>images</h3>
+      <h4>images</h4>
 
       <ul>
         <li>
@@ -48,7 +65,7 @@
         </li>
       </ul>
 
-      <h3>icons</h3>
+      <h4>icons</h4>
 
       <ul>
         <li>Record by Clayton Meador from the Noun Project</li>
@@ -58,11 +75,13 @@
         <li>menu by Ismael Ruiz from the Noun Project</li>
       </ul>
 
-      <h2>nerd things</h2>
+      <h3>nerd things</h3>
 
       <p>
         the code for jam buds is open source and viewable
-        <a href="https://github.com/thomasboyt/jam-buds">on github</a>
+        <a href="https://github.com/thomasboyt/jam-buds">on github</a>. please
+        feel free to take a look, but we're not currently accepting outside
+        contributions, so don't go opening any PRs!
       </p>
 
       <!-- <p v-if="buildSha">
