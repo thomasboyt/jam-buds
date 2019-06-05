@@ -1,8 +1,13 @@
 <template>
   <div>
-    <h3>color schemes</h3>
+    <h3>change email, change username, or delete your account</h3>
 
-    <update-color-scheme />
+    <p>
+      i'm currently working on building out these features. for now, email me at
+      <a href="mailto:hello@jambuds.club">hello@jambuds.club</a> from your
+      account's email (<code>{{ email }}</code
+      >) and I'll get it taken care of!
+    </p>
 
     <h3>privacy</h3>
 
@@ -14,6 +19,10 @@
 
       <settings-button type="submit">save</settings-button>
     </form>
+
+    <h3>color schemes</h3>
+
+    <update-color-scheme />
   </div>
 </template>
 
@@ -27,6 +36,7 @@ export default {
   data() {
     return {
       showInPublicFeed: this.$store.state.currentUser.showInPublicFeed,
+      email: this.$store.state.currentUser.email,
     };
   },
 
