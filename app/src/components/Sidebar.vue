@@ -34,6 +34,11 @@
         </router-link>
       </li>
       <li>
+        <router-link to="/public-feed" @click.native="handleClick">
+          public feed
+        </router-link>
+      </li>
+      <li>
         <router-link to="/settings" @click.native="handleClick">
           your settings
         </router-link>

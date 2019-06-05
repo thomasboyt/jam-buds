@@ -1,6 +1,19 @@
 <template>
   <div class="playlist">
     <h2>public feed</h2>
+    <p>
+      this page will probably be replaced by some kind of fancy "top posts"
+      aggregator once we have, like, actual users. for now, please use it to
+      find folks you'd like to follow, or just see what people are into outside
+      of your sphere.
+    </p>
+
+    <p v-if="authenticated">
+      you have public posts
+      <strong>{{ publicPostsStatus }}</strong> and will show up in this feed.
+      you can change that
+      <router-link to="/settings/profile">here</router-link> if you'd like.
+    </p>
 
     <playlist
       entry-type="feed-entry"
@@ -40,9 +53,15 @@ export default {
       return this.$store.getters.playlistEntries('publicFeed');
     },
     ...mapState({
+      authenticated: (state) => state.auth.authenticated,
+      enabledPublicPosts: (state) => state.currentUser.showInPublicFeed,
       feedEntriesExhausted: (state) =>
         state.playlists.publicFeed.entriesExhausted,
     }),
+
+    publicPostsStatus() {
+      return this.enabledPublicPosts ? 'enabled' : 'disabled';
+    },
   },
 
   methods: {
