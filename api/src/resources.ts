@@ -96,3 +96,11 @@ export interface ColorScheme {
   backgroundGradientName: string;
   textColor: string;
 }
+
+export interface Mixtape {
+  // TODO: add UserProfile here for display
+  id: number;
+  title: string;
+  tracks: Song[];
+  isPublished: boolean;
+}

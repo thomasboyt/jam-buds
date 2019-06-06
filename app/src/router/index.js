@@ -22,6 +22,8 @@ import SettingsPageWrapper from '../pages/SettingsPageWrapper.vue';
 import ConnectionSettingsPage from '../pages/settings/ConnectionSettingsPage.vue';
 import ProfileSettingsPage from '../pages/settings/ProfileSettingsPage.vue';
 
+import MixtapePage from '../pages/MixtapePage.vue';
+
 // import NotFoundPage from '../pages/NotFoundPage.vue';
 
 Vue.use(Router);
@@ -65,6 +67,11 @@ export default function createRouter() {
           { path: '/', component: ConnectionSettingsPage },
           { path: 'profile', component: ProfileSettingsPage },
         ],
+      },
+
+      {
+        path: '/mixtapes/:id',
+        component: MixtapePage,
       },
       // {path: '*', component: NotFoundPage},
     ],
