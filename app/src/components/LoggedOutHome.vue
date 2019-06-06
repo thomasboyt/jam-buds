@@ -62,7 +62,7 @@
 <script>
 import SignInForm from './SignInForm.vue';
 import corgi from '../../assets/ghettoblaster_corgi.png';
-import gradients from '../util/gradients';
+import getGradient from '../util/gradients';
 
 export default {
   components: { SignInForm },
@@ -70,7 +70,7 @@ export default {
   data() {
     return {
       corgi,
-      gradient: gradients['jam buds'],
+      gradient: getGradient('jam buds'),
       sentMailAddress: null,
     };
   },

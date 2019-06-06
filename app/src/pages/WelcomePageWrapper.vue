@@ -15,7 +15,7 @@
 
 <script>
 import { mapState } from 'vuex';
-import gradients from '../util/gradients';
+import getGradient from '../util/gradients';
 import LoggedOutHeader from '../components/LoggedOutHeader.vue';
 
 export default {
@@ -27,7 +27,7 @@ export default {
 
   data() {
     return {
-      gradient: gradients['jam buds'],
+      gradient: getGradient('jam buds'),
     };
   },
 

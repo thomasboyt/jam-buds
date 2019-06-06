@@ -30,7 +30,7 @@
 <script>
 import SettingsButton from './SettingsButton.vue';
 import getCSSVariablesFromColorScheme from '../../util/getCSSVariablesFromColorScheme';
-import gradients, { defaultColorScheme } from '../../util/gradients';
+import { gradients, defaultColorScheme } from '../../util/gradients';
 
 export default {
   components: {
