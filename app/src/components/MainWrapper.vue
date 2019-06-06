@@ -48,6 +48,7 @@ export default {
 
 .main {
   background: var(--theme-body-background);
+  background-attachment: fixed;
   color: var(--theme-text-color);
 
   a {

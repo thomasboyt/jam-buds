@@ -87,6 +87,7 @@ export default {
 @import '../../styles/mixins.scss';
 
 .logged-out-home {
+  background-attachment: fixed;
   display: flex;
   flex: 1;
   flex-flow: column;

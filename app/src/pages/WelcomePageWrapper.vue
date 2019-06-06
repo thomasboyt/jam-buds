@@ -49,6 +49,7 @@ h2 {
 
 .welcome-page-wrapper {
   --theme-text-color: black;
+  background-attachment: fixed;
 
   flex: 1;
 

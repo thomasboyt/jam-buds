@@ -4,7 +4,7 @@
       set a background gradient for your profile!
     </p>
 
-    <form @submit="handleSubmit" class="color-form" :style="colorSchemeStyle">
+    <form @submit="handleSubmit">
       <label>
         <div class="field-label">
           background gradient
@@ -29,7 +29,6 @@
 
 <script>
 import SettingsButton from './SettingsButton.vue';
-import getCSSVariablesFromColorScheme from '../../util/getCSSVariablesFromColorScheme';
 import { gradients, defaultColorScheme } from '../../util/gradients';
 
 export default {
@@ -50,12 +49,6 @@ export default {
       colorScheme,
       gradients: gradientNames,
     };
-  },
-
-  computed: {
-    colorSchemeStyle() {
-      return getCSSVariablesFromColorScheme(this.colorScheme);
-    },
   },
 
   methods: {
@@ -83,10 +76,5 @@ export default {
 label {
   display: block;
   margin-bottom: 10px;
-}
-
-.color-form {
-  background-color: var(--theme-body-background-color);
-  color: var(--theme-text-color);
 }
 </style>
