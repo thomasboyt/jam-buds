@@ -7,7 +7,7 @@ import {
   getEmailFromSignInToken,
   deleteSignInToken,
 } from '../models/signInToken';
-import { isAuthenticated } from '../auth';
+import { isAuthenticated, maybeGetUserFromCookie } from '../auth';
 import {
   validEmail,
   validUsernameCharacters,
@@ -95,6 +95,12 @@ export default function registerAuthEndpoints(router: Router) {
   router.get(
     '/sign-in',
     wrapAsyncRoute(async (req, res) => {
+      if (await maybeGetUserFromCookie(req)) {
+        // user's already loaded, SHRUG
+        res.redirect(process.env.APP_URL!);
+        return;
+      }
+
       const token: string | undefined = req.query.t;
 
       // TODO: make better error pages for these since they're gonna be user-facing...
