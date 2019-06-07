@@ -10,14 +10,7 @@ function writeEmailToDisk(subject: string, html: string) {
   const folder = path.join(__dirname, '../../../tmp/emails');
   const filename = path.join(folder, `${date} - ${subject}.html`);
 
-  try {
-    mkdirSync(folder);
-  } catch (err) {
-    if (err.code !== 'EEXIST') {
-      throw err;
-    }
-  }
-
+  mkdirSync(folder, { recursive: true });
   writeFileSync(filename, html, { encoding: 'utf8' });
 }
 
@@ -87,10 +80,10 @@ export async function sendEmail(
     };
 
     await sgMail.send(msg);
-  } else {
+  } else if (process.env.NODE_ENV !== 'test') {
     console.log(`\n*** sending email to ${recipientEmail}: ${subject}`);
-    writeEmailToDisk(subject, html);
     console.log(renderTxt(templateOptions));
     console.log('');
+    writeEmailToDisk(subject, html);
   }
 }

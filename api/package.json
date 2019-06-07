@@ -28,7 +28,7 @@
     "@types/ioredis": "^4.0.8",
     "@types/lodash": "^4.14.47",
     "@types/mocha": "^2.2.48",
-    "@types/node": "^9.4.7",
+    "@types/node": "^10.14.8",
     "@types/nunjucks": "^3.1.1",
     "@types/oauth": "^0.9.1",
     "@types/pg": "^7.4.11",
