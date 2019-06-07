@@ -1,6 +1,25 @@
+import { writeFileSync, mkdirSync } from 'fs';
+import * as path from 'path';
+
 import nunjucks from 'nunjucks';
 import sgMail from '@sendgrid/mail';
 import juice from 'juice';
+
+function writeEmailToDisk(subject: string, html: string) {
+  const date = new Date().toISOString();
+  const folder = path.join(__dirname, '../../../tmp/emails');
+  const filename = path.join(folder, `${date} - ${subject}.html`);
+
+  try {
+    mkdirSync(folder);
+  } catch (err) {
+    if (err.code !== 'EEXIST') {
+      throw err;
+    }
+  }
+
+  writeFileSync(filename, html, { encoding: 'utf8' });
+}
 
 nunjucks.configure('emails');
 
@@ -45,6 +64,8 @@ export async function sendEmail(
   subject: string,
   templateOptions: TemplateOptions
 ) {
+  const html = renderHtml(templateOptions, subject);
+
   if (process.env.NODE_ENV === 'production') {
     const key = process.env.SENDGRID_API_KEY;
 
@@ -62,12 +83,13 @@ export async function sendEmail(
       },
       subject,
       text: renderTxt(templateOptions),
-      html: renderHtml(templateOptions, subject),
+      html,
     };
 
     await sgMail.send(msg);
   } else {
     console.log(`\n*** sending email to ${recipientEmail}: ${subject}`);
+    writeEmailToDisk(subject, html);
     console.log(renderTxt(templateOptions));
     console.log('');
   }
