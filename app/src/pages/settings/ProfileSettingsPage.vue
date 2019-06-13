@@ -1,37 +1,39 @@
 <template>
   <div>
-    <h3>change email, change username, or delete your account</h3>
+    <panel title="change email, change username, or delete your account">
+      <p>
+        i'm currently working on building out these features. for now, email me
+        at
+        <a href="mailto:hello@jambuds.club">hello@jambuds.club</a> from your
+        account's email (<code>{{ email }}</code
+        >) and I'll get it taken care of!
+      </p>
+    </panel>
 
-    <p>
-      i'm currently working on building out these features. for now, email me at
-      <a href="mailto:hello@jambuds.club">hello@jambuds.club</a> from your
-      account's email (<code>{{ email }}</code
-      >) and I'll get it taken care of!
-    </p>
+    <panel title="privacy">
+      <form @submit="handleUpdatePrivacy">
+        <label>
+          <input type="checkbox" v-model="showInPublicFeed" />
+          show your posts in the public feed
+        </label>
 
-    <h3>privacy</h3>
+        <settings-button type="submit">save</settings-button>
+      </form>
+    </panel>
 
-    <form @submit="handleUpdatePrivacy">
-      <label>
-        <input type="checkbox" v-model="showInPublicFeed" />
-        show your posts in the public feed
-      </label>
-
-      <settings-button type="submit">save</settings-button>
-    </form>
-
-    <h3>color schemes</h3>
-
-    <update-color-scheme />
+    <panel title="color schemes">
+      <update-color-scheme />
+    </panel>
   </div>
 </template>
 
 <script>
 import UpdateColorScheme from '../../components/settings/UpdateColorScheme.vue';
 import SettingsButton from '../../components/settings/SettingsButton.vue';
+import Panel from '../../components/Panel.vue';
 
 export default {
-  components: { UpdateColorScheme, SettingsButton },
+  components: { UpdateColorScheme, SettingsButton, Panel },
 
   data() {
     return {

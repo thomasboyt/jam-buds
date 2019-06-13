@@ -1,20 +1,21 @@
 <template>
   <div>
-    <h3>connect to streaming services</h3>
+    <panel title="connect to streaming services">
+      <connect-streaming-section />
+    </panel>
 
-    <connect-streaming-section />
-
-    <h3>connect to twitter</h3>
-
-    <connect-twitter-section />
+    <panel title="connect to twitter">
+      <connect-twitter-section />
+    </panel>
   </div>
 </template>
 
 <script>
 import ConnectStreamingSection from '../../components/settings/ConnectStreamingSection.vue';
 import ConnectTwitterSection from '../../components/settings/ConnectTwitterSection.vue';
+import Panel from '../../components/Panel.vue';
 
 export default {
-  components: { ConnectStreamingSection, ConnectTwitterSection },
+  components: { Panel, ConnectStreamingSection, ConnectTwitterSection },
 };
 </script>

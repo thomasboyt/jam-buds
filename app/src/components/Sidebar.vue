@@ -30,7 +30,7 @@
       </li>
       <li>
         <router-link to="/find-friends" @click.native="handleClick">
-          find twitter friends
+          find friends
         </router-link>
       </li>
       <li>
