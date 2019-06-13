@@ -32,11 +32,16 @@ export default {
     return {
       title: this.title,
       meta: [
+        { name: 'twitter:card', content: 'summary' },
         { vmid: 'title', name: 'og:title', content: `${this.name}'s playlist` },
         {
           vmid: 'description',
           name: 'og:description',
           content: 'check out this playlist on jam buds!',
+        },
+        {
+          name: 'og:image',
+          content: `${process.env.STATIC_URL}/corgi_icon_square.png`,
         },
       ],
     };
