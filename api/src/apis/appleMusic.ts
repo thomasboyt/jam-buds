@@ -46,6 +46,19 @@ export async function getAppleMusicInfoByISRC(
 
   if (!song) {
     return null;
+  } else if (!song.attributes.playParams) {
+    // XXX: So, for some fucking reason, the Apple Music API appears to return
+    // songs that are _only on iTunes_, and not actually have any clear key to
+    // distinguish "this can be played" from "this cannot be played"
+    //
+    // It _looks_ like the `playParams` key only exists on songs that can be
+    // played through Apple Music, so I'm going to try using that for now.
+    console.log(
+      `*** Missing playParams for Apple Music song ${
+        song.id
+      }! Probably only on iTunes?`
+    );
+    return null;
   } else {
     return {
       id: song.id,
