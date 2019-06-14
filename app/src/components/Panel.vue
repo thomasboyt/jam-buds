@@ -13,9 +13,10 @@ export default {
 
 <style lang="scss" scoped>
 .panel {
-  margin-bottom: 30px;
+  margin-bottom: 32px;
   border: 1px black solid;
   padding: 20px 15px;
+  box-shadow: 5px 5px 0px rgba(0, 0, 0, 0.3);
 
   .title {
     margin-top: 0px;
