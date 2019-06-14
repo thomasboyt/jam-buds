@@ -29,19 +29,38 @@ export default {
   },
 
   metaInfo() {
+    let meta = {
+      title: `${this.name}'s playlist`,
+      description: 'check out this playlist on jam buds!',
+      image: `${process.env.STATIC_URL}/corgi_icon_square.png`,
+    };
+
+    if (this.$route.query.song) {
+      const song = this.$store.state.songs[this.$route.query.song];
+      if (song) {
+        meta = {
+          title: song.title,
+          description: `${this.name} posted ${song.title} by ${
+            song.artists[0]
+          } on Jam Buds!`,
+          image: song.albumArt,
+        };
+      }
+    }
+
     return {
       title: this.title,
       meta: [
         { name: 'twitter:card', content: 'summary' },
-        { vmid: 'title', name: 'og:title', content: `${this.name}'s playlist` },
+        { vmid: 'title', name: 'og:title', content: meta.title },
         {
           vmid: 'description',
           name: 'og:description',
-          content: 'check out this playlist on jam buds!',
+          content: meta.description,
         },
         {
           name: 'og:image',
-          content: `${process.env.STATIC_URL}/corgi_icon_square.png`,
+          content: meta.image,
         },
       ],
     };
