@@ -81,6 +81,7 @@ export default function registerPostEndpoints(router: Router) {
       if (req.body.tweet) {
         await postSongTweet({
           text: req.body.tweet,
+          song,
           user,
         });
       }

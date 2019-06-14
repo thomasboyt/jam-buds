@@ -4,10 +4,12 @@ import {
   getTwitterFollowingCache,
   setTwitterFollowingCache,
 } from '../models/cache/twitterFollowingCache';
+import { SongModel } from '../models/song';
 
 interface PostSongTweetParams {
   text: string;
   user: UserModel;
+  song: SongModel;
 }
 
 function getTwitterClient(user: UserModel): Twit {
@@ -30,8 +32,8 @@ function getTwitterClient(user: UserModel): Twit {
   });
 }
 
-export async function postSongTweet({ text, user }: PostSongTweetParams) {
-  const link = `${process.env.APP_URL}/users/${user.name}`;
+export async function postSongTweet({ text, song, user }: PostSongTweetParams) {
+  const link = `${process.env.APP_URL}/users/${user.name}?song=${song.id}`;
 
   const tweet = `${text} ${link}`;
 
