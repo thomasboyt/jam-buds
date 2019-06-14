@@ -35,8 +35,8 @@ export default {
 @import '../../../styles/mixins.scss';
 
 .posted-by {
-  display: inline-block;
-  padding: 5px 0;
+  padding: 5px 0px;
+  border-bottom: 1px var(--theme-text-color) solid;
 
   a {
     color: var(--theme-text-color);
@@ -47,6 +47,7 @@ export default {
     padding: 0px;
     font-size: 15px;
     line-height: 22px;
+    border-bottom: none;
   }
 }
 </style>

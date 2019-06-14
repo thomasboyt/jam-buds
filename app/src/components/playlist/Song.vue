@@ -14,14 +14,16 @@
       </div>
 
       <span class="playlist-song--actions">
-        <song-play-action
-          v-if="!isPlaying"
-          :song="song"
-          @play="handlePlay"
-          :can-play="canPlay"
-        />
-        <song-like-action v-if="showLikeButton" :song="song" />
-        <song-dropdown-menu :song="song" :show-delete="showDeleteMenuItem" />
+        <slot name="actions">
+          <song-play-action
+            v-if="!isPlaying"
+            :song="song"
+            @play="handlePlay"
+            :can-play="canPlay"
+          />
+          <song-like-action v-if="showLikeButton" :song="song" />
+          <song-dropdown-menu :song="song" :show-delete="showDeleteMenuItem" />
+        </slot>
       </span>
     </div>
   </div>
@@ -136,8 +138,6 @@ export default {
   padding: 10px;
   margin: 0 -10px 10px -10px;
 
-  border-top: 1px var(--theme-text-color) solid;
-
   &:hover {
     background: rgba(0, 0, 0, 0.1);
 
@@ -231,7 +231,6 @@ export default {
   .playlist-song {
     padding: 5px;
     margin: 0 -5px 15px -5px;
-    border-top: 0px;
   }
 
   .playlist-song--album-art {

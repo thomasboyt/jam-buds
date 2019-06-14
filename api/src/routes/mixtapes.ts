@@ -30,7 +30,10 @@ export default function registerMixtapeEndpoints(router: Router) {
     isAuthenticated,
     wrapAsyncRoute(async (req, res) => {
       const id: number = parseInt(req.params.id, 10);
-      const mixtape = await getMixtapeById(id);
+
+      // TODO: don't require authentication here
+      const user = res.locals.user as UserModel;
+      const mixtape = await getMixtapeById(id, { currentUserId: user.id });
 
       if (!mixtape) {
         return res.status(404).json({

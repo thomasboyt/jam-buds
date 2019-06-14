@@ -3,7 +3,7 @@
     <main-wrapper :with-sidebar="withSidebar">
       <h2>your mixtape</h2>
 
-      <mixtape-viewer />
+      <mixtape-viewer :mixtape-id="$route.params.id" />
     </main-wrapper>
   </sidebar-wrapper>
 </template>
@@ -21,7 +21,15 @@ export default {
   },
 
   async asyncData({ store, route }) {
-    store.dispatch('loadMixtape', route.params.id);
+    await store.dispatch('loadMixtape', route.params.id);
   },
 };
 </script>
+
+<style lang="scss" scoped>
+ul.playlist-entries {
+  list-style-type: none;
+  padding-left: 0px;
+}
+</style>
+

@@ -7,9 +7,12 @@ const mixtapes = {
   },
 
   mutations: {
-    setPlaylist(state, { id, data }) {
-      // TODO: probably more to do here
-      Vue.set(state, id, data);
+    setMixtape(state, { id, data }) {
+      const tracks = data.tracks.map((song) => song.id);
+      Vue.set(state, id, {
+        ...data,
+        tracks,
+      });
     },
   },
 
@@ -20,10 +23,23 @@ const mixtapes = {
         method: 'GET',
       });
 
-      context.commit('addSongs', resp.data.tracks.map((entry) => entry.song));
-      context.commit('setPlaylist', { id, data: resp.data });
+      context.commit('addSongs', resp.data.tracks);
+      context.commit('setMixtape', { id, data: resp.data });
 
       return resp.data;
+    },
+  },
+
+  getters: {
+    getMixtape(state) {
+      return (key) => {
+        const mixtape = state[key];
+        if (!mixtape) {
+          throw new Error(`undefined mixtape ${key}`);
+        }
+
+        return mixtape;
+      };
     },
   },
 };

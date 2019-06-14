@@ -3,8 +3,10 @@ import { date as dateType } from 'io-ts-types';
 
 import { db } from '../db';
 import { UserModel } from './user';
-import { Mixtape } from '../resources';
+import { selectSongsQuery, serializeSong, SongModelV } from './song';
+import { Mixtape, Song } from '../resources';
 import validateOrThrow from '../util/validateOrThrow';
+import camelcaseKeys = require('camelcase-keys');
 
 export const MixtapeModelV = t.type({
   id: t.number,
@@ -83,7 +85,8 @@ export async function createMixtapeForUser(
 //  * Get a mixtape by ID.
 //  */
 export async function getMixtapeById(
-  mixtapeId: number
+  mixtapeId: number,
+  songQueryOptions: { currentUserId?: number }
 ): Promise<Mixtape | null> {
   const [row] = await db!('mixtapes').where({ id: mixtapeId });
 
@@ -93,11 +96,34 @@ export async function getMixtapeById(
 
   const mixtapeModel = validateOrThrow(MixtapeModelV, row);
 
+  const tracks = await getSongsByMixtapeId(mixtapeId, songQueryOptions);
+
   return {
     id: mixtapeModel.id,
     isPublished: !!mixtapeModel.publishedAt,
     title: mixtapeModel.title,
-    // TODO
-    tracks: [],
+    tracks,
   };
+}
+
+export async function getSongsByMixtapeId(
+  mixtapeId: number,
+  songQueryOptions: { currentUserId?: number }
+): Promise<Song[]> {
+  const query = selectSongsQuery(db!('mixtape_song_entries'), songQueryOptions)
+    // .join('users', { 'users.id': 'mixtape_song_entries.user_id' })
+    .join('songs', { 'songs.id': 'mixtape_song_entries.song_id' })
+    .where({ mixtape_id: mixtapeId })
+    .orderBy('mixtape_song_entries.rank', 'asc');
+
+  const songRows = await query;
+
+  console.log(songRows);
+
+  return songRows.map((row: any) =>
+    serializeSong(
+      validateOrThrow(SongModelV, camelcaseKeys(row.song)),
+      row.isLiked
+    )
+  );
 }
