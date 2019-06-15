@@ -22,6 +22,16 @@ const mixtapes = {
         tracks: mixtape.tracks.concat([songId]),
       };
     },
+
+    removeFromMixtape(state, { songId, mixtapeId }) {
+      const mixtape = state[mixtapeId];
+      state[mixtapeId] = {
+        ...mixtape,
+        tracks: mixtape.tracks.filter(
+          (mixtapeSongId) => mixtapeSongId !== songId
+        ),
+      };
+    },
   },
 
   actions: {
@@ -40,6 +50,15 @@ const mixtapes = {
     addSongToMixtape(context, { mixtapeId, song }) {
       context.commit('addSongs', [song]);
       context.commit('appendToMixtape', { songId: song.id, mixtapeId });
+    },
+
+    async removeSongFromMixtape(context, { mixtapeId, songId }) {
+      await this.$axios({
+        url: `/mixtapes/${mixtapeId}/songs/${songId}`,
+        method: 'DELETE',
+      });
+
+      context.commit('removeFromMixtape', { mixtapeId, songId });
     },
   },
 

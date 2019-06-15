@@ -9,7 +9,10 @@
           :posted-user-names="null"
         >
           <template v-slot:actions>
-            hello!
+            <song-remove-from-mixtape-action
+              :song-id="songId"
+              :mixtape-id="mixtapeId"
+            />
           </template>
         </song>
       </li>
@@ -26,12 +29,18 @@
 </template>
 
 <script>
-import Song from './playlist/Song.vue';
-import AddSongButton from './AddSongButton.vue';
-import AddToMixtapeModal from './new-song-modal/AddToMixtapeModal.vue';
+import Song from '../playlist/Song.vue';
+import AddSongButton from '../AddSongButton.vue';
+import AddToMixtapeModal from '../new-song-modal/AddToMixtapeModal.vue';
+import SongRemoveFromMixtapeAction from './SongRemoveFromMixtapeAction.vue';
 
 export default {
-  components: { Song, AddSongButton, AddToMixtapeModal },
+  components: {
+    Song,
+    AddSongButton,
+    AddToMixtapeModal,
+    SongRemoveFromMixtapeAction,
+  },
 
   props: ['mixtapeId'],
 

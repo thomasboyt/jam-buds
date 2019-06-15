@@ -3,19 +3,19 @@
     <main-wrapper :with-sidebar="withSidebar">
       <h2>your mixtape</h2>
 
-      <mixtape-viewer :mixtape-id="$route.params.id" />
+      <mixtape :mixtape-id="$route.params.id" />
     </main-wrapper>
   </sidebar-wrapper>
 </template>
 
 <script>
-import MixtapeViewer from '../components/MixtapeViewer.vue';
+import Mixtape from '../components/mixtapes/Mixtape.vue';
 import MainWrapper from '../components/MainWrapper.vue';
 import SidebarWrapper from '../components/SidebarWrapper.vue';
 
 export default {
   components: {
-    MixtapeViewer,
+    Mixtape,
     MainWrapper,
     SidebarWrapper,
   },
@@ -32,4 +32,3 @@ ul.playlist-entries {
   padding-left: 0px;
 }
 </style>
-
