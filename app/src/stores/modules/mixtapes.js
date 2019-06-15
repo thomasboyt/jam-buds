@@ -15,22 +15,18 @@ const mixtapes = {
       });
     },
 
+    setMixtapeOrder(state, { mixtapeId, songOrder }) {
+      state[mixtapeId].tracks = songOrder;
+    },
+
     appendToMixtape(state, { songId, mixtapeId }) {
-      const mixtape = state[mixtapeId];
-      state[mixtapeId] = {
-        ...mixtape,
-        tracks: mixtape.tracks.concat([songId]),
-      };
+      state[mixtapeId].tracks = state[mixtapeId].tracks.concat([songId]);
     },
 
     removeFromMixtape(state, { songId, mixtapeId }) {
-      const mixtape = state[mixtapeId];
-      state[mixtapeId] = {
-        ...mixtape,
-        tracks: mixtape.tracks.filter(
-          (mixtapeSongId) => mixtapeSongId !== songId
-        ),
-      };
+      state[mixtapeId].tracks = state[mixtapeId].tracks.filter(
+        (mixtapeSongId) => mixtapeSongId !== songId
+      );
     },
   },
 
@@ -59,6 +55,23 @@ const mixtapes = {
       });
 
       context.commit('removeFromMixtape', { mixtapeId, songId });
+    },
+
+    async updateMixtapeSongOrder(context, { mixtapeId, songOrder }) {
+      // TODO: maybe prevent race conditions here?
+      const prevOrder = context.state[mixtapeId].tracks;
+      context.commit('setMixtapeOrder', { mixtapeId, songOrder });
+
+      try {
+        await this.$axios({
+          method: 'POST',
+          url: `/mixtapes/${mixtapeId}/order`,
+          data: { songOrder },
+        });
+      } catch (err) {
+        context.commit('setMixtapeOrder', { mixtapeId, songOrder: prevOrder });
+        throw err;
+      }
     },
   },
 

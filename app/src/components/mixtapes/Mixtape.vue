@@ -1,7 +1,12 @@
 <template>
   <div>
-    <ul class="playlist-entries">
-      <li v-for="songId in mixtape.tracks" :key="songId">
+    <draggable
+      v-model="mixtapeTracks"
+      handle=".drag-handle"
+      tag="ul"
+      class="playlist-entries"
+    >
+      <li v-for="songId in mixtapeTracks" :key="songId">
         <song
           :song-id="songId"
           :playback-source-label="mixtape.title"
@@ -13,10 +18,13 @@
               :song-id="songId"
               :mixtape-id="mixtapeId"
             />
+            <button class="action-button drag-handle">
+              <icon :glyph="dragIcon" />
+            </button>
           </template>
         </song>
       </li>
-    </ul>
+    </draggable>
 
     <add-song-button @click="handleAddSongOpen">+ add a song</add-song-button>
 
@@ -29,10 +37,15 @@
 </template>
 
 <script>
+import Draggable from 'vuedraggable';
+
 import Song from '../playlist/Song.vue';
 import AddSongButton from '../AddSongButton.vue';
 import AddToMixtapeModal from '../new-song-modal/AddToMixtapeModal.vue';
 import SongRemoveFromMixtapeAction from './SongRemoveFromMixtapeAction.vue';
+import Icon from '../Icon.vue';
+
+const dragIcon = require('../../../assets/menu.svg');
 
 export default {
   components: {
@@ -40,6 +53,8 @@ export default {
     AddSongButton,
     AddToMixtapeModal,
     SongRemoveFromMixtapeAction,
+    Draggable,
+    Icon,
   },
 
   props: ['mixtapeId'],
@@ -47,12 +62,26 @@ export default {
   data() {
     return {
       addSongOpen: false,
+      dragIcon,
     };
   },
 
   computed: {
     mixtape() {
       return this.$store.getters.getMixtape(this.mixtapeId);
+    },
+
+    mixtapeTracks: {
+      get() {
+        return this.mixtape.tracks;
+      },
+
+      set(songOrder) {
+        this.$store.dispatch('updateMixtapeSongOrder', {
+          mixtapeId: this.mixtapeId,
+          songOrder,
+        });
+      },
     },
   },
 
