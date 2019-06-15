@@ -89,13 +89,30 @@ export async function removeSongFromMixtape({
     .delete();
 }
 
-// /**
-//  * Re-order a mixtape, updating each entry's `rank` by its position in the `songIds[]` array. Throws an error if a song ID isn't present in the mixtape.
-//  */
-// export async function reorderMixtapeSongs(
-//   mixtapeId: number,
-//   songIds: number[]
-// ): Promise<void> {}
+/**
+ * Re-order a mixtape, updating each entry's `rank` by its position in the
+ * `songIds[]` array.
+ *
+ * TODO: Throws an error if a song ID isn't present in the mixtape.
+ */
+export async function reorderMixtapeSongs({
+  mixtapeId,
+  songOrder,
+}: {
+  mixtapeId: number;
+  songOrder: number[];
+}): Promise<void> {
+  await db!.transaction((trx) => {
+    const updates = songOrder.map((songId, rank) => {
+      return trx!
+        .table('mixtape_song_entries')
+        .update({ rank })
+        .where({ mixtapeId, songId });
+    });
+
+    return Promise.all(updates);
+  });
+}
 
 // /**
 //  * Publish a mixtape, which allows it to be included in the feed.

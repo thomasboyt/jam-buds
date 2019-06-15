@@ -9,6 +9,7 @@ import {
   getMixtapeById,
   addSongToMixtape,
   removeSongFromMixtape,
+  reorderMixtapeSongs,
 } from '../models/mixtapes';
 import { getOrCreateSong, serializeSong } from '../models/song';
 import { Mixtape } from '../resources';
@@ -151,6 +152,30 @@ export default function registerMixtapeEndpoints(router: Router) {
       await removeSongFromMixtape({
         mixtapeId: mixtape.id,
         songId: req.params.songId,
+      });
+
+      res.json({ success: true });
+    })
+  );
+
+  router.post(
+    '/mixtapes/:mixtapeId/order',
+    isAuthenticated,
+    wrapAsyncRoute(async (req, res) => {
+      const user = res.locals.user as UserModel;
+      let mixtape = await getMixtapeById(req.params.mixtapeId, {
+        currentUserId: user.id,
+      });
+
+      mixtape = validateMixtapeExists(mixtape);
+      validateCanUpdateMixtape({ mixtape, user });
+
+      // TODO: validate the fuck outta this!!
+      const songOrder = req.body.songOrder;
+
+      await reorderMixtapeSongs({
+        mixtapeId: mixtape.id,
+        songOrder,
       });
 
       res.json({ success: true });
