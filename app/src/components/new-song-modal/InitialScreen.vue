@@ -1,9 +1,5 @@
 <template>
   <div>
-    <p>
-      Search for a song here
-    </p>
-
     <form class="submit-box" @submit="handleSubmit">
       <div class="input-container">
         <input
@@ -11,7 +7,7 @@
           :class="{ invalid }"
           v-model="songInput"
           @input="handleInput"
-          placeholder=""
+          placeholder="Search..."
           data-test="song-url-field"
         />
       </div>

@@ -16,7 +16,11 @@ const mixtapes = {
     },
 
     appendToMixtape(state, { songId, mixtapeId }) {
-      state[mixtapeId] = state[mixtapeId].concat([songId]);
+      const mixtape = state[mixtapeId];
+      state[mixtapeId] = {
+        ...mixtape,
+        tracks: mixtape.tracks.concat([songId]),
+      };
     },
   },
 

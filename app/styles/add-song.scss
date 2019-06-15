@@ -108,7 +108,7 @@ $modal-height: 450px;
   a:visited,
   a:hover,
   a:active {
-    color: rgb(225, 225, 225);
+    color: rgb(225, 225, 225) !important;
   }
 
   .header-container {
@@ -150,7 +150,7 @@ $modal-height: 450px;
   .submit-box {
     display: flex;
 
-    margin: 20px 0px;
+    margin: 0px 0px 20px;
 
     height: 50px;
 
@@ -170,6 +170,7 @@ $modal-height: 450px;
       }
     }
   }
+
   .cta-button {
     margin-left: 10px;
     height: 100%;
@@ -191,25 +192,23 @@ $modal-height: 450px;
   }
 
   button.submit-search {
+    width: 120px;
+
     span {
       display: none;
     }
 
     &:after {
-      content: 'is my shit';
+      content: 'find';
     }
 
     &:enabled:hover:after {
       content: 'yeah!!!!';
     }
+  }
 
-    &.invalid {
-      background-color: red;
-
-      &:after {
-        content: 'invalid url!';
-      }
-    }
+  ul {
+    padding-left: 15px;
   }
 
   button.submit-song {
