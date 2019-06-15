@@ -46,8 +46,14 @@ export default {
     };
   },
 
-  mounted() {
-    disableBodyScroll();
+  watch: {
+    isOpen(isOpen) {
+      if (isOpen) {
+        disableBodyScroll();
+      } else {
+        enableBodyScroll();
+      }
+    },
   },
 
   beforeDestroy() {
