@@ -1,7 +1,7 @@
 import { Router } from 'express';
 
 import { UserModel } from '../models/user';
-import { getSongBySpotifyId, createSong } from '../models/song';
+import { getOrCreateSong } from '../models/song';
 import {
   PostSongParams,
   postSong,
@@ -12,7 +12,6 @@ import {
 import { isAuthenticated } from '../auth';
 import wrapAsyncRoute from '../util/wrapAsyncRoute';
 import { postSongTweet } from '../apis/twitter';
-import { getOrCreateSongCacheEntryWithExternalIds } from '../util/songSearchCache';
 
 export default function registerPostEndpoints(router: Router) {
   // post a new song
@@ -24,51 +23,23 @@ export default function registerPostEndpoints(router: Router) {
 
       const spotifyId = req.body.spotifyId;
 
-      // See if song has been submitted before
-      //
-      // TODO: This should "upsert" from the search cache, I think? Would
-      // basically allow for 'refreshing' of song details in some cases. Would
-      // still have to match on Spotify ID, though.
-      let song = await getSongBySpotifyId(spotifyId);
+      const song = await getOrCreateSong(spotifyId);
 
       if (!song) {
-        const searchCacheEntry = await getOrCreateSongCacheEntryWithExternalIds(
-          req.body.spotifyId
-        );
+        return res
+          .status(400)
+          .json({ error: `No song found with Spotify ID ${spotifyId}` });
+      }
 
-        if (!searchCacheEntry) {
-          return res.status(400).send({
-            error: `No track found for Spotify ID ${spotifyId}`,
-          });
-        }
+      const existingPost = await getOwnPostForSongId({
+        songId: song.id,
+        userId: user.id,
+      });
 
-        const spotifyResource = searchCacheEntry.spotify;
-
-        const params = {
-          spotifyId: spotifyResource.id,
-          artists: spotifyResource.artists.map((artist) => artist.name),
-          album: spotifyResource.album.name,
-          title: spotifyResource.name,
-          albumArt: spotifyResource.album.images[0].url,
-          isrcId: searchCacheEntry.isrc,
-          appleMusicId: searchCacheEntry.appleMusicId,
-          appleMusicUrl: searchCacheEntry.appleMusicUrl,
-        };
-
-        song = await createSong(params);
-      } else {
-        // If the song already exists, check to make sure this user hasn't
-        // posted it before
-        const existingPost = await getOwnPostForSongId({
-          songId: song.id,
-          userId: user.id,
-        });
-
-        if (existingPost) {
-          return res
-            .status(400)
-            .json({ error: 'You have already posted this song' });
-        }
+      if (existingPost) {
+        return res
+          .status(400)
+          .json({ error: 'You have already posted this song' });
       }
 
       const params: PostSongParams = {

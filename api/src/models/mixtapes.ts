@@ -51,14 +51,25 @@ export async function createMixtapeForUser(
 //   title: string
 // ): Promise<void> {}
 
-// /**
-//  * Add a song to a mixtape. Should throw an error if the song is already
-//  * present.
-//  */
-// export async function addSongToMixtape(
-//   mixtapeId: number,
-//   songId: number
-// ): Promise<void> {}
+/**
+ * Add a song to a mixtape.
+ */
+export async function addSongToMixtape(
+  mixtapeId: number,
+  songId: number
+): Promise<void> {
+  const [row] = await db!('mixtape_song_entries')
+    .where({ mixtapeId })
+    .max('rank');
+
+  const prevMax = row.max;
+
+  await db!('mixtape_song_entries').insert({
+    mixtapeId,
+    songId,
+    rank: (prevMax || 0) + 1,
+  });
+}
 
 // /**
 //  * Remove a song from a mixtape. No-op if the song isn't present?
@@ -81,9 +92,9 @@ export async function createMixtapeForUser(
 //  */
 // export async function publishMixtape(mixtapeId: number): Promise<void> {}
 
-// /**
-//  * Get a mixtape by ID.
-//  */
+/**
+ * Get a mixtape by ID.
+ */
 export async function getMixtapeById(
   mixtapeId: number,
   songQueryOptions: { currentUserId?: number }
@@ -118,12 +129,57 @@ export async function getSongsByMixtapeId(
 
   const songRows = await query;
 
-  console.log(songRows);
-
   return songRows.map((row: any) =>
     serializeSong(
       validateOrThrow(SongModelV, camelcaseKeys(row.song)),
       row.isLiked
     )
   );
+}
+
+/**
+ * Check whether a given user owns a mixtape.
+ */
+export async function userOwnsMixtape(
+  userId: number,
+  mixtapeId: number
+): Promise<boolean> {
+  const [row] = await db!('mixtapes').where({ id: mixtapeId, userId });
+
+  if (!row) {
+    return false;
+  }
+
+  return true;
+}
+
+/**
+ * Get the rank of the next entry in a mixtape.
+ */
+export async function getNextMixtapeEntryRank(
+  mixtapeId: number
+): Promise<number> {
+  const [row] = await db!('mixtape_song_entries')
+    .where({ mixtapeId })
+    .max('rank');
+
+  return row.max || 0;
+}
+
+/**
+ * Check whether a given mixtape already has a song.
+ */
+export async function mixtapeHasSong({
+  mixtapeId,
+  songId,
+}: {
+  mixtapeId: number;
+  songId: number;
+}): Promise<boolean> {
+  const [existing] = await db!('mixtape_song_entries').where({
+    mixtapeId,
+    songId,
+  });
+
+  return existing ? true : false;
 }

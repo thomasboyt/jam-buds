@@ -3,6 +3,7 @@ import * as t from 'io-ts';
 import { db } from '../db';
 import { Song } from '../resources';
 import validateOrThrow from '../util/validateOrThrow';
+import { getOrCreateSongCacheEntryWithExternalIds } from '../util/songSearchCache';
 
 export const SongModelV = t.type({
   id: t.number,
@@ -31,7 +32,7 @@ export async function getSongById(id: number): Promise<SongModel | null> {
 }
 
 export async function getSongBySpotifyId(
-  spotifyId: number
+  spotifyId: string
 ): Promise<SongModel | null> {
   const query = db!('songs').where({ spotify_id: spotifyId });
 
@@ -118,4 +119,40 @@ export function serializeSong(song: SongModel, isLiked: boolean): Song {
     appleMusicUrl: song.appleMusicUrl,
     isLiked,
   };
+}
+
+export async function getOrCreateSong(
+  spotifyId: string
+): Promise<SongModel | null> {
+  // TODO: This should "upsert" from the search cache, I think? Would
+  // basically allow for 'refreshing' of song details in some cases. Would
+  // still have to match on Spotify ID, though.
+  let song = await getSongBySpotifyId(spotifyId);
+
+  if (song) {
+    return song;
+  }
+
+  const searchCacheEntry = await getOrCreateSongCacheEntryWithExternalIds(
+    spotifyId
+  );
+
+  if (!searchCacheEntry) {
+    return null;
+  }
+
+  const spotifyResource = searchCacheEntry.spotify;
+
+  const params = {
+    spotifyId: spotifyResource.id,
+    artists: spotifyResource.artists.map((artist) => artist.name),
+    album: spotifyResource.album.name,
+    title: spotifyResource.name,
+    albumArt: spotifyResource.album.images[0].url,
+    isrcId: searchCacheEntry.isrc,
+    appleMusicId: searchCacheEntry.appleMusicId,
+    appleMusicUrl: searchCacheEntry.appleMusicUrl,
+  };
+
+  return await createSong(params);
 }
