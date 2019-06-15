@@ -2,7 +2,7 @@ import * as t from 'io-ts';
 import { date as dateType } from 'io-ts-types';
 
 import { db } from '../db';
-import { UserModel } from './user';
+import { UserModel, getUserProfileForUser, getUserByUserId } from './user';
 import { selectSongsQuery, serializeSong, SongModelV } from './song';
 import { Mixtape, Song } from '../resources';
 import validateOrThrow from '../util/validateOrThrow';
@@ -72,12 +72,22 @@ export async function addSongToMixtape(
 }
 
 // /**
-//  * Remove a song from a mixtape. No-op if the song isn't present?
+//  * Remove a song from a mixtape. No-op if the song isn't present.
 //  */
-// export async function removeSongFromMixtape(
-//   mixtapeId: number,
-//   songId: number
-// ): Promise<void> {}
+export async function removeSongFromMixtape({
+  mixtapeId,
+  songId,
+}: {
+  mixtapeId: number;
+  songId: number;
+}): Promise<void> {
+  await db!('mixtape_song_entries')
+    .where({
+      mixtapeId,
+      songId,
+    })
+    .delete();
+}
 
 // /**
 //  * Re-order a mixtape, updating each entry's `rank` by its position in the `songIds[]` array. Throws an error if a song ID isn't present in the mixtape.
@@ -108,12 +118,20 @@ export async function getMixtapeById(
   const mixtapeModel = validateOrThrow(MixtapeModelV, row);
 
   const tracks = await getSongsByMixtapeId(mixtapeId, songQueryOptions);
+  const authorUser = await getUserByUserId(mixtapeModel.userId);
+
+  if (!authorUser) {
+    throw new Error(`no user ${mixtapeModel.userId} for mixtape ${mixtapeId}`);
+  }
+
+  const author = await getUserProfileForUser(authorUser);
 
   return {
     id: mixtapeModel.id,
     isPublished: !!mixtapeModel.publishedAt,
     title: mixtapeModel.title,
     tracks,
+    author,
   };
 }
 
@@ -135,51 +153,4 @@ export async function getSongsByMixtapeId(
       row.isLiked
     )
   );
-}
-
-/**
- * Check whether a given user owns a mixtape.
- */
-export async function userOwnsMixtape(
-  userId: number,
-  mixtapeId: number
-): Promise<boolean> {
-  const [row] = await db!('mixtapes').where({ id: mixtapeId, userId });
-
-  if (!row) {
-    return false;
-  }
-
-  return true;
-}
-
-/**
- * Get the rank of the next entry in a mixtape.
- */
-export async function getNextMixtapeEntryRank(
-  mixtapeId: number
-): Promise<number> {
-  const [row] = await db!('mixtape_song_entries')
-    .where({ mixtapeId })
-    .max('rank');
-
-  return row.max || 0;
-}
-
-/**
- * Check whether a given mixtape already has a song.
- */
-export async function mixtapeHasSong({
-  mixtapeId,
-  songId,
-}: {
-  mixtapeId: number;
-  songId: number;
-}): Promise<boolean> {
-  const [existing] = await db!('mixtape_song_entries').where({
-    mixtapeId,
-    songId,
-  });
-
-  return existing ? true : false;
 }

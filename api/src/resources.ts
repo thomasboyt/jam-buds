@@ -103,4 +103,5 @@ export interface Mixtape {
   title: string;
   tracks: Song[];
   isPublished: boolean;
+  author: UserProfile;
 }

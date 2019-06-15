@@ -8,13 +8,63 @@ import {
   createMixtapeForUser,
   getMixtapeById,
   addSongToMixtape,
-  userOwnsMixtape,
-  mixtapeHasSong,
+  removeSongFromMixtape,
 } from '../models/mixtapes';
 import { getOrCreateSong, serializeSong } from '../models/song';
+import { Mixtape } from '../resources';
+import { JamBudsHTTPError } from '../util/errors';
+
+function validateMixtapeExists(mixtape: Mixtape | null): Mixtape {
+  if (!mixtape) {
+    throw new JamBudsHTTPError({
+      statusCode: 404,
+      message: `No mixtape found`,
+    });
+  }
+  return mixtape;
+}
+
+function validateCanReadMixtape({
+  mixtape,
+  user,
+}: {
+  mixtape: Mixtape;
+  user: UserModel;
+}) {
+  if (!mixtape.isPublished && mixtape.author.id !== user.id) {
+    throw new JamBudsHTTPError({
+      statusCode: 401,
+      message: `You do not have access to this draft mixtape`,
+    });
+  }
+}
+
+function validateCanUpdateMixtape({
+  mixtape,
+  user,
+}: {
+  mixtape: Mixtape;
+  user: UserModel;
+}) {
+  if (mixtape.author.id !== user.id) {
+    throw new JamBudsHTTPError({
+      statusCode: 401,
+      message: `You do not own this mixtape`,
+    });
+  }
+
+  if (mixtape.isPublished) {
+    throw new JamBudsHTTPError({
+      statusCode: 400,
+      message: 'This mixtape is already published, and cannot be changed',
+    });
+  }
+}
 
 export default function registerMixtapeEndpoints(router: Router) {
-  // Create a mixtape
+  /**
+   * Create a mixtape with a given initial title.
+   */
   router.post(
     '/mixtapes',
     isAuthenticated,
@@ -32,6 +82,10 @@ export default function registerMixtapeEndpoints(router: Router) {
     })
   );
 
+  /**
+   * Get a mixtape. Returns a 401 if it's a draft mixtape and you did not create
+   * it.
+   */
   router.get(
     '/mixtapes/:id',
     isAuthenticated,
@@ -40,13 +94,10 @@ export default function registerMixtapeEndpoints(router: Router) {
 
       // TODO: don't require authentication here
       const user = res.locals.user as UserModel;
-      const mixtape = await getMixtapeById(id, { currentUserId: user.id });
 
-      if (!mixtape) {
-        return res.status(404).json({
-          error: `No mixtape found with id ${id}`,
-        });
-      }
+      let mixtape = await getMixtapeById(id, { currentUserId: user.id });
+      mixtape = validateMixtapeExists(mixtape);
+      validateCanReadMixtape({ mixtape, user });
 
       res.json(mixtape);
     })
@@ -57,13 +108,12 @@ export default function registerMixtapeEndpoints(router: Router) {
     isAuthenticated,
     wrapAsyncRoute(async (req, res) => {
       const user = res.locals.user as UserModel;
-      const mixtapeId = req.params.id;
+      let mixtape = await getMixtapeById(req.params.id, {
+        currentUserId: user.id,
+      });
 
-      if (!(await userOwnsMixtape(user.id, mixtapeId))) {
-        return res.status(401).json({
-          error: 'You do not own this mixtape',
-        });
-      }
+      mixtape = validateMixtapeExists(mixtape);
+      validateCanUpdateMixtape({ mixtape, user });
 
       const song = await getOrCreateSong(req.body.spotifyId);
 
@@ -73,7 +123,7 @@ export default function registerMixtapeEndpoints(router: Router) {
         });
       }
 
-      if (await mixtapeHasSong({ mixtapeId, songId: song.id })) {
+      if (mixtape.tracks.find((mixtapeSong) => mixtapeSong.id === song.id)) {
         return res.status(400).json({
           error: 'Mixtape already contains this song',
         });
@@ -86,9 +136,48 @@ export default function registerMixtapeEndpoints(router: Router) {
     })
   );
 
+  router.delete(
+    '/mixtapes/:mixtapeId/songs/:songId',
+    isAuthenticated,
+    wrapAsyncRoute(async (req, res) => {
+      const user = res.locals.user as UserModel;
+      let mixtape = await getMixtapeById(req.params.mixtapeId, {
+        currentUserId: user.id,
+      });
+
+      mixtape = validateMixtapeExists(mixtape);
+      validateCanUpdateMixtape({ mixtape, user });
+
+      await removeSongFromMixtape({
+        mixtapeId: mixtape.id,
+        songId: req.params.songId,
+      });
+
+      res.json({ success: true });
+    })
+  );
+
   // Delete a mixtape owned by the current user
   // router.delete(
   //   '/mixtapes/:id',
+  //   isAuthenticated,
+  //   wrapAsyncRoute(async (req, res) => {
+  //     const user = res.locals.user as UserModel;
+  //   })
+  // );
+
+  // Publish a mixtape owned by the current user
+  // router.post(
+  //   '/mixtapes/:id/publish',
+  //   isAuthenticated,
+  //   wrapAsyncRoute(async (req, res) => {
+  //     const user = res.locals.user as UserModel;
+  //   })
+  // );
+
+  // Rename a mixtape owned by the current user
+  // router.post(
+  //   '/mixtapes/:id/title',
   //   isAuthenticated,
   //   wrapAsyncRoute(async (req, res) => {
   //     const user = res.locals.user as UserModel;

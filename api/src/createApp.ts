@@ -4,6 +4,8 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import * as Sentry from '@sentry/node';
 
+import { errorHandlerMiddleware } from './util/errors';
+
 import registerAuthEndpoints from './routes/auth';
 import registerUserEndpoints from './routes/users';
 import registerSearchEndpoints from './routes/search';
@@ -61,12 +63,7 @@ export default function createApp() {
     app.use(Sentry.Handlers.errorHandler());
   }
 
-  const errorLogger: express.ErrorRequestHandler = (err, req, res, next) => {
-    console.error(err.stack);
-    next(err);
-  };
-
-  app.use(errorLogger);
+  app.use(errorHandlerMiddleware);
 
   return app;
 }
