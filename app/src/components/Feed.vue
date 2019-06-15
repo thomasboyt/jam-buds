@@ -3,7 +3,7 @@
     <div class="header-row">
       <h2>your feed</h2>
       <div class="header-row-button-container">
-        <add-song-button />
+        <add-song-button @click="handleAddSong">+ post a song!</add-song-button>
       </div>
     </div>
 
@@ -65,6 +65,10 @@ export default {
       } finally {
         this.loadingNextPage = false;
       }
+    },
+
+    handleAddSong() {
+      this.$store.dispatch('showAddSong');
     },
   },
 };

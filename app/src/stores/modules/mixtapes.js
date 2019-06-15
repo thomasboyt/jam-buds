@@ -14,6 +14,10 @@ const mixtapes = {
         tracks,
       });
     },
+
+    appendToMixtape(state, { songId, mixtapeId }) {
+      state[mixtapeId] = state[mixtapeId].concat([songId]);
+    },
   },
 
   actions: {
@@ -27,6 +31,11 @@ const mixtapes = {
       context.commit('setMixtape', { id, data: resp.data });
 
       return resp.data;
+    },
+
+    addSongToMixtape(context, { mixtapeId, song }) {
+      context.commit('addSongs', [song]);
+      context.commit('appendToMixtape', { songId: song.id, mixtapeId });
     },
   },
 

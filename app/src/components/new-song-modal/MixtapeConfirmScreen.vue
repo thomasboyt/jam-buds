@@ -4,23 +4,12 @@
     :style="{ minHeight: '100%', display: 'flex', flexFlow: 'column' }"
   >
     <p>
-      you're posting <strong>{{ songLabel }}</strong>
+      you're adding <strong>{{ songLabel }}</strong>
     </p>
 
     <template v-if="loadedDetails">
       <div>
         <service-list :details="details" :song="selectedSong" />
-
-        <div v-if="hasTwitter">
-          <p>
-            <label>
-              <input type="checkbox" v-model="twitterPostEnabled" />
-              cross-post to twitter
-            </label>
-          </p>
-
-          <twitter-share-field v-if="twitterPostEnabled" v-model="tweetText" />
-        </div>
       </div>
 
       <p v-if="error" class="error">
@@ -44,50 +33,31 @@
 
 <script>
 import _get from 'lodash/get';
-import { mapState } from 'vuex';
 
 import serializeSongLabel from '../../util/serializeSongLabel';
-import TwitterShareField from './TwitterShareField.vue';
 import ServiceList from './ServiceList.vue';
-import {
-  getDefaultTweet,
-  getTweetLength,
-  TWEET_LENGTH,
-} from '../../util/songTweet';
 
 export default {
-  components: { TwitterShareField, ServiceList },
+  components: { ServiceList },
 
-  props: ['selectedSong'],
+  props: ['selectedSong', 'mixtapeId'],
 
   data() {
     return {
       loadedDetails: false,
       details: null,
-      tweetText: '',
-      twitterPostEnabled: false,
       songLabel: serializeSongLabel(this.selectedSong),
       error: null,
     };
   },
 
-  computed: {
-    ...mapState({
-      hasTwitter: (state) => !!state.currentUser.twitterName,
-    }),
-  },
-
   mounted() {
     this.loadSongDetails();
-
-    this.tweetText = getDefaultTweet(
-      this.selectedSong.artists[0],
-      this.selectedSong.title
-    );
   },
 
   methods: {
     async loadSongDetails() {
+      // TODO: dedupe this between here and <confirm-screen />
       let resp;
 
       try {
@@ -112,22 +82,10 @@ export default {
         spotifyId: this.selectedSong.spotifyId,
       };
 
-      if (this.twitterPostEnabled) {
-        if (getTweetLength(this.tweetText) > TWEET_LENGTH) {
-          this.$store.commit(
-            'showErrorModal',
-            'Yo your twitter message is too long'
-          );
-          return;
-        }
-
-        params.tweet = this.tweetText === '' ? null : this.tweetText;
-      }
-
       let resp;
       try {
         resp = await this.$axios({
-          url: '/posts',
+          url: `/mixtapes/${this.mixtapeId}/songs`,
           method: 'POST',
           data: params,
         });
@@ -141,7 +99,11 @@ export default {
         return;
       }
 
-      this.$store.dispatch('didSubmitSong', resp.data);
+      this.$store.dispatch('addSongToMixtape', {
+        mixtapeId: this.mixtapeId,
+        song: resp.data,
+      });
+
       this.$emit('finished');
     },
   },

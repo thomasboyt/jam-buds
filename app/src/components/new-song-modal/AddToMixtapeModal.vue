@@ -1,33 +1,30 @@
 <template>
-  <modal
-    title="share a jam!"
-    :is-open="showAddSongModal"
-    @close="handleCloseModal"
-  >
+  <modal title="add to mixtape" :is-open="isOpen" @close="handleCloseModal">
     <initial-screen
       v-if="state === INITIAL_STATE"
       @selectedSong="handleSelectedSong"
     />
-    <confirm-screen
+    <mixtape-confirm-screen
       v-if="state === CONFIRM_STATE"
       :selected-song="selectedSong"
+      :mixtape-id="mixtapeId"
       @finished="handleCloseModal"
     />
   </modal>
 </template>
 
 <script>
-import { mapState } from 'vuex';
-
 import Modal from './Modal.vue';
 import InitialScreen from './InitialScreen.vue';
-import ConfirmScreen from './ConfirmScreen.vue';
+import MixtapeConfirmScreen from './MixtapeConfirmScreen.vue';
 
 const INITIAL_STATE = 'initial';
 const CONFIRM_STATE = 'confirm';
 
 export default {
-  components: { Modal, InitialScreen, ConfirmScreen },
+  components: { Modal, InitialScreen, MixtapeConfirmScreen },
+
+  props: ['isOpen', 'mixtapeId'],
 
   data() {
     return {
@@ -38,12 +35,6 @@ export default {
     };
   },
 
-  computed: {
-    ...mapState({
-      showAddSongModal: (state) => state.addSong.showModal,
-    }),
-  },
-
   methods: {
     handleSelectedSong(song) {
       this.selectedSong = song;
@@ -51,7 +42,7 @@ export default {
     },
 
     handleCloseModal() {
-      this.$store.dispatch('closeAddSong');
+      this.$emit('close');
       this.state = INITIAL_STATE;
       this.selectedSong = null;
     },

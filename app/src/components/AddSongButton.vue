@@ -1,7 +1,7 @@
 <template>
-  <button class="add-song" @click="handleClick" data-test="add-song">
+  <button @click="handleClick" class="add-song" data-test="add-song">
     <span class="label">
-      + post a song!
+      <slot />
     </span>
   </button>
 </template>
@@ -10,7 +10,7 @@
 export default {
   methods: {
     handleClick() {
-      this.$store.dispatch('showAddSong');
+      this.$emit('click');
     },
   },
 };
