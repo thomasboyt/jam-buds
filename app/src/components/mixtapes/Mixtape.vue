@@ -76,11 +76,16 @@ export default {
         return this.mixtape.tracks;
       },
 
-      set(songOrder) {
-        this.$store.dispatch('updateMixtapeSongOrder', {
-          mixtapeId: this.mixtapeId,
-          songOrder,
-        });
+      async set(songOrder) {
+        try {
+          await this.$store.dispatch('updateMixtapeSongOrder', {
+            mixtapeId: this.mixtapeId,
+            songOrder,
+          });
+        } catch (err) {
+          this.$store.commit('showErrorModal');
+          throw err;
+        }
       },
     },
   },
