@@ -5,7 +5,7 @@
     <div class="playlist-song--main" @click="handleClick">
       <album-art :album-art="song.albumArt" />
 
-      <div class="title">
+      <div class="playlist-song--title">
         <div class="title-content">
           <span class="title-artist">{{ song.artists.join(', ') }}</span>
           <br />
@@ -133,8 +133,10 @@ export default {
 @import '../../../styles/mixins.scss';
 
 .playlist-song {
-  border-top: 1px var(--theme-text-color) solid;
   padding: 10px;
+  margin: 0 -10px 10px -10px;
+
+  border-top: 1px var(--theme-text-color) solid;
 
   &:hover {
     background: rgba(0, 0, 0, 0.1);
@@ -143,62 +145,56 @@ export default {
       cursor: pointer;
     }
   }
-
-  margin-bottom: 10px;
-  display: block;
 }
 
 .playlist-song--main {
-  height: 64px;
-
   display: flex;
   align-items: center;
   color: var(--theme-text-color);
   text-decoration: none;
+}
 
-  .playlist-song--album-art {
-    height: 100%;
-    flex: 0 0 64px;
-    border: 1px black solid;
-    margin-right: 20px;
+.playlist-song--album-art {
+  height: 100%;
+  flex: 0 0 64px;
+  border: 1px black solid;
+  margin-right: 20px;
 
-    &.-placeholder {
-      height: 80%;
-      text-align: center;
-      border: none;
+  &.-placeholder {
+    height: 64px;
+    border: none;
 
-      svg {
-        height: 100%;
-      }
-    }
-
-    @media (max-width: $breakpoint-small) {
-      display: none;
+    svg {
+      height: 100%;
     }
   }
 
-  .title {
-    .title-artist {
-      font-weight: 500;
-    }
+  // @media (max-width: $breakpoint-small) {
+  //   display: none;
+  // }
+}
 
-    > .title-content {
-      display: inline-block;
-      width: 100%;
-
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    flex-shrink: 1;
-    flex-grow: 1;
-    max-width: 100%;
-    min-width: 0;
-
-    margin-right: 10px;
-    line-height: 24px;
+.playlist-song--title {
+  .title-artist {
+    font-weight: 500;
   }
+
+  > .title-content {
+    display: inline-block;
+    width: 100%;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  flex-shrink: 1;
+  flex-grow: 1;
+  max-width: 100%;
+  min-width: 0;
+
+  margin-right: 10px;
+  line-height: 24px;
 }
 
 .playlist-song--actions {
@@ -206,7 +202,6 @@ export default {
   flex-shrink: 0;
 
   margin-left: auto;
-  margin-right: 10px;
 
   /deep/ .action-button {
     transition: transform 0.15s linear;
@@ -235,6 +230,38 @@ export default {
       fill: var(--theme-text-color);
       stroke: var(--theme-text-color);
       color: var(--theme-text-color);
+    }
+  }
+}
+
+@media (max-width: $breakpoint-small) {
+  .playlist-song {
+    padding: 5px;
+    margin: 0 -5px 15px -5px;
+    border-top: 0px;
+  }
+
+  .playlist-song--album-art {
+    height: 100%;
+    flex: 0 0 48px;
+    margin-right: 10px;
+
+    &.-placeholder {
+      height: 48px;
+    }
+  }
+
+  .playlist-song--title {
+    font-size: 14px;
+    line-height: 20px;
+  }
+
+  .playlist-song--actions /deep/ .action-button {
+    margin-left: 5px;
+
+    .icon {
+      width: 20px;
+      height: 20px;
     }
   }
 }

@@ -32,13 +32,21 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '../../../styles/mixins.scss';
+
 .posted-by {
   display: inline-block;
-  padding: 5px 10px;
+  padding: 5px 0;
 
   a {
     color: var(--theme-text-color);
     font-weight: 500;
+  }
+
+  @media (max-width: $breakpoint-small) {
+    padding: 0px;
+    font-size: 14px;
+    line-height: 20px;
   }
 }
 </style>

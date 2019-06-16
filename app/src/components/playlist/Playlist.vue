@@ -60,5 +60,6 @@ export default {
 ul.playlist-entries {
   list-style-type: none;
   padding-left: 0px;
+  margin-top: 0px;
 }
 </style>
