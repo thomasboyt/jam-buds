@@ -45,8 +45,8 @@ export default {
 
   @media (max-width: $breakpoint-small) {
     padding: 0px;
-    font-size: 14px;
-    line-height: 20px;
+    font-size: 15px;
+    line-height: 22px;
   }
 }
 </style>
