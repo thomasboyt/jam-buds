@@ -10,6 +10,7 @@ import {
   addSongToMixtape,
   removeSongFromMixtape,
   reorderMixtapeSongs,
+  setMixtapeTitle,
 } from '../models/mixtapes';
 import { getOrCreateSong, serializeSong } from '../models/song';
 import { Mixtape } from '../resources';
@@ -201,11 +202,21 @@ export default function registerMixtapeEndpoints(router: Router) {
   // );
 
   // Rename a mixtape owned by the current user
-  // router.post(
-  //   '/mixtapes/:id/title',
-  //   isAuthenticated,
-  //   wrapAsyncRoute(async (req, res) => {
-  //     const user = res.locals.user as UserModel;
-  //   })
-  // );
+  router.post(
+    '/mixtapes/:mixtapeId/title',
+    isAuthenticated,
+    wrapAsyncRoute(async (req, res) => {
+      const user = res.locals.user as UserModel;
+      let mixtape = await getMixtapeById(req.params.mixtapeId, {
+        currentUserId: user.id,
+      });
+
+      mixtape = validateMixtapeExists(mixtape);
+      validateCanUpdateMixtape({ mixtape, user });
+
+      await setMixtapeTitle({ mixtapeId: mixtape.id, title: req.body.title });
+
+      res.json({ succes: true });
+    })
+  );
 }

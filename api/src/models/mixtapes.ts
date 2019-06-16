@@ -43,13 +43,20 @@ export async function createMixtapeForUser(
   return id;
 }
 
-// /**
-//  * Set the title of a given mixtape. Throws an error if the mixtape is not found.
-//  */
-// export async function setMixtapeTitle(
-//   mixtapeId: number,
-//   title: string
-// ): Promise<void> {}
+/**
+ * Set the title of a given mixtape.
+ */
+export async function setMixtapeTitle({
+  mixtapeId,
+  title,
+}: {
+  mixtapeId: number;
+  title: string;
+}): Promise<void> {
+  await db!('mixtapes')
+    .where({ id: mixtapeId })
+    .update({ title });
+}
 
 /**
  * Add a song to a mixtape.
@@ -71,9 +78,9 @@ export async function addSongToMixtape(
   });
 }
 
-// /**
-//  * Remove a song from a mixtape. No-op if the song isn't present.
-//  */
+/**
+ * Remove a song from a mixtape. No-op if the song isn't present.
+ */
 export async function removeSongFromMixtape({
   mixtapeId,
   songId,
