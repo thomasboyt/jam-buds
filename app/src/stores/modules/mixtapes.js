@@ -19,6 +19,10 @@ const mixtapes = {
       state[mixtapeId].tracks = songOrder;
     },
 
+    setMixtapeTitle(state, { mixtapeId, title }) {
+      state[mixtapeId].title = title;
+    },
+
     appendToMixtape(state, { songId, mixtapeId }) {
       state[mixtapeId].tracks = state[mixtapeId].tracks.concat([songId]);
     },
@@ -70,6 +74,22 @@ const mixtapes = {
         });
       } catch (err) {
         context.commit('setMixtapeOrder', { mixtapeId, songOrder: prevOrder });
+        throw err;
+      }
+    },
+
+    async renameMixtape(context, { mixtapeId, title }) {
+      const prevTitle = context.state[mixtapeId].title;
+      context.commit('setMixtapeTitle', { mixtapeId, title });
+
+      try {
+        await this.$axios({
+          method: 'POST',
+          url: `/mixtapes/${mixtapeId}/title`,
+          data: { title },
+        });
+      } catch (err) {
+        context.commit('setMixtapeTitle', { mixtapeId, title: prevTitle });
         throw err;
       }
     },
