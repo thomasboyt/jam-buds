@@ -155,23 +155,16 @@ export default {
 }
 
 .playlist-song--album-art {
-  height: 100%;
-  flex: 0 0 64px;
+  width: 64px;
+  height: auto;
+  flex: 0 0 auto;
   border: 1px black solid;
   margin-right: 20px;
 
   &.-placeholder {
-    height: 64px;
     border: none;
-
-    svg {
-      height: 100%;
-    }
+    height: 64px;
   }
-
-  // @media (max-width: $breakpoint-small) {
-  //   display: none;
-  // }
 }
 
 .playlist-song--title {
@@ -242,9 +235,8 @@ export default {
   }
 
   .playlist-song--album-art {
-    height: 100%;
-    flex: 0 0 48px;
     margin-right: 10px;
+    width: 48px;
 
     &.-placeholder {
       height: 48px;
