@@ -4,30 +4,34 @@
       :with-sidebar="withSidebar"
       :color-scheme="mixtape.author.colorScheme"
     >
-      <editable-title :mixtape="mixtape" />
+      <editable-title v-if="isEditing" :mixtape="mixtape" />
+      <h2 v-else>{{ mixtape.title }}</h2>
 
       <p :style="{ fontSize: '18px' }">
-        a playlist by
+        a mixtape by
         <router-link :to="`/users/${mixtape.author.name}`">{{
           mixtape.author.name
         }}</router-link>
       </p>
 
-      <panel>
+      <panel v-if="isEditing">
         <p>
           this mixtape is in draft mode. would you like to publish it?
         </p>
-        <publish-button />
+        <publish-button :mixtape-id="$route.params.id" />
       </panel>
 
-      <mixtape :mixtape-id="$route.params.id" />
+      <mixtape :mixtape-id="$route.params.id" :is-editing="isEditing" />
 
-      <add-song-button @click="handleAddSongOpen">+ add a song</add-song-button>
+      <add-song-button @click="handleAddSongOpen" v-if="isEditing"
+        >+ add a song</add-song-button
+      >
 
       <add-to-mixtape-modal
         :mixtape-id="mixtapeId"
         :is-open="addSongOpen"
         @close="handleAddSongClose"
+        v-if="isEditing"
       />
     </main-wrapper>
   </sidebar-wrapper>
@@ -69,6 +73,13 @@ export default {
   computed: {
     mixtape() {
       return this.$store.getters.getMixtape(this.mixtapeId);
+    },
+
+    isEditing() {
+      return (
+        this.mixtape.author.id === this.$store.state.currentUser.id &&
+        !this.mixtape.isPublished
+      );
     },
   },
 

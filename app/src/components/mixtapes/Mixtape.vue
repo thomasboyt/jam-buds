@@ -11,7 +11,7 @@
         :posted-user-names="null"
         @requestPlay="handleRequestPlay"
       >
-        <template v-slot:actions>
+        <template v-slot:actions v-if="isEditing">
           <song-remove-from-mixtape-action
             :song-id="songId"
             :mixtape-id="mixtapeId"
@@ -42,7 +42,7 @@ export default {
     Icon,
   },
 
-  props: ['mixtapeId'],
+  props: ['mixtapeId', 'isEditing'],
 
   data() {
     return {

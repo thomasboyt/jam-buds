@@ -1,13 +1,41 @@
 <template>
-  <button type="button" class="publish-button" @click="handleClick">
+  <button
+    type="button"
+    class="publish-button"
+    @click="handleClick"
+    :disabled="requestInFlight"
+  >
     Publish
   </button>
 </template>
 
 <script>
 export default {
-  handleClick() {
-    this.$emit('click');
+  props: ['mixtapeId'],
+
+  data() {
+    return {
+      requestInFlight: false,
+    };
+  },
+
+  methods: {
+    async handleClick(e) {
+      e.preventDefault();
+
+      this.requestInFlight = true;
+
+      try {
+        await this.$store.dispatch('publishMixtape', {
+          mixtapeId: this.mixtapeId,
+        });
+      } catch (err) {
+        this.$store.commit('showErrorModal');
+        throw err;
+      } finally {
+        this.requestInFlight = false;
+      }
+    },
   },
 };
 </script>

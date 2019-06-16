@@ -23,6 +23,10 @@ const mixtapes = {
       state[mixtapeId].title = title;
     },
 
+    setMixtapePublished(state, { mixtapeId }) {
+      state[mixtapeId].isPublished = true;
+    },
+
     appendToMixtape(state, { songId, mixtapeId }) {
       state[mixtapeId].tracks = state[mixtapeId].tracks.concat([songId]);
     },
@@ -92,6 +96,17 @@ const mixtapes = {
         context.commit('setMixtapeTitle', { mixtapeId, title: prevTitle });
         throw err;
       }
+    },
+
+    async publishMixtape(context, { mixtapeId }) {
+      await this.$axios({
+        method: 'POST',
+        url: `/mixtapes/${mixtapeId}/publish`,
+      });
+
+      context.commit('setMixtapePublished', {
+        mixtapeId,
+      });
     },
 
     playFromMixtape(context, { mixtapeId, songId }) {
