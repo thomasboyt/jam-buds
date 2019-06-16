@@ -63,6 +63,28 @@ export default {
     await store.dispatch('loadMixtape', route.params.id);
   },
 
+  metaInfo() {
+    return {
+      title: this.mixtape.title,
+
+      meta: [
+        { name: 'twitter:card', content: 'summary' },
+        { vmid: 'title', name: 'og:title', content: this.mixtape.title },
+        {
+          vmid: 'description',
+          name: 'og:description',
+          content: `check out this mixtape by ${
+            this.mixtape.author.name
+          } on jam buds!`,
+        },
+        {
+          name: 'og:image',
+          content: `${process.env.STATIC_URL}/corgi_icon_square.png`,
+        },
+      ],
+    };
+  },
+
   data() {
     return {
       mixtapeId: this.$route.params.id,
