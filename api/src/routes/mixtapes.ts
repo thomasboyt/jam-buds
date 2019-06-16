@@ -3,7 +3,7 @@ import wrapAsyncRoute from '../util/wrapAsyncRoute';
 
 import { UserModel } from '../models/user';
 
-import { isAuthenticated } from '../auth';
+import { isAuthenticated, getUserFromRequest } from '../auth';
 import {
   createMixtapeForUser,
   getMixtapeById,
@@ -32,13 +32,15 @@ function validateCanReadMixtape({
   user,
 }: {
   mixtape: Mixtape;
-  user: UserModel;
+  user: UserModel | null;
 }) {
-  if (!mixtape.isPublished && mixtape.author.id !== user.id) {
-    throw new JamBudsHTTPError({
-      statusCode: 401,
-      message: `You do not have access to this draft mixtape`,
-    });
+  if (!mixtape.isPublished) {
+    if (!(user && mixtape.author.id === user.id)) {
+      throw new JamBudsHTTPError({
+        statusCode: 401,
+        message: `You do not have access to this draft mixtape`,
+      });
+    }
   }
 }
 
@@ -91,16 +93,16 @@ export default function registerMixtapeEndpoints(router: Router) {
    */
   router.get(
     '/mixtapes/:id',
-    isAuthenticated,
     wrapAsyncRoute(async (req, res) => {
       const id: number = parseInt(req.params.id, 10);
+      const currentUser = await getUserFromRequest(req);
 
-      // TODO: don't require authentication here
-      const user = res.locals.user as UserModel;
+      let mixtape = await getMixtapeById(id, {
+        currentUserId: currentUser ? currentUser.id : undefined,
+      });
 
-      let mixtape = await getMixtapeById(id, { currentUserId: user.id });
       mixtape = validateMixtapeExists(mixtape);
-      validateCanReadMixtape({ mixtape, user });
+      validateCanReadMixtape({ mixtape, user: currentUser });
 
       res.json(mixtape);
     })

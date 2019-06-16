@@ -106,13 +106,13 @@ export default function registerPlaylistEndpoints(router: Router) {
   router.get(
     '/public-feed',
     wrapAsyncRoute(async (req, res) => {
-      const user: UserModel = res.locals.user;
+      const currentUser = await getUserFromRequest(req);
 
       // TODO: validate
       const beforeTimestamp = req.query.before;
 
       const items = await getPublicFeed({
-        currentUserId: user ? user.id : undefined,
+        currentUserId: currentUser ? currentUser.id : undefined,
         beforeTimestamp,
       });
 
