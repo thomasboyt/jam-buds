@@ -1,11 +1,11 @@
 <template>
   <transition name="audio-player-open">
-    <audio-player-bar v-if="nowPlaying" />
+    <audio-player-bar v-if="currentSong" />
   </transition>
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapGetters } from 'vuex';
 
 import AudioPlayerBar from './AudioPlayerBar.vue';
 
@@ -15,7 +15,7 @@ export default {
   },
 
   computed: {
-    ...mapState('playback', ['nowPlaying']),
+    ...mapGetters('playback', ['currentSong']),
   },
 };
 </script>

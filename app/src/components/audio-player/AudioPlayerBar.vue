@@ -1,18 +1,18 @@
 <template>
-  <div class="audio-player--bar" v-if="nowPlaying">
+  <div class="audio-player--bar" v-if="currentSong">
     <audio-player-song-display
-      :song="nowPlaying"
+      :song="currentSong"
       :playback-source-path="playbackSourcePath"
       :playback-source-label="playbackSourceLabel"
     />
 
-    <div class="audio-player--controls" v-if="nowPlaying">
+    <div class="audio-player--controls" v-if="currentSong">
       <loading-spinner v-if="isBuffering" />
       <button
         v-else
         :class="{ 'play-pause-button': true, play: !isPlaying }"
         @click="handlePlayPauseClick"
-        :disabled="!nowPlaying"
+        :disabled="!currentSong"
       >
         <icon :glyph="playPauseIcon" />
       </button>
@@ -20,7 +20,7 @@
       <!-- <button
           class="next-button"
           @click="handleNextClick"
-          :disabled="!nowPlaying"
+          :disabled="!currentSong"
         >
           <icon :glyph="nextIcon" />
         </button> -->
@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 
 import Icon from '../Icon.vue';
 import AudioPlayerSongDisplay from './AudioPlayerSongDisplay.vue';
@@ -56,12 +56,13 @@ export default {
 
   computed: {
     ...mapState('playback', [
-      'nowPlaying',
       'isPlaying',
       'isBuffering',
       'playbackSourcePath',
       'playbackSourceLabel',
     ]),
+
+    ...mapGetters('playback', ['currentSong']),
 
     ...mapState({
       hasStreamingService: (state) =>

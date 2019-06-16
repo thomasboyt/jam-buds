@@ -122,7 +122,7 @@ export default {
       }
 
       this.$store.dispatch('playback/playSong', {
-        song: this.song,
+        songId: this.song.id,
         playbackSourceLabel: this.playbackSourceLabel,
         playbackSourcePath: this.playbackSourcePath,
       });

@@ -5,12 +5,19 @@ const playback = {
 
   state() {
     return {
+      player: null,
+
       isPlaying: false,
       isBuffering: false,
-      nowPlaying: null,
+
+      /** Currently playing song ID*/
+      currentSongId: null,
+
       playbackSourceLabel: null,
       playbackSourcePath: null,
-      player: null,
+
+      /** list of song IDs */
+      queue: [],
     };
   },
 
@@ -19,11 +26,8 @@ const playback = {
       state.player = player;
     },
 
-    playSong(state, { song, playbackSourceLabel, playbackSourcePath }) {
-      // XXX: Eventually, this should take _entry ID_ instead of a song, for
-      // playlist-playback purposes
-      // (could also take song-and-playlist and find entry from playlist)
-      state.nowPlaying = song;
+    playSong(state, { songId, playbackSourceLabel, playbackSourcePath }) {
+      state.currentSongId = songId;
       state.isPlaying = true;
       state.playbackSourceLabel = playbackSourceLabel;
       state.playbackSourcePath = playbackSourcePath;
@@ -34,7 +38,7 @@ const playback = {
     },
 
     clearPlayback(state) {
-      state.nowPlaying = null;
+      state.currentSongId = null;
       state.isPlaying = false;
       state.playbackSourceLabel = null;
       state.playbackSourcePath = null;
@@ -60,8 +64,11 @@ const playback = {
         store: this,
       });
 
-      playerInstance.setSong(payload.song);
+      const song = context.getters.currentSong;
+      playerInstance.setSong(song);
     },
+
+    // enqueueAndPlaySongs(context, payload) {},
 
     async togglePlayback(context) {
       const playerInstance = await getOrCreatePlayer(context.state.player, {
@@ -81,6 +88,12 @@ const playback = {
 
     sync(context, payload) {
       context.commit('sync', payload);
+    },
+  },
+
+  getters: {
+    currentSong(state, getters, rootState) {
+      return rootState.songs[state.currentSongId];
     },
   },
 };
