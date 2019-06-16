@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 
 import AlbumArt from './AlbumArt.vue';
 import SongLikeAction from './SongLikeAction.vue';
@@ -50,14 +50,6 @@ export default {
       type: Number,
       required: true,
     },
-    playbackSourceLabel: {
-      type: String,
-      required: true,
-    },
-    playbackSourcePath: {
-      type: String,
-      required: true,
-    },
     postedUserNames: {
       type: Array,
     },
@@ -71,16 +63,6 @@ export default {
           ((state.currentUser.hasSpotify && this.song.spotifyId) ||
             (state.currentUser.hasAppleMusic && this.song.appleMusicId))
         );
-      },
-
-      isPlaying(state) {
-        const nowPlaying = state.playback.nowPlaying;
-
-        if (!nowPlaying) {
-          return false;
-        }
-
-        return nowPlaying.id === this.song.id;
       },
 
       song(state) {
@@ -103,6 +85,12 @@ export default {
         );
       },
     }),
+
+    ...mapGetters('playback', ['currentSong']),
+
+    isPlaying() {
+      return this.currentSong && this.currentSong.id === this.song.id;
+    },
   },
 
   methods: {
@@ -121,11 +109,7 @@ export default {
         return;
       }
 
-      this.$store.dispatch('playback/playSong', {
-        songId: this.song.id,
-        playbackSourceLabel: this.playbackSourceLabel,
-        playbackSourcePath: this.playbackSourcePath,
-      });
+      this.$emit('requestPlay', this.songId);
     },
   },
 };

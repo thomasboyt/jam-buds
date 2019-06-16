@@ -8,9 +8,8 @@
     <li v-for="songId in mixtapeTracks" :key="songId">
       <song
         :song-id="songId"
-        :playback-source-label="mixtape.title"
-        :playback-source-path="`/mixtapes/${mixtapeId}`"
         :posted-user-names="null"
+        @requestPlay="handleRequestPlay"
       >
         <template v-slot:actions>
           <song-remove-from-mixtape-action
@@ -72,6 +71,15 @@ export default {
           throw err;
         }
       },
+    },
+  },
+
+  methods: {
+    handleRequestPlay(songId) {
+      this.$store.dispatch('playFromMixtape', {
+        mixtapeId: this.mixtapeId,
+        songId,
+      });
     },
   },
 };

@@ -45,6 +45,20 @@ const root = {
   },
 
   actions: {},
+
+  getters: {
+    getSongsForQueue(state, getters) {
+      return (type, key) => {
+        if (type === 'mixtape') {
+          return getters.getMixtape(key).tracks;
+        } else if (type === 'playlist') {
+          return getters.playlistEntries(key);
+        } else {
+          throw new Error(`unrecognized object ${type}`);
+        }
+      };
+    },
+  },
 };
 
 export default function createStore() {

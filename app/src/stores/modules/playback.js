@@ -33,6 +33,10 @@ const playback = {
       state.playbackSourcePath = playbackSourcePath;
     },
 
+    setQueue(state, songIds) {
+      this.queue = [...songIds];
+    },
+
     togglePlayback(state) {
       state.isPlaying = !state.isPlaying;
     },
@@ -68,7 +72,18 @@ const playback = {
       playerInstance.setSong(song);
     },
 
-    // enqueueAndPlaySongs(context, payload) {},
+    enqueueAndPlaySongs(
+      context,
+      { songIds, playbackSourceLabel, playbackSourcePath }
+    ) {
+      context.dispatch('playSong', {
+        songId: songIds[0],
+        playbackSourceLabel,
+        playbackSourcePath,
+      });
+
+      context.commit('setQueue', songIds.slice(1));
+    },
 
     async togglePlayback(context) {
       const playerInstance = await getOrCreatePlayer(context.state.player, {

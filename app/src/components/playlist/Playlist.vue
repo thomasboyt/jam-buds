@@ -10,11 +10,10 @@
 
         <song
           :song-id="entry.songId"
-          :playback-source-label="playbackSourceLabel"
-          :playback-source-path="playbackSourcePath"
           :posted-user-names="
             entryType !== 'like-entry' ? entry.userNames : null
           "
+          @requestPlay="handleRequestPlay"
         />
       </li>
     </ul>
@@ -51,6 +50,14 @@ export default {
     handleRequestNextPage(evt) {
       evt.preventDefault();
       this.$emit('requestNextPage');
+    },
+
+    handleRequestPlay(songId) {
+      this.$store.dispatch('playback/playSong', {
+        songId,
+        playbackSourceLabel: this.playbackSourceLabel,
+        playbackSourcePath: this.playbackSourcePath,
+      });
     },
   },
 };
