@@ -73,6 +73,10 @@ export default {
 <style lang="scss" scoped>
 .header-row {
   display: flex;
+  margin-bottom: 30px;
+  h2 {
+    margin-bottom: 0px;
+  }
 }
 .header-row-button-container {
   margin-left: auto;
