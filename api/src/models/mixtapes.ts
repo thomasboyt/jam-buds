@@ -121,10 +121,14 @@ export async function reorderMixtapeSongs({
   });
 }
 
-// /**
-//  * Publish a mixtape, which allows it to be included in the feed.
-//  */
-// export async function publishMixtape(mixtapeId: number): Promise<void> {}
+/**
+ * Publish a mixtape, which allows it to be included in the feed.
+ */
+export async function publishMixtape(mixtapeId: number): Promise<void> {
+  await db!('mixtapes')
+    .where({ id: mixtapeId })
+    .update({ publishedAt: new Date() });
+}
 
 /**
  * Get a mixtape by ID.

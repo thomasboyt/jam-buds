@@ -11,6 +11,7 @@ import {
   removeSongFromMixtape,
   reorderMixtapeSongs,
   setMixtapeTitle,
+  publishMixtape,
 } from '../models/mixtapes';
 import { getOrCreateSong, serializeSong } from '../models/song';
 import { Mixtape } from '../resources';
@@ -193,13 +194,24 @@ export default function registerMixtapeEndpoints(router: Router) {
   // );
 
   // Publish a mixtape owned by the current user
-  // router.post(
-  //   '/mixtapes/:id/publish',
-  //   isAuthenticated,
-  //   wrapAsyncRoute(async (req, res) => {
-  //     const user = res.locals.user as UserModel;
-  //   })
-  // );
+  router.post(
+    '/mixtapes/:mixtapeId/publish',
+    isAuthenticated,
+    wrapAsyncRoute(async (req, res) => {
+      const user = res.locals.user as UserModel;
+
+      let mixtape = await getMixtapeById(req.params.mixtapeId, {
+        currentUserId: user.id,
+      });
+
+      mixtape = validateMixtapeExists(mixtape);
+      validateCanUpdateMixtape({ mixtape, user });
+
+      await publishMixtape(mixtape.id);
+
+      res.json({ success: true });
+    })
+  );
 
   // Rename a mixtape owned by the current user
   router.post(
