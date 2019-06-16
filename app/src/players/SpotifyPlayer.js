@@ -30,6 +30,9 @@ export default class SpotifyPlayer {
     this._spotifyReady = false;
     this._spotifyPlayer = null;
     this.store = store;
+
+    // hacky hack
+    this.trackStarted = false;
   }
 
   play() {
@@ -43,6 +46,8 @@ export default class SpotifyPlayer {
   }
 
   async setSong(song) {
+    this.trackStarted = false;
+
     this.store.dispatch('playback/sync', {
       isBuffering: true,
     });
@@ -140,23 +145,24 @@ export default class SpotifyPlayer {
   }
 
   onPlaybackStateChange(state) {
-    console.log(state);
     if (!state) {
       return;
     }
 
     // song ended: https://github.com/spotify/web-playback-sdk/issues/35#issuecomment-469834686
     if (
+      this.trackStarted &&
       state.paused &&
       state.position === 0 &&
       state.restrictions.disallow_resuming_reasons &&
       state.restrictions.disallow_resuming_reasons[0] === 'not_paused'
     ) {
-      // TODO: do something to ensure this is not fired for a newly played
-      // song...
-      // this.$emit('ended');
+      this.trackStarted = false;
+      this.store.dispatch('playback/nextSong');
       return;
     }
+
+    this.trackStarted = true;
 
     const syncState = {
       isPlaying: !state.paused,

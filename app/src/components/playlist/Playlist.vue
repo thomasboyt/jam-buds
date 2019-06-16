@@ -53,8 +53,8 @@ export default {
     },
 
     handleRequestPlay(songId) {
-      this.$store.dispatch('playback/playSong', {
-        songId,
+      this.$store.dispatch('playback/enqueueAndPlaySongs', {
+        songIds: [songId],
         playbackSourceLabel: this.playbackSourceLabel,
         playbackSourcePath: this.playbackSourcePath,
       });

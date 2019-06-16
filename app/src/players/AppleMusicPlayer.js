@@ -80,11 +80,11 @@ export default class AppleMusicPlayer {
     if (evt.state === MusicKit.PlaybackStates.waiting && this.songEnded) {
       MusicKit.getInstance().stop();
       this.songEnded = false;
-      // this.$emit('ended');
+      this.store.dispatch('playback/nextSong');
     }
     // just in case apple ever fixes this bug, this should work
     // if (evt.state === MusicKit.PlaybackStates.completed) {
-    //   this.$emit('ended');
+    //   this.store.dispatch('playback/nextSong');
     // }
   }
 }

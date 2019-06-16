@@ -26,15 +26,18 @@ const playback = {
       state.player = player;
     },
 
-    playSong(state, { songId, playbackSourceLabel, playbackSourcePath }) {
-      state.currentSongId = songId;
-      state.isPlaying = true;
+    setPlaybackSource(state, { playbackSourceLabel, playbackSourcePath }) {
       state.playbackSourceLabel = playbackSourceLabel;
       state.playbackSourcePath = playbackSourcePath;
     },
 
+    playSong(state, { songId }) {
+      state.currentSongId = songId;
+      state.isPlaying = true;
+    },
+
     setQueue(state, songIds) {
-      this.queue = [...songIds];
+      state.queue = [...songIds];
     },
 
     togglePlayback(state) {
@@ -56,13 +59,13 @@ const playback = {
   },
 
   actions: {
-    async playSong(context, payload) {
+    async playSong(context, { songId }) {
       const player = context.rootState.currentUser.hasSpotify
         ? 'spotify'
         : 'applemusic';
 
       context.commit('setPlayer', player);
-      context.commit('playSong', payload);
+      context.commit('playSong', { songId });
 
       const playerInstance = await getOrCreatePlayer(player, {
         store: this,
@@ -72,17 +75,34 @@ const playback = {
       playerInstance.setSong(song);
     },
 
+    nextSong(context) {
+      const [nextSong, ...queue] = context.state.queue;
+
+      if (!nextSong) {
+        // queue playback ended
+        return;
+      }
+
+      context.dispatch('playSong', {
+        songId: nextSong,
+        playbackSourceLabel: context.state.playbackSourceLabel,
+        playbackSourcePath: context.state.playbackSourcePath,
+      });
+
+      context.commit('setQueue', queue);
+    },
+
     enqueueAndPlaySongs(
       context,
       { songIds, playbackSourceLabel, playbackSourcePath }
     ) {
-      context.dispatch('playSong', {
-        songId: songIds[0],
+      context.commit('setPlaybackSource', {
         playbackSourceLabel,
         playbackSourcePath,
       });
 
-      context.commit('setQueue', songIds.slice(1));
+      context.commit('setQueue', songIds);
+      context.dispatch('nextSong');
     },
 
     async togglePlayback(context) {
