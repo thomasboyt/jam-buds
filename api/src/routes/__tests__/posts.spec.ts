@@ -6,7 +6,7 @@ import {
   postFactory,
   songFactory,
 } from '../../__tests__/factories';
-import { getPlaylistEntriesByUserId, postSong } from '../../models/post';
+import { getPostedUserSongItemsById, postSong } from '../../models/post';
 import { createAuthTokenForUserId } from '../../models/authTokens';
 
 import createApp from '../../createApp';
@@ -45,31 +45,31 @@ describe('routes/posts', () => {
   describe('DELETE /posts/:id', () => {
     it('deletes a song', async () => {
       const user = await userFactory();
-      const entry = await postFactory({
+      const post = await postFactory({
         userId: user.id,
       });
 
-      const beforePlaylist = await getPlaylistEntriesByUserId(user.id);
+      const beforePlaylist = await getPostedUserSongItemsById(user.id);
       expect(beforePlaylist.length).toBe(1);
 
       const req = request(app)
-        .delete(`/api/posts/${entry.song.id}`)
+        .delete(`/api/posts/${post.songId}`)
         .set('X-Auth-Token', await createAuthTokenForUserId(user.id));
 
       const res = await req;
 
       expectStatus(res, 200);
 
-      const afterPlaylist = await getPlaylistEntriesByUserId(user.id);
+      const afterPlaylist = await getPostedUserSongItemsById(user.id);
       expect(afterPlaylist.length).toBe(0);
     });
 
     it("does not allow you to delete another user's song", async () => {
       const user = await userFactory();
-      const entry = await postFactory();
+      const post = await postFactory();
 
       const req = request(app)
-        .delete(`/api/posts/${entry.song.id}`)
+        .delete(`/api/posts/${post.songId}`)
         .set('X-Auth-Token', await createAuthTokenForUserId(user.id));
 
       const res = await req;

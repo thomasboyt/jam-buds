@@ -35,7 +35,7 @@ describe('routes/playlists', () => {
 
       expectStatus(firstPageRes, 200);
 
-      const lastTimestampFirstPage = firstPageRes.body.tracks.slice(-1)[0]
+      const lastTimestampFirstPage = firstPageRes.body.items.slice(-1)[0]
         .timestamp;
 
       const secondPageReq = request(app)
@@ -50,7 +50,7 @@ describe('routes/playlists', () => {
       expectStatus(secondPageRes, 200);
 
       // TODO: Assert that these are the next 20 items
-      const lastTimestampSecondPage = secondPageRes.body.tracks.slice(-1)[0]
+      const lastTimestampSecondPage = secondPageRes.body.items.slice(-1)[0]
         .timestamp;
       expect(new Date(lastTimestampSecondPage).valueOf()).toBeLessThan(
         new Date(lastTimestampFirstPage).valueOf()

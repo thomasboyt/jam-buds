@@ -47,7 +47,7 @@ export default function registerPostEndpoints(router: Router) {
         songId: song.id,
       };
 
-      const entry = await postSong(params);
+      const songResource = await postSong(params);
 
       if (req.body.tweet) {
         await postSongTweet({
@@ -57,7 +57,7 @@ export default function registerPostEndpoints(router: Router) {
         });
       }
 
-      res.json(entry);
+      res.json(songResource);
     })
   );
 

@@ -1,11 +1,7 @@
 import expect from 'expect';
 
 import { userFactory, postFactory } from '../../__tests__/factories';
-import {
-  deletePostById,
-  getOwnPostForSongId,
-  getPlaylistEntryBySongId,
-} from '../post';
+import { deletePostById, getOwnPostForSongId } from '../post';
 
 describe('models/post', () => {
   describe('deleteEntryById', () => {
@@ -14,17 +10,18 @@ describe('models/post', () => {
       const entry = await postFactory({ userId: user.id });
       const post = await getOwnPostForSongId({
         userId: user.id,
-        songId: entry.song.id,
+        songId: entry.songId,
       });
 
-      expect(
-        await getPlaylistEntryBySongId(entry.song.id, user.id, user.id)
-      ).toExist();
+      expect(post).toExist();
 
       await deletePostById(post!.id);
 
       expect(
-        await getPlaylistEntryBySongId(entry.song.id, user.id, user.id)
+        await getOwnPostForSongId({
+          userId: user.id,
+          songId: entry.songId,
+        })
       ).toNotExist();
     });
   });

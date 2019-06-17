@@ -2,11 +2,11 @@ import camelcaseKeys from 'camelcase-keys';
 
 import { db } from '../db';
 import { ENTRY_PAGE_LIMIT } from '../constants';
-import { PlaylistEntry } from '../resources';
+import { FeedSongItem } from '../resources';
 import { serializeSong, SongModelV, selectSongsQuery } from './song';
 import validateOrThrow from '../util/validateOrThrow';
 
-function serializeFeedEntry(row: any): PlaylistEntry {
+function serializeFeedSongItem(row: any): FeedSongItem {
   const { isLiked } = row;
 
   return {
@@ -27,7 +27,7 @@ interface QueryOptions {
 export async function getFeedByUserId(
   id: number,
   opts: QueryOptions = {}
-): Promise<PlaylistEntry[]> {
+): Promise<FeedSongItem[]> {
   opts.currentUserId = id;
 
   // XXX: This wacky subquery (which probably performs like ass) ensures that
@@ -76,12 +76,12 @@ export async function getFeedByUserId(
 
   const rows = await query;
 
-  return rows.map((row: any) => serializeFeedEntry(row));
+  return rows.map((row: any) => serializeFeedSongItem(row));
 }
 
 export async function getPublicFeed(
   opts: QueryOptions = {}
-): Promise<PlaylistEntry[]> {
+): Promise<FeedSongItem[]> {
   let query = selectSongsQuery(db!('songs'), opts)
     .select([
       db!.raw(`MIN(posts.created_at) as timestamp`),
@@ -103,5 +103,5 @@ export async function getPublicFeed(
 
   const rows = await query;
 
-  return rows.map((row: any) => serializeFeedEntry(row));
+  return rows.map((row: any) => serializeFeedSongItem(row));
 }

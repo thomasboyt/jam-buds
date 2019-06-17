@@ -3,7 +3,7 @@ import { date as dateType } from 'io-ts-types';
 import camelcaseKeys from 'camelcase-keys';
 
 import { db } from '../db';
-import { PlaylistEntry } from '../resources';
+import { UserSongItem, Song } from '../resources';
 import { ENTRY_PAGE_LIMIT } from '../constants';
 import { selectSongsQuery, serializeSong, SongModelV } from './song';
 import { paginate } from './utils';
@@ -26,24 +26,17 @@ export interface PostSongParams {
   songId: number;
 }
 
-export async function postSong(values: PostSongParams): Promise<PlaylistEntry> {
-  const query = db!
-    .insert(values)
-    .into('posts')
-    .returning('id');
+export async function postSong(values: PostSongParams): Promise<Song> {
+  await db!.insert(values).into('posts');
 
-  await query;
+  const [row] = await selectSongsQuery(db!('songs'), {
+    currentUserId: values.userId,
+  }).where({ id: values.songId });
 
-  const entry = await getPlaylistEntryBySongId(
-    values.songId,
-    values.userId,
-    values.userId
-  );
-
-  return entry!;
+  return serializeSong(row.song, row.isLiked);
 }
 
-function serializePlaylistEntry(row: any): PlaylistEntry {
+function serializeUserSongItem(row: any): UserSongItem {
   const { isLiked } = row;
   const song = serializeSong(
     validateOrThrow(SongModelV, camelcaseKeys(row.song)),
@@ -53,7 +46,6 @@ function serializePlaylistEntry(row: any): PlaylistEntry {
   return {
     timestamp: row.timestamp.toISOString(),
     song: song,
-    userNames: [row.userName],
   };
 }
 
@@ -62,38 +54,16 @@ interface QueryOptions {
   beforeTimestamp?: string;
 }
 
-/**
- * A playlist entry requires a variety of stuff to get up and running:
- *
- * - song ID (to filter by)
- * - current user ID (for `isLiked`)
- * - playlist user ID (to get post by)
- *
- * The differences between this resource and the one returned by the feed
- * queries is are:
- *
- * - timestamp is just set to whatever the playlist user ID's post was.
- * - the [userNames] array is just set to be the playlist user's name
- */
-function getBasePostsQuery(opts: QueryOptions) {
-  let query = selectSongsQuery(db!('posts'), opts)
-    .select([
-      db!.raw(`users.name as user_name`),
-      db!.raw(`posts.created_at as timestamp`),
-    ])
-    .join('users', { 'users.id': 'posts.user_id' })
-    .join('songs', { 'songs.id': 'posts.song_id' });
-
-  return query;
-}
-
-export async function getPlaylistEntriesByUserId(
+export async function getPostedUserSongItemsById(
   userId: number,
   opts: QueryOptions = {}
-): Promise<PlaylistEntry[]> {
-  let query = getBasePostsQuery(opts)
+): Promise<UserSongItem[]> {
+  let query = selectSongsQuery(db!('posts'), opts)
+    .select([db!.raw(`posts.created_at as timestamp`)])
+    .join('users', { 'users.id': 'posts.user_id' })
+    .join('songs', { 'songs.id': 'posts.song_id' })
     .where({ user_id: userId })
-    .orderBy('posts.id', 'desc');
+    .orderBy('posts.created_at', 'desc');
 
   query = paginate(query, {
     limit: ENTRY_PAGE_LIMIT,
@@ -103,26 +73,7 @@ export async function getPlaylistEntriesByUserId(
 
   const rows = await query;
 
-  return rows.map((row: any) => serializePlaylistEntry(row));
-}
-
-export async function getPlaylistEntryBySongId(
-  songId: number,
-  playlistUserId: number,
-  currentUserId: number
-): Promise<PlaylistEntry | null> {
-  const query = getBasePostsQuery({ currentUserId }).where({
-    song_id: songId,
-    user_id: playlistUserId,
-  });
-
-  const rows = await query;
-
-  if (!rows[0]) {
-    return null;
-  }
-
-  return serializePlaylistEntry(rows[0]);
+  return rows.map((row: any) => serializeUserSongItem(row));
 }
 
 interface GetOwnPostForSongIdOptions {

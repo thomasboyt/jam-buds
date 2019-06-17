@@ -168,7 +168,6 @@ export async function getSongsByMixtapeId(
   songQueryOptions: { currentUserId?: number }
 ): Promise<Song[]> {
   const query = selectSongsQuery(db!('mixtape_song_entries'), songQueryOptions)
-    // .join('users', { 'users.id': 'mixtape_song_entries.user_id' })
     .join('songs', { 'songs.id': 'mixtape_song_entries.song_id' })
     .where({ mixtape_id: mixtapeId })
     .orderBy('mixtape_song_entries.rank', 'asc');

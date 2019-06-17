@@ -18,13 +18,13 @@ describe('routes/likes', () => {
       const dan = await userFactory();
 
       const song = await songFactory();
-      const post = await postSong({
+      await postSong({
         songId: song.id,
         userId: dan.id,
       });
 
       const req = request(app)
-        .put(`/api/likes/${post.song.id}`)
+        .put(`/api/likes/${song.id}`)
         .set('X-Auth-Token', await createAuthTokenForUserId(jeff.id));
 
       const res = await req;

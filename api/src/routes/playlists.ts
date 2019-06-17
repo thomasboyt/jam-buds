@@ -5,14 +5,14 @@ import {
   getUserByName,
   getUserProfileForUser,
 } from '../models/user';
-import { getPlaylistEntriesByUserId } from '../models/post';
+import { getPostedUserSongItemsById } from '../models/post';
 import { getFeedByUserId, getPublicFeed } from '../models/feed';
 import { getLikesByUserId } from '../models/like';
 
 import { getUserFromRequest, isAuthenticated } from '../auth';
 import wrapAsyncRoute from '../util/wrapAsyncRoute';
 import { ENTRY_PAGE_LIMIT } from '../constants';
-import { Playlist, Feed } from '../resources';
+import { UserSongList, Feed } from '../resources';
 
 export default function registerPlaylistEndpoints(router: Router) {
   // get a user's playlist
@@ -33,14 +33,14 @@ export default function registerPlaylistEndpoints(router: Router) {
 
       const beforeTimestamp = req.query.before;
 
-      const tracks = await getPlaylistEntriesByUserId(user.id, {
+      const items = await getPostedUserSongItemsById(user.id, {
         currentUserId: currentUser ? currentUser.id : undefined,
         beforeTimestamp,
       });
 
-      const resp: Playlist = {
+      const resp: UserSongList = {
         userProfile: await getUserProfileForUser(user),
-        tracks,
+        items,
         limit: ENTRY_PAGE_LIMIT,
       };
 
@@ -65,14 +65,14 @@ export default function registerPlaylistEndpoints(router: Router) {
 
       const beforeTimestamp = req.query.before;
 
-      const tracks = await getLikesByUserId(user.id, {
+      const items = await getLikesByUserId(user.id, {
         currentUserId: currentUser ? currentUser.id : undefined,
         beforeTimestamp,
       });
 
-      const resp: Playlist = {
+      const resp: UserSongList = {
         userProfile: await getUserProfileForUser(user),
-        tracks,
+        items,
         limit: ENTRY_PAGE_LIMIT,
       };
 
@@ -95,7 +95,7 @@ export default function registerPlaylistEndpoints(router: Router) {
       });
 
       const feed: Feed = {
-        tracks: items,
+        items,
         limit: ENTRY_PAGE_LIMIT,
       };
 
@@ -117,7 +117,7 @@ export default function registerPlaylistEndpoints(router: Router) {
       });
 
       const feed: Feed = {
-        tracks: items,
+        items,
         limit: ENTRY_PAGE_LIMIT,
       };
 
