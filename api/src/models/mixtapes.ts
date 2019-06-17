@@ -125,9 +125,14 @@ export async function reorderMixtapeSongs({
  * Publish a mixtape, which allows it to be included in the feed.
  */
 export async function publishMixtape(mixtapeId: number): Promise<void> {
-  await db!('mixtapes')
-    .where({ id: mixtapeId })
-    .update({ publishedAt: new Date() });
+  await db!.transaction(async (trx) => {
+    const [row] = await trx!('mixtapes')
+      .where({ id: mixtapeId })
+      .update({ publishedAt: new Date() })
+      .returning('*');
+
+    await trx!('posts').insert({ userId: row.userId, mixtapeId });
+  });
 }
 
 /**

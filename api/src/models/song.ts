@@ -98,7 +98,7 @@ export function selectSongsQuery(
   if (opts.currentUserId !== undefined) {
     select.push(
       db!.raw(
-        'EXISTS(SELECT 1 FROM likes WHERE user_id=? AND song_id=songs.id) AS is_liked',
+        'EXISTS(SELECT 1 FROM likes WHERE likes.user_id=? AND likes.song_id=songs.id) AS is_liked',
         [opts.currentUserId]
       )
     );

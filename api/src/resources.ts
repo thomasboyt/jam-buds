@@ -73,12 +73,15 @@ export interface UserSongList {
 export interface MixtapePreview {
   id: number;
   title: string;
-  author: UserProfile;
+  authorName: string;
 }
 
-export interface Mixtape extends MixtapePreview {
+export interface Mixtape {
+  id: number;
+  title: string;
   tracks: Song[];
   isPublished: boolean;
+  author: UserProfile;
 }
 
 /*

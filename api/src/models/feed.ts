@@ -1,8 +1,10 @@
+import * as t from 'io-ts';
+import * as Knex from 'knex';
 import camelcaseKeys from 'camelcase-keys';
 
 import { db } from '../db';
 import { ENTRY_PAGE_LIMIT } from '../constants';
-import { FeedSongItem } from '../resources';
+import { FeedSongItem, FeedItem, FeedMixtapeItem } from '../resources';
 import { serializeSong, SongModelV, selectSongsQuery } from './song';
 import validateOrThrow from '../util/validateOrThrow';
 
@@ -20,6 +22,27 @@ function serializeFeedSongItem(row: any): FeedSongItem {
   };
 }
 
+const MixtapePreviewModelV = t.type({
+  id: t.number,
+  title: t.string,
+});
+
+function serializeFeedMixtapeItem(row: any): FeedMixtapeItem {
+  const preview = validateOrThrow(MixtapePreviewModelV, row.mixtape);
+
+  return {
+    type: 'mixtape',
+    timestamp: row.timestamp.toISOString(),
+
+    mixtape: {
+      id: preview.id,
+      // XXX: hack?
+      authorName: row.userNames[0],
+      title: preview.title,
+    },
+  };
+}
+
 interface QueryOptions {
   currentUserId?: number;
   beforeTimestamp?: string;
@@ -28,7 +51,7 @@ interface QueryOptions {
 export async function getFeedByUserId(
   id: number,
   opts: QueryOptions = {}
-): Promise<FeedSongItem[]> {
+): Promise<FeedItem[]> {
   opts.currentUserId = id;
 
   // XXX: This wacky subquery (which probably performs like ass) ensures that
@@ -49,21 +72,24 @@ export async function getFeedByUserId(
     )
   `;
 
-  let query = selectSongsQuery(db!('songs'), opts)
+  let query = selectSongsQuery(db!('posts'), opts)
     .select([
+      db!.raw('to_json(mixtapes.*) as mixtape'),
       db!.raw(`${timestampQuery} as timestamp`, [opts.currentUserId]),
       db!.raw('ARRAY_AGG(users.name) as user_names'),
     ])
-    .join('posts', { 'songs.id': 'posts.song_id' })
     .join('users', { 'users.id': 'posts.user_id' })
-    .where(function() {
-      this.whereIn('user_id', function() {
+    .leftOuterJoin('songs', { 'songs.id': 'posts.song_id' })
+    .leftOuterJoin('mixtapes', { 'mixtapes.id': 'posts.mixtape_id' })
+    .where(function(this: Knex.QueryBuilder) {
+      this.whereIn('posts.user_id', function() {
         this.select('following_id')
           .from('following')
-          .where({ user_id: id });
-      }).orWhere({ user_id: id });
+          .where({ 'following.user_id': id });
+      }).orWhere({ 'posts.user_id': id });
     })
-    .groupBy('songs.id')
+    // TODO: =\ not sure why all this is needed
+    .groupBy('songs.*', 'songs.id', 'mixtapes.*')
     .orderBy('timestamp', 'desc');
 
   if (opts.beforeTimestamp !== undefined) {
@@ -77,7 +103,15 @@ export async function getFeedByUserId(
 
   const rows = await query;
 
-  return rows.map((row: any) => serializeFeedSongItem(row));
+  return rows.map(
+    (row: any): FeedItem => {
+      if (row.song) {
+        return serializeFeedSongItem(row);
+      } else {
+        return serializeFeedMixtapeItem(row);
+      }
+    }
+  );
 }
 
 export async function getPublicFeed(
