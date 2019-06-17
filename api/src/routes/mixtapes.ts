@@ -12,6 +12,7 @@ import {
   reorderMixtapeSongs,
   setMixtapeTitle,
   publishMixtape,
+  getDraftMixtapeIdForUserId,
 } from '../models/mixtapes';
 import { getOrCreateSong, serializeSong } from '../models/song';
 import { Mixtape } from '../resources';
@@ -78,6 +79,16 @@ export default function registerMixtapeEndpoints(router: Router) {
 
       // TODO: validate
       const title = req.body.title;
+
+      // XXX: Return existing draft mixtape if one already exists. This will
+      // probably go away or change once the mixtape list is implemented!
+      const existingId = await getDraftMixtapeIdForUserId(user.id);
+
+      if (existingId) {
+        return res.json({
+          mixtapeId: existingId,
+        });
+      }
 
       const id = await createMixtapeForUser(user, { title });
 

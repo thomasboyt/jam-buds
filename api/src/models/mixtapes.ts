@@ -186,3 +186,15 @@ export async function getSongsByMixtapeId(
     )
   );
 }
+
+export async function getDraftMixtapeIdForUserId(
+  userId: number
+): Promise<number | null> {
+  const [mixtape] = await db!('mixtapes').where({ userId, publishedAt: null });
+
+  if (!mixtape) {
+    return null;
+  }
+
+  return mixtape.id;
+}
