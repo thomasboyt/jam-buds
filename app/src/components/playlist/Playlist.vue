@@ -1,24 +1,16 @@
 <template>
-  <div v-if="!entries.length" class="main-placeholder">
+  <div v-if="!items.length" class="main-placeholder">
     <slot name="placeholder" />
   </div>
 
   <div v-else>
     <ul class="playlist-entries">
-      <li v-for="entry in entries" :key="entry.id">
-        <entry-posted-by :entry="entry" :entry-type="entryType" />
-
-        <song
-          :song-id="entry.songId"
-          :posted-user-names="
-            entryType !== 'like-entry' ? entry.userNames : null
-          "
-          @requestPlay="handleRequestPlay"
-        />
+      <li v-for="item in items" :key="item.id">
+        <slot name="item" :item="item" />
       </li>
     </ul>
 
-    <div v-if="!entriesExhausted">
+    <div v-if="!itemsExhausted">
       <div v-if="loadingNextPage">
         Loading...
       </div>
@@ -31,33 +23,13 @@
 </template>
 
 <script>
-import EntryPostedBy from './EntryPostedBy.vue';
-import Song from './Song.vue';
-
 export default {
-  components: { EntryPostedBy, Song },
-
-  props: [
-    'entryType',
-    'entries',
-    'entriesExhausted',
-    'loadingNextPage',
-    'playbackSourceLabel',
-    'playbackSourcePath',
-  ],
+  props: ['items', 'itemsExhausted', 'loadingNextPage'],
 
   methods: {
     handleRequestNextPage(evt) {
       evt.preventDefault();
       this.$emit('requestNextPage');
-    },
-
-    handleRequestPlay(songId) {
-      this.$store.dispatch('playback/enqueueAndPlaySongs', {
-        songIds: [songId],
-        playbackSourceLabel: this.playbackSourceLabel,
-        playbackSourcePath: this.playbackSourcePath,
-      });
     },
   },
 };

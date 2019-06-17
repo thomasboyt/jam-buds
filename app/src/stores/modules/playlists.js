@@ -1,20 +1,20 @@
 const playlistState = () => {
   return {
-    entries: [],
-    entriesExhausted: false,
+    items: [],
+    itemsExhausted: false,
     url: null,
   };
 };
 
-function denormalizeEntry(entry) {
-  const denormalizedEntry = {
+function denormalizeItem(entry) {
+  const denormalizedItem = {
     ...entry,
     songId: entry.song.id,
   };
 
-  delete denormalizedEntry.song;
+  delete denormalizedItem.song;
 
-  return denormalizedEntry;
+  return denormalizedItem;
 }
 
 /**
@@ -37,70 +37,70 @@ const playlists = {
 
   mutations: {
     resetPlaylist(state, { key, url }) {
-      state[key].entries = [];
-      state[key].entriesExhausted = false;
+      state[key].items = [];
+      state[key].itemsExhausted = false;
       if (url) {
         state[key].url = url;
       }
     },
 
-    addPlaylistEntryToHead(state, { key, entry }) {
-      const denormalizedEntry = denormalizeEntry(entry);
+    addPlaylistItemToHead(state, { key, entry }) {
+      const denormalizedItem = denormalizeItem(entry);
 
-      const existing = state[key].entries.find(
-        (playlistEntry) => playlistEntry.songId === denormalizedEntry.songId
+      const existing = state[key].items.find(
+        (playlistItem) => playlistItem.songId === denormalizedItem.songId
       );
 
       if (existing) {
         // remove old record
-        state[key].entries = state[key].entries.filter(
-          (playlistEntry) => playlistEntry.songId !== denormalizedEntry.songId
+        state[key].items = state[key].items.filter(
+          (playlistItem) => playlistItem.songId !== denormalizedItem.songId
         );
 
         // XXX: The entry returned from the post endpoint currently only
         // includes the current user's name, so we add the rest here
-        denormalizedEntry.userNames = denormalizedEntry.userNames.concat(
+        denormalizedItem.userNames = denormalizedItem.userNames.concat(
           existing.userNames
         );
       }
 
-      state[key].entries = [denormalizedEntry].concat(state[key].entries);
+      state[key].items = [denormalizedItem].concat(state[key].items);
     },
 
     /**
-     * Append a new page of entries to a playlist.
+     * Append a new page of items to a playlist.
      */
     pushPlaylist(state, { key, page }) {
-      state[key].entries = state[key].entries.concat(
-        page.tracks.map((entry) => denormalizeEntry(entry))
+      state[key].items = state[key].items.concat(
+        page.items.map((entry) => denormalizeItem(entry))
       );
 
-      if (page.tracks.length < page.limit) {
-        state[key].entriesExhausted = true;
+      if (page.items.length < page.limit) {
+        state[key].itemsExhausted = true;
       }
     },
 
-    deleteOwnPlaylistEntry(state, { songId, currentUserName }) {
+    deleteOwnPlaylistItem(state, { songId, currentUserName }) {
       // After you delete your post of a song, remove the song from any playlist
       // where the only poster was you
       for (let key of Object.keys(state)) {
-        const existingIdx = state[key].entries.findIndex(
+        const existingIdx = state[key].items.findIndex(
           (entry) => entry.songId === songId
         );
 
         if (existingIdx !== -1) {
-          const entries = state[key].entries.slice();
+          const items = state[key].items.slice();
 
-          if (entries[existingIdx].userNames.length === 1) {
+          if (items[existingIdx].userNames.length === 1) {
             // current user was the only poster, so remove
-            entries.splice(existingIdx, 1);
+            items.splice(existingIdx, 1);
           } else {
-            entries[existingIdx].userNames = entries[
-              existingIdx
-            ].userNames.filter((name) => name !== currentUserName);
+            items[existingIdx].userNames = items[existingIdx].userNames.filter(
+              (name) => name !== currentUserName
+            );
           }
 
-          state[key].entries = entries;
+          state[key].items = items;
         }
       }
     },
@@ -116,9 +116,9 @@ const playlists = {
         context.commit('resetPlaylist', { key, url });
       }
 
-      const previousEntry = context.state[key].entries.slice(-1)[0];
-      const previousTimestamp = previousEntry
-        ? previousEntry.timestamp
+      const previousItem = context.state[key].items.slice(-1)[0];
+      const previousTimestamp = previousItem
+        ? previousItem.timestamp
         : undefined;
 
       const resp = await this.$axios({
@@ -127,7 +127,7 @@ const playlists = {
         params: { before: previousTimestamp },
       });
 
-      context.commit('addSongs', resp.data.tracks.map((entry) => entry.song));
+      context.commit('addSongs', resp.data.items.map((item) => item.song));
       context.commit('pushPlaylist', { key, page: resp.data });
 
       return resp.data;
@@ -135,14 +135,14 @@ const playlists = {
   },
 
   getters: {
-    playlistEntries(state) {
+    playlistItems(state) {
       return (key) => {
         const playlist = state[key];
         if (!playlist) {
           throw new Error(`undefined playlist ${key}`);
         }
 
-        return playlist.entries;
+        return playlist.items;
       };
     },
   },

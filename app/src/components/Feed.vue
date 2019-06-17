@@ -8,20 +8,23 @@
     </div>
 
     <playlist
-      entry-type="feed-entry"
-      :entries="entries"
-      :entries-exhausted="feedEntriesExhausted"
+      :items="items"
+      :items-exhausted="feedItemsExhausted"
       :loading-next-page="loadingNextPage"
-      playback-source-label="your feed"
-      playback-source-path="/"
       @requestNextPage="handleRequestNextPage"
     >
-      <p slot="placeholder">
-        Your feed doesn't have any entries yet!
-        <router-link to="/find-friends">
-          Find some friends to follow!
-        </router-link>
-      </p>
+      <template v-slot:item="{ item }">
+        <feed-item :item="item" />
+      </template>
+
+      <template #placeholder>
+        <p>
+          Your feed doesn't have any items yet!
+          <router-link to="/find-friends">
+            Find some friends to follow!
+          </router-link>
+        </p>
+      </template>
     </playlist>
   </div>
 </template>
@@ -30,9 +33,10 @@
 import { mapState } from 'vuex';
 import Playlist from './playlist/Playlist.vue';
 import AddSongButton from './AddSongButton.vue';
+import FeedItem from './FeedItem.vue';
 
 export default {
-  components: { Playlist, AddSongButton },
+  components: { Playlist, AddSongButton, FeedItem },
 
   metaInfo: {
     title: 'Feed',
@@ -45,11 +49,11 @@ export default {
   },
 
   computed: {
-    entries() {
-      return this.$store.getters.playlistEntries('feed');
+    items() {
+      return this.$store.getters.playlistItems('feed');
     },
     ...mapState({
-      feedEntriesExhausted: (state) => state.playlists.feed.entriesExhausted,
+      feedItemsExhausted: (state) => state.playlists.feed.itemsExhausted,
     }),
   },
 
