@@ -10,6 +10,7 @@ function serializeFeedSongItem(row: any): FeedSongItem {
   const { isLiked } = row;
 
   return {
+    type: 'song',
     song: serializeSong(
       validateOrThrow(SongModelV, camelcaseKeys(row.song)),
       isLiked

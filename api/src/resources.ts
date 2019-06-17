@@ -18,11 +18,14 @@ export interface Song {
 }
 
 export interface FeedMixtapeItem {
+  type: 'mixtape';
   mixtape: MixtapePreview;
   timestamp: string;
 }
 
 export interface FeedSongItem {
+  type: 'song';
+
   song: Song;
 
   /**
