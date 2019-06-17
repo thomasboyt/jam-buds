@@ -42,7 +42,7 @@
 <script>
 import { mapState } from 'vuex';
 import Playlist from './playlist/Playlist.vue';
-import FeedItem from './FeedItem.vue';
+import FeedItem from './playlist/FeedItem.vue';
 
 export default {
   components: { Playlist, FeedItem },

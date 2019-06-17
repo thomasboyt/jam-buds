@@ -8,16 +8,12 @@
       @requestPlay="handleRequestPlay"
     />
   </div>
-  <!-- <mixtape-item
-    v-else-if="entry.type === 'mixtape'"
-    :mixtape-id="entry.mixtape.id"
-    :author-name="entry.mixtape.author.name"
-  /> -->
+  <mixtape-item v-else-if="item.type === 'mixtape'" :mixtape="item.mixtape" />
 </template>
 
 <script>
-import Song from './playlist/Song.vue';
-import EntryPostedBy from './playlist/EntryPostedBy.vue';
+import Song from './Song.vue';
+import EntryPostedBy from './EntryPostedBy.vue';
 
 export default {
   components: { Song, EntryPostedBy },

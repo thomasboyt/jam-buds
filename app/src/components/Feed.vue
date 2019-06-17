@@ -37,7 +37,7 @@
 import { mapState } from 'vuex';
 import Playlist from './playlist/Playlist.vue';
 import AddSongButton from './AddSongButton.vue';
-import FeedItem from './FeedItem.vue';
+import FeedItem from './playlist/FeedItem.vue';
 
 export default {
   components: { Playlist, AddSongButton, FeedItem },
