@@ -22,14 +22,14 @@ import EntryPostedBy from './playlist/EntryPostedBy.vue';
 export default {
   components: { Song, EntryPostedBy },
 
-  props: ['item'],
+  props: ['item', 'playbackSourceLabel', 'playbackSourcePath'],
 
   methods: {
     handleRequestPlay() {
       this.$store.dispatch('playback/enqueueAndPlaySongs', {
         songIds: [this.item.songId],
-        playbackSourceLabel: 'your feed',
-        playbackSourcePath: '/',
+        playbackSourceLabel: this.playbackSourceLabel,
+        playbackSourcePath: this.playbackSourcePath,
       });
     },
   },

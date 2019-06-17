@@ -14,7 +14,11 @@
       @requestNextPage="handleRequestNextPage"
     >
       <template v-slot:item="{ item }">
-        <feed-item :item="item" />
+        <feed-item
+          :item="item"
+          playback-source-label="your feed"
+          playback-source-path="/"
+        />
       </template>
 
       <template #placeholder>

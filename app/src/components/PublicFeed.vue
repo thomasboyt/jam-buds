@@ -17,17 +17,24 @@
     </p>
 
     <playlist
-      entry-type="feed-entry"
-      :entries="entries"
-      :entries-exhausted="feedEntriesExhausted"
+      :items="items"
+      :items-exhausted="feedItemsExhausted"
       :loading-next-page="loadingNextPage"
-      playback-source-label="public feed"
-      playback-source-path="/public-feed"
       @requestNextPage="handleRequestNextPage"
     >
-      <p slot="placeholder">
-        This feed is empty :(
-      </p>
+      <template v-slot:item="{ item }">
+        <feed-item
+          :item="item"
+          playback-source-label="public feed"
+          playback-source-path="/public-feed"
+        />
+      </template>
+
+      <template v-slot:placeholder>
+        <p>
+          This feed is empty :(
+        </p>
+      </template>
     </playlist>
   </div>
 </template>
@@ -35,9 +42,10 @@
 <script>
 import { mapState } from 'vuex';
 import Playlist from './playlist/Playlist.vue';
+import FeedItem from './FeedItem.vue';
 
 export default {
-  components: { Playlist },
+  components: { Playlist, FeedItem },
 
   metaInfo: {
     title: 'Public Feed',
@@ -50,14 +58,13 @@ export default {
   },
 
   computed: {
-    entries() {
-      return this.$store.getters.playlistEntries('publicFeed');
+    items() {
+      return this.$store.getters.playlistItems('publicFeed');
     },
     ...mapState({
       authenticated: (state) => state.auth.authenticated,
       enabledPublicPosts: (state) => state.currentUser.showInPublicFeed,
-      feedEntriesExhausted: (state) =>
-        state.playlists.publicFeed.entriesExhausted,
+      feedItemsExhausted: (state) => state.playlists.publicFeed.itemsExhausted,
     }),
 
     publicPostsStatus() {
