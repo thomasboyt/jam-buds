@@ -79,10 +79,10 @@ export default function registerMixtapeEndpoints(router: Router) {
       // TODO: validate
       const title = req.body.title;
 
-      await createMixtapeForUser(user, { title });
+      const id = await createMixtapeForUser(user, { title });
 
       res.json({
-        success: true,
+        mixtapeId: id,
       });
     })
   );

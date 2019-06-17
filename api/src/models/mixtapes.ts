@@ -35,7 +35,7 @@ export async function createMixtapeForUser(
   user: UserModel,
   options: CreateMixtapeOptions
 ): Promise<number> {
-  const [id] = await db!('mixtapes').insert(
+  const [{ id }] = await db!('mixtapes').insert(
     { title: options.title, userId: user.id },
     ['id']
   );
