@@ -2,17 +2,25 @@
   <div>
     <profile-nav :title="title" />
     <playlist
-      entry-type="playlist-entry"
-      :entries="entries"
-      :entries-exhausted="entriesExhausted"
+      :items="items"
+      :items-exhausted="itemsExhausted"
       :loading-next-page="loadingNextPage"
-      :playback-source-label="title"
-      :playback-source-path="playbackSourcePath"
       @requestNextPage="handleRequestNextPage"
     >
-      <p slot="placeholder">
-        This user has not posted any songs yet :(
-      </p>
+      <template v-slot:item="{ item }">
+        <entry-posted-by :entry="item" entry-type="playlist-entry" />
+        <song
+          :song-id="item.songId"
+          :posted-user-names="[name]"
+          @requestPlay="handleRequestPlay"
+        />
+      </template>
+
+      <template v-slot:placeholder>
+        <p>
+          This user has not posted any songs yet :(
+        </p>
+      </template>
     </playlist>
   </div>
 </template>
@@ -21,11 +29,15 @@
 import { mapState } from 'vuex';
 import ProfileNav from '../../components/ProfileNav.vue';
 import Playlist from '../../components/playlist/Playlist.vue';
+import EntryPostedBy from '../../components/playlist/EntryPostedBy.vue';
+import Song from '../../components/playlist/Song.vue';
 
 export default {
   components: {
     ProfileNav,
     Playlist,
+    EntryPostedBy,
+    Song,
   },
 
   metaInfo() {
@@ -81,13 +93,12 @@ export default {
   },
 
   computed: {
-    entries() {
-      return this.$store.getters.playlistEntries('profilePosts');
+    items() {
+      return this.$store.getters.playlistItems('profilePosts');
     },
     ...mapState({
       name: (state) => state.profile.user.name,
-      entriesExhausted: (state) =>
-        state.playlists.profilePosts.entriesExhausted,
+      itemsExhausted: (state) => state.playlists.profilePosts.itemsExhausted,
     }),
     playbackSourcePath() {
       return `/users/${this.name}`;
@@ -109,6 +120,14 @@ export default {
       } finally {
         this.loadingNextPage = false;
       }
+    },
+
+    handleRequestPlay(songId) {
+      this.$store.dispatch('playback/enqueueAndPlaySongs', {
+        songIds: [songId],
+        playbackSourceLabel: this.title,
+        playbackSourcePath: this.playbackSourcePath,
+      });
     },
   },
 };
