@@ -78,10 +78,6 @@ export default {
     };
   },
 
-  title() {
-    return this.title;
-  },
-
   async asyncData({ store, route }) {
     await store.dispatch('loadProfilePostsPlaylist', route.params.id);
   },
