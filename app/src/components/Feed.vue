@@ -3,6 +3,7 @@
     <div class="header-row">
       <h2>your feed</h2>
       <div class="header-row-button-container">
+        <create-mixtape-button>new mixtape</create-mixtape-button>
         <add-song-button @click="handleAddSong">+ post a song!</add-song-button>
       </div>
     </div>
@@ -37,10 +38,11 @@
 import { mapState } from 'vuex';
 import Playlist from './playlist/Playlist.vue';
 import AddSongButton from './AddSongButton.vue';
+import CreateMixtapeButton from './CreateMixtapeButton.vue';
 import FeedItem from './playlist/FeedItem.vue';
 
 export default {
-  components: { Playlist, AddSongButton, FeedItem },
+  components: { Playlist, AddSongButton, FeedItem, CreateMixtapeButton },
 
   metaInfo: {
     title: 'Feed',
@@ -92,5 +94,6 @@ export default {
 }
 .header-row-button-container {
   margin-left: auto;
+  display: flex;
 }
 </style>
