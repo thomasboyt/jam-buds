@@ -4,6 +4,12 @@
       :with-sidebar="withSidebar"
       :color-scheme="mixtape.author.colorScheme"
     >
+      <share-landing-banner>
+        <router-link to="/">sign up</router-link>
+        to listen to this mixtape in your browser by connecting spotify or apple
+        music!
+      </share-landing-banner>
+
       <editable-title v-if="isEditing" :mixtape="mixtape" />
       <h2 v-else>{{ mixtape.title }}</h2>
 
@@ -56,6 +62,7 @@ import AddToMixtapeModal from '../components/new-song-modal/AddToMixtapeModal.vu
 import EditableTitle from '../components/mixtapes/EditableTitle.vue';
 import PublishButton from '../components/mixtapes/PublishButton.vue';
 import Panel from '../components/Panel.vue';
+import ShareLandingBanner from '../components/ShareLandingBanner.vue';
 
 import getMixtapeArt from '../util/getMixtapeArt';
 
@@ -69,6 +76,7 @@ export default {
     EditableTitle,
     PublishButton,
     Panel,
+    ShareLandingBanner,
   },
 
   async asyncData({ store, route }) {
