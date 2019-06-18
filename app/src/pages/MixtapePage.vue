@@ -21,11 +21,21 @@
         <publish-button :mixtape-id="$route.params.id" />
       </panel>
 
-      <mixtape :mixtape-id="$route.params.id" :is-editing="isEditing" />
+      <template v-if="mixtape.tracks.length > 0">
+        <mixtape :mixtape-id="$route.params.id" :is-editing="isEditing" />
 
-      <add-song-button @click="handleAddSongOpen" v-if="isEditing"
-        >+ add a song</add-song-button
-      >
+        <add-song-button @click="handleAddSongOpen" v-if="isEditing"
+          >+ add a song</add-song-button
+        >
+      </template>
+      <div v-else class="main-placeholder">
+        <add-song-button
+          :style="{ margin: '0 auto' }"
+          @click="handleAddSongOpen"
+          v-if="isEditing"
+          >+ add a song</add-song-button
+        >
+      </div>
 
       <add-to-mixtape-modal
         :mixtape-id="mixtapeId"
