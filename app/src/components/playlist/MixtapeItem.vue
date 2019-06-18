@@ -1,5 +1,10 @@
 <template>
-  <div>{{ mixtape.title }} - {{ mixtape.author.name }}</div>
+  <div>
+    <router-link :to="`/mixtapes/${mixtape.id}`">
+      {{ mixtape.title }} -
+      {{ mixtape.authorName }}
+    </router-link>
+  </div>
 </template>
 
 <script>

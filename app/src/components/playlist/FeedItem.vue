@@ -14,9 +14,10 @@
 <script>
 import Song from './Song.vue';
 import EntryPostedBy from './EntryPostedBy.vue';
+import MixtapeItem from './MixtapeItem.vue';
 
 export default {
-  components: { Song, EntryPostedBy },
+  components: { Song, EntryPostedBy, MixtapeItem },
 
   props: ['item', 'playbackSourceLabel', 'playbackSourcePath'],
 
