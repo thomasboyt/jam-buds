@@ -25,13 +25,22 @@ const addSong = {
       context.commit('closeModal');
     },
 
-    didSubmitSong(context, entry) {
-      context.commit('addSongs', [entry.song], { root: true });
+    didSubmitSong(context, song) {
+      context.commit('addSongs', [song], { root: true });
+
+      // construct a "playlist item" locally. if playlist items get more
+      // complicated this may need to be a server refresh some day
+      const item = {
+        song,
+        timestamp: new Date().toISOString(),
+        userNames: [context.rootState.currentUser.name],
+        type: 'song',
+      };
 
       // Add the entry to the top of the user's feed
       context.commit(
-        'addPlaylistEntryToHead',
-        { key: 'feed', entry },
+        'addPlaylistItemToHead',
+        { key: 'feed', item },
         { root: true }
       );
 
@@ -41,8 +50,8 @@ const addSong = {
         context.rootState.currentUser.name
       ) {
         context.commit(
-          'addPlaylistEntryToHead',
-          { key: 'profilePosts', entry },
+          'addPlaylistItemToHead',
+          { key: 'profilePosts', item },
           { root: true }
         );
       }

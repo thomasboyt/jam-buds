@@ -44,8 +44,8 @@ const playlists = {
       }
     },
 
-    addPlaylistItemToHead(state, { key, entry }) {
-      const denormalizedItem = denormalizeItem(entry);
+    addPlaylistItemToHead(state, { key, item }) {
+      const denormalizedItem = denormalizeItem(item);
 
       const existing = state[key].items.find(
         (playlistItem) => playlistItem.songId === denormalizedItem.songId
