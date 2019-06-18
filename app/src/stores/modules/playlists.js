@@ -91,7 +91,10 @@ const playlists = {
         if (existingIdx !== -1) {
           const items = state[key].items.slice();
 
-          if (items[existingIdx].userNames.length === 1) {
+          if (
+            !items[existingIdx].userNames ||
+            items[existingIdx].userNames.length === 1
+          ) {
             // current user was the only poster, so remove
             items.splice(existingIdx, 1);
           } else {
