@@ -33,7 +33,10 @@ export async function postSong(values: PostSongParams): Promise<Song> {
     currentUserId: values.userId,
   }).where({ id: values.songId });
 
-  return serializeSong(row.song, row.isLiked);
+  return serializeSong(
+    validateOrThrow(SongModelV, camelcaseKeys(row.song)),
+    row.isLiked
+  );
 }
 
 function serializeUserSongItem(row: any): UserSongItem {
