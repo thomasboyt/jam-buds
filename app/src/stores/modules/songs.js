@@ -43,7 +43,7 @@ const songs = {
         url: `/posts/${id}`,
         method: 'DELETE',
       });
-      context.commit('deleteOwnPlaylistEntry', {
+      context.commit('deleteOwnPlaylistItem', {
         songId: id,
         currentUserName: context.rootState.currentUser.name,
       });
