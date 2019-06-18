@@ -57,6 +57,8 @@ import EditableTitle from '../components/mixtapes/EditableTitle.vue';
 import PublishButton from '../components/mixtapes/PublishButton.vue';
 import Panel from '../components/Panel.vue';
 
+import getMixtapeArt from '../util/getMixtapeArt';
+
 export default {
   components: {
     Mixtape,
@@ -89,7 +91,7 @@ export default {
         },
         {
           name: 'og:image',
-          content: `${process.env.STATIC_URL}/corgi_icon_square.png`,
+          content: getMixtapeArt(this.mixtape.id),
         },
       ],
     };

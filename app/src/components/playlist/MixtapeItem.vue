@@ -22,12 +22,7 @@
 
 <script>
 import EntryPostedBy from './EntryPostedBy.vue';
-
-const arts = [
-  require('../../../assets/mixtape_icons/cd-1.jpg'),
-  require('../../../assets/mixtape_icons/cd-2.jpg'),
-  require('../../../assets/mixtape_icons/cd-3.jpg'),
-];
+import getMixtapeArt from '../../util/getMixtapeArt';
 
 export default {
   components: { EntryPostedBy },
@@ -36,8 +31,7 @@ export default {
 
   computed: {
     art() {
-      const artIdx = this.mixtape.id % 3;
-      return arts[artIdx];
+      return getMixtapeArt(this.mixtape.id);
     },
 
     mixtapeLink() {
