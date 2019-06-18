@@ -1,6 +1,10 @@
 <template>
   <div v-if="item.type === 'song'">
-    <entry-posted-by :entry="item" entry-type="feed-entry" />
+    <entry-posted-by
+      :timestamp="item.timestamp"
+      :names="item.userNames"
+      verb="posted"
+    />
     <song
       v-if="item.type === 'song'"
       :song-id="item.songId"
@@ -8,7 +12,11 @@
       @requestPlay="handleRequestPlay"
     />
   </div>
-  <mixtape-item v-else-if="item.type === 'mixtape'" :mixtape="item.mixtape" />
+  <mixtape-item
+    v-else-if="item.type === 'mixtape'"
+    :timestamp="item.timestamp"
+    :mixtape="item.mixtape"
+  />
 </template>
 
 <script>

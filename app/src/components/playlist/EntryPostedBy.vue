@@ -1,14 +1,14 @@
 <template>
   <div class="posted-by">
-    <template v-if="entryType === 'feed-entry'">
-      <names-list :names="entry.userNames" />
-      posted ({{ timestamp }} ago)
+    <template v-if="verb === 'posted' && names">
+      <names-list :names="names" />
+      posted ({{ formattedTimestamp }} ago)
     </template>
-    <template v-if="entryType === 'like-entry'">
-      Liked {{ timestamp }} ago
+    <template v-else-if="verb === 'posted'">
+      Posted {{ formattedTimestamp }} ago
     </template>
-    <template v-if="entryType === 'playlist-entry'">
-      Posted {{ timestamp }} ago
+    <template v-else-if="verb === 'liked'">
+      Liked {{ formattedTimestamp }} ago
     </template>
   </div>
 </template>
@@ -20,11 +20,11 @@ import NamesList from './NamesList.vue';
 export default {
   components: { NamesList },
 
-  props: ['entry', 'entryType'],
+  props: ['names', 'verb', 'timestamp'],
 
   computed: {
-    timestamp() {
-      const addedDate = new Date(this.entry.timestamp);
+    formattedTimestamp() {
+      const addedDate = new Date(this.timestamp);
       return distanceInWords(new Date(), addedDate);
     },
   },

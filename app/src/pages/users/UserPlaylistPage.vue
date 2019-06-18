@@ -8,7 +8,7 @@
       @requestNextPage="handleRequestNextPage"
     >
       <template v-slot:item="{ item }">
-        <entry-posted-by :entry="item" entry-type="playlist-entry" />
+        <entry-posted-by :timestamp="item.timestamp" verb="posted" />
         <song
           :song-id="item.songId"
           :posted-user-names="[name]"
