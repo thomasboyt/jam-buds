@@ -9,7 +9,7 @@ const playlistState = () => {
 function denormalizeItem(entry) {
   const denormalizedItem = {
     ...entry,
-    songId: entry.song.id,
+    songId: entry.song && entry.song.id,
   };
 
   delete denormalizedItem.song;
@@ -127,7 +127,10 @@ const playlists = {
         params: { before: previousTimestamp },
       });
 
-      context.commit('addSongs', resp.data.items.map((item) => item.song));
+      context.commit(
+        'addSongs',
+        resp.data.items.map((item) => item.song).filter((song) => song)
+      );
       context.commit('pushPlaylist', { key, page: resp.data });
 
       return resp.data;
