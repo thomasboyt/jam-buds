@@ -29,6 +29,7 @@ export default {
       navLinks: [
         { to: '', label: 'Connections' },
         { to: '/profile', label: 'Profile' },
+        { to: '/notifications', label: 'Notifications' },
       ],
     };
   },

@@ -21,6 +21,7 @@ import FindFriendsPage from '../pages/FindFriendsPage.vue';
 import SettingsPageWrapper from '../pages/SettingsPageWrapper.vue';
 import ConnectionSettingsPage from '../pages/settings/ConnectionSettingsPage.vue';
 import ProfileSettingsPage from '../pages/settings/ProfileSettingsPage.vue';
+import NotificationSettingsPage from '../pages/settings/NotificationSettingsPage.vue';
 
 import MixtapePage from '../pages/MixtapePage.vue';
 
@@ -66,6 +67,7 @@ export default function createRouter() {
         children: [
           { path: '/', component: ConnectionSettingsPage },
           { path: 'profile', component: ProfileSettingsPage },
+          { path: 'notifications', component: NotificationSettingsPage },
         ],
       },
 
