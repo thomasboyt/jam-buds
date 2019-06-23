@@ -1,7 +1,7 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "target": "es6",
+    "target": "ES2017",
 
     // TODO: Convert existing imports. See:
     // https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-7.html
