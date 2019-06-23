@@ -36,6 +36,10 @@ const mixtapes = {
         (mixtapeSongId) => mixtapeSongId !== songId
       );
     },
+
+    removeMixtape(state, { mixtapeId }) {
+      Vue.delete(state, mixtapeId);
+    },
   },
 
   actions: {
@@ -109,6 +113,17 @@ const mixtapes = {
       });
     },
 
+    async deleteMixtape(context, { mixtapeId }) {
+      await this.$axios({
+        method: 'DELETE',
+        url: `/mixtapes/${mixtapeId}`,
+      });
+
+      // XXX: This doesn't commit removeMixtape because the mixtape page needs
+      // to be navigated away from before we clear that cache, see
+      // <mixtape-page />
+    },
+
     playFromMixtape(context, { mixtapeId, songId }) {
       const mixtape = context.state[mixtapeId];
       const tracks = mixtape.tracks;
@@ -126,12 +141,7 @@ const mixtapes = {
   getters: {
     getMixtape(state) {
       return (key) => {
-        const mixtape = state[key];
-        if (!mixtape) {
-          throw new Error(`undefined mixtape ${key}`);
-        }
-
-        return mixtape;
+        return state[key];
       };
     },
   },

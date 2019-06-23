@@ -18,6 +18,11 @@
         <router-link :to="`/users/${mixtape.author.name}`">{{
           mixtape.author.name
         }}</router-link>
+
+        <span v-if="isOwnMixtape">
+          &middot;
+          <button class="delete-button" @click="handleDelete">delete</button>
+        </span>
       </p>
 
       <panel v-if="isEditing">
@@ -84,6 +89,10 @@ export default {
   },
 
   metaInfo() {
+    if (!this.mixtape) {
+      return;
+    }
+
     return {
       title: this.mixtape.title,
 
@@ -107,14 +116,21 @@ export default {
 
   data() {
     return {
-      mixtapeId: this.$route.params.id,
       addSongOpen: false,
     };
   },
 
   computed: {
+    mixtapeId() {
+      return this.$route.params.id;
+    },
+
     mixtape() {
       return this.$store.getters.getMixtape(this.mixtapeId);
+    },
+
+    isOwnMixtape() {
+      return this.mixtape.author.name === this.$store.state.currentUser.name;
     },
 
     isEditing() {
@@ -132,6 +148,30 @@ export default {
     handleAddSongClose() {
       this.addSongOpen = false;
     },
+    async handleDelete() {
+      const confirmed = window.confirm(
+        'Are you sure you want to delete this mixtape?'
+      );
+
+      if (!confirmed) {
+        return;
+      }
+
+      const { mixtapeId } = this;
+
+      try {
+        await this.$store.dispatch('deleteMixtape', {
+          mixtapeId,
+        });
+      } catch (err) {
+        this.$store.commit('showErrorModal');
+        throw err;
+      }
+
+      this.$router.push('/', () => {
+        this.$store.commit('removeMixtape', { mixtapeId });
+      });
+    },
   },
 };
 </script>
@@ -146,5 +186,14 @@ ul.playlist-entries {
   margin-left: 6px;
   margin-bottom: 12px;
   text-decoration: underline;
+}
+
+.delete-button {
+  text-decoration: underline;
+  padding: 0;
+
+  &:hover {
+    text-decoration: none;
+  }
 }
 </style>
