@@ -8,6 +8,8 @@
       </div>
     </div>
 
+    <newsletter-promotion-banner />
+
     <playlist
       :items="items"
       :items-exhausted="feedItemsExhausted"
@@ -36,13 +38,21 @@
 
 <script>
 import { mapState } from 'vuex';
+
 import Playlist from './playlist/Playlist.vue';
 import AddSongButton from './AddSongButton.vue';
 import CreateMixtapeButton from './CreateMixtapeButton.vue';
 import FeedItem from './playlist/FeedItem.vue';
+import NewsletterPromotionBanner from './NewsletterPromotionBanner.vue';
 
 export default {
-  components: { Playlist, AddSongButton, FeedItem, CreateMixtapeButton },
+  components: {
+    Playlist,
+    AddSongButton,
+    FeedItem,
+    CreateMixtapeButton,
+    NewsletterPromotionBanner,
+  },
 
   metaInfo: {
     title: 'Feed',
