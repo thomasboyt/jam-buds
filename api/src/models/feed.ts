@@ -39,6 +39,7 @@ function serializeFeedMixtapeItem(row: any): FeedMixtapeItem {
       // XXX: hack?
       authorName: row.userNames[0],
       title: preview.title,
+      numTracks: row.mixtapeSongCount,
     },
   };
 }
@@ -72,11 +73,16 @@ export async function getFeedByUserId(
     )
   `;
 
+  const mixtapeCountQuery = `
+    (SELECT COUNT (*) FROM mixtape_song_entries WHERE mixtape_id=mixtapes.id)
+  `;
+
   let query = selectSongsQuery(db!('posts'), opts)
     .select([
       db!.raw('to_json(mixtapes.*) as mixtape'),
       db!.raw(`${timestampQuery} as timestamp`, [opts.currentUserId]),
       db!.raw('ARRAY_AGG(users.name) as user_names'),
+      db!.raw(`${mixtapeCountQuery} as mixtape_song_count`),
     ])
     .join('users', { 'users.id': 'posts.user_id' })
     .leftOuterJoin('songs', { 'songs.id': 'posts.song_id' })
@@ -89,7 +95,7 @@ export async function getFeedByUserId(
       }).orWhere({ 'posts.user_id': id });
     })
     // TODO: =\ not sure why all this is needed
-    .groupBy('songs.*', 'songs.id', 'mixtapes.*')
+    .groupBy('songs.*', 'songs.id', 'mixtapes.*', 'mixtapes.id')
     .orderBy('timestamp', 'desc');
 
   if (opts.beforeTimestamp !== undefined) {

@@ -74,6 +74,7 @@ export interface MixtapePreview {
   id: number;
   title: string;
   authorName: string;
+  numTracks: number;
 }
 
 export interface Mixtape {
