@@ -23,6 +23,10 @@ export default {
     async handleClick(e) {
       e.preventDefault();
 
+      if (!window.confirm('Are you sure you want to publish this mixtape?')) {
+        return;
+      }
+
       this.requestInFlight = true;
 
       try {
