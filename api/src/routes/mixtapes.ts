@@ -13,6 +13,7 @@ import {
   setMixtapeTitle,
   publishMixtape,
   getDraftMixtapeIdForUserId,
+  deleteMixtape,
 } from '../models/mixtapes';
 import { getOrCreateSong, serializeSong } from '../models/song';
 import { Mixtape } from '../resources';
@@ -42,6 +43,21 @@ function validateCanReadMixtape({
         message: `You do not have access to this draft mixtape`,
       });
     }
+  }
+}
+
+function validateCanDeleteMixtape({
+  mixtape,
+  user,
+}: {
+  mixtape: Mixtape;
+  user: UserModel;
+}) {
+  if (mixtape.author.id !== user.id) {
+    throw new JamBudsHTTPError({
+      statusCode: 401,
+      message: `You do not own this mixtape`,
+    });
   }
 }
 
@@ -116,6 +132,24 @@ export default function registerMixtapeEndpoints(router: Router) {
       validateCanReadMixtape({ mixtape, user: currentUser });
 
       res.json(mixtape);
+    })
+  );
+
+  router.delete(
+    '/mixtapes/:id',
+    isAuthenticated,
+    wrapAsyncRoute(async (req, res) => {
+      const user = res.locals.user as UserModel;
+      let mixtape = await getMixtapeById(req.params.id, {
+        currentUserId: user.id,
+      });
+
+      mixtape = validateMixtapeExists(mixtape);
+      validateCanDeleteMixtape({ mixtape, user });
+
+      await deleteMixtape(mixtape.id);
+
+      res.json({ success: true });
     })
   );
 

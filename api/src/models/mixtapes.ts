@@ -136,6 +136,15 @@ export async function publishMixtape(mixtapeId: number): Promise<void> {
 }
 
 /**
+ * Delete a mixtape and its associated mixtape_song_entries
+ */
+export async function deleteMixtape(mixtapeId: number): Promise<void> {
+  await db!('mixtapes')
+    .where({ id: mixtapeId })
+    .delete();
+}
+
+/**
  * Get a mixtape by ID.
  */
 export async function getMixtapeById(
