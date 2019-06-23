@@ -13,7 +13,7 @@
         <div class="label-content">
           <span class="title">{{ mixtape.title }}</span
           ><br />
-          a mixtape by {{ mixtape.authorName }}
+          a mixtape with {{ mixtape.numTracks }} tracks
         </div>
       </div>
     </router-link>
