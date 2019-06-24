@@ -107,6 +107,10 @@ button:active,
 .button:active {
   box-shadow: none;
   transform: translate(2px, 2px);
+
+  &:disabled {
+    transform: none;
+  }
 }
 
 .not-found-page {

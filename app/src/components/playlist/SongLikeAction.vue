@@ -3,7 +3,7 @@
     <button
       class="action-button"
       @click="handleToggleLike"
-      :disabled="requestInFlight"
+      :disabled="requestInFlight || !authenticated"
     >
       <icon v-if="song.isLiked" :glyph="heartFilledIcon" />
       <icon v-else :glyph="heartOpenIcon" />
@@ -14,6 +14,7 @@
 
 <script>
 import Icon from '../Icon.vue';
+import { mapState } from 'vuex';
 
 const heartOpenIcon = require('../../../assets/heart_open.svg');
 const heartFilledIcon = require('../../../assets/heart_filled.svg');
@@ -29,6 +30,12 @@ export default {
       heartFilledIcon,
       requestInFlight: false,
     };
+  },
+
+  computed: {
+    ...mapState({
+      authenticated: (state) => state.auth.authenticated,
+    }),
   },
 
   methods: {

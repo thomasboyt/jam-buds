@@ -11,7 +11,7 @@
           <br />
           {{ song.title }}
         </div>
-        <song-like-action :mobile="true" v-if="showLikeButton" :song="song" />
+        <song-like-action :mobile="true" :song="song" />
       </div>
 
       <span class="playlist-song--actions">
@@ -22,7 +22,7 @@
             @play="handlePlay"
             :can-play="canPlay"
           />
-          <song-like-action v-if="showLikeButton" :song="song" />
+          <song-like-action :song="song" />
           <song-dropdown-menu :song="song" :show-delete="showDeleteMenuItem" />
         </slot>
       </span>
@@ -68,10 +68,6 @@ export default {
 
       song(state) {
         return state.songs[this.songId];
-      },
-
-      showLikeButton(state) {
-        return state.auth.authenticated;
       },
 
       showDeleteMenuItem(state) {
@@ -191,10 +187,6 @@ export default {
   border-radius: 500px;
   padding: 8px;
 
-  &:disabled {
-    color: grey;
-  }
-
   .icon {
     width: 25px;
     height: 25px;
@@ -206,6 +198,13 @@ export default {
 
   &:hover {
     background: rgba(0, 0, 0, 0.1);
+  }
+
+  &:disabled {
+    cursor: default;
+    &:hover {
+      background: none;
+    }
   }
 }
 
