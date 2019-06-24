@@ -14,6 +14,7 @@
     :href="searchUrl"
     target="_blank"
     rel="noopener noreferrer"
+    title="Find on Youtube"
   >
     <icon :glyph="youtubeIcon" />
   </a>
