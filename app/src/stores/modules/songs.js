@@ -13,9 +13,11 @@ const songs = {
     },
     likeSong(state, id) {
       state[id].isLiked = true;
+      state[id].likeCount += 1;
     },
     unlikeSong(state, id) {
       state[id].isLiked = false;
+      state[id].likeCount -= 1;
     },
   },
 

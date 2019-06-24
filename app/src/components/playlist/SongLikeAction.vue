@@ -1,12 +1,15 @@
 <template>
-  <button
-    class="action-button"
-    @click="handleToggleLike"
-    :disabled="requestInFlight"
-  >
-    <icon v-if="song.isLiked" :glyph="heartFilledIcon" />
-    <icon v-else :glyph="heartOpenIcon" />
-  </button>
+  <div :class="['like-group', { mobile }]">
+    <button
+      class="action-button"
+      @click="handleToggleLike"
+      :disabled="requestInFlight"
+    >
+      <icon v-if="song.isLiked" :glyph="heartFilledIcon" />
+      <icon v-else :glyph="heartOpenIcon" />
+    </button>
+    <span class="like-count">{{ song.likeCount }}</span>
+  </div>
 </template>
 
 <script>
@@ -18,7 +21,7 @@ const heartFilledIcon = require('../../../assets/heart_filled.svg');
 export default {
   components: { Icon },
 
-  props: ['song'],
+  props: ['song', 'mobile'],
 
   data() {
     return {
@@ -48,3 +51,41 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+@import '../../../styles/mixins.scss';
+
+.like-group {
+  display: flex;
+  align-items: center;
+
+  display: none;
+  &.mobile {
+    display: flex;
+  }
+
+  @media (min-width: $breakpoint-small) {
+    display: flex;
+    &.mobile {
+      display: none;
+    }
+  }
+
+  &.mobile svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.like-count {
+  min-width: 40px;
+  padding: 0 5px;
+  text-align: left;
+
+  @media (max-width: $breakpoint-small) {
+    font-size: 14px;
+    min-width: 35px;
+    margin-right: -10px;
+  }
+}
+</style>

@@ -11,6 +11,7 @@
           <br />
           {{ song.title }}
         </div>
+        <song-like-action :mobile="true" v-if="showLikeButton" :song="song" />
       </div>
 
       <span class="playlist-song--actions">
@@ -177,37 +178,34 @@ export default {
 .playlist-song--actions {
   flex-grow: 0;
   flex-shrink: 0;
-
   margin-left: auto;
 
-  /deep/ .action-button {
-    transition: transform 0.15s linear;
-    transform: scale(1);
-    padding: 0;
-    display: inline-block;
+  display: flex;
 
-    &:hover,
-    &:active {
-      transform: scale(1.3);
-    }
+  > * {
+    flex: 0 0 auto;
+  }
+}
 
-    margin-left: 10px;
+/deep/ .action-button {
+  border-radius: 500px;
+  padding: 8px;
 
-    &:disabled {
-      stroke: grey;
-      fill: grey;
-    }
+  &:disabled {
+    color: grey;
+  }
 
-    .icon {
-      width: 30px;
-      height: 30px;
-    }
+  .icon {
+    width: 25px;
+    height: 25px;
+  }
 
-    svg {
-      fill: var(--theme-text-color);
-      stroke: var(--theme-text-color);
-      color: var(--theme-text-color);
-    }
+  svg {
+    color: var(--theme-text-color);
+  }
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.1);
   }
 }
 
@@ -219,10 +217,10 @@ export default {
 
   .playlist-song--album-art {
     margin-right: 10px;
-    width: 48px;
+    width: 54px;
 
     &.-placeholder {
-      height: 48px;
+      height: 54px;
     }
   }
 
@@ -231,12 +229,15 @@ export default {
     line-height: 20px;
   }
 
-  .playlist-song--actions /deep/ .action-button {
-    margin-left: 5px;
+  .playlist-song--actions > * {
+    margin-left: 10px;
+  }
 
-    .icon {
-      width: 20px;
-      height: 20px;
+  /deep/ .action-button {
+    padding: 0;
+
+    &:hover {
+      background: none;
     }
   }
 }
