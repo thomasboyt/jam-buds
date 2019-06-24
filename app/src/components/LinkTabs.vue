@@ -17,6 +17,10 @@ export default {
 
 
 <style scoped>
+.link-tabs {
+  font-size: 18px;
+}
+
 .link-tabs a.router-link-exact-active {
   font-weight: 600;
 }
