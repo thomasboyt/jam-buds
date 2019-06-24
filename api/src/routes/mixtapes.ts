@@ -15,7 +15,7 @@ import {
   getDraftMixtapeIdForUserId,
   deleteMixtape,
 } from '../models/mixtapes';
-import { getOrCreateSong, serializeSong } from '../models/song';
+import { getOrCreateSong, hydrateSongMeta } from '../models/song';
 import { Mixtape } from '../resources';
 import { JamBudsHTTPError } from '../util/errors';
 
@@ -180,9 +180,11 @@ export default function registerMixtapeEndpoints(router: Router) {
       }
 
       await addSongToMixtape(req.params.id, song.id);
+      const songResource = await hydrateSongMeta(song, {
+        currentUserId: user.id,
+      });
 
-      // HACK: liked display isn't shown for mixtapes so we can get away/ w just getting it with isLiked: false for now...
-      res.json(serializeSong(song, false));
+      res.json(songResource);
     })
   );
 

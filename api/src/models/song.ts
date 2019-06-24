@@ -4,6 +4,7 @@ import { db } from '../db';
 import { Song } from '../resources';
 import validateOrThrow from '../util/validateOrThrow';
 import { getOrCreateSongCacheEntryWithExternalIds } from '../util/songSearchCache';
+import camelcaseKeys from 'camelcase-keys';
 
 export const SongModelV = t.type({
   id: t.number,
@@ -15,6 +16,13 @@ export const SongModelV = t.type({
   appleMusicUrl: t.union([t.string, t.null]),
   isrcId: t.union([t.string, t.null]),
   album: t.union([t.string, t.null]),
+});
+
+export const SongMetaV = t.type({
+  isLiked: t.union([t.boolean, t.undefined]),
+  // XXX: This is a string and not a number because SELECT COUNT(*) in postgres
+  // returns a bigint, which node-postgres serializes as a string
+  likeCount: t.string,
 });
 
 export type SongModel = t.TypeOf<typeof SongModelV>;
@@ -79,6 +87,25 @@ interface SongsQueryOptions {
   currentUserId?: number;
 }
 
+export function getMetaQuery(opts: SongsQueryOptions): Knex.Raw[] {
+  const query = [
+    db!.raw(
+      '(SELECT COUNT(*) FROM likes WHERE likes.song_id=songs.id) as like_count'
+    ),
+  ];
+
+  if (opts.currentUserId) {
+    query.push(
+      db!.raw(
+        'EXISTS(SELECT 1 FROM likes WHERE likes.user_id=? AND likes.song_id=songs.id) AS is_liked',
+        [opts.currentUserId]
+      )
+    );
+  }
+
+  return query;
+}
+
 /**
  * i'm not even sure what this is yet, some day this doc string should exist
  * though
@@ -92,22 +119,16 @@ export function selectSongsQuery(
    * https://github.com/tgriesser/knex/issues/61#issuecomment-259176685
    * This may not be a great idea performance-wise.
    */
-
-  const select = [db!.raw('to_json(songs.*) as song')];
-
-  if (opts.currentUserId !== undefined) {
-    select.push(
-      db!.raw(
-        'EXISTS(SELECT 1 FROM likes WHERE likes.user_id=? AND likes.song_id=songs.id) AS is_liked',
-        [opts.currentUserId]
-      )
-    );
-  }
-
-  return baseQuery.select(select);
+  return baseQuery.select([
+    db!.raw('to_json(songs.*) as song'),
+    ...getMetaQuery(opts),
+  ]);
 }
 
-export function serializeSong(song: SongModel, isLiked: boolean): Song {
+export function serializeSong(row: any): Song {
+  const song = validateOrThrow(SongModelV, camelcaseKeys(row.song));
+  const meta = validateOrThrow(SongMetaV, row);
+
   return {
     id: song.id,
     album: song.album,
@@ -117,7 +138,8 @@ export function serializeSong(song: SongModel, isLiked: boolean): Song {
     spotifyId: song.spotifyId,
     appleMusicId: song.appleMusicId,
     appleMusicUrl: song.appleMusicUrl,
-    isLiked,
+    isLiked: meta.isLiked || false,
+    likeCount: parseInt(meta.likeCount),
   };
 }
 
@@ -155,4 +177,22 @@ export async function getOrCreateSong(
   };
 
   return await createSong(params);
+}
+
+export async function hydrateSongMeta(
+  song: SongModel,
+  opts: SongsQueryOptions
+): Promise<Song> {
+  const [row] = await db!('songs')
+    .select(getMetaQuery(opts))
+    .join('likes', { songId: 'songs.id' })
+    .where({ songId: song.id });
+
+  const meta = validateOrThrow(SongMetaV, row);
+
+  return {
+    ...song,
+    likeCount: parseInt(meta.likeCount),
+    isLiked: meta.isLiked || false,
+  };
 }

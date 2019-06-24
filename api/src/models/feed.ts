@@ -1,22 +1,16 @@
 import * as t from 'io-ts';
 import * as Knex from 'knex';
-import camelcaseKeys from 'camelcase-keys';
 
 import { db } from '../db';
 import { ENTRY_PAGE_LIMIT } from '../constants';
 import { FeedSongItem, FeedItem, FeedMixtapeItem } from '../resources';
-import { serializeSong, SongModelV, selectSongsQuery } from './song';
+import { serializeSong, selectSongsQuery } from './song';
 import validateOrThrow from '../util/validateOrThrow';
 
 function serializeFeedSongItem(row: any): FeedSongItem {
-  const { isLiked } = row;
-
   return {
     type: 'song',
-    song: serializeSong(
-      validateOrThrow(SongModelV, camelcaseKeys(row.song)),
-      isLiked
-    ),
+    song: serializeSong(row),
     userNames: row.userNames,
     timestamp: row.timestamp.toISOString(),
   };

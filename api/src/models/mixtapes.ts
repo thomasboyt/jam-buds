@@ -3,10 +3,9 @@ import { date as dateType } from 'io-ts-types';
 
 import { db } from '../db';
 import { UserModel, getUserProfileForUser, getUserByUserId } from './user';
-import { selectSongsQuery, serializeSong, SongModelV } from './song';
+import { selectSongsQuery, serializeSong } from './song';
 import { Mixtape, Song } from '../resources';
 import validateOrThrow from '../util/validateOrThrow';
-import camelcaseKeys = require('camelcase-keys');
 
 export const MixtapeModelV = t.type({
   id: t.number,
@@ -194,12 +193,7 @@ export async function getSongsByMixtapeId(
 
   const songRows = await query;
 
-  return songRows.map((row: any) =>
-    serializeSong(
-      validateOrThrow(SongModelV, camelcaseKeys(row.song)),
-      row.isLiked
-    )
-  );
+  return songRows.map((row: any) => serializeSong(row));
 }
 
 export async function getDraftMixtapeIdForUserId(

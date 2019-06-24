@@ -1,13 +1,11 @@
 import * as t from 'io-ts';
 import { date as dateType } from 'io-ts-types';
-import camelcaseKeys from 'camelcase-keys';
 
 import { db } from '../db';
 import { UserSongItem, Song } from '../resources';
 import { ENTRY_PAGE_LIMIT } from '../constants';
-import { selectSongsQuery, serializeSong, SongModelV } from './song';
+import { selectSongsQuery, serializeSong } from './song';
 import { paginate } from './utils';
-import validateOrThrow from '../util/validateOrThrow';
 
 export const PostModelV = t.type({
   id: t.number,
@@ -33,18 +31,11 @@ export async function postSong(values: PostSongParams): Promise<Song> {
     currentUserId: values.userId,
   }).where({ id: values.songId });
 
-  return serializeSong(
-    validateOrThrow(SongModelV, camelcaseKeys(row.song)),
-    row.isLiked
-  );
+  return serializeSong(row);
 }
 
 function serializeUserSongItem(row: any): UserSongItem {
-  const { isLiked } = row;
-  const song = serializeSong(
-    validateOrThrow(SongModelV, camelcaseKeys(row.song)),
-    isLiked
-  );
+  const song = serializeSong(row);
 
   return {
     timestamp: row.timestamp.toISOString(),

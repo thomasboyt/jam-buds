@@ -14,7 +14,9 @@ export interface Song {
   spotifyId: string | null;
   appleMusicId: string | null;
   appleMusicUrl: string | null;
+
   isLiked: boolean;
+  likeCount: number;
 }
 
 export interface FeedMixtapeItem {

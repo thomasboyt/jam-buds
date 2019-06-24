@@ -1,10 +1,8 @@
 import { db } from '../db';
 import { paginate } from './utils';
 import { ENTRY_PAGE_LIMIT } from '../constants';
-import { selectSongsQuery, serializeSong, SongModelV } from './song';
+import { selectSongsQuery, serializeSong } from './song';
 import { UserSongItem } from '../resources';
-import validateOrThrow from '../util/validateOrThrow';
-import camelcaseKeys from 'camelcase-keys';
 
 interface LikeModel {
   id: number;
@@ -49,10 +47,7 @@ export async function removeLike(params: LikeParams): Promise<void> {
 }
 
 function serializeLike(row: any): UserSongItem {
-  const song = serializeSong(
-    validateOrThrow(SongModelV, camelcaseKeys(row.song)),
-    row.isLiked
-  );
+  const song = serializeSong(row);
 
   return {
     song,
