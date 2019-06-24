@@ -25,6 +25,7 @@ const mixtapes = {
 
     setMixtapePublished(state, { mixtapeId }) {
       state[mixtapeId].isPublished = true;
+      state[mixtapeId].publishedAt = new Date().toISOString();
     },
 
     appendToMixtape(state, { songId, mixtapeId }) {

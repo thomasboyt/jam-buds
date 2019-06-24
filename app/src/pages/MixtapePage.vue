@@ -31,7 +31,7 @@
           }}</router-link>
         </span>
 
-        &middot; posted {{ publishedAt }}
+        <span v-if="!isEditing">&middot; posted {{ publishedAt }}</span>
 
         <span v-if="isOwnMixtape">
           <span v-if="isEditing">
