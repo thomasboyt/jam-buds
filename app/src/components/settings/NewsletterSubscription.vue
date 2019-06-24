@@ -9,7 +9,11 @@
 
     <form @submit="handleUpdateNewsletter" v-if="loaded">
       <label>
-        <input type="checkbox" v-model="newsletterSubscribed" />
+        <input
+          type="checkbox"
+          v-model="newsletterSubscribed"
+          :disabled="requestInFlight"
+        />
         email me jam buds newz blasts
       </label>
 
