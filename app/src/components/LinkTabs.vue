@@ -15,10 +15,15 @@ export default {
 };
 </script>
 
+<style scoped lang="scss">
+@import '../../styles/mixins.scss';
 
-<style scoped>
 .link-tabs {
   font-size: 18px;
+
+  @media (max-width: $breakpoint-small) {
+    font-size: 16px;
+  }
 }
 
 .link-tabs a.router-link-exact-active {

@@ -20,11 +20,18 @@
 
       <h2 v-else>{{ mixtape.title }}</h2>
 
-      <p :style="{ fontSize: '18px' }">
-        a mixtape by
-        <router-link :to="`/users/${mixtape.author.name}`">{{
-          mixtape.author.name
-        }}</router-link>
+      <p class="mixtape-meta">
+        <span v-if="isOwnMixtape">
+          your mixtape
+        </span>
+        <span v-else>
+          a mixtape by
+          <router-link :to="`/users/${mixtape.author.name}`">{{
+            mixtape.author.name
+          }}</router-link>
+        </span>
+
+        &middot; posted {{ publishedAt }}
 
         <span v-if="isOwnMixtape">
           <span v-if="isEditing">
@@ -153,6 +160,15 @@ export default {
         !this.mixtape.isPublished
       );
     },
+
+    publishedAt() {
+      const date = new Date(this.mixtape.publishedAt);
+      return date.toLocaleDateString('default', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+      });
+    },
   },
 
   methods: {
@@ -201,9 +217,19 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '../../styles/mixins.scss';
+
 ul.playlist-entries {
   list-style-type: none;
   padding-left: 0px;
+}
+
+.mixtape-meta {
+  font-size: 18px;
+
+  @media (max-width: $breakpoint-small) {
+    font-size: 16px;
+  }
 }
 
 .rename-button {
