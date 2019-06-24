@@ -1,46 +1,55 @@
 <template>
   <form v-if="editing" @submit="handleSubmit">
     <h2 v-if="editing">
-      <input class="title-input" v-model="value" />
+      <input
+        class="title-input"
+        v-model="value"
+        ref="titleInput"
+        :disabled="requestInFlight"
+      />
     </h2>
-    <button type="submit" class="save-button">
+
+    <button type="submit" class="save-button" :disabled="requestInFlight">
       Save
     </button>
   </form>
 
-  <button
-    v-else
-    class="enter-button"
-    type="button"
-    @click="enterEditMode"
-    :disabled="requestInFlight"
-  >
+  <button v-else class="enter-button" type="button" @click="enterEditMode">
     <h2>{{ mixtape.title }}</h2>
   </button>
 </template>
 
 <script>
 export default {
-  props: ['mixtape'],
+  props: ['mixtape', 'editing'],
 
   data() {
     return {
-      editing: false,
       requestInFlight: false,
-      value: '',
+      value: this.mixtape.title,
     };
+  },
+
+  watch: {
+    editing(newVal, oldVal) {
+      // focus input when we enter editing state
+      // nextTick() fixes input not being rendered yet!
+      if (newVal === true && oldVal === false) {
+        this.$nextTick(() => {
+          this.$refs.titleInput.focus();
+        }, 0);
+      }
+    },
   },
 
   methods: {
     enterEditMode() {
-      this.editing = true;
-      this.value = this.mixtape.title;
+      this.$emit('enter');
     },
 
     async handleSubmit(e) {
       e.preventDefault();
 
-      this.editing = false;
       this.requestInFlight = true;
 
       try {
@@ -54,6 +63,8 @@ export default {
       } finally {
         this.requestInFlight = false;
       }
+
+      this.$emit('exit');
     },
   },
 };

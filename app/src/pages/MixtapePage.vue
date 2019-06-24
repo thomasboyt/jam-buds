@@ -10,7 +10,14 @@
         music!
       </share-landing-banner>
 
-      <editable-title v-if="isEditing" :mixtape="mixtape" />
+      <editable-title
+        v-if="isEditing"
+        :mixtape="mixtape"
+        :editing="editingTitle"
+        @enter="handleEnterEditTitle"
+        @exit="handleExitEditTitle"
+      />
+
       <h2 v-else>{{ mixtape.title }}</h2>
 
       <p :style="{ fontSize: '18px' }">
@@ -20,8 +27,14 @@
         }}</router-link>
 
         <span v-if="isOwnMixtape">
+          <span v-if="isEditing">
+            &middot;
+            <button class="link-button" @click="handleEnterEditTitle">
+              rename
+            </button>
+          </span>
           &middot;
-          <button class="delete-button" @click="handleDelete">delete</button>
+          <button class="link-button" @click="handleDelete">delete</button>
         </span>
       </p>
 
@@ -29,7 +42,7 @@
         <p>
           this mixtape is in draft mode. would you like to publish it?
         </p>
-        <publish-button :mixtape-id="$route.params.id" />
+        <publish-button :mixtape="mixtape" />
       </panel>
 
       <template v-if="mixtape.tracks.length > 0">
@@ -117,6 +130,7 @@ export default {
   data() {
     return {
       addSongOpen: false,
+      editingTitle: false,
     };
   },
 
@@ -145,9 +159,19 @@ export default {
     handleAddSongOpen() {
       this.addSongOpen = true;
     },
+
     handleAddSongClose() {
       this.addSongOpen = false;
     },
+
+    handleEnterEditTitle() {
+      this.editingTitle = true;
+    },
+
+    handleExitEditTitle() {
+      this.editingTitle = false;
+    },
+
     async handleDelete() {
       const confirmed = window.confirm(
         'Are you sure you want to delete this mixtape?'
@@ -188,7 +212,7 @@ ul.playlist-entries {
   text-decoration: underline;
 }
 
-.delete-button {
+.link-button {
   text-decoration: underline;
   padding: 0;
 

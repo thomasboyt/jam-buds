@@ -3,7 +3,7 @@
     type="button"
     class="publish-button"
     @click="handleClick"
-    :disabled="requestInFlight"
+    :disabled="!hasSongs || requestInFlight"
   >
     Publish
   </button>
@@ -11,12 +11,18 @@
 
 <script>
 export default {
-  props: ['mixtapeId'],
+  props: ['mixtape'],
 
   data() {
     return {
       requestInFlight: false,
     };
+  },
+
+  computed: {
+    hasSongs() {
+      return this.mixtape.tracks.length > 0;
+    },
   },
 
   methods: {
@@ -31,7 +37,7 @@ export default {
 
       try {
         await this.$store.dispatch('publishMixtape', {
-          mixtapeId: this.mixtapeId,
+          mixtapeId: this.mixtape.id,
         });
       } catch (err) {
         this.$store.commit('showErrorModal');
@@ -58,5 +64,16 @@ export default {
 
   font-weight: bold;
   font-size: 16px;
+
+  &:disabled {
+    cursor: default;
+    opacity: 0.5;
+
+    &:active,
+    &:hover {
+      transform: none;
+      background: none;
+    }
+  }
 }
 </style>
