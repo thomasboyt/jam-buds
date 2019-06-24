@@ -168,9 +168,15 @@ export async function getMixtapeById(
 
   const author = await getUserProfileForUser(authorUser);
 
+  // XXX: watch out for this suddenly being a string if we start using a
+  // json-namespaced query
+  const publishedAt = mixtapeModel.publishedAt as Date | null;
+  const serializedDate = publishedAt ? publishedAt.toISOString() : null;
+
   return {
     id: mixtapeModel.id,
     isPublished: !!mixtapeModel.publishedAt,
+    publishedAt: serializedDate,
     title: mixtapeModel.title,
     tracks,
     author,

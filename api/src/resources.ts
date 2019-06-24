@@ -82,6 +82,7 @@ export interface Mixtape {
   title: string;
   tracks: Song[];
   isPublished: boolean;
+  publishedAt: string | null;
   author: UserProfile;
 }
 
