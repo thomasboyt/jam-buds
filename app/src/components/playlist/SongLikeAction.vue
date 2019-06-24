@@ -8,7 +8,7 @@
       <icon v-if="song.isLiked" :glyph="heartFilledIcon" />
       <icon v-else :glyph="heartOpenIcon" />
     </button>
-    <span class="like-count">{{ song.likeCount }}</span>
+    <span class="like-count">{{ likeCount }}</span>
   </div>
 </template>
 
@@ -36,6 +36,10 @@ export default {
     ...mapState({
       authenticated: (state) => state.auth.authenticated,
     }),
+
+    likeCount() {
+      return this.song.likeCount || '';
+    },
   },
 
   methods: {
