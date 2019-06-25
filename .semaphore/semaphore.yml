@@ -75,6 +75,8 @@ blocks:
           value: "1"
         - name: DISABLE_APPLE_MUSIC
           value: "1"
+        - name: DISABLE_BUTTONDOWN
+          value: "1"
       prologue:
         commands:
           - checkout
