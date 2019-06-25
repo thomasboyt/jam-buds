@@ -39,9 +39,11 @@
           <p>want to get started? <strong>sign up or log in below:</strong></p>
 
           <sign-in-form @sentMail="handleSentMail" />
+
           <p class="email-note">
-            (fyi: your email is only used for signing up & logging in, and will
-            not be used for marketing or spam or any bullshit like that)
+            (fyi: your email stays with us, and will only be used for
+            authentication unless you opt-in to other emails, like our extremely
+            cool weekly newsletter)
           </p>
         </div>
       </div>
@@ -158,6 +160,7 @@ h2 {
 
 .email-note {
   font-size: 12px;
+  margin-top: 12px;
 }
 
 footer {

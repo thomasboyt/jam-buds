@@ -10,8 +10,61 @@ import {
   setUserFeedToPublic,
   setUserFeedToPrivate,
 } from '../models/user';
+import {
+  getButtondownSubscriptionId,
+  subscribeToButtondownNewsletter,
+  unsubscribeFromButtondownNewsletter,
+} from '../apis/buttondown';
 
 export default function registerSettingsEndpoints(router: Router) {
+  router.get(
+    '/settings/email-subscription',
+    isAuthenticated,
+    wrapAsyncRoute(async (req, res) => {
+      const user: UserModel = res.locals.user;
+
+      const subscribed = !!(await getButtondownSubscriptionId(user.email));
+
+      res.json({
+        subscribed,
+      });
+    })
+  );
+
+  router.post(
+    '/settings/email-subscription',
+    isAuthenticated,
+    wrapAsyncRoute(async (req, res) => {
+      const user: UserModel = res.locals.user;
+
+      const buttondownId = await getButtondownSubscriptionId(user.email);
+      if (!buttondownId) {
+        await subscribeToButtondownNewsletter(user.email);
+      }
+
+      res.json({
+        success: true,
+      });
+    })
+  );
+
+  router.delete(
+    '/settings/email-subscription',
+    isAuthenticated,
+    wrapAsyncRoute(async (req, res) => {
+      const user: UserModel = res.locals.user;
+
+      const buttondownId = await getButtondownSubscriptionId(user.email);
+      if (buttondownId) {
+        await unsubscribeFromButtondownNewsletter(buttondownId);
+      }
+
+      res.json({
+        success: true,
+      });
+    })
+  );
+
   router.post(
     '/settings/color-scheme',
     isAuthenticated,

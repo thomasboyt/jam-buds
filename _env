@@ -39,3 +39,7 @@ MUSICKIT_KEY_ID=
 
 # Set true to skip Apple Music stuff in API and app
 DISABLE_APPLE_MUSIC=
+
+# Used for buttondown.email newsletter subscription management
+BUTTONDOWN_API_KEY=
+DISABLE_BUTTONDOWN=
