@@ -94,7 +94,7 @@ export default {
     handleClick(e) {
       // Don't trigger playback if user was clicking on one of the action
       // buttons
-      if (e.target.closest('.playlist-song--actions')) {
+      if (e.target.closest('.action-button')) {
         return;
       }
 

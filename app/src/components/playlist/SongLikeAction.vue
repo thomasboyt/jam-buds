@@ -82,9 +82,12 @@ export default {
     }
   }
 
-  &.mobile svg {
-    width: 16px;
-    height: 16px;
+  &.mobile {
+    height: 20px;
+    svg {
+      width: 16px;
+      height: 16px;
+    }
   }
 }
 
