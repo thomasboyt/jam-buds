@@ -1,26 +1,30 @@
 <template>
   <div>
     <div class="registration-page">
-      <p>we're glad to have you!</p>
-
       <form @submit="handleSubmit">
-        <label>
-          <div class="label-text">your name</div>
-          <input type="text" v-model="name" />
-        </label>
-
-        <label>
-          <input type="checkbox" v-model="showInPublicFeed" />
-          show your posts in the public feed
-        </label>
+        <registration-name-url-field v-model="name" />
 
         <field-error-display
-          :errors="errors"
           name="name"
-          :style="{ marginTop: '20px' }"
+          :errors="errors"
+          :style="{ marginBottom: '20px' }"
         />
 
-        <button type="submit" class="submit">gogogo</button>
+        <div class="check-options">
+          <label>
+            <input type="checkbox" v-model="showInPublicFeed" />
+            show your posts in the public feed
+          </label>
+
+          <label>
+            <input type="checkbox" v-model="subscribeToNewsletter" />
+            subscribe to the weekly-ish jam buds newsletter
+          </label>
+        </div>
+
+        <settings-button type="submit" :is-saving="requestInFlight">
+          continue
+        </settings-button>
       </form>
     </div>
   </div>
@@ -30,15 +34,19 @@
 import axios from 'axios';
 
 import FieldErrorDisplay from '../../components/FieldErrorDisplay.vue';
+import RegistrationNameUrlField from '../../components/RegistrationNameUrlField.vue';
+import SettingsButton from '../../components/settings/SettingsButton.vue';
 
 export default {
-  components: { FieldErrorDisplay },
+  components: { FieldErrorDisplay, RegistrationNameUrlField, SettingsButton },
 
   data() {
     return {
       name: '',
       showInPublicFeed: false,
+      subscribeToNewsletter: false,
       didError: false,
+      requestInFlight: false,
       errors: null,
     };
   },
@@ -55,13 +63,16 @@ export default {
 
       this.errors = null;
       this.didError = false;
+      this.requestInFlight = true;
 
       let resp;
       try {
         resp = await axios.post('/auth/registration', {
+          token: this.$route.query.t,
+
           name: this.name,
           showInPublicFeed: this.showInPublicFeed,
-          token: this.$route.query.t,
+          subscribeToNewsletter: this.subscribeToNewsletter,
         });
       } catch (err) {
         if (err.response && err.response.data && err.response.data.errors) {
@@ -71,6 +82,7 @@ export default {
           throw err;
         }
 
+        this.requestInFlight = false;
         return;
       }
 
@@ -84,50 +96,31 @@ export default {
 
 <style lang="scss" scoped>
 .registration-page {
-  max-width: 400px;
+  max-width: 600px;
   margin: 0 auto;
   padding: 0 10px;
   text-align: center;
 }
 
-h3 {
-  font-size: 32px;
-  line-height: 1em;
-  margin-bottom: 24px;
-  font-weight: normal;
+form {
+  margin-top: 24px;
 }
 
-label {
-  display: block;
-  margin-bottom: 20px;
-  text-align: left;
-}
+.check-options {
+  max-width: 420px;
+  margin: 20px auto 50px;
 
-.label-text {
-  display: block;
-  font-weight: bold;
-  margin-bottom: 5px;
+  label {
+    display: block;
+    margin-bottom: 10px;
+    text-align: left;
+  }
 }
 
 .submit {
   flex: 0 0 auto;
   width: 100px;
-  padding: 0px;
-}
-
-input:not([type='checkbox']),
-.submit {
-  height: 45px;
-  font-family: 'Work Sans', sans-serif;
-}
-
-input:not([type='checkbox']) {
-  font-size: 22px;
-  padding: 0px 5px;
-  width: 100%;
-}
-
-.submit {
+  padding: 10px 5px;
   margin-top: 20px;
   font-size: 22px;
   background: yellow;
