@@ -1,4 +1,6 @@
 import { Router } from 'express';
+import * as Sentry from '@sentry/node';
+
 import wrapAsyncRoute from '../util/wrapAsyncRoute';
 import { AUTH_TOKEN_COOKIE } from '../constants';
 import { getUserByEmail, getUserByName, createUser } from '../models/user';
@@ -24,6 +26,7 @@ import {
   createAuthTokenForUserId,
   deleteAuthToken,
 } from '../models/authTokens';
+import { subscribeToButtondownNewsletter } from '../apis/buttondown';
 
 export default function registerAuthEndpoints(router: Router) {
   /**
@@ -199,6 +202,17 @@ export default function registerAuthEndpoints(router: Router) {
         name: req.body.name,
         showInPublicFeed: req.body.showInPublicFeed,
       });
+
+      // Create subscription, continuing to work even if it fails out
+      if (req.body.subscribeToNewsletter) {
+        try {
+          await subscribeToButtondownNewsletter(email);
+        } catch (err) {
+          console.error('error attempting to subscribe to buttondown:');
+          console.error(err);
+          Sentry.captureException(err);
+        }
+      }
 
       // Redeem sign-in token for auth token
       const authToken = await createAuthTokenForUserId(user.id);

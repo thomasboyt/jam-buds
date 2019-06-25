@@ -39,6 +39,10 @@ export async function getButtondownSubscriptionId(
 export async function subscribeToButtondownNewsletter(
   email: string
 ): Promise<void> {
+  if (process.env.DISABLE_BUTTONDOWN) {
+    return Promise.resolve();
+  }
+
   await externalCallWrapper(
     axios.post(
       'https://api.buttondown.email/v1/subscribers',
@@ -53,6 +57,10 @@ export async function subscribeToButtondownNewsletter(
 export async function unsubscribeFromButtondownNewsletter(
   buttondownId: string
 ): Promise<void> {
+  if (process.env.DISABLE_BUTTONDOWN) {
+    return Promise.resolve();
+  }
+
   await externalCallWrapper(
     axios.delete(
       `https://api.buttondown.email/v1/subscribers/${buttondownId}`,
