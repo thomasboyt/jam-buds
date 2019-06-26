@@ -4,14 +4,19 @@ services:
     ports:
       - "6000:8080"
     restart: always
+    volumes:
+      - "./secrets:/home/node/secrets"
+    environment:
+      GOOGLE_APPLICATION_CREDENTIALS: "/home/node/secrets/gcloud_stackdriver_key.json"
   jambuds-api:
     ports:
       - "6001:3000"
     restart: always
     volumes:
-      - "./secrets/jam_buds_prod_key.p8:/home/node/jam_buds_prod_key.p8"
+      - "./secrets:/home/node/secrets"
     environment:
-      MUSICKIT_PRIVATE_KEY_PATH: "/home/node/jam_buds_prod_key.p8"
+      MUSICKIT_PRIVATE_KEY_PATH: "/home/node/secrets/jam_buds_prod_key.p8"
+      GOOGLE_APPLICATION_CREDENTIALS: "/home/node/secrets/gcloud_stackdriver_key.json"
   redis:
     restart: always
   db:
