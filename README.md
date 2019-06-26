@@ -91,11 +91,9 @@ There's a few ways to handle deploying them.
 
 ### Docker
 
-Both apps have their own Dockerfiles, and can be run on a Docker host together. The `ops/` folder contains scripts to help with this, as well as an `nginx.conf` that can serve as a reverse proxy (undockerized) in front of both applications.
+Both apps have their own Dockerfiles, and can be run on a Docker host together.
 
 When building for Docker, the Webpack builds are done totally locally before being copied into the Docker images, meaning certain production environment variables need to be set for the build. See the `_env.deploy` template for these variables, as well as variables used for SSH-based deploys.
-
-`deploy.sh` will build Webpack bundles and Docker images, upload the images to your Docker host via SSH and `docker save/load`, and restart the Docker containers on your Docker host. You can also run database migrations using `migrate.sh`.
 
 ### Heroku
 
