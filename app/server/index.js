@@ -3,6 +3,10 @@ process.on('unhandledRejection', (err) => {
   console.error(err);
 });
 
+if (process.env.ENABLE_STACKDRIVER_TRACE) {
+  require('@google-cloud/trace-agent').start();
+}
+
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const proxy = require('http-proxy-middleware');

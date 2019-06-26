@@ -49,6 +49,7 @@
     "typescript": "^3.3.1"
   },
   "dependencies": {
+    "@google-cloud/trace-agent": "^4.0.0",
     "@sendgrid/mail": "^6.3.1",
     "@sentry/node": "^5.1.0",
     "@tboyt/music-kit-jwt": "^0.1.2",

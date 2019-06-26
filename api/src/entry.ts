@@ -1,5 +1,9 @@
-import './util/loadDotEnv';
+// this is fine to check before loadDotEnv since it's only gonna be used in prod
+if (process.env.ENABLE_STACKDRIVER_TRACE) {
+  require('@google-cloud/trace-agent').start();
+}
 
+import './util/loadDotEnv';
 import createApp from './createApp';
 
 import { configureDatabase } from './db';
