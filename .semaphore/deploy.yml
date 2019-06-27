@@ -49,12 +49,7 @@ blocks:
       jobs:
         - name: "Pull & Restart"
           commands:
-            - ssh $SSH_REMOTE \
-              JAMBUDS_DOCKER_REGISTRY="gcr.io/${GCP_PROJECT_ID}" \
-              'bash -s' < ops/remote-tasks/docker-pull.sh
-            - ssh $SSH_REMOTE \
-              JAMBUDS_REMOTE_PATH=$JAMBUDS_REMOTE_PATH \
-              'bash -s' < ops/remote-tasks/restart-docker.sh
-            - ssh $SSH_REMOTE \
-              JAMBUDS_REMOTE_PATH=$JAMBUDS_REMOTE_PATH \
-              'bash -s' < ops/remote-tasks/run-migrations.sh
+            - git clone $OPS_GIT_REPO ops && cd $_
+            - chmod 0600 ssh/*
+            - cd ansible
+            - ansible-playbook deploy.yml
