@@ -86,6 +86,13 @@ export default function registerAuthEndpoints(router: Router) {
         });
       }
 
+      if (process.env.DANGER_SKIP_AUTH) {
+        return res.json({
+          token,
+          isRegistration: !user,
+        });
+      }
+
       res.status(200).json({ success: true });
     })
   );
