@@ -19,17 +19,12 @@ if (process.env.NODE_ENV !== 'production') {
   }
 }
 
-// TODO: this is broken on heroku cuz it's not a real git repo :(
-// function gitSha() {
-//   const execSync = require('child_process').execSync;
-//   return execSync('git rev-parse --short HEAD', {encoding: 'utf8'}).trim();
-// }
-
 const baseEnvVars = {
   NODE_ENV: process.env.NODE_ENV,
   SENTRY_PUBLIC_DSN_APP: process.env.SENTRY_PUBLIC_DSN_APP,
   DISABLE_APPLE_MUSIC: process.env.DISABLE_APPLE_MUSIC,
   STATIC_URL: process.env.STATIC_URL,
+  DANGER_SKIP_AUTH: process.env.DANGER_SKIP_AUTH,
 };
 
 const baseConfig = {

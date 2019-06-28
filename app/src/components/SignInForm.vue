@@ -30,10 +30,11 @@ export default {
 
       const email = this.email;
 
+      let resp;
       try {
         this.requestInFlight = true;
 
-        await axios.post('/auth/sign-in-token', {
+        resp = await axios.post('/auth/sign-in-token', {
           email,
           signupReferral: this.$route.query['signup-ref'],
         });
@@ -47,6 +48,14 @@ export default {
       this.didSignIn = true;
 
       this.$emit('sentMail', email);
+
+      if (process.env.DANGER_SKIP_AUTH) {
+        if (resp.data.isRegistration) {
+          document.location = `/welcome/registration?t=${resp.data.token}`;
+        } else {
+          document.location = `/auth/sign-in?t=${resp.data.token}`;
+        }
+      }
     },
   },
 };
