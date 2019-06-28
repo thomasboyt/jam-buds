@@ -60,14 +60,14 @@ const playback = {
 
   actions: {
     async playSong(context, { songId }) {
-      const player = context.rootState.currentUser.hasSpotify
+      const playerType = context.rootState.currentUser.hasSpotify
         ? 'spotify'
         : 'applemusic';
 
-      context.commit('setPlayer', player);
+      context.commit('setPlayer', playerType);
       context.commit('playSong', { songId });
 
-      const playerInstance = await getOrCreatePlayer(player, {
+      const playerInstance = await getOrCreatePlayer(playerType, {
         store: this,
       });
 

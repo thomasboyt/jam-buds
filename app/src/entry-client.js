@@ -42,6 +42,8 @@ app.$axios.defaults.headers = {
   'X-Auth-Token': authToken,
 };
 
+import { registerNativeListeners } from './util/nativeBridge';
+
 // wait until router has resolved all async before hooks
 // and async components...
 router.onReady(() => {
@@ -72,6 +74,8 @@ router.onReady(() => {
 
   // actually mount to DOM
   app.$mount('#app');
+
+  registerNativeListeners(store);
 
   function setDevUser(name) {
     Cookies.set(AUTH_TOKEN_COOKIE, name);

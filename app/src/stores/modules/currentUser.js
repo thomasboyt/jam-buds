@@ -31,6 +31,9 @@ const currentUser = {
     unauthorizedAppleMusic(state) {
       state.hasAppleMusic = false;
     },
+    connectedSpotify(state) {
+      state.hasSpotify = true;
+    },
     disconnectedSpotify(state) {
       state.hasSpotify = false;
     },

@@ -1,5 +1,7 @@
 import SpotifyPlayer from './SpotifyPlayer';
+import SpotifyAndroidPlayer from './SpotifyAndroidPlayer';
 import AppleMusicPlayer from './AppleMusicPlayer';
+import { getNativeApp } from '../util/nativeBridge';
 
 let spotifyPlayer;
 let appleMusicPlayer;
@@ -7,7 +9,11 @@ let appleMusicPlayer;
 export async function getOrCreatePlayer(type, opts) {
   if (type === 'spotify') {
     if (!spotifyPlayer) {
-      spotifyPlayer = new SpotifyPlayer(opts);
+      if (getNativeApp() === 'android') {
+        spotifyPlayer = new SpotifyAndroidPlayer(opts);
+      } else {
+        spotifyPlayer = new SpotifyPlayer(opts);
+      }
       await spotifyPlayer.initialize();
     }
 
