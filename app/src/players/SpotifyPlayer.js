@@ -108,17 +108,17 @@ export default class SpotifyPlayer {
 
       this._spotifyPlayer.on('initialization_error', (err) => {
         console.error(err);
-        reject();
+        reject(err);
       });
 
       this._spotifyPlayer.on('authentication_error', (err) => {
         console.error(err);
-        reject();
+        reject(err);
       });
 
       this._spotifyPlayer.on('account_error', (err) => {
         console.error(err);
-        reject();
+        reject(err);
       });
 
       const connected = await this._spotifyPlayer.connect();
