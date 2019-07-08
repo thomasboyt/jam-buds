@@ -35,19 +35,23 @@ export default {
 @import '../../../styles/mixins.scss';
 
 .posted-by {
-  padding: 5px 0px;
-  border-bottom: 1px var(--theme-text-color) solid;
+  // padding: 5px 0px;
+  // border-bottom: 1px var(--theme-text-color) solid;
+  font-size: 16px;
+  margin-bottom: 6px;
+  // margin-bottom: 6px;
+  // margin-top: 20px;
 
   a {
     color: var(--theme-text-color);
     font-weight: 500;
   }
 
-  @media (max-width: $breakpoint-small) {
-    padding: 0px;
-    font-size: 15px;
-    line-height: 22px;
-    border-bottom: none;
-  }
+  // @media (max-width: $breakpoint-small) {
+  //   padding: 0px;
+  //   font-size: 15px;
+  //   line-height: 22px;
+  //   border-bottom: none;
+  // }
 }
 </style>

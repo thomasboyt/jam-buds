@@ -1,33 +1,29 @@
 <template>
-  <button
-    v-if="canPlay"
-    class="action-button"
-    @click="handlePlay"
-    type="button"
-  >
-    <icon :glyph="playIcon" />
-  </button>
+  <song-action-button v-if="canPlay" :icon="playIcon" @click="handlePlay">
+    Play
+  </song-action-button>
 
-  <a
+  <song-action-button
     v-else
-    class="action-button"
+    :icon="youtubeIcon"
+    tag="a"
     :href="searchUrl"
     target="_blank"
     rel="noopener noreferrer"
     title="Find on Youtube"
   >
-    <icon :glyph="youtubeIcon" />
-  </a>
+    Find on Youtube
+  </song-action-button>
 </template>
 
 <script>
-import Icon from '../Icon.vue';
+import SongActionButton from './SongActionButton.vue';
 
 const playIcon = require('../../../assets/play-outline.svg');
 const youtubeIcon = require('../../../assets/youtube.svg');
 
 export default {
-  components: { Icon },
+  components: { SongActionButton },
 
   props: ['song', 'canPlay'],
 

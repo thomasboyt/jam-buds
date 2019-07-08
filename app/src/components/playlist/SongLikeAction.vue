@@ -1,5 +1,14 @@
 <template>
-  <div :class="['like-group', { mobile }]">
+  <song-action-button
+    class="like-button"
+    :icon="icon"
+    @click="handleToggleLike"
+    :disabled="requestInFlight || !authenticated"
+  >
+    {{ likeCount || 'Like' }}
+  </song-action-button>
+
+  <!-- <div :class="['like-group', { mobile }]">
     <button
       class="action-button"
       @click="handleToggleLike"
@@ -9,18 +18,18 @@
       <icon v-else :glyph="heartOpenIcon" />
     </button>
     <span class="like-count">{{ likeCount }}</span>
-  </div>
+  </div> -->
 </template>
 
 <script>
-import Icon from '../Icon.vue';
 import { mapState } from 'vuex';
+import SongActionButton from './SongActionButton.vue';
 
 const heartOpenIcon = require('../../../assets/heart_open.svg');
 const heartFilledIcon = require('../../../assets/heart_filled.svg');
 
 export default {
-  components: { Icon },
+  components: { SongActionButton },
 
   props: ['song', 'mobile'],
 
@@ -39,6 +48,10 @@ export default {
 
     likeCount() {
       return this.song.likeCount || '';
+    },
+
+    icon() {
+      return this.song.isLiked ? heartFilledIcon : heartOpenIcon;
     },
   },
 
@@ -65,6 +78,10 @@ export default {
 
 <style lang="scss" scoped>
 @import '../../../styles/mixins.scss';
+
+.like-button {
+  min-width: 90px;
+}
 
 .like-group {
   display: flex;

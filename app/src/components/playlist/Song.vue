@@ -5,27 +5,31 @@
     <div class="playlist-song--main" @click="handleClick">
       <album-art :album-art="song.albumArt" />
 
-      <div class="playlist-song--title">
-        <div class="title-content">
-          <span class="title-artist">{{ song.artists.join(', ') }}</span>
-          <br />
-          {{ song.title }}
+      <div class="playlist-song--content">
+        <div class="playlist-song--label">
+          <slot name="posted-by" />
+          <div class="title-content">
+            <div class="title-artist">{{ song.artists.join(', ') }}</div>
+            <div class="title-song">{{ song.title }}</div>
+          </div>
         </div>
-        <song-like-action :mobile="true" :song="song" />
-      </div>
 
-      <span class="playlist-song--actions">
-        <slot name="actions">
-          <song-play-action
-            v-if="!isPlaying"
-            :song="song"
-            @play="handlePlay"
-            :can-play="canPlay"
-          />
-          <song-like-action :song="song" />
-          <song-dropdown-menu :song="song" :show-delete="showDeleteMenuItem" />
-        </slot>
-      </span>
+        <span class="playlist-song--actions">
+          <slot name="actions">
+            <song-play-action
+              v-if="!isPlaying"
+              :song="song"
+              @play="handlePlay"
+              :can-play="canPlay"
+            />
+            <song-like-action :song="song" />
+            <!-- <song-dropdown-menu
+              :song="song"
+              :show-delete="showDeleteMenuItem"
+            /> -->
+          </slot>
+        </span>
+      </div>
     </div>
   </div>
 </template>
@@ -130,13 +134,13 @@ export default {
 
 .playlist-song--main {
   display: flex;
-  align-items: center;
   color: var(--theme-text-color);
   text-decoration: none;
+  align-items: stretch;
 }
 
 .playlist-song--album-art {
-  width: 64px;
+  width: 128px;
   height: auto;
   flex: 0 0 auto;
   border: 1px black solid;
@@ -148,63 +152,50 @@ export default {
   }
 }
 
-.playlist-song--title {
-  .title-artist {
-    font-weight: 500;
-  }
+.playlist-song--content {
+  display: flex;
+  flex-flow: column;
+}
 
-  > .title-content {
-    display: inline-block;
-    width: 100%;
-
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  flex-shrink: 1;
-  flex-grow: 1;
-  max-width: 100%;
-  min-width: 0;
-
-  margin-right: 10px;
-  line-height: 24px;
+.playlist-song--label {
 }
 
 .playlist-song--actions {
-  flex-grow: 0;
-  flex-shrink: 0;
-  margin-left: auto;
+  margin-top: auto;
+}
 
+.title-content {
+  display: inline-block;
+  width: 100%;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 28px;
+
+  .title-artist {
+    font-size: 20px;
+    font-weight: 500;
+  }
+
+  .title-song {
+    font-size: 18px;
+  }
+
+  // flex-shrink: 1;
+  // flex-grow: 1;
+  // max-width: 100%;
+  // min-width: 0;
+
+  // margin-right: 10px;
+  // line-height: 24px;
+}
+
+.playlist-song--actions {
   display: flex;
 
   > * {
     flex: 0 0 auto;
-  }
-}
-
-/deep/ .action-button {
-  border-radius: 500px;
-  padding: 8px;
-
-  .icon {
-    width: 25px;
-    height: 25px;
-  }
-
-  svg {
-    color: var(--theme-text-color);
-  }
-
-  &:hover {
-    background: rgba(0, 0, 0, 0.1);
-  }
-
-  &:disabled {
-    cursor: default;
-    &:hover {
-      background: none;
-    }
   }
 }
 

@@ -1,16 +1,24 @@
 <template>
   <div v-if="item.type === 'song'">
-    <entry-posted-by
+    <!-- <entry-posted-by
       :timestamp="item.timestamp"
       :names="item.userNames"
       verb="posted"
-    />
+    /> -->
     <song
       v-if="item.type === 'song'"
       :song-id="item.songId"
       :posted-user-names="item.userNames"
       @requestPlay="handleRequestPlay"
-    />
+    >
+      <template v-slot:posted-by>
+        <entry-posted-by
+          :timestamp="item.timestamp"
+          :names="item.userNames"
+          verb="posted"
+        />
+      </template>
+    </song>
   </div>
   <mixtape-item
     v-else-if="item.type === 'mixtape'"
