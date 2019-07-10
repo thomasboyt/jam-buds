@@ -22,6 +22,8 @@
         </p>
       </template>
     </playlist>
+
+    <router-view />
   </div>
 </template>
 

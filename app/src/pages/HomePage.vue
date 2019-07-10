@@ -2,6 +2,7 @@
   <sidebar-wrapper v-if="authenticated" v-slot="{ withSidebar }">
     <main-wrapper :with-sidebar="withSidebar">
       <feed />
+      <router-view />
     </main-wrapper>
   </sidebar-wrapper>
 

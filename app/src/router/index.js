@@ -25,6 +25,8 @@ import NotificationSettingsPage from '../pages/settings/NotificationSettingsPage
 
 import MixtapePage from '../pages/MixtapePage.vue';
 
+import SongDetailModalPage from '../pages/SongDetailModalPage.vue';
+
 // import NotFoundPage from '../pages/NotFoundPage.vue';
 
 Vue.use(Router);
@@ -35,7 +37,11 @@ export default function createRouter() {
     fallback: false,
     scrollBehavior: () => ({ x: 0, y: 0 }),
     routes: [
-      { path: '/', component: HomePage },
+      {
+        path: '/',
+        component: HomePage,
+        children: [{ path: 'songs/:songId', component: SongDetailModalPage }],
+      },
       { path: '/about', component: AboutPage },
       {
         path: '/welcome',
@@ -50,8 +56,20 @@ export default function createRouter() {
         path: '/users/:id',
         component: UserPageWrapper,
         children: [
-          { path: '/', component: UserPlaylistPage },
-          { path: 'liked', component: UserLikedPage },
+          {
+            path: '',
+            component: UserPlaylistPage,
+            children: [
+              { path: 'songs/:songId', component: SongDetailModalPage },
+            ],
+          },
+          {
+            path: 'liked',
+            component: UserLikedPage,
+            children: [
+              { path: 'songs/:songId', component: SongDetailModalPage },
+            ],
+          },
           { path: 'following', component: UserFollowingPage },
           { path: 'followers', component: UserFollowersPage },
         ],
