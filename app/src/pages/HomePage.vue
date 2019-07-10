@@ -47,6 +47,10 @@ export default {
     }
   },
 
+  shouldFetchOnUpdate() {
+    return false;
+  },
+
   computed: mapState({
     authenticated: (state) => state.auth.authenticated,
   }),

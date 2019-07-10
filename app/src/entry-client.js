@@ -12,10 +12,21 @@ import Cookies from 'js-cookie';
 const AUTH_TOKEN_COOKIE = 'jamBudsAuthToken';
 
 Vue.mixin({
+  /**
+   * This hook is run when a component is reused but the route params change,
+   * e.g. when you go from e.g. /users/vinny -> /users/jeff
+   */
   beforeRouteUpdate(to, from, next) {
-    const { asyncData } = this.$options;
+    const { asyncData, shouldFetchOnUpdate } = this.$options;
 
-    if (asyncData) {
+    // Allow components to define a shouldFetchOnUpdate() hook to determine
+    // whether or not to re-run fetching. This should e.g. check to see if a
+    // relevant param has changed
+    const allowUpdateFetch = shouldFetchOnUpdate
+      ? shouldFetchOnUpdate(to, from)
+      : true;
+
+    if (asyncData && allowUpdateFetch) {
       asyncData({
         store: this.$store,
         route: to,

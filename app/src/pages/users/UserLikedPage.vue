@@ -48,6 +48,10 @@ export default {
     await store.dispatch('loadProfileLikesPlaylist', route.params.id);
   },
 
+  shouldFetchOnUpdate(to, from) {
+    return to.params.id !== from.params.id;
+  },
+
   data() {
     return {
       loadingNextPage: false,
