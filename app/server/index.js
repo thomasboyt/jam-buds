@@ -4,7 +4,9 @@ process.on('unhandledRejection', (err) => {
 });
 
 if (process.env.ENABLE_STACKDRIVER_TRACE) {
-  require('@google-cloud/trace-agent').start();
+  require('@google-cloud/trace-agent').start({
+    ignoreUrls: ['^/assets', '^/favicon.ico$', '^/robots.txt$'],
+  });
 }
 
 const express = require('express');
