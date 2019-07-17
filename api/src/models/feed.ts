@@ -6,6 +6,7 @@ import { ENTRY_PAGE_LIMIT } from '../constants';
 import { FeedSongItem, FeedItem, FeedMixtapeItem } from '../resources';
 import { serializeSong, selectSongsQuery } from './song';
 import validateOrThrow from '../util/validateOrThrow';
+import traceQuery from '../util/traceQuery';
 
 function serializeFeedSongItem(row: any): FeedSongItem {
   return {
@@ -101,7 +102,7 @@ export async function getFeedByUserId(
 
   query = query.limit(ENTRY_PAGE_LIMIT);
 
-  const rows = await query;
+  const rows = await traceQuery(query);
 
   return rows.map(
     (row: any): FeedItem => {
