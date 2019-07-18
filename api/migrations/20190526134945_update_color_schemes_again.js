@@ -1,4 +1,4 @@
-exports.up = function(knex, Promise) {
+exports.up = function(knex) {
   return knex.schema.alterTable('color_schemes', (table) => {
     table.dropColumn('background_color');
     table.dropColumn('card_background_color');
@@ -6,6 +6,6 @@ exports.up = function(knex, Promise) {
   });
 };
 
-exports.down = function(knex, Promise) {
+exports.down = function(knex) {
   return Promise.resolve();
 };

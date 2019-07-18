@@ -1,4 +1,4 @@
-exports.up = function(knex, Promise) {
+exports.up = function(knex) {
   return knex.schema
     .alterTable('playlist_entries', (table) => {
       table.enum('source', ['youtube', 'bandcamp']); //.notNullable();
@@ -17,6 +17,6 @@ exports.up = function(knex, Promise) {
     });
 };
 
-exports.down = function(knex, Promise) {
+exports.down = function(knex) {
   return Promise.resolve();
 };

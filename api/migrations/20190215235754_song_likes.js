@@ -11,6 +11,6 @@ exports.up = async function(knex, Promise) {
   });
 };
 
-exports.down = function(knex, Promise) {
+exports.down = function(knex) {
   return Promise.resolve();
 };

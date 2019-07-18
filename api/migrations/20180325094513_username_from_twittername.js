@@ -14,6 +14,6 @@ exports.up = async function(knex, Promise) {
   await knex.raw('ALTER TABLE users ALTER COLUMN name SET NOT NULL;');
 };
 
-exports.down = function(knex, Promise) {
+exports.down = function(knex) {
   return Promise.resolve();
 };

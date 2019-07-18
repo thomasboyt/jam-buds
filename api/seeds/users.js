@@ -36,7 +36,7 @@ function createPost(knex, post) {
   return knex('posts').insert(post);
 }
 
-exports.seed = async function(knex, Promise) {
+exports.seed = async function(knex) {
   await Promise.all([
     createUser(knex, 1, 'jeff', {
       twitter_id: '12223',

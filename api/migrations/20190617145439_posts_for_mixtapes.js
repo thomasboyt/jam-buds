@@ -1,4 +1,4 @@
-exports.up = function(knex, Promise) {
+exports.up = function(knex) {
   return knex.schema.alterTable('posts', (table) => {
     table
       .integer('mixtape_id')
@@ -7,4 +7,4 @@ exports.up = function(knex, Promise) {
   });
 };
 
-exports.down = function(knex, Promise) {};
+exports.down = function(knex) {};
