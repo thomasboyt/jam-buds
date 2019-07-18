@@ -52,7 +52,7 @@
     "express": "^4.14.0",
     "http-proxy-middleware": "^0.18.0",
     "js-cookie": "^2.1.4",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.14",
     "mustache": "^2.3.0",
     "normalize.css": "^5.0.0",
     "query-string": "^4.2.3",
