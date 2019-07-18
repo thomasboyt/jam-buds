@@ -7,6 +7,7 @@ export function configureDatabase() {
   const config: knex.Config = {
     client: 'pg',
     connection: process.env.DATABASE_URL,
+    asyncStackTraces: true,
   };
 
   if (process.env.NODE_ENV === 'test') {
