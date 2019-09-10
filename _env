@@ -32,7 +32,7 @@ SPOTIFY_CLIENT_SECRET=
 SENDGRID_API_KEY=
 
 # Used for provisioning Apple Music. This path is used for the Webpack builds,
-which generate a JWT key at build time, in addition to the API, which uses it for search.
+# which generate a JWT key at build time, in addition to the API, which uses it for search.
 MUSICKIT_PRIVATE_KEY_PATH=/path/to/secrets/jam_buds_dev_key.p8
 MUSICKIT_TEAM_ID=
 MUSICKIT_KEY_ID=
