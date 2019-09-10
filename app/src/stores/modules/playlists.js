@@ -33,27 +33,24 @@ const playlists = {
       });
     },
 
-    addPlaylistItemToHead(state, { key, item }) {
-      const denormalizedItem = denormalizeItem(item);
+    addToPlaylistHead(state, { key, items }) {
+      const denormalizedItems = items.map((entry) => denormalizeItem(entry));
 
-      const existing = state[key].items.find(
-        (playlistItem) => playlistItem.songId === denormalizedItem.songId
-      );
-
-      if (existing) {
-        // remove old record
-        state[key].items = state[key].items.filter(
-          (playlistItem) => playlistItem.songId !== denormalizedItem.songId
-        );
-
-        // XXX: The entry returned from the post endpoint currently only
-        // includes the current user's name, so we add the rest here
-        denormalizedItem.userNames = denormalizedItem.userNames.concat(
-          existing.userNames
-        );
+      // XXX: This is like O(n^2)-ish but probably fine
+      for (let newItem of denormalizedItems) {
+        for (let existingItem of state[key].items) {
+          if (newItem.id === existingItem.id) {
+            // if a playlist item we've already loaded "reappears" further up in
+            // the feed, this means that the current user has reposted it, and
+            // we need to remove it from its old spot
+            state[key].items = state[key].items.filter(
+              (playlistItem) => playlistItem.songId !== newItem.songId
+            );
+          }
+        }
       }
 
-      state[key].items = [denormalizedItem].concat(state[key].items);
+      state[key].items = [...denormalizedItems, ...state[key].items];
     },
 
     /**
@@ -145,6 +142,11 @@ const playlists = {
 
       // TODO: Actually load new data lol
       // For now we just return the resp.data for getting this playlist
+      context.commit(
+        'addSongs',
+        resp.data.items.map((item) => item.song).filter((song) => song)
+      );
+      context.commit('addToPlaylistHead', { key, items: resp.data.items });
 
       return resp.data;
     },

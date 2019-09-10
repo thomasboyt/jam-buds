@@ -141,7 +141,11 @@ export default {
         return;
       }
 
-      this.$store.dispatch('didSubmitSong', resp.data);
+      this.$store.dispatch('didSubmitSong', {
+        song: resp.data,
+        currentPath: this.$route.path,
+      });
+
       this.$emit('finished');
     },
   },
