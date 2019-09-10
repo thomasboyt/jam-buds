@@ -46,6 +46,7 @@ function serializeUserSongItem(row: any): UserSongItem {
 interface QueryOptions {
   currentUserId?: number;
   beforeTimestamp?: string;
+  afterTimestamp?: string;
 }
 
 export async function getPostedUserSongItemsById(
@@ -62,6 +63,7 @@ export async function getPostedUserSongItemsById(
   query = paginate(query, {
     limit: ENTRY_PAGE_LIMIT,
     before: opts.beforeTimestamp,
+    after: opts.afterTimestamp,
     columnName: 'posts.created_at',
   });
 
