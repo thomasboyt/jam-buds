@@ -78,7 +78,7 @@ export default {
       this.loadingNextPage = true;
 
       try {
-        await this.$store.dispatch('loadPlaylistPage', { key: 'feed' });
+        await this.$store.dispatch('loadNextPlaylistPage', { key: 'feed' });
       } catch (err) {
         this.$store.commit('showErrorModal');
         throw err;
