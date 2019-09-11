@@ -7,23 +7,24 @@
     />
 
     <div class="audio-player--controls" v-if="currentSong">
-      <loading-spinner v-if="isBuffering" />
-      <button
-        v-else
-        :class="{ 'play-pause-button': true, play: !isPlaying }"
-        @click="handlePlayPauseClick"
-        :disabled="!currentSong"
-      >
-        <icon :glyph="playPauseIcon" />
-      </button>
-
-      <!-- <button
-          class="next-button"
-          @click="handleNextClick"
+      <div class="audio-player--control-container"></div>
+      <div class="audio-player--control-container">
+        <loading-spinner v-if="isBuffering" />
+        <button
+          v-else
+          :class="{ 'play-pause-button': true, play: !isPlaying }"
+          @click="handlePlayPauseClick"
           :disabled="!currentSong"
         >
+          <icon :glyph="playPauseIcon" />
+        </button>
+      </div>
+
+      <div class="audio-player--control-container">
+        <button class="next-button" @click="handleNextClick" :disabled="!currentSong">
           <icon :glyph="nextIcon" />
-        </button> -->
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -89,6 +90,10 @@ export default {
     handlePlayPauseClick() {
       this.$store.dispatch('playback/togglePlayback');
     },
+
+    handleNextClick() {
+      this.$store.dispatch('playback/nextSong');
+    },
   },
 };
 </script>
@@ -122,10 +127,22 @@ export default {
     .audio-player--controls {
       margin-left: auto;
       margin-right: 10px;
+      flex-flow: row-reverse; // reverse play and next buttons
 
       .loading-spinner {
         // XXX: not sure why this is needed :\
         margin-right: 26px;
+      }
+    }
+  }
+
+  @media (min-width: $breakpoint-small) {
+    .audio-player--controls {
+      display: flex;
+      width: 180px;
+
+      .audio-player--control-container {
+        flex: 1;
       }
     }
   }
@@ -146,26 +163,34 @@ export default {
   display: flex;
 
   button {
-    flex: 0 0 auto;
-
+    margin: 0 auto;
     height: 40px;
     width: 40px;
     border-radius: 40px;
 
-    border: 2px #aaa solid;
+    &:hover,
+    &:active {
+      .icon {
+        fill: #ccc;
+      }
+    }
+
+    &.play-pause-button {
+      border: 2px #aaa solid;
+
+      &:hover,
+      &:active {
+        background: white;
+        border-color: white;
+
+        .icon {
+          fill: black;
+        }
+      }
+    }
 
     display: block;
     background: none;
-
-    &:hover,
-    &:active {
-      background: white;
-      border-color: white;
-
-      .icon {
-        fill: black;
-      }
-    }
   }
 
   .icon {
