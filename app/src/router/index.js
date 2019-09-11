@@ -25,7 +25,7 @@ import NotificationSettingsPage from '../pages/settings/NotificationSettingsPage
 
 import MixtapePage from '../pages/MixtapePage.vue';
 
-// import NotFoundPage from '../pages/NotFoundPage.vue';
+import NotFoundPage from '../pages/NotFoundPage.vue';
 
 Vue.use(Router);
 
@@ -75,7 +75,7 @@ export default function createRouter() {
         path: '/mixtapes/:id',
         component: MixtapePage,
       },
-      // {path: '*', component: NotFoundPage},
+      { path: '*', component: NotFoundPage },
     ],
   });
 }
