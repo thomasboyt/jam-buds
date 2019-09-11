@@ -140,8 +140,6 @@ const playlists = {
         params: { after: context.state[key].items[0].timestamp },
       });
 
-      // TODO: Actually load new data lol
-      // For now we just return the resp.data for getting this playlist
       context.commit(
         'addSongs',
         resp.data.items.map((item) => item.song).filter((song) => song)

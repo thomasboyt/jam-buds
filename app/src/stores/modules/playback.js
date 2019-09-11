@@ -145,7 +145,20 @@ const playback = {
         );
 
         if (!nextEntry) {
-          // load next page
+          if (playlist.itemsExhaustedj) {
+            return;
+          }
+
+          // TODO: Put a loading state here, e.g...
+          // context.commit('sync', { isBuffering: true });
+
+          await context.dispatch(
+            'loadNextPlaylistPage',
+            { key: playlistKey },
+            { root: true }
+          );
+
+          context.dispatch('nextSong');
         } else {
           context.dispatch('playSong', {
             songId: nextEntry.songId,
