@@ -106,6 +106,23 @@ const playback = {
       });
 
       const song = context.getters.currentSong;
+
+      const missingSpotify = player === 'spotify' && !song.spotifyId;
+      const missingAppleMusic = player === 'applemusic' && !song.appleMusicId;
+
+      // XXX: This UI obviously sucks, but it's better than nothing...
+      if (missingSpotify || missingAppleMusic) {
+        context.commit(
+          'showErrorModal',
+          `This song is not available on ${
+            missingSpotify ? 'Spotify' : 'Apple Music'
+          }. Sorry!`,
+          { root: true }
+        );
+        context.commit('clearPlayback');
+        return;
+      }
+
       playerInstance.setSong(song);
     },
 
