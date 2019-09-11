@@ -7,24 +7,29 @@
     />
 
     <div class="audio-player--controls" v-if="currentSong">
-      <div class="audio-player--control-container"></div>
-      <div class="audio-player--control-container">
-        <loading-spinner v-if="isBuffering" />
-        <button
-          v-else
-          :class="{ 'play-pause-button': true, play: !isPlaying }"
-          @click="handlePlayPauseClick"
-          :disabled="!currentSong"
-        >
-          <icon :glyph="playPauseIcon" />
-        </button>
-      </div>
+      <loading-spinner v-if="isBuffering" />
+      <template v-else>
+        <div class="audio-player--control-container"></div>
+        <div class="audio-player--control-container">
+          <button
+            :class="{ 'play-pause-button': true, play: !isPlaying }"
+            @click="handlePlayPauseClick"
+            :disabled="!currentSong"
+          >
+            <icon :glyph="playPauseIcon" />
+          </button>
+        </div>
 
-      <div class="audio-player--control-container">
-        <button class="next-button" @click="handleNextClick" :disabled="!currentSong">
-          <icon :glyph="nextIcon" />
-        </button>
-      </div>
+        <div class="audio-player--control-container">
+          <button
+            class="next-button"
+            @click="handleNextClick"
+            :disabled="!currentSong"
+          >
+            <icon :glyph="nextIcon" />
+          </button>
+        </div>
+      </template>
     </div>
   </div>
 </template>
