@@ -23,12 +23,26 @@ In addition, this repo also contains some development-specific configuration and
 
 Base requirements:
 
-* Node: 8.x or higher is probably fine.
-* NPM: 5.x or higher is a-ok.
-* Postgres: 10.x recommended, but 9.x is probably fine too. Currently runs in 9.6 on CI because of Travis woes anyways.
-* Redis: 5.x recommended
+- Node: 8.x or higher is probably fine.
+- NPM: 5.x or higher is a-ok.
+- Postgres: 11.x recommended
+- Redis: 5.x recommended
 
 Everything else is handled by NPM. Make sure your editor is configured to prefer local versions of dev depdendencies (TypeScript, ESLint, Prettier...).
+
+### Running Databases with Docker (optional)
+
+If you'd like to avoid using system-level installs of Postgres or Redis, you can instead use the `docker-compose-yml` configuration in this repo to run Postgres and Redis containers. When configuring your `.env` files (see below), use the following settings:
+
+```
+# .env
+DATABASE_URL=postgres://postgres@localhost:5433/jambuds
+REDIS_URL=redis://localhost:6380
+
+# .env.test
+DATABASE_URL=postgres://postgres@localhost:5433/jambuds_test
+REDIS_URL=redis://localhost:6380/1
+```
 
 ### API Server
 
@@ -64,14 +78,9 @@ cd app && npm run dev
 
 ## Testing
 
-Create a `.env.test` file with a test DATABASE_URL (don't worry about the rest of the values in .env; none of them are used at the moment):
+First, copy over `_env.test` to `.env.test` and replace the values as you did for `.env`.
 
-```
-# .env.test
-DATABASE_URL=postgres://tboyt@localhost:5432/jambuds_test
-```
-
-Then run `cd api && npm test`.
+Then just run `cd api && npm test`.
 
 ### Feature Tests
 
