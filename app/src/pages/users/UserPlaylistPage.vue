@@ -126,8 +126,9 @@ export default {
     },
 
     handleRequestPlay(songId) {
-      this.$store.dispatch('playback/enqueueAndPlaySongs', {
-        songIds: [songId],
+      this.$store.dispatch('playback/playFromPlaylist', {
+        songId,
+        playlistKey: this.playlistKey,
         playbackSourceLabel: this.title,
         playbackSourcePath: this.playbackSourcePath,
       });

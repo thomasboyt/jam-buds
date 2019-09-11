@@ -124,19 +124,6 @@ const mixtapes = {
       // to be navigated away from before we clear that cache, see
       // <mixtape-page />
     },
-
-    playFromMixtape(context, { mixtapeId, songId }) {
-      const mixtape = context.state[mixtapeId];
-      const tracks = mixtape.tracks;
-      const songIdx = tracks.findIndex((id) => id === songId);
-      const songIds = tracks.slice(songIdx);
-
-      context.dispatch('playback/enqueueAndPlaySongs', {
-        songIds,
-        playbackSourceLabel: mixtape.title,
-        playbackSourcePath: `/mixtapes/${mixtapeId}`,
-      });
-    },
   },
 
   getters: {

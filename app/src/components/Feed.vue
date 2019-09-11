@@ -19,6 +19,7 @@
       <template v-slot:item="{ item }">
         <feed-item
           :item="item"
+          playlist-key="feed"
           playback-source-label="your feed"
           playback-source-path="/"
         />

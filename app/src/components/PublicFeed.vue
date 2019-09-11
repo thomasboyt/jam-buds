@@ -25,6 +25,7 @@
       <template v-slot:item="{ item }">
         <feed-item
           :item="item"
+          playlist-key="publicFeed"
           playback-source-label="public feed"
           playback-source-path="/public-feed"
         />
