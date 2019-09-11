@@ -72,19 +72,8 @@ export default class AppleMusicPlayer {
       });
     }
 
-    // XXX: This is a stupid fucking workaround to a stupid fucking bug:
-    // https://forums.developer.apple.com/thread/117043
-    if (evt.state === MusicKit.PlaybackStates.ended) {
-      this.songEnded = true;
-    }
-    if (evt.state === MusicKit.PlaybackStates.waiting && this.songEnded) {
-      MusicKit.getInstance().stop();
-      this.songEnded = false;
+    if (evt.state === MusicKit.PlaybackStates.completed) {
       this.store.dispatch('playback/nextSong');
     }
-    // just in case apple ever fixes this bug, this should work
-    // if (evt.state === MusicKit.PlaybackStates.completed) {
-    //   this.store.dispatch('playback/nextSong');
-    // }
   }
 }
