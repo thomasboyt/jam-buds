@@ -2,23 +2,19 @@
   <div class="audio-player--song-display">
     <div class="audio-player--art-container">
       <img v-if="albumArt" :src="albumArt" class="audio-player--art" />
-      <icon
-        v-else
-        :glyph="placeholderIcon"
-        class="audio-player--art-placeholder"
-      />
+      <icon v-else :glyph="placeholderIcon" class="audio-player--art-placeholder" />
     </div>
     <div class="audio-player--label-container">
-      <div :style="{ fontWeight: '600' }">
-        {{ artist }}
-      </div>
+      <div :style="{ fontWeight: '600' }">{{ artist }}</div>
       <div>{{ title }}</div>
 
       <div>
         playing from
-        <router-link :to="playbackSourcePath">{{
+        <router-link :to="playbackSourcePath">
+          {{
           playbackSourceLabel
-        }}</router-link>
+          }}
+        </router-link>
       </div>
     </div>
   </div>
@@ -65,6 +61,7 @@ export default {
   display: flex;
   min-width: 0;
   max-width: 100%;
+  height: 100%;
 }
 
 .audio-player--label-container {
@@ -91,14 +88,20 @@ export default {
   height: 100%;
   width: 80px;
   padding: 10px;
+  position: relative;
 
   .audio-player--art {
     width: 100%;
   }
 
-  img.audio-player--art-placeholder {
-    padding: 10px;
+  svg.audio-player--art-placeholder {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
+    height: 100%;
+    padding: 10px;
+    fill: white;
   }
 
   @media (max-width: $breakpoint-small) {
