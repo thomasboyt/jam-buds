@@ -155,7 +155,10 @@ export default class SpotifyPlayer {
       state.paused &&
       state.position === 0 &&
       state.restrictions.disallow_resuming_reasons &&
-      state.restrictions.disallow_resuming_reasons[0] === 'not_paused'
+      state.restrictions.disallow_resuming_reasons[0] === 'not_paused' &&
+      state.track_window.previous_tracks.find(
+        (x) => x.id === state.track_window.current_track.id
+      )
     ) {
       this.trackStarted = false;
       this.store.dispatch('playback/nextSong');
