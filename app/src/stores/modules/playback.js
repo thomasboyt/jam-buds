@@ -130,6 +130,13 @@ const playback = {
      * Go to the next song in the current queue or playlist.
      */
     async nextSong(context) {
+      if (context.state.isPlaying) {
+        const playerInstance = await getOrCreatePlayer(context.state.player, {
+          store: this,
+        });
+        playerInstance.pause();
+      }
+
       // mixtape playback
       if (context.state.mixtapeId) {
         const mixtapeId = context.state.mixtapeId;
