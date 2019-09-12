@@ -153,7 +153,7 @@ const playback = {
         const nextSongId = tracks[songIdx + 1];
 
         if (!nextSongId) {
-          // queue playback ended
+          context.dispatch('clearPlayback');
           return;
         }
 
@@ -169,7 +169,8 @@ const playback = {
         );
 
         if (!nextEntry) {
-          if (playlist.itemsExhaustedj) {
+          if (playlist.itemsExhausted) {
+            context.dispatch('clearPlayback');
             return;
           }
 
