@@ -1,4 +1,19 @@
 import { getOrCreatePlayer } from '../../players';
+// const nextEntry = getNextSongEntry(playlist, entryIdx);
+
+// This takes advantage of playlist being ordered
+const getNextSongEntry = (playlist, prevSongTimestamp) => {
+  return playlist.find((entry) => {
+    if (!entry.songId) {
+      return false;
+    }
+
+    return (
+      new Date(entry.timestamp).valueOf() <
+      new Date(prevSongTimestamp).valueOf()
+    );
+  });
+};
 
 const playback = {
   namespaced: true,
@@ -16,6 +31,10 @@ const playback = {
       playbackSourceLabel: null,
       playbackSourcePath: null,
 
+      playlistKey: null,
+      mixtapeId: null,
+      currentSongPlaylistTimestamp: null,
+
       /** list of song IDs */
       queue: [],
     };
@@ -26,13 +45,25 @@ const playback = {
       state.player = player;
     },
 
-    setPlaybackSource(state, { playbackSourceLabel, playbackSourcePath }) {
+    setPlaybackSource(
+      state,
+      { playlistKey, mixtapeId, playbackSourceLabel, playbackSourcePath }
+    ) {
+      if (playlistKey) {
+        state.playlistKey = playlistKey;
+        state.mixtapeId = null;
+      } else if (mixtapeId) {
+        state.playlistKey = null;
+        state.mixtapeId = mixtapeId;
+      }
+
       state.playbackSourceLabel = playbackSourceLabel;
       state.playbackSourcePath = playbackSourcePath;
     },
 
-    playSong(state, { songId }) {
+    playSong(state, { songId, songPlaylistTimestamp }) {
       state.currentSongId = songId;
+      state.currentSongPlaylistTimestamp = songPlaylistTimestamp;
       state.isPlaying = true;
     },
 
@@ -59,50 +90,134 @@ const playback = {
   },
 
   actions: {
-    async playSong(context, { songId }) {
+    /**
+     * Play a specific song by ID.
+     */
+    async playSong(context, { songId, songPlaylistTimestamp }) {
       const player = context.rootState.currentUser.hasSpotify
         ? 'spotify'
         : 'applemusic';
 
       context.commit('setPlayer', player);
-      context.commit('playSong', { songId });
+      context.commit('playSong', { songId, songPlaylistTimestamp });
 
       const playerInstance = await getOrCreatePlayer(player, {
         store: this,
       });
 
       const song = context.getters.currentSong;
-      playerInstance.setSong(song);
-    },
 
-    nextSong(context) {
-      const [nextSong, ...queue] = context.state.queue;
+      const missingSpotify = player === 'spotify' && !song.spotifyId;
+      const missingAppleMusic = player === 'applemusic' && !song.appleMusicId;
 
-      if (!nextSong) {
-        // queue playback ended
+      // XXX: This UI obviously sucks, but it's better than nothing...
+      if (missingSpotify || missingAppleMusic) {
+        context.commit(
+          'showErrorModal',
+          `This song is not available on ${
+            missingSpotify ? 'Spotify' : 'Apple Music'
+          }. Sorry!`,
+          { root: true }
+        );
+        context.commit('clearPlayback');
         return;
       }
 
-      context.dispatch('playSong', {
-        songId: nextSong,
-        playbackSourceLabel: context.state.playbackSourceLabel,
-        playbackSourcePath: context.state.playbackSourcePath,
-      });
-
-      context.commit('setQueue', queue);
+      playerInstance.setSong(song);
     },
 
-    enqueueAndPlaySongs(
-      context,
-      { songIds, playbackSourceLabel, playbackSourcePath }
-    ) {
+    /**
+     * Go to the next song in the current queue or playlist.
+     */
+    async nextSong(context) {
+      // mixtape playback
+      if (context.state.mixtapeId) {
+        const mixtapeId = context.state.mixtapeId;
+        const mixtape = context.rootState.mixtapes[mixtapeId];
+        const tracks = mixtape.tracks;
+        const songIdx = tracks.findIndex(
+          (id) => id === context.state.currentSongId
+        );
+        if (songIdx === -1) {
+          // song was removed from mixtape, so we can't find the next song
+          // [shrug emoticon goes here]
+          return;
+        }
+        const nextSongId = tracks[songIdx + 1];
+
+        if (!nextSongId) {
+          // queue playback ended
+          return;
+        }
+
+        context.dispatch('playSong', {
+          songId: nextSongId,
+        });
+      } else if (context.state.playlistKey) {
+        const playlistKey = context.state.playlistKey;
+        const playlist = context.rootState.playlists[playlistKey].items;
+        const nextEntry = getNextSongEntry(
+          playlist,
+          context.state.currentSongPlaylistTimestamp
+        );
+
+        if (!nextEntry) {
+          if (playlist.itemsExhaustedj) {
+            return;
+          }
+
+          // TODO: Put a loading state here, e.g...
+          // context.commit('sync', { isBuffering: true });
+
+          await context.dispatch(
+            'loadNextPlaylistPage',
+            { key: playlistKey },
+            { root: true }
+          );
+
+          context.dispatch('nextSong');
+        } else {
+          context.dispatch('playSong', {
+            songId: nextEntry.songId,
+            songPlaylistTimestamp: nextEntry.timestamp,
+          });
+        }
+      }
+    },
+
+    /**
+     * Play a mixtape starting with a specific song ID.
+     */
+    playFromMixtape(context, { mixtapeId, songId }) {
+      const mixtape = context.rootState.mixtapes[mixtapeId];
+      const playbackSourceLabel = mixtape.title;
+      const playbackSourcePath = `/mixtapes/${mixtapeId}`;
+
       context.commit('setPlaybackSource', {
+        mixtapeId,
         playbackSourceLabel,
         playbackSourcePath,
       });
 
-      context.commit('setQueue', songIds);
-      context.dispatch('nextSong');
+      context.dispatch('playSong', { songId });
+    },
+
+    playFromPlaylist(
+      context,
+      { playlistKey, songId, playbackSourceLabel, playbackSourcePath }
+    ) {
+      const playlist = context.rootState.playlists[playlistKey].items;
+      const entry = playlist.find((entry) => entry.songId === songId);
+      context.commit('setPlaybackSource', {
+        playlistKey,
+        playbackSourceLabel,
+        playbackSourcePath,
+      });
+
+      context.dispatch('playSong', {
+        songId,
+        songPlaylistTimestamp: entry.timestamp,
+      });
     },
 
     async togglePlayback(context) {

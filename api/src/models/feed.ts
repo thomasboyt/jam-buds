@@ -41,6 +41,7 @@ function serializeFeedMixtapeItem(row: any): FeedMixtapeItem {
 interface QueryOptions {
   currentUserId?: number;
   beforeTimestamp?: string;
+  afterTimestamp?: string;
 }
 
 export async function getFeedByUserId(
@@ -98,8 +99,17 @@ export async function getFeedByUserId(
       opts.beforeTimestamp,
     ]);
   }
+  if (opts.afterTimestamp !== undefined) {
+    query = query.havingRaw(`${timestampQuery} > ?`, [
+      opts.currentUserId,
+      opts.afterTimestamp,
+    ]);
+  }
 
-  query = query.limit(ENTRY_PAGE_LIMIT);
+  // after queries are unlimited since there's no UI for "head" pagination
+  if (opts.afterTimestamp === undefined) {
+    query = query.limit(ENTRY_PAGE_LIMIT);
+  }
 
   const rows = await query;
 
@@ -133,8 +143,14 @@ export async function getPublicFeed(
       opts.beforeTimestamp,
     ]);
   }
+  if (opts.afterTimestamp !== undefined) {
+    query = query.havingRaw(`MIN(posts.created_at) > ?`, [opts.afterTimestamp]);
+  }
 
-  query = query.limit(ENTRY_PAGE_LIMIT);
+  // after queries are unlimited since there's no UI for "head" pagination
+  if (opts.afterTimestamp === undefined) {
+    query = query.limit(ENTRY_PAGE_LIMIT);
+  }
 
   const rows = await query;
 

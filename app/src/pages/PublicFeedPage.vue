@@ -20,9 +20,9 @@ export default {
   },
 
   async asyncData({ store }) {
-    await store.dispatch('loadPlaylistPage', {
+    await store.dispatch('loadPlaylist', {
       key: 'publicFeed',
-      initial: true,
+      url: '/public-feed',
     });
   },
 };

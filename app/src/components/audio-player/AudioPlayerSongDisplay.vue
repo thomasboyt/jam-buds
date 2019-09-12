@@ -9,7 +9,7 @@
       <div>{{ title }}</div>
 
       <div>
-        playing from
+        <span class="hide-mobile">playing</span> from
         <router-link :to="playbackSourcePath">
           {{
           playbackSourceLabel
@@ -104,6 +104,12 @@ export default {
     fill: white;
   }
 
+  @media (max-width: $breakpoint-small) {
+    display: none;
+  }
+}
+
+.hide-mobile {
   @media (max-width: $breakpoint-small) {
     display: none;
   }

@@ -89,13 +89,18 @@ export default {
   },
 
   computed: {
-    items() {
-      return this.$store.getters.playlistItems('profilePosts');
-    },
     ...mapState({
       name: (state) => state.profile.user.name,
-      itemsExhausted: (state) => state.playlists.profilePosts.itemsExhausted,
     }),
+    playlistKey() {
+      return `${this.name}/posts`;
+    },
+    items() {
+      return this.$store.getters.playlistItems(this.playlistKey);
+    },
+    itemsExhausted() {
+      return this.$store.state.playlists[this.playlistKey].itemsExhausted;
+    },
     playbackSourcePath() {
       return `/users/${this.name}`;
     },
@@ -109,7 +114,9 @@ export default {
       this.loadingNextPage = true;
 
       try {
-        await this.$store.dispatch('loadPlaylistPage', { key: 'profilePosts' });
+        await this.$store.dispatch('loadNextPlaylistPage', {
+          key: this.playlistKey,
+        });
       } catch (err) {
         this.$store.commit('showErrorModal');
         throw err;
@@ -119,8 +126,9 @@ export default {
     },
 
     handleRequestPlay(songId) {
-      this.$store.dispatch('playback/enqueueAndPlaySongs', {
-        songIds: [songId],
+      this.$store.dispatch('playback/playFromPlaylist', {
+        songId,
+        playlistKey: this.playlistKey,
         playbackSourceLabel: this.title,
         playbackSourcePath: this.playbackSourcePath,
       });

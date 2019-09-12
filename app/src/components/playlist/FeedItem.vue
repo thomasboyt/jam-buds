@@ -27,12 +27,13 @@ import MixtapeItem from './MixtapeItem.vue';
 export default {
   components: { Song, EntryPostedBy, MixtapeItem },
 
-  props: ['item', 'playbackSourceLabel', 'playbackSourcePath'],
+  props: ['item', 'playlistKey', 'playbackSourceLabel', 'playbackSourcePath'],
 
   methods: {
     handleRequestPlay() {
-      this.$store.dispatch('playback/enqueueAndPlaySongs', {
-        songIds: [this.item.songId],
+      this.$store.dispatch('playback/playFromPlaylist', {
+        songId: this.item.songId,
+        playlistKey: this.playlistKey,
         playbackSourceLabel: this.playbackSourceLabel,
         playbackSourcePath: this.playbackSourcePath,
       });

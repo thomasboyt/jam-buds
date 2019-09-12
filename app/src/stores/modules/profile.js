@@ -23,9 +23,8 @@ const profile = {
 
   actions: {
     async loadProfilePostsPlaylist(context, userName) {
-      const data = await context.dispatch('loadPlaylistPage', {
-        key: 'profilePosts',
-        initial: true,
+      const data = await context.dispatch('loadPlaylist', {
+        key: `${userName}/posts`,
         url: `/playlists/${userName}`,
       });
 
@@ -33,9 +32,8 @@ const profile = {
     },
 
     async loadProfileLikesPlaylist(context, userName) {
-      const data = await context.dispatch('loadPlaylistPage', {
-        key: 'profileLikes',
-        initial: true,
+      const data = await context.dispatch('loadPlaylist', {
+        key: `${userName}/likes`,
         url: `/playlists/${userName}/liked`,
       });
 

@@ -1,5 +1,3 @@
-import _get from 'lodash/get';
-
 const addSong = {
   state() {
     return {
@@ -25,35 +23,21 @@ const addSong = {
       context.commit('closeModal');
     },
 
-    didSubmitSong(context, song) {
+    didSubmitSong(context, { song, currentPath }) {
       context.commit('addSongs', [song], { root: true });
 
-      // construct a "playlist item" locally. if playlist items get more
-      // complicated this may need to be a server refresh some day
-      const item = {
-        song,
-        timestamp: new Date().toISOString(),
-        userNames: [context.rootState.currentUser.name],
-        type: 'song',
-      };
-
-      // Add the entry to the top of the user's feed
-      context.commit(
-        'addPlaylistItemToHead',
-        { key: 'feed', item },
-        { root: true }
-      );
-
-      // Add the entry to the top of the user's playlist if they're on that page
-      if (
-        _get(context.rootState.profile.user, 'name') ===
-        context.rootState.currentUser.name
-      ) {
-        context.commit(
-          'addPlaylistItemToHead',
-          { key: 'profilePosts', item },
-          { root: true }
-        );
+      // Refresh the user's feed or the current user's page if they're on that
+      // page
+      const userName = context.rootState.currentUser.name;
+      const profilePath = `/users/${userName}`;
+      if (currentPath === '/') {
+        context.dispatch('loadNewPlaylistEntries', {
+          key: 'feed',
+        });
+      } else if (currentPath === profilePath) {
+        context.dispatch('loadNewPlaylistEntries', {
+          key: `${userName}/posts`,
+        });
       }
 
       context.commit('closeModal');

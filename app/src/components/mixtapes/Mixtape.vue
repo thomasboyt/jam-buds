@@ -76,7 +76,7 @@ export default {
 
   methods: {
     handleRequestPlay(songId) {
-      this.$store.dispatch('playFromMixtape', {
+      this.$store.dispatch('playback/playFromMixtape', {
         mixtapeId: this.mixtapeId,
         songId,
       });

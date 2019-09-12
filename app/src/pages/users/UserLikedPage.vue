@@ -53,13 +53,18 @@ export default {
   },
 
   computed: {
-    items() {
-      return this.$store.getters.playlistItems('profileLikes');
-    },
     ...mapState({
       name: (state) => state.profile.user.name,
-      itemsExhausted: (state) => state.playlists.profileLikes.itemsExhausted,
     }),
+    playlistKey() {
+      return `${this.name}/likes`;
+    },
+    items() {
+      return this.$store.getters.playlistItems(this.playlistKey);
+    },
+    itemsExhausted() {
+      return this.$store.state.playlists[this.playlistKey].itemsExhausted;
+    },
     playbackSourcePath() {
       return `/users/${this.name}/liked`;
     },
@@ -73,7 +78,9 @@ export default {
       this.loadingNextPage = true;
 
       try {
-        await this.$store.dispatch('loadPlaylistPage', { key: 'profileLikes' });
+        await this.$store.dispatch('loadNextPlaylistPage', {
+          key: this.playlistKey,
+        });
       } catch (err) {
         this.$store.commit('showErrorModal');
         throw err;
@@ -83,8 +90,9 @@ export default {
     },
 
     handleRequestPlay(songId) {
-      this.$store.dispatch('playback/enqueueAndPlaySongs', {
-        songIds: [songId],
+      this.$store.dispatch('playback/playFromPlaylist', {
+        songId,
+        playlistKey: this.playlistKey,
         playbackSourceLabel: this.title,
         playbackSourcePath: this.playbackSourcePath,
       });

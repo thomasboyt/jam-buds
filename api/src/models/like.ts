@@ -58,6 +58,7 @@ function serializeLike(row: any): UserSongItem {
 interface GetLikesOptions {
   currentUserId: number | undefined;
   beforeTimestamp?: string;
+  afterTimestamp?: string;
 }
 
 export async function getLikesByUserId(
@@ -82,6 +83,7 @@ export async function getLikesByUserId(
   const rows = await paginate(query, {
     limit: ENTRY_PAGE_LIMIT,
     before: opts.beforeTimestamp,
+    after: opts.afterTimestamp,
     columnName: 'likes.created_at',
   });
 

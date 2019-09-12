@@ -32,10 +32,12 @@ export default function registerPlaylistEndpoints(router: Router) {
       }
 
       const beforeTimestamp = req.query.before;
+      const afterTimestamp = req.query.after;
 
       const items = await getPostedUserSongItemsById(user.id, {
         currentUserId: currentUser ? currentUser.id : undefined,
         beforeTimestamp,
+        afterTimestamp,
       });
 
       const resp: UserSongList = {
@@ -64,10 +66,12 @@ export default function registerPlaylistEndpoints(router: Router) {
       }
 
       const beforeTimestamp = req.query.before;
+      const afterTimestamp = req.query.after;
 
       const items = await getLikesByUserId(user.id, {
         currentUserId: currentUser ? currentUser.id : undefined,
         beforeTimestamp,
+        afterTimestamp,
       });
 
       const resp: UserSongList = {
@@ -88,10 +92,12 @@ export default function registerPlaylistEndpoints(router: Router) {
 
       // TODO: validate
       const beforeTimestamp = req.query.before;
+      const afterTimestamp = req.query.after;
 
       const items = await getFeedByUserId(user.id, {
         currentUserId: user.id,
         beforeTimestamp,
+        afterTimestamp,
       });
 
       const feed: Feed = {
@@ -110,10 +116,12 @@ export default function registerPlaylistEndpoints(router: Router) {
 
       // TODO: validate
       const beforeTimestamp = req.query.before;
+      const afterTimestamp = req.query.after;
 
       const items = await getPublicFeed({
         currentUserId: currentUser ? currentUser.id : undefined,
         beforeTimestamp,
+        afterTimestamp,
       });
 
       const feed: Feed = {

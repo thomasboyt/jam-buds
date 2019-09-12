@@ -1,10 +1,4 @@
-const playlistState = () => {
-  return {
-    items: [],
-    itemsExhausted: false,
-    url: null,
-  };
-};
+import Vue from 'vue';
 
 function denormalizeItem(entry) {
   const denormalizedItem = {
@@ -27,44 +21,36 @@ function denormalizeItem(entry) {
 
 const playlists = {
   state() {
-    return {
-      feed: { ...playlistState(), url: '/feed' },
-      publicFeed: { ...playlistState(), url: '/public-feed' },
-      profilePosts: playlistState(),
-      profileLikes: playlistState(),
-    };
+    return {};
   },
 
   mutations: {
-    resetPlaylist(state, { key, url }) {
-      state[key].items = [];
-      state[key].itemsExhausted = false;
-      if (url) {
-        state[key].url = url;
-      }
+    initializePlaylist(state, { key, url }) {
+      Vue.set(state, key, {
+        items: [],
+        itemsExhausted: false,
+        url,
+      });
     },
 
-    addPlaylistItemToHead(state, { key, item }) {
-      const denormalizedItem = denormalizeItem(item);
+    addToPlaylistHead(state, { key, items }) {
+      const denormalizedItems = items.map((entry) => denormalizeItem(entry));
 
-      const existing = state[key].items.find(
-        (playlistItem) => playlistItem.songId === denormalizedItem.songId
-      );
-
-      if (existing) {
-        // remove old record
-        state[key].items = state[key].items.filter(
-          (playlistItem) => playlistItem.songId !== denormalizedItem.songId
-        );
-
-        // XXX: The entry returned from the post endpoint currently only
-        // includes the current user's name, so we add the rest here
-        denormalizedItem.userNames = denormalizedItem.userNames.concat(
-          existing.userNames
-        );
+      // XXX: This is like O(n^2)-ish but probably fine
+      for (let newItem of denormalizedItems) {
+        for (let existingItem of state[key].items) {
+          if (newItem.id === existingItem.id) {
+            // if a playlist item we've already loaded "reappears" further up in
+            // the feed, this means that the current user has reposted it, and
+            // we need to remove it from its old spot
+            state[key].items = state[key].items.filter(
+              (playlistItem) => playlistItem.songId !== newItem.songId
+            );
+          }
+        }
       }
 
-      state[key].items = [denormalizedItem].concat(state[key].items);
+      state[key].items = [...denormalizedItems, ...state[key].items];
     },
 
     /**
@@ -110,13 +96,21 @@ const playlists = {
   },
 
   actions: {
-    async loadPlaylistPage(context, { key, initial, url } = {}) {
+    async loadPlaylist(context, { key, url }) {
+      // XXX: This returns resp.data so profile store can pick up the "current
+      // profile" from it
+      if (context.state[key]) {
+        // refresh top of playlist
+        return await context.dispatch('loadNewPlaylistEntries', { key });
+      } else {
+        context.commit('initializePlaylist', { key, url });
+        return await context.dispatch('loadNextPlaylistPage', { key });
+      }
+    },
+
+    async loadNextPlaylistPage(context, { key } = {}) {
       if (!context.state[key]) {
         throw new Error(`undefined playlist ${key}`);
-      }
-
-      if (initial) {
-        context.commit('resetPlaylist', { key, url });
       }
 
       const previousItem = context.state[key].items.slice(-1)[0];
@@ -135,6 +129,22 @@ const playlists = {
         resp.data.items.map((item) => item.song).filter((song) => song)
       );
       context.commit('pushPlaylist', { key, page: resp.data });
+
+      return resp.data;
+    },
+
+    async loadNewPlaylistEntries(context, { key }) {
+      const resp = await this.$axios({
+        url: context.state[key].url,
+        method: 'GET',
+        params: { after: context.state[key].items[0].timestamp },
+      });
+
+      context.commit(
+        'addSongs',
+        resp.data.items.map((item) => item.song).filter((song) => song)
+      );
+      context.commit('addToPlaylistHead', { key, items: resp.data.items });
 
       return resp.data;
     },
