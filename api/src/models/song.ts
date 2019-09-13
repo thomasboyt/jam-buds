@@ -185,8 +185,7 @@ export async function hydrateSongMeta(
 ): Promise<Song> {
   const [row] = await db!('songs')
     .select(getMetaQuery(opts))
-    .join('likes', { songId: 'songs.id' })
-    .where({ songId: song.id });
+    .where({ 'songs.id': song.id });
 
   const meta = validateOrThrow(SongMetaV, row);
 
