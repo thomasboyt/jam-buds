@@ -1,6 +1,7 @@
 import { db } from '../db';
 import { UserModel, UserModelV } from './user';
 import validateOrThrow from '../util/validateOrThrow';
+import { createNotification, deleteNotification } from './notifications';
 
 export async function followUser(userId: number, followingId: number) {
   const query = db!
@@ -11,6 +12,12 @@ export async function followUser(userId: number, followingId: number) {
     .into('following');
 
   await query;
+
+  await createNotification({
+    type: 'follow',
+    targetUserId: followingId,
+    notificationUserId: userId,
+  });
 }
 
 export async function unfollowUser(userId: number, followingId: number) {
@@ -22,6 +29,12 @@ export async function unfollowUser(userId: number, followingId: number) {
     .delete();
 
   await query;
+
+  await deleteNotification({
+    type: 'follow',
+    targetUserId: followingId,
+    notificationUserId: userId,
+  });
 }
 
 export async function getFollowingForUserId(
