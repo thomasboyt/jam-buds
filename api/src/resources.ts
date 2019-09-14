@@ -107,6 +107,14 @@ export interface UserProfile {
   colorScheme: ColorScheme | null;
 }
 
+export interface Notification {
+  id: number;
+  type: 'like' | 'follow' | 'joined' | 'system';
+  user?: PublicUser | PublicUserWithTwitter;
+  song?: Song;
+  message?: string;
+}
+
 export interface CurrentUser {
   id: number;
   name: string;
@@ -116,6 +124,7 @@ export interface CurrentUser {
   hasSpotify: boolean;
   showInPublicFeed: boolean;
   email: string;
+  unreadNotificationCount: number;
 }
 
 export interface Followers {
