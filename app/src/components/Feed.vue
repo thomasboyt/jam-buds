@@ -1,7 +1,7 @@
 <template>
   <div class="playlist">
     <div class="header-row">
-      <h2>your feed</h2>
+      <page-header title="your feed" />
       <div class="header-row-button-container">
         <create-mixtape-button>new mixtape</create-mixtape-button>
         <add-song-button @click="handleAddSong">+ post a song!</add-song-button>
@@ -45,6 +45,7 @@ import AddSongButton from './AddSongButton.vue';
 import CreateMixtapeButton from './CreateMixtapeButton.vue';
 import FeedItem from './playlist/FeedItem.vue';
 import NewsletterPromotionBanner from './NewsletterPromotionBanner.vue';
+import PageHeader from './PageHeader.vue';
 
 export default {
   components: {
@@ -53,6 +54,7 @@ export default {
     FeedItem,
     CreateMixtapeButton,
     NewsletterPromotionBanner,
+    PageHeader,
   },
 
   metaInfo: {

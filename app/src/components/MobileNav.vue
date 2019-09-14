@@ -2,9 +2,16 @@
   <div class="mobile-header">
     <div class="header-content">
       <sidebar-toggle />
-      <div class="logo-container">
-        <logo small />
-      </div>
+
+      <transition name="title-fade" mode="out-in">
+        <div v-if="pageTitle" class="page-title-container" key="title">
+          <h2>{{ pageTitle }}</h2>
+        </div>
+
+        <div v-else class="logo-container" key="logo">
+          <logo :small="true" />
+        </div>
+      </transition>
     </div>
   </div>
 </template>
@@ -15,6 +22,12 @@ import Logo from './Logo.vue';
 
 export default {
   components: { SidebarToggle, Logo },
+
+  computed: {
+    pageTitle() {
+      return this.$store.state.mobileHeaderTitle;
+    },
+  },
 };
 </script>
 
@@ -75,6 +88,33 @@ export default {
     margin-top: -5px;
     // ensure it's in the center column even if sidebar toggle isn't present (logged out)
     grid-column-start: 2;
+  }
+
+  .page-title-container {
+    grid-column-start: 2;
+
+    h2 {
+      color: #ddd;
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 0;
+
+      // TODO: Use current page's gradient for this, or at least current user's
+      background: linear-gradient(to top right, #ed72df, #89fffd);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: rgba(255, 255, 255, 0.2);
+      padding: 5px 0px;
+    }
+  }
+
+  .title-fade-enter-active,
+  .title-fade-leave-active {
+    transition: opacity 0.15s ease;
+  }
+  .title-fade-enter,
+  .title-fade-leave-to {
+    opacity: 0;
   }
 }
 </style>

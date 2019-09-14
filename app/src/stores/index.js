@@ -27,6 +27,7 @@ const root = {
   state() {
     return {
       isSidebarOpen: false,
+      mobileHeaderTitle: null,
     };
   },
 
@@ -41,6 +42,12 @@ const root = {
       const msg = errMsg || 'An unknown error occurred! Please try again.';
       // TODO: obviously there should be a better error modal
       alert(msg);
+    },
+    showMobileHeaderTitle(state, { title }) {
+      state.mobileHeaderTitle = title;
+    },
+    hideMobileHeaderTitle(state) {
+      state.mobileHeaderTitle = null;
     },
   },
 

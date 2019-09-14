@@ -1,6 +1,6 @@
 <template>
   <div class="playlist">
-    <h2>public feed</h2>
+    <page-header title="public feed" />
     <p>
       this page will probably be replaced by some kind of fancy "top posts"
       aggregator once we have, like, actual users. for now, please use it to
@@ -44,9 +44,10 @@
 import { mapState } from 'vuex';
 import Playlist from './playlist/Playlist.vue';
 import FeedItem from './playlist/FeedItem.vue';
+import PageHeader from './PageHeader.vue';
 
 export default {
-  components: { Playlist, FeedItem },
+  components: { Playlist, FeedItem, PageHeader },
 
   metaInfo: {
     title: 'Public Feed',

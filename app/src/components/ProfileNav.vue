@@ -6,10 +6,7 @@
     </share-landing-banner>
 
     <div class="user-header-top">
-      <h2>
-        {{ name }}
-      </h2>
-
+      <page-header :title="name" />
       <follow-toggle v-if="showFollowToggle" :name="name" />
     </div>
 
@@ -22,9 +19,10 @@ import { mapState } from 'vuex';
 import FollowToggle from './FollowToggle.vue';
 import LinkTabs from './LinkTabs.vue';
 import ShareLandingBanner from './ShareLandingBanner.vue';
+import PageHeader from './PageHeader.vue';
 
 export default {
-  components: { FollowToggle, LinkTabs, ShareLandingBanner },
+  components: { FollowToggle, LinkTabs, ShareLandingBanner, PageHeader },
 
   props: ['title'],
 
