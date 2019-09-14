@@ -3,7 +3,7 @@
     :class="['playlist-song', { 'is-playing': isPlaying, 'can-play': canPlay }]"
   >
     <div class="playlist-song--main" @click="handleClick">
-      <album-art :album-art="song.albumArt" />
+      <album-art :album-art="song.albumArt" :is-playing="isPlaying" />
 
       <div class="playlist-song--title">
         <div class="title-content">
@@ -135,19 +135,6 @@ export default {
   text-decoration: none;
 }
 
-.playlist-song--album-art {
-  width: 64px;
-  height: auto;
-  flex: 0 0 auto;
-  border: 1px black solid;
-  margin-right: 20px;
-
-  &.-placeholder {
-    border: none;
-    height: 64px;
-  }
-}
-
 .playlist-song--title {
   .title-artist {
     font-weight: 500;
@@ -212,15 +199,6 @@ export default {
   .playlist-song {
     padding: 5px;
     margin: 0 -5px 15px -5px;
-  }
-
-  .playlist-song--album-art {
-    margin-right: 10px;
-    width: 54px;
-
-    &.-placeholder {
-      height: 54px;
-    }
   }
 
   .playlist-song--title {
