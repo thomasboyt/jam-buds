@@ -3,7 +3,7 @@
     <div class="header-content">
       <sidebar-toggle />
       <div class="logo-container">
-        <logo />
+        <logo small />
       </div>
     </div>
   </div>
@@ -61,8 +61,8 @@ export default {
 
       .icon {
         fill: white;
-        width: 40px;
-        height: 40px;
+        width: 30px;
+        height: 30px;
       }
 
       @media (max-width: $breakpoint-small) {
@@ -72,7 +72,7 @@ export default {
   }
 
   .logo-container {
-    margin-top: -10px;
+    margin-top: -5px;
     // ensure it's in the center column even if sidebar toggle isn't present (logged out)
     grid-column-start: 2;
   }

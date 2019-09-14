@@ -1,8 +1,14 @@
 <template>
-  <div class="logo">
+  <div :class="{ logo: true, small }">
     <router-link to="/">jam buds!</router-link>
   </div>
 </template>
+
+<script>
+export default {
+  props: ['small'],
+};
+</script>
 
 <style lang="scss" scoped>
 .logo {
@@ -20,6 +26,12 @@
     color: yellow;
     text-decoration: none;
   }
+}
+
+.logo.small {
+  font-size: 18px;
+  box-shadow: yellow 6px 6px;
+  padding: 8px;
 }
 
 .logo:hover {
