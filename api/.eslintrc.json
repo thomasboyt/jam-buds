@@ -17,7 +17,7 @@
   },
 
   "parserOptions": {
-    "project": "./api/tsconfig.json"
+    "project": "./tsconfig.json"
   },
 
   "rules": {
