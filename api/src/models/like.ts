@@ -30,7 +30,7 @@ export async function likeExists(params: LikeParams): Promise<boolean> {
     user_id: params.userId,
   });
 
-  let [row] = await query;
+  const [row] = await query;
 
   return !!row;
 }

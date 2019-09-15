@@ -64,7 +64,7 @@ describe('routes/auth', () => {
 
   describe('GET /sign-in', () => {
     it('signs in with a valid token and existing user', async () => {
-      let user = await userFactory();
+      const user = await userFactory();
 
       let res = await request(app)
         .post('/auth/sign-in-token')

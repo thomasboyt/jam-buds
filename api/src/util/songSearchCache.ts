@@ -14,7 +14,7 @@ interface CacheEntry {
 }
 
 // TODO: move this whole fuckin thing to redis
-let searchCache: Record<string, CacheEntry> = {};
+const searchCache: Record<string, CacheEntry> = {};
 
 /**
  * Creates a song search cache entry from Spotify search results. Does not

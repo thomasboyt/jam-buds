@@ -22,7 +22,7 @@ const dedupeResultsByISRC = (results: spotify.SpotifySongResource[]) => {
 
   const seenISRCs = new Set<string>();
 
-  for (let result of results) {
+  for (const result of results) {
     const isrc = result.external_ids.isrc;
 
     if (isrc) {
@@ -62,7 +62,7 @@ export default function registerSearchEndpoints(router: Router) {
     '/spotify-search',
     isAuthenticated,
     wrapAsyncRoute(async (req, res) => {
-      let query = req.query.query;
+      const query = req.query.query;
 
       if (!query) {
         res.status(400).send({
@@ -75,7 +75,7 @@ export default function registerSearchEndpoints(router: Router) {
       const results = await spotify.search(query);
       const dedupedResults = dedupeResultsByISRC(results);
 
-      for (let result of dedupedResults) {
+      for (const result of dedupedResults) {
         await cacheSongFromSearchResult(result.id, result);
       }
 

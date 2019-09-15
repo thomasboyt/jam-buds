@@ -49,7 +49,7 @@ export async function validate(
     if (field.rules) {
       // TODO: Parallelize?
       // would need to be able to return multiple errors per field
-      for (let rule of field.rules) {
+      for (const rule of field.rules) {
         const isValid = await rule.isValid(body[name]);
         if (!isValid) {
           return {

@@ -124,7 +124,7 @@ function getColorSchemeFromBody(reqBody: any): ColorScheme | null {
 
   const colorScheme = _.pick(reqBody, ['textColor', 'backgroundGradientName']);
 
-  for (let key of Object.keys(colorScheme)) {
+  for (const key of Object.keys(colorScheme)) {
     // XXX: this is kinda weird but eh
     if (!(colorScheme as any)[key]) {
       return null;

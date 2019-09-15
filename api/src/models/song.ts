@@ -30,7 +30,7 @@ export type SongModel = t.TypeOf<typeof SongModelV>;
 export async function getSongById(id: number): Promise<SongModel | null> {
   const query = db!('songs').where({ id });
 
-  let [row] = await query;
+  const [row] = await query;
 
   if (!row) {
     return null;
@@ -44,7 +44,7 @@ export async function getSongBySpotifyId(
 ): Promise<SongModel | null> {
   const query = db!('songs').where({ spotify_id: spotifyId });
 
-  let [row] = await query;
+  const [row] = await query;
 
   if (!row) {
     return null;
@@ -149,7 +149,7 @@ export async function getOrCreateSong(
   // TODO: This should "upsert" from the search cache, I think? Would
   // basically allow for 'refreshing' of song details in some cases. Would
   // still have to match on Spotify ID, though.
-  let song = await getSongBySpotifyId(spotifyId);
+  const song = await getSongBySpotifyId(spotifyId);
 
   if (song) {
     return song;
