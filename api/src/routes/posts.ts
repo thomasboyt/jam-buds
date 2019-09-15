@@ -67,7 +67,7 @@ export default function registerPostEndpoints(router: Router) {
     isAuthenticated,
     wrapAsyncRoute(async (req, res) => {
       const user: UserModel = res.locals.user;
-      const songId: number = req.params.songId;
+      const songId: number = parseInt(req.params.songId, 10);
 
       const post = await getOwnPostForSongId({
         userId: user.id,

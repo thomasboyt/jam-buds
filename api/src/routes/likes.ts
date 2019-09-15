@@ -13,7 +13,7 @@ export default function registerLikesEndpoints(router: Router) {
     '/likes/:songId',
     isAuthenticated,
     wrapAsyncRoute(async (req, res) => {
-      const songId = req.params.songId as number;
+      const songId = parseInt(req.params.songId, 10);
       const user = res.locals.user as UserModel;
 
       const song = await getSongById(songId);
@@ -36,7 +36,7 @@ export default function registerLikesEndpoints(router: Router) {
     '/likes/:songId',
     isAuthenticated,
     wrapAsyncRoute(async (req, res) => {
-      const songId = req.params.songId as number;
+      const songId = parseInt(req.params.songId, 10);
       const user = res.locals.user as UserModel;
 
       const song = await getSongById(songId);
