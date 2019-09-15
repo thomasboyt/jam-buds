@@ -99,6 +99,8 @@ export default class SpotifyPlayer {
       volume: 0.5,
     });
 
+    // TODO: maybe refactor this
+    /* eslint-disable no-async-promise-executor */
     return new Promise(async (resolve, reject) => {
       this._spotifyPlayer.addListener('ready', ({ device_id }) => {
         console.log('ready!');

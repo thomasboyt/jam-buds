@@ -17,6 +17,7 @@ export default function injectAxios(appConfig) {
   appConfig.$axios = apiClient;
   appConfig.store.$axios = apiClient;
 
+  /* eslint-disable no-prototype-builtins */
   Vue.use(() => {
     if (!Vue.prototype.hasOwnProperty('$axios')) {
       Object.defineProperty(Vue.prototype, '$axios', {
