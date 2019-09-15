@@ -1,5 +1,5 @@
 import * as t from 'io-ts';
-import { date as dateType } from 'io-ts-types';
+import { date as dateType } from 'io-ts-types/lib/date';
 import { db } from '../db';
 import validateOrThrow from '../util/validateOrThrow';
 import {
