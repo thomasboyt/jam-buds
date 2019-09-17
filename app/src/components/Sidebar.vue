@@ -16,14 +16,6 @@
 
     <ul>
       <li>
-        <a href="#">
-          notifications
-          <span v-if="unreadNotificationCount > 0" class="notification-count">{{
-            unreadNotificationCount
-          }}</span></a
-        >
-      </li>
-      <li>
         <router-link to="/" @click.native="handleClick">
           your feed
         </router-link>
@@ -73,9 +65,6 @@ export default {
   computed: {
     currentUserName() {
       return this.$store.state.currentUser.name;
-    },
-    unreadNotificationCount() {
-      return this.$store.state.currentUser.unreadNotificationCount;
     },
     authenticated() {
       return this.$store.state.auth.authenticated;
@@ -170,19 +159,5 @@ export default {
       }
     }
   }
-}
-
-.notification-count {
-  display: inline-block;
-  padding: 0.25em 0.4em;
-  font-size: 75%;
-  font-weight: 700;
-  text-align: center;
-  line-height: 1;
-  vertical-align: baseline;
-  border-radius: 0.25rem;
-  margin-left: 5px;
-  background: red;
-  color: white;
 }
 </style>
