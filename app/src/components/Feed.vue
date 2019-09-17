@@ -8,6 +8,8 @@
       </div>
     </div>
 
+    <notifications-feed-section />
+
     <newsletter-promotion-banner />
 
     <playlist
@@ -46,6 +48,7 @@ import CreateMixtapeButton from './CreateMixtapeButton.vue';
 import FeedItem from './playlist/FeedItem.vue';
 import NewsletterPromotionBanner from './NewsletterPromotionBanner.vue';
 import PageHeader from './PageHeader.vue';
+import NotificationsFeedSection from './NotificationsFeedSection.vue';
 
 export default {
   components: {
@@ -55,6 +58,7 @@ export default {
     CreateMixtapeButton,
     NewsletterPromotionBanner,
     PageHeader,
+    NotificationsFeedSection,
   },
 
   metaInfo: {
