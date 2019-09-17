@@ -10,7 +10,7 @@
     "url": "git+https://github.com/thomasboyt/jam-buds.git"
   },
   "author": "Thomas Boyt <me@thomasboyt.com>",
-  "license": "MIT",
+  "license": "Parity-6.0.0",
   "bugs": {
     "url": "https://github.com/thomasboyt/jam-buds/issues"
   },
