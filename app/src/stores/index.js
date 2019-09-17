@@ -11,6 +11,7 @@ import playlists from './modules/playlists';
 import profile from './modules/profile';
 import addSong from './modules/addSong';
 import mixtapes from './modules/mixtapes';
+import notifications from './modules/notifications';
 
 const root = {
   modules: {
@@ -22,6 +23,7 @@ const root = {
     profile,
     addSong,
     mixtapes,
+    notifications,
   },
 
   state() {

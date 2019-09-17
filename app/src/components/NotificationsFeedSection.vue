@@ -5,31 +5,21 @@
     </button>
 
     <p>
-      3 new updates since your last visit!
+      {{ notifications.length }} new
+      {{ notifications.length === 1 ? 'update' : 'updates' }} since your last
+      visit!
     </p>
+
     <ul>
-      <li>
-        <strong><router-link to="/users/jeff">jeff</router-link></strong> is now
-        following you
-      </li>
-      <li>
-        <strong><router-link to="/users/alex">alex</router-link></strong> (<a
-          href="#"
-          >@alex_navarro</a
-        >) is now on jam buds
-      </li>
-      <li>
-        <strong><router-link to="/users/vinny">vinny</router-link></strong> is
-        now following you
+      <li v-for="notification of notifications" :key="notification.id">
+        <strong
+          ><router-link :to="`/users/${notification.user.name}`">{{
+            notification.user.name
+          }}</router-link></strong
+        >
+        is now following you.
       </li>
     </ul>
-    <!-- <div v-if="unreadNotificationCount > 0">
-      <a href="#"
-        >{{ unreadNotificationCount }} unread
-        <span v-if="unreadNotificationCount === 1">notification</span
-        ><span v-else>notifications</span></a
-      >
-    </div> -->
   </panel>
 </template>
 
@@ -48,8 +38,8 @@ export default {
   },
 
   computed: {
-    unreadNotificationCount() {
-      return this.$store.state.currentUser.unreadNotificationCount;
+    notifications() {
+      return this.$store.state.notifications.items;
     },
   },
 };
