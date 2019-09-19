@@ -10,6 +10,7 @@ import {
 } from '../resources';
 import { getFollowingForUserId } from './following';
 import { getColorSchemeForUserId } from './colorSchemes';
+import { getNewNotificationsCount } from './notifications';
 
 export const UserModelV = t.type({
   id: t.number,
@@ -162,6 +163,7 @@ export async function serializeCurrentUser(
   const colorScheme = await getColorSchemeForUserId(user.id);
   const followingUsers = await getFollowingForUserId(user.id);
   const serializedUsers: PublicUser[] = followingUsers.map(serializePublicUser);
+  const unreadNotificationCount = await getNewNotificationsCount(user.id);
 
   return {
     id: user.id,
@@ -172,6 +174,7 @@ export async function serializeCurrentUser(
     hasSpotify: !!user.spotifyAccessToken,
     showInPublicFeed: !!user.showInPublicFeed,
     email: user.email,
+    unreadNotificationCount,
   };
 }
 

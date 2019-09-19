@@ -16,6 +16,7 @@ import registerMixtapeEndpoints from './routes/mixtapes';
 import registerSettingsEndpoints from './routes/settings';
 import registerSpotifyAuthEndpoints from './routes/spotify-auth';
 import registerTwitterAuthEndpoints from './routes/twitter-auth';
+import registerNotificationsEndpoints from './routes/notifications';
 
 const env = process.env.NODE_ENV;
 
@@ -50,6 +51,7 @@ export default function createApp() {
   registerSettingsEndpoints(apiRouter);
   registerPostEndpoints(apiRouter);
   registerMixtapeEndpoints(apiRouter);
+  registerNotificationsEndpoints(apiRouter);
   app.use('/api', apiRouter);
 
   const authRouter = express.Router();

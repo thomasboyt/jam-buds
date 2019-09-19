@@ -42,7 +42,10 @@ export default {
 
   async asyncData({ store }) {
     if (store.state.auth.authenticated) {
-      await store.dispatch('loadPlaylist', { key: 'feed', url: '/feed' });
+      await Promise.all([
+        store.dispatch('loadPlaylist', { key: 'feed', url: '/feed' }),
+        store.dispatch('notifications/load'),
+      ]);
     }
   },
 

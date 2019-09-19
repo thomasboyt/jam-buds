@@ -2,7 +2,7 @@ import expect from 'expect';
 import puppeteer from 'puppeteer';
 
 import { getPage } from '../support/browser';
-import { asBigJeffrey } from '../support/utils';
+import { asDevUser } from '../support/utils';
 import '../support/mochaHooks';
 
 async function searchForSong(page: puppeteer.Page, query: string) {
@@ -38,7 +38,7 @@ describe('posting a new song', function() {
     it('creates an entry in your feed', async () => {
       const page = await getPage('/');
 
-      await asBigJeffrey(page);
+      await asDevUser(page, 'jeff');
 
       await searchForSong(page, 'Kanye Wolves');
 
