@@ -1,6 +1,6 @@
 <template>
-  <panel class="notifications-panel">
-    <button class="close-button">
+  <panel v-if="notifications.length > 0" class="notifications-panel">
+    <button type="button" class="close-button" @click="handleClose">
       <icon :glyph="closeIcon" class="close-icon" />
     </button>
 
@@ -40,6 +40,12 @@ export default {
   computed: {
     notifications() {
       return this.$store.state.notifications.items;
+    },
+  },
+
+  methods: {
+    handleClose() {
+      this.$store.dispatch('notifications/clear');
     },
   },
 };

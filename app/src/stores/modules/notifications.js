@@ -22,6 +22,20 @@ const notifications = {
 
       context.commit('setNotifications', { notifications: resp.data });
     },
+
+    async clear(context) {
+      context.commit('setNotifications', { notifications: [] });
+
+      try {
+        await this.$axios({
+          url: '/notifications/mark-all-read',
+          method: 'POST',
+        });
+      } catch (err) {
+        context.commit('showErrorModal', null, { root: true });
+        throw err;
+      }
+    },
   },
 };
 
