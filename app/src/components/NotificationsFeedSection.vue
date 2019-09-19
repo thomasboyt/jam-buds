@@ -10,7 +10,7 @@
       visit!
     </p>
 
-    <ul>
+    <ul :style="{ marginBottom: '0px' }">
       <li v-for="notification of notifications" :key="notification.id">
         <strong
           ><router-link :to="`/users/${notification.user.name}`">{{
