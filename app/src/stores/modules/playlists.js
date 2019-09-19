@@ -134,10 +134,13 @@ const playlists = {
     },
 
     async loadNewPlaylistEntries(context, { key }) {
+      const firstItem = context.state[key].items[0];
+      const afterTimestamp = firstItem ? firstItem.timestamp : undefined;
+
       const resp = await this.$axios({
         url: context.state[key].url,
         method: 'GET',
-        params: { after: context.state[key].items[0].timestamp },
+        params: { after: afterTimestamp },
       });
 
       context.commit(
