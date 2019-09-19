@@ -1,12 +1,12 @@
 import expect from 'expect';
 
 import { getPage } from '../support/browser';
-import { asBigJeffrey } from '../support/utils';
+import { asDevUser } from '../support/utils';
 
 describe('viewing feed', function() {
   it('aggregates duplicate entries', async () => {
     const page = await getPage('/');
-    await asBigJeffrey(page);
+    await asDevUser(page, 'jeff');
 
     const firstEntryText: string = await page.$eval(
       '.playlist-entries li',
