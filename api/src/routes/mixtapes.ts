@@ -119,12 +119,12 @@ export default function registerMixtapeEndpoints(router: Router) {
    * it.
    */
   router.get(
-    '/mixtapes/:id',
+    '/mixtapes/:mixtapeId',
     wrapAsyncRoute(async (req, res) => {
-      const id: number = parseInt(req.params.id, 10);
+      const mixtapeId = parseInt(req.params.mixtapeId, 10);
       const currentUser = await getUserFromRequest(req);
 
-      let mixtape = await getMixtapeById(id, {
+      let mixtape = await getMixtapeById(mixtapeId, {
         currentUserId: currentUser ? currentUser.id : undefined,
       });
 
@@ -136,11 +136,11 @@ export default function registerMixtapeEndpoints(router: Router) {
   );
 
   router.delete(
-    '/mixtapes/:id',
+    '/mixtapes/:mixtapeId',
     isAuthenticated,
     wrapAsyncRoute(async (req, res) => {
       const user = res.locals.user as UserModel;
-      const mixtapeId = parseInt(req.params.id, 10);
+      const mixtapeId = parseInt(req.params.mixtapeId, 10);
       let mixtape = await getMixtapeById(mixtapeId, {
         currentUserId: user.id,
       });
@@ -155,11 +155,11 @@ export default function registerMixtapeEndpoints(router: Router) {
   );
 
   router.post(
-    '/mixtapes/:id/songs',
+    '/mixtapes/:mixtapeId/songs',
     isAuthenticated,
     wrapAsyncRoute(async (req, res) => {
       const user = res.locals.user as UserModel;
-      const mixtapeId = parseInt(req.params.id, 10);
+      const mixtapeId = parseInt(req.params.mixtapeId, 10);
       let mixtape = await getMixtapeById(mixtapeId, {
         currentUserId: user.id,
       });
@@ -195,7 +195,7 @@ export default function registerMixtapeEndpoints(router: Router) {
     isAuthenticated,
     wrapAsyncRoute(async (req, res) => {
       const user = res.locals.user as UserModel;
-      const mixtapeId = parseInt(req.params.id, 10);
+      const mixtapeId = parseInt(req.params.mixtapeId, 10);
       const songId = parseInt(req.params.songId, 10);
       let mixtape = await getMixtapeById(mixtapeId, {
         currentUserId: user.id,
@@ -218,7 +218,7 @@ export default function registerMixtapeEndpoints(router: Router) {
     isAuthenticated,
     wrapAsyncRoute(async (req, res) => {
       const user = res.locals.user as UserModel;
-      const mixtapeId = parseInt(req.params.id, 10);
+      const mixtapeId = parseInt(req.params.mixtapeId, 10);
       let mixtape = await getMixtapeById(mixtapeId, {
         currentUserId: user.id,
       });
@@ -253,7 +253,7 @@ export default function registerMixtapeEndpoints(router: Router) {
     isAuthenticated,
     wrapAsyncRoute(async (req, res) => {
       const user = res.locals.user as UserModel;
-      const mixtapeId = parseInt(req.params.id, 10);
+      const mixtapeId = parseInt(req.params.mixtapeId, 10);
 
       let mixtape = await getMixtapeById(mixtapeId, {
         currentUserId: user.id,
@@ -274,7 +274,7 @@ export default function registerMixtapeEndpoints(router: Router) {
     isAuthenticated,
     wrapAsyncRoute(async (req, res) => {
       const user = res.locals.user as UserModel;
-      const mixtapeId = parseInt(req.params.id, 10);
+      const mixtapeId = parseInt(req.params.mixtapeId, 10);
       let mixtape = await getMixtapeById(mixtapeId, {
         currentUserId: user.id,
       });
