@@ -45,8 +45,6 @@ export default {
 @import '../../../styles/mixins.scss';
 
 .playlist-mixtape {
-  display: block;
-
   padding: 10px;
   margin: 0 -10px 10px -10px;
 
@@ -61,6 +59,7 @@ export default {
 }
 
 .art {
+  flex: 0 0 auto;
   width: 64px;
   height: auto;
   margin-right: 20px;
@@ -68,6 +67,8 @@ export default {
 
 .label {
   line-height: 24px;
+  flex: 1 1 auto;
+  overflow-x: hidden;
 
   > .label-content {
     display: inline-block;
@@ -91,7 +92,7 @@ export default {
 
   .art {
     margin-right: 10px;
-    width: 48px;
+    width: 54px;
   }
 
   .label {
