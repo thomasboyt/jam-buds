@@ -4,7 +4,7 @@ import { db } from '../db';
 import { Song } from '../resources';
 import validateOrThrow from '../util/validateOrThrow';
 import { getOrCreateSongCacheEntryWithExternalIds } from '../util/songSearchCache';
-import camelcaseKeys from 'camelcase-keys';
+import { namespacedAliases, tPropNames } from './utils';
 
 export const SongModelV = t.type({
   id: t.number,
@@ -120,13 +120,13 @@ export function selectSongsQuery(
    * This may not be a great idea performance-wise.
    */
   return baseQuery.select([
-    db!.raw('to_json(songs.*) as song'),
+    db!.raw(namespacedAliases('songs', 'song', tPropNames(SongModelV))),
     ...getMetaQuery(opts),
   ]);
 }
 
 export function serializeSong(row: any): Song {
-  const song = validateOrThrow(SongModelV, camelcaseKeys(row.song));
+  const song = validateOrThrow(SongModelV, row.song);
   const meta = validateOrThrow(SongMetaV, row);
 
   return {

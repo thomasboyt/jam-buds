@@ -1,5 +1,6 @@
 import knex from 'knex';
 import knexStringcase from 'knex-stringcase';
+import { splitByDot } from './models/utils';
 
 export let db: knex | undefined;
 
@@ -33,5 +34,14 @@ export function configureDatabase() {
   //     }
   //   },
   // })
+
+  config.postProcessResponse = (value: Record<string, any> | Array<any>) => {
+    // console.log(value);
+    if (Array.isArray(value)) {
+      return value.map((row) => splitByDot(row));
+    }
+    return splitByDot(value);
+  };
+
   db = knex(knexStringcase(config));
 }

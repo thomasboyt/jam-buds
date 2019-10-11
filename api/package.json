@@ -19,7 +19,6 @@
   "license": "MIT",
   "devDependencies": {
     "@types/body-parser": "0.0.33",
-    "@types/camelcase-keys": "^4.1.0",
     "@types/cheerio": "^0.17.31",
     "@types/cookie-parser": "^1.4.2",
     "@types/cors": "0.0.33",
@@ -56,7 +55,6 @@
     "@tboyt/music-kit-jwt": "^0.1.2",
     "axios": "^0.19.0",
     "body-parser": "^1.19.0",
-    "camelcase-keys": "^5.2.0",
     "cheerio": "^0.22.0",
     "cookie-parser": "^1.4.4",
     "cors": "^2.8.5",
@@ -77,6 +75,7 @@
     "pg": "^6.1.0",
     "query-string": "^4.2.3",
     "spotify-web-api-node": "^4.0.0",
+    "stringcase": "^4.3.1",
     "twit": "^2.2.11"
   }
 }

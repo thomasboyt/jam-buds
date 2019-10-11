@@ -115,7 +115,7 @@ export async function getFeedByUserId(
 
   return rows.map(
     (row: any): FeedItem => {
-      if (row.song) {
+      if (row.song.id !== null) {
         return serializeFeedSongItem(row);
       } else {
         return serializeFeedMixtapeItem(row);
