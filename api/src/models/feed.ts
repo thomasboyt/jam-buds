@@ -6,6 +6,7 @@ import { ENTRY_PAGE_LIMIT } from '../constants';
 import { FeedSongItem, FeedItem, FeedMixtapeItem } from '../resources';
 import { serializeSong, selectSongsQuery } from './song';
 import validateOrThrow from '../util/validateOrThrow';
+import { tPropNames, namespacedAliases } from './utils';
 
 function serializeFeedSongItem(row: any): FeedSongItem {
   return {
@@ -74,7 +75,13 @@ export async function getFeedByUserId(
 
   let query = selectSongsQuery(db!('posts'), opts)
     .select([
-      db!.raw('to_json(mixtapes.*) as mixtape'),
+      db!.raw(
+        namespacedAliases(
+          'mixtapes',
+          'mixtape',
+          tPropNames(MixtapePreviewModelV)
+        )
+      ),
       db!.raw(`${timestampQuery} as timestamp`, [opts.currentUserId]),
       db!.raw('ARRAY_AGG(users.name) as user_names'),
       db!.raw(`${mixtapeCountQuery} as mixtape_song_count`),

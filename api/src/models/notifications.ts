@@ -1,6 +1,8 @@
 import { db } from '../db';
 import { Notification } from '../resources';
-import { serializePublicUser } from './user';
+import { serializePublicUser, UserModelV } from './user';
+import { SongModelV } from './song';
+import { namespacedAliases, tPropNames } from './utils';
 
 // TODO: It'd be nice to type-check per-type, so e.g. a follow notification
 // requires a notification user ID
@@ -49,8 +51,8 @@ export async function getNewNotifications(
   const rows = await db!('notifications')
     .select(
       '*',
-      db!.raw('to_json(songs.*) as song'),
-      db!.raw('to_json(users.*) as user')
+      db!.raw(namespacedAliases('songs', 'song', tPropNames(SongModelV))),
+      db!.raw(namespacedAliases('users', 'user', tPropNames(UserModelV)))
     )
     .where({
       targetUserId: userId,

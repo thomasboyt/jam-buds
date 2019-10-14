@@ -114,11 +114,6 @@ export function selectSongsQuery(
   baseQuery: Knex.QueryBuilder,
   opts: SongsQueryOptions
 ): Knex.QueryBuilder {
-  /*
-   * Note: the db!.raw('to_json') calls are used to "namespace" the results here
-   * https://github.com/tgriesser/knex/issues/61#issuecomment-259176685
-   * This may not be a great idea performance-wise.
-   */
   return baseQuery.select([
     db!.raw(namespacedAliases('songs', 'song', tPropNames(SongModelV))),
     ...getMetaQuery(opts),
