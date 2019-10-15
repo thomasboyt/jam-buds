@@ -75,11 +75,13 @@ describe('models/feed', () => {
         userId: jeff.id,
       });
 
-      const items = (await getFeedByUserId(jeff.id)) as FeedSongItem[];
+      const items = await getFeedByUserId(jeff.id);
 
       expect(items.length).toBe(3);
-      expect(items[0].song.id).toBe(vinnyPost.songId);
-      expect(items[0].timestamp).toBe(post!.createdAt.toISOString());
+      const item = items[0] as FeedSongItem;
+      expect(item.type).toBe('song');
+      expect(item.song.id).toBe(vinnyPost.songId);
+      expect(item.timestamp).toBe(post!.createdAt.toISOString());
     });
   });
 
@@ -106,7 +108,9 @@ describe('models/feed', () => {
       const items = await getPublicFeed();
 
       expect(items.length).toBe(1);
-      expect(items[0].song.id).toBe(vinPost.songId);
+      const item = items[0] as FeedSongItem;
+      expect(item.type).toBe('song');
+      expect(item.song.id).toBe(vinPost.songId);
     });
   });
 });

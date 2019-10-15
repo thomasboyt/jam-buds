@@ -39,11 +39,23 @@ function serializeFeedMixtapeItem(row: any): FeedMixtapeItem {
   };
 }
 
+function serializeFeedItem(row: any): FeedItem {
+  if (row.song.id !== null) {
+    return serializeFeedSongItem(row);
+  } else {
+    return serializeFeedMixtapeItem(row);
+  }
+}
+
 interface QueryOptions {
   currentUserId?: number;
   beforeTimestamp?: string;
   afterTimestamp?: string;
 }
+
+const mixtapeCountQuery = `
+  (SELECT COUNT (*) FROM mixtape_song_entries WHERE mixtape_id=mixtapes.id)
+`;
 
 export async function getFeedByUserId(
   id: number,
@@ -67,10 +79,6 @@ export async function getFeedByUserId(
       ),
       MIN(posts.created_at)
     )
-  `;
-
-  const mixtapeCountQuery = `
-    (SELECT COUNT (*) FROM mixtape_song_entries WHERE mixtape_id=mixtapes.id)
   `;
 
   let query = selectSongsQuery(db!('posts'), opts)
@@ -120,29 +128,32 @@ export async function getFeedByUserId(
 
   const rows = await query;
 
-  return rows.map(
-    (row: any): FeedItem => {
-      if (row.song.id !== null) {
-        return serializeFeedSongItem(row);
-      } else {
-        return serializeFeedMixtapeItem(row);
-      }
-    }
-  );
+  return rows.map(serializeFeedItem);
 }
 
+// XXX: A whole bunch of this is duplicated with getFeedByUserId, should
+// probably dedupe some day
 export async function getPublicFeed(
   opts: QueryOptions = {}
-): Promise<FeedSongItem[]> {
-  let query = selectSongsQuery(db!('songs'), opts)
+): Promise<FeedItem[]> {
+  let query = selectSongsQuery(db!('posts'), opts)
     .select([
+      db!.raw(
+        namespacedAliases(
+          'mixtapes',
+          'mixtape',
+          tPropNames(MixtapePreviewModelV)
+        )
+      ),
+      db!.raw(`${mixtapeCountQuery} as mixtape_song_count`),
       db!.raw(`MIN(posts.created_at) as timestamp`),
       db!.raw('ARRAY_AGG(users.name) as user_names'),
     ])
-    .join('posts', { 'songs.id': 'posts.song_id' })
     .join('users', { 'users.id': 'posts.user_id' })
+    .leftOuterJoin('songs', { 'songs.id': 'posts.song_id' })
+    .leftOuterJoin('mixtapes', { 'mixtapes.id': 'posts.mixtape_id' })
     .where({ show_in_public_feed: true })
-    .groupBy('songs.id')
+    .groupBy('songs.*', 'songs.id', 'mixtapes.*', 'mixtapes.id')
     .orderBy('timestamp', 'desc');
 
   if (opts.beforeTimestamp !== undefined) {
@@ -161,5 +172,5 @@ export async function getPublicFeed(
 
   const rows = await query;
 
-  return rows.map((row: any) => serializeFeedSongItem(row));
+  return rows.map(serializeFeedItem);
 }
