@@ -5,14 +5,14 @@ import {
   getUserByName,
   getUserProfileForUser,
 } from '../models/user';
-import { getPostedUserSongItemsById } from '../models/post';
+import { getPostsByUserId } from '../models/post';
 import { getFeedByUserId, getPublicFeed } from '../models/feed';
 import { getLikesByUserId } from '../models/like';
 
 import { getUserFromRequest, isAuthenticated } from '../auth';
 import wrapAsyncRoute from '../util/wrapAsyncRoute';
 import { ENTRY_PAGE_LIMIT } from '../constants';
-import { UserSongList, Feed } from '../resources';
+import { UserPostList, PostList, UserLikeList } from '../resources';
 
 export default function registerPlaylistEndpoints(router: Router) {
   // get a user's playlist
@@ -34,13 +34,13 @@ export default function registerPlaylistEndpoints(router: Router) {
       const beforeTimestamp = req.query.before;
       const afterTimestamp = req.query.after;
 
-      const items = await getPostedUserSongItemsById(user.id, {
+      const items = await getPostsByUserId(user.id, {
         currentUserId: currentUser ? currentUser.id : undefined,
         beforeTimestamp,
         afterTimestamp,
       });
 
-      const resp: UserSongList = {
+      const resp: UserPostList = {
         userProfile: await getUserProfileForUser(user),
         items,
         limit: ENTRY_PAGE_LIMIT,
@@ -50,6 +50,7 @@ export default function registerPlaylistEndpoints(router: Router) {
     })
   );
 
+  // TODO: move this to likes.ts probably
   router.get(
     '/playlists/:userName/liked',
     wrapAsyncRoute(async (req, res) => {
@@ -74,7 +75,7 @@ export default function registerPlaylistEndpoints(router: Router) {
         afterTimestamp,
       });
 
-      const resp: UserSongList = {
+      const resp: UserLikeList = {
         userProfile: await getUserProfileForUser(user),
         items,
         limit: ENTRY_PAGE_LIMIT,
@@ -100,7 +101,7 @@ export default function registerPlaylistEndpoints(router: Router) {
         afterTimestamp,
       });
 
-      const feed: Feed = {
+      const feed: PostList = {
         items,
         limit: ENTRY_PAGE_LIMIT,
       };
@@ -124,7 +125,7 @@ export default function registerPlaylistEndpoints(router: Router) {
         afterTimestamp,
       });
 
-      const feed: Feed = {
+      const feed: PostList = {
         items,
         limit: ENTRY_PAGE_LIMIT,
       };

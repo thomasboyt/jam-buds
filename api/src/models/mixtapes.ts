@@ -25,16 +25,20 @@ export const MixtapeSongEntryModelV = t.type({
 export const MixtapePreviewModelV = t.type({
   id: t.number,
   title: t.string,
-  songCount: t.number,
+  songCount: t.string,
+  authorName: t.string,
 });
 
 export function selectMixtapePreviews() {
   return [
     db!.raw(
-      namespacedAliases('mixtapes', 'mixtape', tPropNames(MixtapePreviewModelV))
+      namespacedAliases('mixtapes', 'mixtape', tPropNames(MixtapeModelV))
     ),
     db!.raw(
-      '(SELECT COUNT (*) FROM mixtape_song_entries WHERE mixtape_id=mixtapes.id)'
+      '(SELECT users.name FROM users WHERE users.id=mixtapes.user_id) as "mixtape.author_name"'
+    ),
+    db!.raw(
+      '(SELECT COUNT (*) FROM mixtape_song_entries WHERE mixtape_id=mixtapes.id) as "mixtape.song_count"'
     ),
   ];
 }

@@ -5,7 +5,7 @@ import { getFeedByUserId, getPublicFeed } from '../feed';
 import { UserModel, setUserFeedToPublic } from '../user';
 import { followUser } from '../following';
 import { getOwnPostForSongId, PostModel } from '../post';
-import { FeedSongItem } from '../../resources';
+import { PostListSongItem } from '../../resources';
 
 describe('models/feed', () => {
   describe('querying the feed', () => {
@@ -29,7 +29,7 @@ describe('models/feed', () => {
     });
 
     it("only returns items in a user's following list, plus their own entries", async () => {
-      const items = (await getFeedByUserId(jeff.id)) as FeedSongItem[];
+      const items = (await getFeedByUserId(jeff.id)) as PostListSongItem[];
       expect(items.length).toBe(2);
 
       const ids = items.map((item) => item.song.id);
@@ -39,7 +39,7 @@ describe('models/feed', () => {
 
     it('returns items in reverse-chronological order', async () => {
       await followUser(jeff.id, dan.id);
-      const items = (await getFeedByUserId(jeff.id)) as FeedSongItem[];
+      const items = (await getFeedByUserId(jeff.id)) as PostListSongItem[];
 
       expect(items.length).toBe(3);
       expect(items[0].song.id).toBe(danPost.songId);
@@ -54,7 +54,7 @@ describe('models/feed', () => {
         songId: vinnyPost.songId,
       });
 
-      const items = (await getFeedByUserId(jeff.id)) as FeedSongItem[];
+      const items = (await getFeedByUserId(jeff.id)) as PostListSongItem[];
 
       expect(items.length).toBe(3);
       expect(items[1].song.id).toBe(vinnyPost.songId);
@@ -78,7 +78,7 @@ describe('models/feed', () => {
       const items = await getFeedByUserId(jeff.id);
 
       expect(items.length).toBe(3);
-      const item = items[0] as FeedSongItem;
+      const item = items[0] as PostListSongItem;
       expect(item.type).toBe('song');
       expect(item.song.id).toBe(vinnyPost.songId);
       expect(item.timestamp).toBe(post!.createdAt.toISOString());
@@ -108,7 +108,7 @@ describe('models/feed', () => {
       const items = await getPublicFeed();
 
       expect(items.length).toBe(1);
-      const item = items[0] as FeedSongItem;
+      const item = items[0] as PostListSongItem;
       expect(item.type).toBe('song');
       expect(item.song.id).toBe(vinPost.songId);
     });
