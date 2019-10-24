@@ -16,4 +16,6 @@
     {"directory": "./api", "changeProcessCWD": true},
     {"directory": "./app", "changeProcessCWD": true},
   ],
+  "vetur.format.enable": true,
+  "vetur.format.defaultFormatter.html": "prettier"
 }
