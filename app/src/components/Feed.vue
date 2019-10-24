@@ -19,11 +19,10 @@
       @requestNextPage="handleRequestNextPage"
     >
       <template v-slot:item="{ item }">
-        <feed-item
+        <post-item
           :item="item"
-          playlist-key="feed"
-          playback-source-label="your feed"
-          playback-source-path="/"
+          @requestPlay="handleRequestPlay"
+          verb="posted"
         />
       </template>
 
@@ -45,7 +44,7 @@ import { mapState } from 'vuex';
 import Playlist from './playlist/Playlist.vue';
 import AddSongButton from './AddSongButton.vue';
 import CreateMixtapeButton from './CreateMixtapeButton.vue';
-import FeedItem from './playlist/FeedItem.vue';
+import PostItem from './playlist/PostItem.vue';
 import NewsletterPromotionBanner from './NewsletterPromotionBanner.vue';
 import PageHeader from './PageHeader.vue';
 import NotificationsFeedSection from './NotificationsFeedSection.vue';
@@ -54,7 +53,7 @@ export default {
   components: {
     Playlist,
     AddSongButton,
-    FeedItem,
+    PostItem,
     CreateMixtapeButton,
     NewsletterPromotionBanner,
     PageHeader,
@@ -96,6 +95,15 @@ export default {
 
     handleAddSong() {
       this.$store.dispatch('showAddSong');
+    },
+
+    handleRequestPlay(songId) {
+      this.$store.dispatch('playback/playFromPlaylist', {
+        songId,
+        playlistKey: 'feed',
+        playbackSourceLabel: 'your feed',
+        playbackSourcePath: '/',
+      });
     },
   },
 };
