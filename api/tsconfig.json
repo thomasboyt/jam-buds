@@ -18,6 +18,9 @@
     "noImplicitThis": true
   },
   "include": [
-    "src/**/*"
+    "src/**/*",
+    "seeds/**/*",
+    "scripts/**/*",
+    "migrations/**/*"
   ]
 }
