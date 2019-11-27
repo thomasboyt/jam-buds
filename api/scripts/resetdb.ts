@@ -1,7 +1,17 @@
 import '../src/util/loadDotEnv';
 
 import misterResetti from '../src/util/misterResetti';
-misterResetti({
-  disconnectAfterComplete: true,
-  runSeeds: true,
-});
+
+async function main() {
+  try {
+    await misterResetti({
+      disconnectAfterComplete: true,
+      runSeeds: true,
+    });
+  } catch (err) {
+    console.log(err.stack);
+    process.exit(1);
+  }
+}
+
+main();
