@@ -4,6 +4,11 @@ import { db } from '../src/db';
 import * as songData from './data/songs';
 import { getSpotifySongs } from './data/spotifySongs';
 import { createUser, updateTwitterCredentials } from '../src/models/user';
+import {
+  createMixtapeForUser,
+  addSongToMixtape,
+  publishMixtape,
+} from '../src/models/mixtapes';
 
 async function createSeedUser(name: string) {
   const user = await createUser({
@@ -87,4 +92,14 @@ export default async function seed() {
       created_at: song.created_at,
     });
   }
+
+  // vinny's tape
+  const mixtapeId = await createMixtapeForUser(vinny, {
+    title: "vinny's mixtape",
+  });
+
+  await addSongToMixtape(mixtapeId, 1); // freebird
+  await addSongToMixtape(mixtapeId, 3); // drive
+
+  await publishMixtape(mixtapeId);
 }
