@@ -28,7 +28,7 @@ describe('routes/auth', () => {
       expect(res.status).toBe(200);
 
       const token = await getSignInTokenByEmail(user.email!);
-      expect(token).toExist();
+      expect(token).toBeTruthy();
     });
 
     describe('email validation', () => {
@@ -85,10 +85,10 @@ describe('routes/auth', () => {
         userId: user.id,
       }))[0];
       const cookieRe = new RegExp(`${AUTH_TOKEN_COOKIE}=${authToken}`);
-      expect(res.header['set-cookie']).toMatch(cookieRe);
+      expect(res.header['set-cookie'][0]).toMatch(cookieRe);
 
       signInToken = await getSignInTokenByEmail(user.email!);
-      expect(signInToken).toNotExist();
+      expect(signInToken).toBeFalsy();
     });
   });
 
@@ -126,7 +126,7 @@ describe('routes/auth', () => {
       }))[0];
 
       const cookieRe = new RegExp(`${AUTH_TOKEN_COOKIE}=${authToken}`);
-      expect(res.header['set-cookie']).toMatch(cookieRe);
+      expect(res.header['set-cookie'][0]).toMatch(cookieRe);
     });
 
     it('returns an error if the email is associated with a user', async () => {

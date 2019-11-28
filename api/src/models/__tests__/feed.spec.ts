@@ -62,8 +62,8 @@ describe('models/feed', () => {
 
       expect(items.length).toBe(3);
       expect(items[1].song.id).toBe(vinnyPost.songId);
-      expect(items[1].userNames).toInclude(dan.name);
-      expect(items[1].userNames).toInclude(vinny.name);
+      expect(items[1].userNames).toContain(dan.name);
+      expect(items[1].userNames).toContain(vinny.name);
     });
 
     it('uses the time the current user posted a song as an aggregated entry timestamp', async () => {

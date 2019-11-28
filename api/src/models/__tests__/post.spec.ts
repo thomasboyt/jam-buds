@@ -33,7 +33,7 @@ describe('models/post', () => {
         songId: entry.songId,
       });
 
-      expect(post).toExist();
+      expect(post).toBeTruthy();
 
       await deletePostById(post!.id);
 
@@ -42,7 +42,7 @@ describe('models/post', () => {
           userId: user.id,
           songId: entry.songId,
         })
-      ).toNotExist();
+      ).toBeFalsy();
     });
   });
 });
