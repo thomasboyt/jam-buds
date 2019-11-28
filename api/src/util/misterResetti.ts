@@ -3,6 +3,7 @@ import { parse } from 'pg-connection-string';
 
 import { db, configureDatabase } from '../db';
 import { configureRedis, redis } from '../redis';
+import seed from '../../seeds';
 
 async function createDatabase(): Promise<void> {
   const connection = parse(process.env.DATABASE_URL!) as any;
@@ -52,7 +53,7 @@ export default async function misterResetti(opts: ResettiOptions) {
 
   if (opts.runSeeds) {
     console.log('*** Running seeds');
-    await db!.seed.run();
+    await seed();
   }
 
   // reset redis

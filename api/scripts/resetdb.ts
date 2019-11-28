@@ -12,6 +12,7 @@ async function main() {
     console.log(err.stack);
     process.exit(1);
   }
+  process.exit(0);
 }
 
 main();
