@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import distanceInWords from 'date-fns/distance_in_words';
+import formatDistance from 'date-fns/formatDistance';
 import NamesList from './NamesList.vue';
 
 export default {
@@ -25,7 +25,7 @@ export default {
   computed: {
     formattedTimestamp() {
       const addedDate = new Date(this.timestamp);
-      return distanceInWords(new Date(), addedDate);
+      return formatDistance(addedDate, new Date());
     },
   },
 };
