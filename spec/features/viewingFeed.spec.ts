@@ -1,4 +1,5 @@
 import expect from 'expect';
+import expectPuppeteer from 'expect-puppeteer';
 
 import { getPage } from '../support/browser';
 import { asDevUser } from '../support/utils';
@@ -8,11 +9,22 @@ describe('viewing feed', function() {
     const page = await getPage('/');
     await asDevUser(page, 'jeff');
 
-    const firstEntryText: string = await page.$eval(
+    const entriesText: string[] = await page.$$eval(
       '.playlist-entries li',
-      (node) => (node as HTMLElement).innerText
+      (nodes) => nodes.map((node) => (node as HTMLElement).innerText)
     );
 
-    expect(firstEntryText).toMatch('You and vinny posted');
+    const driveEntries = entriesText.filter((entry) => entry.includes('Drive'));
+    expect(driveEntries.length).toBe(1);
+    expect(driveEntries[0]).toMatch('You and vinny posted');
+  });
+
+  it('includes mixtapes', async () => {
+    const page = await getPage('/');
+    await asDevUser(page, 'jeff');
+
+    await expectPuppeteer(page).toMatchElement('.playlist-mixtape', {
+      text: "vinny's mixtape",
+    });
   });
 });
