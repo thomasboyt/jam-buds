@@ -28,7 +28,7 @@ async function resetDb() {
     stdio: 'inherit',
     env: {
       ...process.env,
-      PORT: API_PORT,
+      PORT: API_PORT.toString(),
     },
   });
 }
@@ -41,7 +41,7 @@ async function startApiServer() {
     stdio: 'inherit',
     env: {
       ...process.env,
-      PORT: API_PORT,
+      PORT: API_PORT.toString(),
     },
   });
 
@@ -51,7 +51,7 @@ async function startApiServer() {
 
   const started = await waitPort({
     port: API_PORT,
-    timeout: 10 * 1000,
+    timeout: 15 * 1000,
   });
 
   if (!started) {
@@ -73,7 +73,7 @@ async function startAppServer() {
     stdio: 'inherit',
     env: {
       ...process.env,
-      PORT: APP_PORT,
+      PORT: APP_PORT.toString(),
     },
   });
 
