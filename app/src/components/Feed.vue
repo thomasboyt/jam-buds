@@ -10,8 +10,6 @@
 
     <notifications-feed-section />
 
-    <newsletter-promotion-banner />
-
     <playlist
       :items="items"
       :items-exhausted="feedItemsExhausted"
@@ -45,7 +43,6 @@ import Playlist from './playlist/Playlist.vue';
 import AddSongButton from './AddSongButton.vue';
 import CreateMixtapeButton from './CreateMixtapeButton.vue';
 import PostItem from './playlist/PostItem.vue';
-import NewsletterPromotionBanner from './NewsletterPromotionBanner.vue';
 import PageHeader from './PageHeader.vue';
 import NotificationsFeedSection from './NotificationsFeedSection.vue';
 
@@ -55,7 +52,6 @@ export default {
     AddSongButton,
     PostItem,
     CreateMixtapeButton,
-    NewsletterPromotionBanner,
     PageHeader,
     NotificationsFeedSection,
   },
