@@ -1,5 +1,5 @@
-const parse = require('csv-parse');
-const fs = require('fs');
+import parse from 'csv-parse';
+import * as fs from 'fs';
 
 function loadCsv() {
   const csv = fs.readFileSync(__dirname + '/spotify_import.csv', {
@@ -17,8 +17,20 @@ function loadCsv() {
   });
 }
 
-module.exports = async function createSpotifySongs() {
+interface SongRow {
+  title: string;
+  artists: string[];
+  album: string;
+  created_at: string;
+  spotify_id: string;
+}
+
+export async function getSpotifySongs(): Promise<SongRow[]> {
   const rows = await loadCsv();
+
+  if (!Array.isArray(rows)) {
+    throw new Error(`invalid spotify songs csv: ${rows}`);
+  }
 
   return rows.slice(1).map((row) => {
     return {
@@ -29,4 +41,4 @@ module.exports = async function createSpotifySongs() {
       spotify_id: row[4].split('/').slice(-1)[0],
     };
   });
-};
+}

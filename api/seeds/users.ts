@@ -1,7 +1,10 @@
-const songData = require('./data/songs');
-const getSpotifySongs = require('./data/spotifySongs');
+import Knex from 'knex';
 
-async function createUser(knex, id, name, opts) {
+import * as songData from './data/songs';
+import { getSpotifySongs } from './data/spotifySongs';
+
+// TODO
+async function createUser(knex: Knex, id: number, name: string, opts?: any) {
   opts = opts || {};
 
   await knex('users').insert(
@@ -21,23 +24,25 @@ async function createUser(knex, id, name, opts) {
   });
 }
 
-function followUser(knex, userId, followingId) {
+function followUser(knex: Knex, userId: number, followingId: number) {
   return knex('following').insert({
     user_id: userId,
     following_id: followingId,
   });
 }
 
-async function createSong(knex, song) {
+// TODO
+async function createSong(knex: Knex, song: any) {
   const result = await knex('songs').insert(song, ['id']);
   return result[0].id;
 }
 
-function createPost(knex, post) {
+// TODO
+function createPost(knex: Knex, post: any) {
   return knex('posts').insert(post);
 }
 
-exports.seed = async function(knex) {
+module.exports.seed = async function seed(knex: Knex) {
   await Promise.all([
     createUser(knex, 1, 'jeff', {
       twitter_id: '12223',
@@ -72,7 +77,7 @@ exports.seed = async function(knex) {
   ]);
 
   const spotifySongs = await getSpotifySongs();
-  for (let song of spotifySongs) {
+  for (const song of spotifySongs) {
     const id = await createSong(knex, song);
     await createPost(knex, {
       user_id: 5, // abe

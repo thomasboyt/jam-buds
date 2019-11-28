@@ -1,4 +1,4 @@
-const songs = [
+export const songs = [
   {
     id: 1,
     artists: ['Lynyrd Skynyrd'],
@@ -48,7 +48,7 @@ const songs = [
   },
 ];
 
-const posts = [
+export const posts = [
   {
     song_id: 1,
     user_id: 2,
@@ -81,8 +81,3 @@ const posts = [
     user_id: 1,
   },
 ];
-
-module.exports = {
-  songs,
-  posts,
-};
