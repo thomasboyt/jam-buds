@@ -15,7 +15,7 @@ blocks:
       prologue:
         commands:
           - checkout
-          - sem-version node 10
+          - sem-version node 12
       jobs:
       - name: "API: npm install"
         commands:
@@ -46,7 +46,7 @@ blocks:
       prologue:
         commands:
           - checkout
-          - sem-version node 10
+          - sem-version node 12
           - cd api
           - cache restore node-modules-api-$SEMAPHORE_GIT_BRANCH-$(checksum package-lock.json),node-modules-api-$SEMAPHORE_GIT_BRANCH,node-modules-api-master
           - sem-service start postgres
@@ -80,7 +80,7 @@ blocks:
       prologue:
         commands:
           - checkout
-          - sem-version node 10
+          - sem-version node 12
           - cd api
           - cache restore node-modules-api-$SEMAPHORE_GIT_BRANCH-$(checksum package-lock.json),node-modules-api-$SEMAPHORE_GIT_BRANCH,node-modules-api-master
           - cd ../app

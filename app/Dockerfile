@@ -1,4 +1,4 @@
-FROM node:10-alpine
+FROM node:12-alpine
 
 # XXX: This Dockerfile assumes you've already built outside the container! This
 # is basically just to save time on CI builds by using the cached node_modules/

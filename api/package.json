@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "description": "",
   "engines": {
-    "node": "8.x"
+    "node": "12.x"
   },
   "scripts": {
     "dev": "nodemon --watch 'src/**/*.ts' --watch 'emails/**/*.*' --exec 'ts-node' src/entry.ts",
@@ -28,7 +28,7 @@
     "@types/ioredis": "^4.0.17",
     "@types/lodash": "^4.14.138",
     "@types/mocha": "^2.2.48",
-    "@types/node": "^10.14.18",
+    "@types/node": "^12.12.14",
     "@types/nunjucks": "^3.1.2",
     "@types/oauth": "^0.9.1",
     "@types/pg": "^7.11.2",

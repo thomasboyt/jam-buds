@@ -13,7 +13,7 @@ blocks:
         - name: Prod Build Keys
       prologue:
         commands:
-          - sem-version node 10
+          - sem-version node 12
           # Authenticate using the file injected from the secret
           - gcloud auth activate-service-account --key-file=.secrets.gcp.json
           - gcloud auth configure-docker -q
