@@ -1,6 +1,7 @@
 import { UserModel, createUser } from '../models/user';
 import { createSongFromManualEntry, SongModel } from '../models/song';
 import { postSong, getOwnPostForSongId, PostModel } from '../models/post';
+import { createMixtapeForUser, publishMixtape } from '../models/mixtapes';
 
 // SHRUG
 let uniqueCounter = 0;
@@ -48,4 +49,12 @@ export async function postFactory(
   });
 
   return post!;
+}
+
+export async function mixtapeFactory(user: UserModel) {
+  const mixtape = await createMixtapeForUser(user, {
+    title: 'test mixtape',
+  });
+
+  publishMixtape(mixtape);
 }
