@@ -10,7 +10,7 @@
     "dev": "nodemon --watch 'src/**/*.ts' --watch 'emails/**/*.*' --exec 'ts-node' src/entry.ts",
     "dev-no-watch": "ts-node src/entry.ts",
     "resetdb": "ts-node ./scripts/resetdb.ts",
-    "start": "node build/entry.js",
+    "start": "node build/src/entry.js",
     "build-prod": "tsc -p tsconfig.build.json",
     "test": "NODE_ENV=test mocha --exit --require ts-node/register 'src/**/*.spec.ts'",
     "lint": "eslint src/**/*.ts"
