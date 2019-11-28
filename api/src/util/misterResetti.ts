@@ -4,7 +4,7 @@ import { parse } from 'pg-connection-string';
 import { db, configureDatabase } from '../db';
 import { configureRedis, redis } from '../redis';
 
-async function recreateDatabase(): Promise<void> {
+async function createDatabase(): Promise<void> {
   const connection = parse(process.env.DATABASE_URL!) as any;
   const client = new Client({
     ...connection,
@@ -18,14 +18,10 @@ async function recreateDatabase(): Promise<void> {
   );
   const dbExists = rowCount === 1;
 
-  if (dbExists) {
-    console.log(`*** Recreating existing database ${connection.database}`);
-    await client.query(`DROP DATABASE ${connection.database}`);
-  } else {
+  if (!dbExists) {
     console.log(`*** Creating database ${connection.database}`);
+    await client.query(`CREATE DATABASE ${connection.database}`);
   }
-
-  await client.query(`CREATE DATABASE ${connection.database}`);
 
   await client.end();
 }
@@ -36,9 +32,19 @@ interface ResettiOptions {
 }
 
 export default async function misterResetti(opts: ResettiOptions) {
-  await recreateDatabase();
+  await createDatabase();
 
   configureDatabase();
+  try {
+    await db!.raw('DROP SCHEMA public CASCADE;');
+  } catch (err) {
+    // surpress error since it usually just means the schema already exists, but
+    // log in case of weirdness
+    console.log(err.message);
+  }
+
+  await db!.raw('CREATE SCHEMA public;');
+
   configureRedis();
 
   console.log('*** Running migrations');

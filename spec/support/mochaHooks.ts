@@ -1,4 +1,3 @@
-import knex from 'knex';
 import path from 'path';
 import childProcess from 'child_process';
 import dotenv from 'dotenv';
@@ -24,27 +23,14 @@ const API_PORT = 3001;
 const APP_PORT = 8080;
 
 async function resetDb() {
-  const db = knex({
-    client: 'pg',
-    connection: process.env.DATABASE_URL,
+  childProcess.spawnSync('npm', ['run', 'resetdb'], {
+    cwd: path.join(__dirname, '../../api'),
+    stdio: 'inherit',
+    env: {
+      ...process.env,
+      PORT: API_PORT,
+    },
   });
-
-  try {
-    await db!.raw('DROP SCHEMA public CASCADE;');
-    await db!.raw('CREATE SCHEMA public;');
-
-    await db!.migrate.latest({
-      directory: '../api/migrations',
-    });
-
-    await db!.seed.run({
-      directory: '../api/seeds',
-    });
-  } catch (err) {
-    throw err;
-  } finally {
-    db!.destroy();
-  }
 }
 
 async function startApiServer() {
