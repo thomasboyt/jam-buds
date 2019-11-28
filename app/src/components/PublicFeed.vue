@@ -23,11 +23,10 @@
       @requestNextPage="handleRequestNextPage"
     >
       <template v-slot:item="{ item }">
-        <feed-item
+        <post-item
           :item="item"
-          playlist-key="publicFeed"
-          playback-source-label="public feed"
-          playback-source-path="/public-feed"
+          @requestPlay="handleRequestPlay"
+          verb="posted"
         />
       </template>
 
@@ -43,11 +42,11 @@
 <script>
 import { mapState } from 'vuex';
 import Playlist from './playlist/Playlist.vue';
-import FeedItem from './playlist/FeedItem.vue';
+import PostItem from './playlist/PostItem.vue';
 import PageHeader from './PageHeader.vue';
 
 export default {
-  components: { Playlist, FeedItem, PageHeader },
+  components: { Playlist, PostItem, PageHeader },
 
   metaInfo: {
     title: 'Public Feed',
@@ -88,6 +87,15 @@ export default {
       } finally {
         this.loadingNextPage = false;
       }
+    },
+
+    handleRequestPlay(songId) {
+      this.$store.dispatch('playback/playFromPlaylist', {
+        songId,
+        playlistKey: 'publicFeed',
+        playbackSourceLabel: 'public feed',
+        playbackSourcePath: '/public-feed',
+      });
     },
   },
 };

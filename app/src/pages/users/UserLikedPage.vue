@@ -8,8 +8,7 @@
       @requestNextPage="handleRequestNextPage"
     >
       <template v-slot:item="{ item }">
-        <entry-posted-by :timestamp="item.timestamp" verb="liked" />
-        <song :song-id="item.songId" @requestPlay="handleRequestPlay" />
+        <post-item :item="item" @requestPlay="handleRequestPlay" verb="liked" />
       </template>
 
       <template v-slot:placeholder>
@@ -25,15 +24,13 @@
 import { mapState } from 'vuex';
 import ProfileNav from '../../components/ProfileNav.vue';
 import Playlist from '../../components/playlist/Playlist.vue';
-import EntryPostedBy from '../../components/playlist/EntryPostedBy.vue';
-import Song from '../../components/playlist/Song.vue';
+import PostItem from '../../components/playlist/PostItem.vue';
 
 export default {
   components: {
     ProfileNav,
     Playlist,
-    EntryPostedBy,
-    Song,
+    PostItem,
   },
 
   metaInfo() {

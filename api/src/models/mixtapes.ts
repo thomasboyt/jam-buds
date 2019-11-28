@@ -6,6 +6,7 @@ import { UserModel, getUserProfileForUser, getUserByUserId } from './user';
 import { selectSongsQuery, serializeSong } from './song';
 import { Mixtape, Song } from '../resources';
 import validateOrThrow from '../util/validateOrThrow';
+import { tPropNames, namespacedAliases } from './utils';
 
 export const MixtapeModelV = t.type({
   id: t.number,
@@ -21,6 +22,26 @@ export const MixtapeSongEntryModelV = t.type({
   rank: t.number,
 });
 
+export const MixtapePreviewModelV = t.type({
+  id: t.number,
+  title: t.string,
+  songCount: t.string,
+  authorName: t.string,
+});
+
+export function selectMixtapePreviews() {
+  return [
+    db!.raw(
+      namespacedAliases('mixtapes', 'mixtape', tPropNames(MixtapeModelV))
+    ),
+    db!.raw(
+      '(SELECT users.name FROM users WHERE users.id=mixtapes.user_id) as "mixtape.author_name"'
+    ),
+    db!.raw(
+      '(SELECT COUNT (*) FROM mixtape_song_entries WHERE mixtape_id=mixtapes.id) as "mixtape.song_count"'
+    ),
+  ];
+}
 interface CreateMixtapeOptions {
   title: string;
 }

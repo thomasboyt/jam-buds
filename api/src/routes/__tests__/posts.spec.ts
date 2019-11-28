@@ -6,7 +6,7 @@ import {
   postFactory,
   songFactory,
 } from '../../__tests__/factories';
-import { getPostedUserSongItemsById, postSong } from '../../models/post';
+import { getPostsByUserId, postSong } from '../../models/post';
 import { createAuthTokenForUserId } from '../../models/authTokens';
 
 import createApp from '../../createApp';
@@ -49,7 +49,7 @@ describe('routes/posts', () => {
         userId: user.id,
       });
 
-      const beforePlaylist = await getPostedUserSongItemsById(user.id);
+      const beforePlaylist = await getPostsByUserId(user.id);
       expect(beforePlaylist.length).toBe(1);
 
       const req = request(app)
@@ -60,7 +60,7 @@ describe('routes/posts', () => {
 
       expectStatus(res, 200);
 
-      const afterPlaylist = await getPostedUserSongItemsById(user.id);
+      const afterPlaylist = await getPostsByUserId(user.id);
       expect(afterPlaylist.length).toBe(0);
     });
 

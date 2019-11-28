@@ -2,10 +2,12 @@ import * as t from 'io-ts';
 import { date as dateType } from 'io-ts-types/lib/date';
 
 import { db } from '../db';
-import { UserSongItem, Song } from '../resources';
+import { Song, PostListItem } from '../resources';
 import { ENTRY_PAGE_LIMIT } from '../constants';
-import { selectSongsQuery, serializeSong } from './song';
+import { selectSongsQuery, serializeSong, selectSongs } from './song';
 import { paginate } from './utils';
+import { selectMixtapePreviews } from './mixtapes';
+import { serializePostListItem } from './feed';
 
 export const PostModelV = t.type({
   id: t.number,
@@ -34,30 +36,27 @@ export async function postSong(values: PostSongParams): Promise<Song> {
   return serializeSong(row);
 }
 
-function serializeUserSongItem(row: any): UserSongItem {
-  const song = serializeSong(row);
-
-  return {
-    timestamp: row.timestamp.toISOString(),
-    song: song,
-  };
-}
-
 interface QueryOptions {
   currentUserId?: number;
   beforeTimestamp?: string;
   afterTimestamp?: string;
 }
 
-export async function getPostedUserSongItemsById(
+export async function getPostsByUserId(
   userId: number,
   opts: QueryOptions = {}
-): Promise<UserSongItem[]> {
-  let query = selectSongsQuery(db!('posts'), opts)
-    .select([db!.raw(`posts.created_at as timestamp`)])
+): Promise<PostListItem[]> {
+  let query = db!('posts')
+    .select(selectSongs(opts))
+    .select(selectMixtapePreviews())
+    .select({
+      timestamp: 'posts.created_at',
+      userName: 'users.name',
+    })
     .join('users', { 'users.id': 'posts.user_id' })
-    .join('songs', { 'songs.id': 'posts.song_id' })
-    .where({ user_id: userId })
+    .leftOuterJoin('songs', { 'songs.id': 'posts.song_id' })
+    .leftOuterJoin('mixtapes', { 'mixtapes.id': 'posts.mixtape_id' })
+    .where({ 'posts.user_id': userId })
     .orderBy('posts.created_at', 'desc');
 
   query = paginate(query, {
@@ -69,7 +68,12 @@ export async function getPostedUserSongItemsById(
 
   const rows = await query;
 
-  return rows.map((row: any) => serializeUserSongItem(row));
+  return rows.map((row: any) =>
+    serializePostListItem({
+      ...row,
+      userNames: [row.userName],
+    })
+  );
 }
 
 interface GetOwnPostForSongIdOptions {

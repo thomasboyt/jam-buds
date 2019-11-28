@@ -19,52 +19,62 @@ export interface Song {
   likeCount: number;
 }
 
-export interface FeedMixtapeItem {
+export interface PostListMixtapeItem {
   type: 'mixtape';
   mixtape: MixtapePreview;
   timestamp: string;
 }
 
-export interface FeedSongItem {
+export interface PostListSongItem {
   type: 'song';
 
   song: Song;
-
-  /**
-   * A list of names of users you follow who posted or liked the song.
-   */
-  userNames: string[];
 
   /**
    * Either the earliest time a song was posted by someone you follow, or the
    * earliest time _you_ posted a song.
    */
   timestamp: string;
+
+  /**
+   * A list of names of users you follow who posted the song.
+   */
+  userNames: string[];
 }
 
-export type FeedItem = FeedSongItem | FeedMixtapeItem;
+export type PostListItem = PostListSongItem | PostListMixtapeItem;
 
-export interface Feed {
-  items: FeedItem[];
+export interface PostList {
+  items: PostListItem[];
+  limit: number;
+}
+
+/**
+ * The post list for a specific user, used on the profile pages.
+ */
+export interface UserPostList {
+  userProfile: UserProfile;
+  items: PostListItem[];
   limit: number;
 }
 
 /*
- *  --- playlists ---
+ *  --- likes ---
  */
 
-export interface UserSongItem {
+// likes are very similar to posts with some stuff missing
+// may change in the future...
+
+export interface LikedSongItem {
+  type: 'song';
   song: Song;
+  /** the time a song was liked */
   timestamp: string;
 }
 
-/**
- * A song list for a given user. Can be used for "playlist" (user's posts) or
- * liked tracks.
- */
-export interface UserSongList {
+export interface UserLikeList {
   userProfile: UserProfile;
-  items: UserSongItem[];
+  items: LikedSongItem[];
   limit: number;
 }
 

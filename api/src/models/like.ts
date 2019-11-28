@@ -2,7 +2,7 @@ import { db } from '../db';
 import { paginate } from './utils';
 import { ENTRY_PAGE_LIMIT } from '../constants';
 import { selectSongsQuery, serializeSong } from './song';
-import { UserSongItem } from '../resources';
+import { LikedSongItem } from '../resources';
 
 interface LikeModel {
   id: number;
@@ -46,10 +46,11 @@ export async function removeLike(params: LikeParams): Promise<void> {
   await query;
 }
 
-function serializeLike(row: any): UserSongItem {
+function serializeLike(row: any): LikedSongItem {
   const song = serializeSong(row);
 
   return {
+    type: 'song',
     song,
     timestamp: row.timestamp.toISOString(),
   };
@@ -64,7 +65,7 @@ interface GetLikesOptions {
 export async function getLikesByUserId(
   userId: number,
   opts: GetLikesOptions
-): Promise<UserSongItem[]> {
+): Promise<LikedSongItem[]> {
   const { currentUserId } = opts;
 
   const query = selectSongsQuery(db!('likes'), { currentUserId })

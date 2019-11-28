@@ -3,7 +3,7 @@
     <entry-posted-by
       :timestamp="item.timestamp"
       :names="item.userNames"
-      verb="posted"
+      :verb="verb"
     />
     <song
       v-if="item.type === 'song'"
@@ -27,16 +27,11 @@ import MixtapeItem from './MixtapeItem.vue';
 export default {
   components: { Song, EntryPostedBy, MixtapeItem },
 
-  props: ['item', 'playlistKey', 'playbackSourceLabel', 'playbackSourcePath'],
+  props: ['item', 'verb'],
 
   methods: {
     handleRequestPlay() {
-      this.$store.dispatch('playback/playFromPlaylist', {
-        songId: this.item.songId,
-        playlistKey: this.playlistKey,
-        playbackSourceLabel: this.playbackSourceLabel,
-        playbackSourcePath: this.playbackSourcePath,
-      });
+      this.$emit('requestPlay', this.item.songId);
     },
   },
 };

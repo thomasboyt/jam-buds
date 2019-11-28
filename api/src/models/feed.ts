@@ -1,14 +1,17 @@
-import * as t from 'io-ts';
 import * as Knex from 'knex';
 
 import { db } from '../db';
 import { ENTRY_PAGE_LIMIT } from '../constants';
-import { FeedSongItem, FeedItem, FeedMixtapeItem } from '../resources';
+import {
+  PostListSongItem,
+  PostListItem,
+  PostListMixtapeItem,
+} from '../resources';
 import { serializeSong, selectSongsQuery } from './song';
+import { MixtapePreviewModelV, selectMixtapePreviews } from './mixtapes';
 import validateOrThrow from '../util/validateOrThrow';
-import { tPropNames, namespacedAliases } from './utils';
 
-function serializeFeedSongItem(row: any): FeedSongItem {
+function serializePostListSongItem(row: any): PostListSongItem {
   return {
     type: 'song',
     song: serializeSong(row),
@@ -17,12 +20,7 @@ function serializeFeedSongItem(row: any): FeedSongItem {
   };
 }
 
-const MixtapePreviewModelV = t.type({
-  id: t.number,
-  title: t.string,
-});
-
-function serializeFeedMixtapeItem(row: any): FeedMixtapeItem {
+function serializePostListMixtapeItem(row: any): PostListMixtapeItem {
   const preview = validateOrThrow(MixtapePreviewModelV, row.mixtape);
 
   return {
@@ -31,19 +29,18 @@ function serializeFeedMixtapeItem(row: any): FeedMixtapeItem {
 
     mixtape: {
       id: preview.id,
-      // XXX: hack?
-      authorName: row.userNames[0],
+      authorName: preview.authorName,
       title: preview.title,
-      numTracks: row.mixtapeSongCount,
+      numTracks: parseInt(preview.songCount),
     },
   };
 }
 
-function serializeFeedItem(row: any): FeedItem {
+export function serializePostListItem(row: any): PostListItem {
   if (row.song.id !== null) {
-    return serializeFeedSongItem(row);
+    return serializePostListSongItem(row);
   } else {
-    return serializeFeedMixtapeItem(row);
+    return serializePostListMixtapeItem(row);
   }
 }
 
@@ -53,14 +50,10 @@ interface QueryOptions {
   afterTimestamp?: string;
 }
 
-const mixtapeCountQuery = `
-  (SELECT COUNT (*) FROM mixtape_song_entries WHERE mixtape_id=mixtapes.id)
-`;
-
 export async function getFeedByUserId(
   id: number,
   opts: QueryOptions = {}
-): Promise<FeedItem[]> {
+): Promise<PostListItem[]> {
   opts.currentUserId = id;
 
   // XXX: This wacky subquery (which probably performs like ass) ensures that
@@ -83,16 +76,9 @@ export async function getFeedByUserId(
 
   let query = selectSongsQuery(db!('posts'), opts)
     .select([
-      db!.raw(
-        namespacedAliases(
-          'mixtapes',
-          'mixtape',
-          tPropNames(MixtapePreviewModelV)
-        )
-      ),
+      ...selectMixtapePreviews(),
       db!.raw(`${timestampQuery} as timestamp`, [opts.currentUserId]),
       db!.raw('ARRAY_AGG(users.name) as user_names'),
-      db!.raw(`${mixtapeCountQuery} as mixtape_song_count`),
     ])
     .join('users', { 'users.id': 'posts.user_id' })
     .leftOuterJoin('songs', { 'songs.id': 'posts.song_id' })
@@ -128,24 +114,17 @@ export async function getFeedByUserId(
 
   const rows = await query;
 
-  return rows.map(serializeFeedItem);
+  return rows.map(serializePostListItem);
 }
 
 // XXX: A whole bunch of this is duplicated with getFeedByUserId, should
 // probably dedupe some day
 export async function getPublicFeed(
   opts: QueryOptions = {}
-): Promise<FeedItem[]> {
+): Promise<PostListItem[]> {
   let query = selectSongsQuery(db!('posts'), opts)
     .select([
-      db!.raw(
-        namespacedAliases(
-          'mixtapes',
-          'mixtape',
-          tPropNames(MixtapePreviewModelV)
-        )
-      ),
-      db!.raw(`${mixtapeCountQuery} as mixtape_song_count`),
+      ...selectMixtapePreviews(),
       db!.raw(`MIN(posts.created_at) as timestamp`),
       db!.raw('ARRAY_AGG(users.name) as user_names'),
     ])
@@ -172,5 +151,5 @@ export async function getPublicFeed(
 
   const rows = await query;
 
-  return rows.map(serializeFeedItem);
+  return rows.map(serializePostListItem);
 }

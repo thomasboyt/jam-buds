@@ -1,6 +1,7 @@
 import Knex from 'knex';
 import { snakecase } from 'stringcase';
 import * as t from 'io-ts';
+import { db } from '../db';
 
 interface PaginationOptions {
   limit: number;
@@ -107,4 +108,12 @@ export function splitByDot(obj: Record<string, any>): Record<string, any> {
 
     return acc;
   }, {});
+}
+
+export function selectNamespacedModel(
+  model: t.TypeC<any>,
+  tableName: string,
+  keyName: string
+) {
+  return db!.raw(namespacedAliases(tableName, keyName, tPropNames(model)));
 }
