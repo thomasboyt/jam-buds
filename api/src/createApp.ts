@@ -4,6 +4,7 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import * as Sentry from '@sentry/node';
 
+import { startSpotifyTokenUpdates } from './apis/spotify';
 import { errorHandlerMiddleware } from './util/errors';
 
 import registerAuthEndpoints from './routes/auth';
@@ -27,6 +28,8 @@ if (env === 'production') {
 }
 
 export default function createApp() {
+  startSpotifyTokenUpdates();
+
   const app = express();
 
   if (env === 'production') {

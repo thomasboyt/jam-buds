@@ -18,10 +18,12 @@ async function getToken() {
   }
 }
 
-if (process.env.NODE_ENV !== 'test' || process.env.TEST_ENV === 'feature') {
-  getToken();
-  // new token very five minutes
-  setInterval(getToken, 60 * 5 * 1000);
+export function startSpotifyTokenUpdates() {
+  if (process.env.NODE_ENV !== 'test' || process.env.TEST_ENV === 'feature') {
+    getToken();
+    // new token very five minutes
+    setInterval(getToken, 60 * 5 * 1000);
+  }
 }
 
 // https://developer.spotify.com/documentation/web-api/reference/tracks/get-track/
