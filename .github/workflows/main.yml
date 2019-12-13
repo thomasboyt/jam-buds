@@ -1,0 +1,104 @@
+name: Run Tests
+
+on: [push]
+
+jobs:
+  api-tests:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:11.2-alpine
+        env:
+          POSTGRES_DB: jambuds_test
+        ports:
+          - 5432/tcp
+        # needed because the postgres container does not provide a healthcheck
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
+      redis:
+        image: redis:5.0.3-alpine
+        ports:
+          - 6379/tcp
+        options: --entrypoint redis-server
+
+    steps:
+      - uses: actions/checkout@v1
+        with:
+          fetch-depth: 1
+
+      - name: Use Node 12
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+
+      - run: npm ci
+        working-directory: ./api
+
+      - run: npm test
+        working-directory: ./api
+        env:
+          DATABASE_URL: "postgres://postgres@localhost:${{ job.services.postgres.ports[5432] }}/jambuds_test"
+          REDIS_URL: "redis://localhost:${{ job.services.redis.ports[6379] }}"
+
+  integration-tests:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:11.2-alpine
+        env:
+          POSTGRES_DB: jambuds_test
+        ports:
+          - 5432/tcp
+        # needed because the postgres container does not provide a healthcheck
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
+      redis:
+        image: redis:5.0.3-alpine
+        ports:
+          - 6379/tcp
+        options: --entrypoint redis-server
+
+    steps:
+      - uses: actions/checkout@v1
+        with:
+          fetch-depth: 1
+
+      - name: Use Node 12
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+
+      - run: npm ci
+        working-directory: ./api
+        name: Install API dependencies
+
+      - run: npm ci
+        working-directory: ./app
+        name: Install app dependencies
+
+      - run: npm ci
+        working-directory: ./spec
+        name: Install integration test dependencies
+
+      - run: npm run build-assets
+        working-directory: ./app
+        env:
+          DISABLE_APPLE_MUSIC: true
+          CI: true
+          STATIC_URL: http://localhost:8080/assets
+
+      - run: npm test
+        working-directory: ./spec
+        env:
+          DATABASE_URL: "postgres://postgres@localhost:${{ job.services.postgres.ports[5432] }}/jambuds_test"
+          REDIS_URL: "redis://localhost:${{ job.services.redis.ports[6379] }}"
+          SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
+          SPOTIFY_CLIENT_SECRET: ${{ secrets.SPOTIFY_CLIENT_SECRET }}
+          DISABLE_APPLE_MUSIC: true
+          DISABLE_BUTTONDOWN: true
+          CI: true
+          API_URL: http://localhost:3001
+          APP_URL: http://localhost:8080
+          STATIC_URL: http://localhost:8080/assets

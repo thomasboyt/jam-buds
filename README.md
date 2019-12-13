@@ -1,6 +1,6 @@
 # Jam Buds
 
-[![Build Status](https://travis-ci.org/thomasboyt/jam-buds.svg?branch=master)](https://travis-ci.org/thomasboyt/jam-buds)
+![](https://github.com/thomasboyt/jam-buds/workflows/Run%20Tests/badge.svg)
 
 Jam Buds is a lil web application that helps you share music with your friends.
 
