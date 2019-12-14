@@ -129,14 +129,16 @@ export default function registerSpotifyAuthEndpoints(router: Router) {
       });
 
       const accessToken = resp.data.access_token;
-      const expiresIn = resp.data.expires_in;
+      // goofy hack: to ensure we refresh "on time," we subtract 20 seconds from
+      // this expiration time
+      const expiresIn = resp.data.expires_in - 20;
 
       await updateRefreshedSpotifyCredentialsForUser(user, {
         accessToken,
         expiresIn,
       });
 
-      res.status(200).json({ token: accessToken });
+      res.status(200).json({ token: accessToken, expiresIn });
     })
   );
 

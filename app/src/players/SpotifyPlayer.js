@@ -133,7 +133,9 @@ export default class SpotifyPlayer {
 
   async _getOAuthToken() {
     if (this._token) {
-      return this._token;
+      if (this._tokenExpiresAtMs < Date.now()) {
+        return this._token;
+      }
     }
 
     const resp = await this.store.$axios({
@@ -143,6 +145,7 @@ export default class SpotifyPlayer {
     });
 
     this._token = resp.data.token;
+    this._tokenExpiresAtMs = Date.now() + resp.data.expiresIn * 1000;
     return this._token;
   }
 
