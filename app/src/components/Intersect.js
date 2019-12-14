@@ -5,6 +5,7 @@
  * https://github.com/heavyy/vue-intersect/pull/9/files
  */
 
+import 'intersection-observer';
 import Vue from 'vue';
 
 const warn = (msg) => {
