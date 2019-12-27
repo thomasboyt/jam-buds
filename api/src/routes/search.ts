@@ -47,6 +47,7 @@ function serializeSpotifyResult(
     album: result.album.name,
     artists: result.artists.map((artist: any) => artist.name),
     spotifyId: result.id,
+    albumArt: result.album.images[0].url,
   };
 }
 

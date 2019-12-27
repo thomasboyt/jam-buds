@@ -3,6 +3,7 @@ export interface SearchResult {
   album: string;
   title: string;
   spotifyId: string;
+  albumArt: string;
 }
 
 export interface Song {
