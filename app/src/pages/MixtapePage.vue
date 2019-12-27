@@ -68,11 +68,12 @@
         >
       </div>
 
-      <add-to-mixtape-modal
+      <add-song-modal
+        v-if="isEditing"
+        title="add to mixtape"
         :mixtape-id="mixtapeId"
         :is-open="addSongOpen"
         @close="handleAddSongClose"
-        v-if="isEditing"
       />
     </main-wrapper>
   </sidebar-wrapper>
@@ -83,7 +84,7 @@ import Mixtape from '../components/mixtapes/Mixtape.vue';
 import MainWrapper from '../components/MainWrapper.vue';
 import SidebarWrapper from '../components/SidebarWrapper.vue';
 import AddSongButton from '../components/AddSongButton.vue';
-import AddToMixtapeModal from '../components/new-song-modal/AddToMixtapeModal.vue';
+import AddSongModal from '../components/new-song-modal/AddSongModal.vue';
 import EditableTitle from '../components/mixtapes/EditableTitle.vue';
 import PublishButton from '../components/mixtapes/PublishButton.vue';
 import Panel from '../components/Panel.vue';
@@ -97,7 +98,7 @@ export default {
     MainWrapper,
     SidebarWrapper,
     AddSongButton,
-    AddToMixtapeModal,
+    AddSongModal,
     EditableTitle,
     PublishButton,
     Panel,

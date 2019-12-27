@@ -14,7 +14,7 @@
 }
 
 $modal-width: 450px;
-$modal-height: 450px;
+$modal-height: 550px;
 
 .modal-content {
   overflow: auto;
@@ -103,6 +103,7 @@ $modal-height: 450px;
   min-height: 100%;
   display: flex;
   flex-flow: column;
+  position: relative;
 
   a,
   a:visited,
@@ -207,12 +208,9 @@ $modal-height: 450px;
     }
   }
 
-  ul {
-    padding-left: 15px;
-  }
-
   button.submit-song {
-    margin: 0 auto;
+    margin: 20px auto;
+    height: auto;
   }
 
   textarea {
@@ -226,6 +224,10 @@ $modal-height: 450px;
     display: flex;
     flex-flow: column;
     min-height: 100%;
+
+    ul {
+      padding-left: 15px;
+    }
   }
 
   .tweet-box {

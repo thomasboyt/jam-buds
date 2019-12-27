@@ -3,9 +3,9 @@
     class="confirm-screen"
     :style="{ minHeight: '100%', display: 'flex', flexFlow: 'column' }"
   >
-    <p>
-      you're adding <strong>{{ songLabel }}</strong>
-    </p>
+    <div :style="{ marginBottom: '24px' }">
+      <song-preview :song="selectedSong" />
+    </div>
 
     <template v-if="loadedDetails">
       <div>
@@ -36,9 +36,10 @@ import _get from 'lodash/get';
 
 import serializeSongLabel from '../../util/serializeSongLabel';
 import ServiceList from './ServiceList.vue';
+import SongPreview from './SongPreview.vue';
 
 export default {
-  components: { ServiceList },
+  components: { ServiceList, SongPreview },
 
   props: ['selectedSong', 'mixtapeId'],
 

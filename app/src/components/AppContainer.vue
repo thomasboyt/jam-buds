@@ -6,7 +6,12 @@
       <slot />
     </div>
 
-    <add-song-modal v-if="authenticated" />
+    <add-song-modal
+      v-if="authenticated"
+      title="share a jam!"
+      :is-open="addSongModalIsOpen"
+      @close="handleCloseAddSongModal"
+    />
 
     <audio-player />
     <apple-music-loader v-if="authenticated" />
@@ -34,6 +39,13 @@ export default {
 
   computed: mapState({
     authenticated: (state) => state.auth.authenticated,
+    addSongModalIsOpen: (state) => state.addSong.showModal,
   }),
+
+  methods: {
+    handleCloseAddSongModal() {
+      this.$store.dispatch('closeAddSong');
+    },
+  },
 };
 </script>

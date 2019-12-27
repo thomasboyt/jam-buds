@@ -86,7 +86,7 @@ Then just run `cd api && npm test`.
 
 ```
 # in one session:
-cd app && NODE_ENV=test PORT=8080 npm run dev
+cd app && API_URL=http://localhost:3001 npm run dev
 
 # in another:
 cd spec && npm test
