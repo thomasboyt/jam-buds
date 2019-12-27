@@ -77,6 +77,10 @@ export default {
 
   async asyncData({ store, route }) {
     await store.dispatch('loadProfilePostsPlaylist', route.params.id);
+
+    if (route.query.song) {
+      await store.dispatch('loadSongDetail', { id: route.query.song });
+    }
   },
 
   data() {

@@ -22,6 +22,22 @@ const songs = {
   },
 
   actions: {
+    async loadSongDetail(context, { id }) {
+      if (context.state[id]) {
+        // skip loading if we already have it. this should go away if song
+        // detail ever includes additional details not in the playlist results
+        // (e.g. notes...)
+        return;
+      }
+
+      const resp = await this.$axios({
+        url: `/songs/${id}`,
+        method: 'GET',
+      });
+
+      context.commit('addSongs', [resp.data]);
+    },
+
     async likeSong(context, { id }) {
       await this.$axios({
         url: `/likes/${id}`,
