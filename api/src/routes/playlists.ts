@@ -13,6 +13,7 @@ import { getUserFromRequest, isAuthenticated } from '../auth';
 import wrapAsyncRoute from '../util/wrapAsyncRoute';
 import { ENTRY_PAGE_LIMIT } from '../constants';
 import { UserPostList, PostList, UserLikeList } from '../resources';
+import { getSongById, hydrateSongMeta } from '../models/song';
 
 export default function registerPlaylistEndpoints(router: Router) {
   // get a user's playlist
@@ -131,6 +132,29 @@ export default function registerPlaylistEndpoints(router: Router) {
       };
 
       res.json(feed);
+    })
+  );
+
+  router.get(
+    '/songs/:id',
+    wrapAsyncRoute(async (req, res) => {
+      const currentUser = await getUserFromRequest(req);
+
+      const song = await getSongById(parseInt(req.params.id, 10));
+
+      if (!song) {
+        res.status(404).json({
+          error: `No song found with ID ${req.params.id}`,
+        });
+
+        return;
+      }
+
+      const serialized = await hydrateSongMeta(song, {
+        currentUserId: currentUser ? currentUser.id : undefined,
+      });
+
+      res.json(serialized);
     })
   );
 }

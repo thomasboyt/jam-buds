@@ -184,15 +184,9 @@ export async function hydrateSongMeta(
   song: SongModel,
   opts: SongsQueryOptions
 ): Promise<Song> {
-  const [row] = await db!('songs')
+  const [meta] = await db!('songs')
     .select(getMetaQuery(opts))
     .where({ 'songs.id': song.id });
 
-  const meta = validateOrThrow(SongMetaV, row);
-
-  return {
-    ...song,
-    likeCount: parseInt(meta.likeCount),
-    isLiked: meta.isLiked || false,
-  };
+  return serializeSong({ song, ...meta });
 }
