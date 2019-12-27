@@ -103,6 +103,7 @@ $modal-height: 550px;
   min-height: 100%;
   display: flex;
   flex-flow: column;
+  position: relative;
 
   a,
   a:visited,
@@ -208,7 +209,8 @@ $modal-height: 550px;
   }
 
   button.submit-song {
-    margin: 0 auto;
+    margin: 20px auto;
+    height: auto;
   }
 
   textarea {

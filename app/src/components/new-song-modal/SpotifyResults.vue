@@ -8,7 +8,7 @@
     </div>
 
     <ul v-else data-test="search-results">
-      <li v-for="song of searchResults" :key="song.id">
+      <li v-for="song of searchResults" :key="song.spotifyId">
         <a href="#" @click="(evt) => handleSelectSong(evt, song)">
           <song-preview :song="song" />
         </a>
