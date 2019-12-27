@@ -1,5 +1,5 @@
 <template>
-  <svg :class="`icon ${className || ''}`" :view-box="glyph.viewBox">
+  <svg :class="`icon ${className || ''}`" :viewBox="glyph.viewBox">
     <use :xlink:href="`#${glyph.id}`" />
   </svg>
 </template>
