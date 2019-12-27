@@ -46,7 +46,7 @@ describe('posting a new song', function() {
 
       const results = await page.$('[data-test="search-results"]');
       const wolvesLink = (await results!.$x(
-        "//a[contains(text(), 'Kanye West')]"
+        "//a[contains(., 'Kanye West')][contains(., 'Wolves')]"
       ))[0];
 
       await wolvesLink.click();
