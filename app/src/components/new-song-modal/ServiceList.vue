@@ -1,8 +1,8 @@
 <template>
-  <div>
+  <div class="service-list">
     <p>your pals will be able to stream this song on:</p>
 
-    <ul class="service-list">
+    <ul>
       <li>
         <span v-if="details.spotifyId">✅</span><span v-else>❌</span> spotify
       </li>
@@ -35,10 +35,22 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '../../../styles/mixins.scss';
+
 .service-list {
   text-align: left;
-  li {
-    line-height: 2em;
+  margin-bottom: 1em;
+
+  ul {
+    margin: 0;
+    li {
+      line-height: 2em;
+    }
+  }
+
+  @media (max-width: $breakpoint-small) {
+    font-size: 14px;
+    line-height: 20px;
   }
 }
 </style>

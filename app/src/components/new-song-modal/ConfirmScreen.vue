@@ -3,9 +3,9 @@
     class="confirm-screen"
     :style="{ minHeight: '100%', display: 'flex', flexFlow: 'column' }"
   >
-    <p>
-      you're posting <strong>{{ songLabel }}</strong>
-    </p>
+    <div :style="{ marginBottom: '24px' }">
+      <song-preview :song="selectedSong" />
+    </div>
 
     <template v-if="loadedDetails">
       <div>
@@ -49,6 +49,7 @@ import { mapState } from 'vuex';
 import serializeSongLabel from '../../util/serializeSongLabel';
 import TwitterShareField from './TwitterShareField.vue';
 import ServiceList from './ServiceList.vue';
+import SongPreview from './SongPreview.vue';
 import {
   getDefaultTweet,
   getTweetLength,
@@ -56,7 +57,7 @@ import {
 } from '../../util/songTweet';
 
 export default {
-  components: { TwitterShareField, ServiceList },
+  components: { TwitterShareField, ServiceList, SongPreview },
 
   props: ['selectedSong'],
 
