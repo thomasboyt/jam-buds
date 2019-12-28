@@ -79,11 +79,14 @@ export default {
       }
     },
 
-    handleClickItem() {
+    handleClickItem(e) {
       this.isOpen = false;
+      e.stopPropagation();
     },
 
-    async handleClickDelete() {
+    async handleClickDelete(e) {
+      e.stopPropagation();
+
       const confirmedDelete = window.confirm(
         'Are you sure you want to remove your post of this song?'
       );
