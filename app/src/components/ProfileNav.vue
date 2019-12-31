@@ -7,7 +7,11 @@
 
     <div class="user-header-top">
       <page-header :title="name" />
-      <follow-toggle v-if="showFollowToggle" :name="name" />
+      <div class="cta-container">
+        <slot name="cta">
+          <follow-toggle v-if="showFollowToggle" :name="name" />
+        </slot>
+      </div>
     </div>
 
     <link-tabs :link-prefix="`/users/${name}`" :links="links" />
@@ -36,6 +40,10 @@ export default {
         {
           to: '/liked',
           label: 'Liked',
+        },
+        {
+          to: '/mixtapes',
+          label: 'Mixtapes',
         },
         {
           to: '/following',
@@ -73,7 +81,7 @@ export default {
       flex: 0 0 auto;
     }
 
-    .follow-toggle {
+    .cta-container {
       margin-left: auto;
     }
   }

@@ -63,6 +63,15 @@ const profile = {
       this.commit('setViewedProfile', userProfile);
       this.commit('setFollowers', followers);
     },
+
+    async loadProfileMixtapes(context, userName) {
+      const data = await context.dispatch('loadPlaylist', {
+        key: `${userName}/mixtapes`,
+        url: `/users/${userName}/mixtapes`,
+      });
+
+      this.commit('setViewedProfile', data.userProfile);
+    },
   },
 };
 

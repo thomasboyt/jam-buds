@@ -37,10 +37,12 @@ function serializePostListMixtapeItem(row: any): PostListMixtapeItem {
 }
 
 export function serializePostListItem(row: any): PostListItem {
-  if (row.song.id !== null) {
+  if (row.song && row.song.id !== null) {
     return serializePostListSongItem(row);
-  } else {
+  } else if (row.mixtape) {
     return serializePostListMixtapeItem(row);
+  } else {
+    throw new Error('cannot serialize post item');
   }
 }
 

@@ -1,7 +1,11 @@
 import { Router } from 'express';
 import wrapAsyncRoute from '../util/wrapAsyncRoute';
 
-import { UserModel } from '../models/user';
+import {
+  UserModel,
+  getUserByName,
+  getUserProfileForUser,
+} from '../models/user';
 
 import { isAuthenticated, getUserFromRequest } from '../auth';
 import {
@@ -12,12 +16,14 @@ import {
   reorderMixtapeSongs,
   setMixtapeTitle,
   publishMixtape,
-  getDraftMixtapeIdForUserId,
   deleteMixtape,
+  getPublishedMixtapesByUserId,
+  getDraftMixtapesByUserId,
 } from '../models/mixtapes';
 import { getOrCreateSong, hydrateSongMeta } from '../models/song';
-import { Mixtape } from '../resources';
+import { Mixtape, UserPostList } from '../resources';
 import { JamBudsHTTPError } from '../util/errors';
+import { ENTRY_PAGE_LIMIT } from '../constants';
 
 function validateMixtapeExists(mixtape: Mixtape | null): Mixtape {
   if (!mixtape) {
@@ -95,16 +101,6 @@ export default function registerMixtapeEndpoints(router: Router) {
 
       // TODO: validate
       const title = req.body.title;
-
-      // XXX: Return existing draft mixtape if one already exists. This will
-      // probably go away or change once the mixtape list is implemented!
-      const existingId = await getDraftMixtapeIdForUserId(user.id);
-
-      if (existingId) {
-        return res.json({
-          mixtapeId: existingId,
-        });
-      }
 
       const id = await createMixtapeForUser(user, { title });
 
@@ -238,15 +234,6 @@ export default function registerMixtapeEndpoints(router: Router) {
     })
   );
 
-  // Delete a mixtape owned by the current user
-  // router.delete(
-  //   '/mixtapes/:id',
-  //   isAuthenticated,
-  //   wrapAsyncRoute(async (req, res) => {
-  //     const user = res.locals.user as UserModel;
-  //   })
-  // );
-
   // Publish a mixtape owned by the current user
   router.post(
     '/mixtapes/:mixtapeId/publish',
@@ -285,6 +272,54 @@ export default function registerMixtapeEndpoints(router: Router) {
       await setMixtapeTitle({ mixtapeId: mixtape.id, title: req.body.title });
 
       res.json({ succes: true });
+    })
+  );
+
+  // Get mixtapes for a specific user
+  router.get(
+    '/users/:userName/mixtapes',
+    wrapAsyncRoute(async (req, res) => {
+      const userName = req.params.userName;
+      const user = await getUserByName(userName);
+      const currentUser = await getUserFromRequest(req);
+
+      if (!user) {
+        res.status(400).json({
+          error: `Could not find user with name ${userName}`,
+        });
+
+        return;
+      }
+
+      const beforeTimestamp = req.query.before;
+      const afterTimestamp = req.query.after;
+
+      const items = await getPublishedMixtapesByUserId(user.id, {
+        currentUserId: currentUser ? currentUser.id : undefined,
+        beforeTimestamp,
+        afterTimestamp,
+      });
+
+      const resp: UserPostList = {
+        userProfile: await getUserProfileForUser(user),
+        items,
+        limit: ENTRY_PAGE_LIMIT,
+      };
+
+      res.json(resp);
+    })
+  );
+
+  // Get draft mixtapes for the current user
+  router.get(
+    '/draft-mixtapes',
+    isAuthenticated,
+    wrapAsyncRoute(async (req, res) => {
+      const user = res.locals.user as UserModel;
+
+      const mixtapesList = await getDraftMixtapesByUserId(user.id);
+
+      res.json(mixtapesList);
     })
   );
 }

@@ -24,8 +24,20 @@
         <router-link
           :to="`/users/${currentUserName}`"
           @click.native="handleClick"
+          :class="{
+            'profile-link': true,
+            'profile-link-active': profileActive,
+          }"
         >
           your profile
+        </router-link>
+      </li>
+      <li>
+        <router-link
+          :to="`/users/${currentUserName}/mixtapes`"
+          @click.native="handleClick"
+        >
+          your mixtapes
         </router-link>
       </li>
       <li>
@@ -68,6 +80,12 @@ export default {
     },
     authenticated() {
       return this.$store.state.auth.authenticated;
+    },
+    profileActive() {
+      return (
+        this.$route.path.startsWith(`/users/${this.currentUserName}`) &&
+        this.$route.path !== `/users/${this.currentUserName}/mixtapes`
+      );
     },
   },
 
@@ -149,8 +167,10 @@ export default {
       padding: 8px 0;
 
       &.router-link-exact-active,
-      // prevent "your feed" from always being highlighted!
-      &.router-link-active:not([href='/']) {
+      // 1) prevent "your feed" from always being highlighted!
+      // 2) special case so profile is always highlighted unless "your mixtapes" is active
+      &.router-link-active:not([href='/']):not(.profile-link),
+      &.profile-link-active {
         color: white;
         font-weight: 600;
       }

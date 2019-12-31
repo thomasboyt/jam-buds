@@ -40,11 +40,13 @@ const currentUser = {
     updateUserPrivacy(state, { showInPublicFeed }) {
       state.showInPublicFeed = showInPublicFeed;
     },
+    setDraftMixtapes(state, mixtapes) {
+      state.draftMixtapes = mixtapes;
+    },
   },
 
   actions: {
     async followUser(context, name) {
-      console.log('following', name);
       const resp = await this.$axios({
         url: '/following',
         method: 'POST',
@@ -71,6 +73,15 @@ const currentUser = {
       });
 
       context.commit('setFriendSuggestions', resp.data.users);
+    },
+
+    async loadDraftMixtapes(context) {
+      const resp = await this.$axios({
+        url: `/draft-mixtapes`,
+        method: 'GET',
+      });
+
+      context.commit('setDraftMixtapes', resp.data);
     },
   },
 
