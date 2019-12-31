@@ -38,6 +38,10 @@ export default {
           label: 'Liked',
         },
         {
+          to: '/mixtapes',
+          label: 'Mixtapes',
+        },
+        {
           to: '/following',
           label: 'Following',
         },

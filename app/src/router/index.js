@@ -14,6 +14,7 @@ import UserPlaylistPage from '../pages/users/UserPlaylistPage.vue';
 import UserLikedPage from '../pages/users/UserLikedPage.vue';
 import UserFollowingPage from '../pages/users/UserFollowingPage.vue';
 import UserFollowersPage from '../pages/users/UserFollowersPage.vue';
+import UserMixtapesPage from '../pages/users/UserMixtapesPage.vue';
 
 import PublicFeedPage from '../pages/PublicFeedPage.vue';
 import FindFriendsPage from '../pages/FindFriendsPage.vue';
@@ -54,6 +55,7 @@ export default function createRouter() {
           { path: 'liked', component: UserLikedPage },
           { path: 'following', component: UserFollowingPage },
           { path: 'followers', component: UserFollowersPage },
+          { path: 'mixtapes', component: UserMixtapesPage },
         ],
       },
 
