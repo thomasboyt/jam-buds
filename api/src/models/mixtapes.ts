@@ -4,7 +4,7 @@ import { date as dateType } from 'io-ts-types/lib/date';
 import { db } from '../db';
 import { UserModel, getUserProfileForUser, getUserByUserId } from './user';
 import { selectSongsQuery, serializeSong } from './song';
-import { Mixtape, Song } from '../resources';
+import { Mixtape, Song, DraftMixtapeListItem } from '../resources';
 import validateOrThrow from '../util/validateOrThrow';
 import { tPropNames, namespacedAliases } from './utils';
 
@@ -227,4 +227,31 @@ export async function getDraftMixtapeIdForUserId(
   }
 
   return mixtape.id;
+}
+
+export async function getDraftMixtapesByUserId(
+  userId: number
+): Promise<DraftMixtapeListItem[]> {
+  const query = db!('mixtapes')
+    .select(
+      db!.raw(
+        namespacedAliases('mixtapes', 'mixtape', tPropNames(MixtapeModelV))
+      )
+    )
+    .where({
+      'mixtapes.user_id': userId,
+      'mixtapes.published_at': null,
+    })
+    .orderBy('mixtapes.created_at', 'desc');
+
+  const rows = await query;
+
+  return rows.map((row: any) => {
+    const mixtape = validateOrThrow(MixtapeModelV, row);
+
+    return {
+      id: mixtape.id,
+      title: mixtape.title,
+    };
+  });
 }

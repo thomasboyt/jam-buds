@@ -14,6 +14,7 @@ import {
   publishMixtape,
   getDraftMixtapeIdForUserId,
   deleteMixtape,
+  getDraftMixtapesByUserId,
 } from '../models/mixtapes';
 import { getOrCreateSong, hydrateSongMeta } from '../models/song';
 import { Mixtape } from '../resources';
@@ -238,15 +239,6 @@ export default function registerMixtapeEndpoints(router: Router) {
     })
   );
 
-  // Delete a mixtape owned by the current user
-  // router.delete(
-  //   '/mixtapes/:id',
-  //   isAuthenticated,
-  //   wrapAsyncRoute(async (req, res) => {
-  //     const user = res.locals.user as UserModel;
-  //   })
-  // );
-
   // Publish a mixtape owned by the current user
   router.post(
     '/mixtapes/:mixtapeId/publish',
@@ -285,6 +277,19 @@ export default function registerMixtapeEndpoints(router: Router) {
       await setMixtapeTitle({ mixtapeId: mixtape.id, title: req.body.title });
 
       res.json({ succes: true });
+    })
+  );
+
+  // Get draft mixtapes for the current user
+  router.get(
+    '/draft-mixtapes',
+    isAuthenticated,
+    wrapAsyncRoute(async (req, res) => {
+      const user = res.locals.user as UserModel;
+
+      const mixtapesList = getDraftMixtapesByUserId(user.id);
+
+      res.json(mixtapesList);
     })
   );
 }

@@ -99,6 +99,11 @@ export interface Mixtape {
   author: UserProfile;
 }
 
+export interface DraftMixtapeListItem {
+  id: number;
+  title: string;
+}
+
 /*
  * --- users ---
  */
