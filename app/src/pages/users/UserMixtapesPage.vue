@@ -1,8 +1,12 @@
 <template>
   <div>
-    <profile-nav :title="title" />
+    <profile-nav :title="title">
+      <template #cta v-if="isCurrentUserPage">
+        <create-mixtape-button />
+      </template>
+    </profile-nav>
 
-    <panel v-if="draftMixtapes.length">
+    <panel v-if="isCurrentUserPage && draftMixtapes.length">
       <p>You've started on the following draft mixtapes:</p>
       <ul>
         <li v-for="mixtape of draftMixtapes" :key="mixtape.id">
@@ -38,6 +42,7 @@ import ProfileNav from '../../components/ProfileNav.vue';
 import Playlist from '../../components/playlist/Playlist.vue';
 import MixtapeItem from '../../components/playlist/MixtapeItem.vue';
 import Panel from '../../components/Panel.vue';
+import CreateMixtapeButton from '../../components/CreateMixtapeButton.vue';
 
 export default {
   components: {
@@ -45,6 +50,7 @@ export default {
     Playlist,
     MixtapeItem,
     Panel,
+    CreateMixtapeButton,
   },
 
   metaInfo() {
@@ -74,6 +80,13 @@ export default {
     ...mapState({
       name: (state) => state.profile.user.name,
       draftMixtapes: (state) => state.currentUser.draftMixtapes,
+
+      isCurrentUserPage(state) {
+        return (
+          state.auth.authenticated &&
+          state.currentUser.name === this.$route.params.id
+        );
+      },
     }),
     playlistKey() {
       return `${this.name}/mixtapes`;

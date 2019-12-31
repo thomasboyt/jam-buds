@@ -3,7 +3,6 @@
     <div class="header-row">
       <page-header title="your feed" />
       <div class="header-row-button-container">
-        <create-mixtape-button>new mixtape</create-mixtape-button>
         <add-song-button @click="handleAddSong">+ post a song!</add-song-button>
       </div>
     </div>
@@ -41,7 +40,6 @@ import { mapState } from 'vuex';
 
 import Playlist from './playlist/Playlist.vue';
 import AddSongButton from './AddSongButton.vue';
-import CreateMixtapeButton from './CreateMixtapeButton.vue';
 import PostItem from './playlist/PostItem.vue';
 import PageHeader from './PageHeader.vue';
 import NotificationsFeedSection from './NotificationsFeedSection.vue';
@@ -51,7 +49,6 @@ export default {
     Playlist,
     AddSongButton,
     PostItem,
-    CreateMixtapeButton,
     PageHeader,
     NotificationsFeedSection,
   },

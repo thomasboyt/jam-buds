@@ -1,11 +1,15 @@
 <template>
-  <button @click="handleCreateMixtape" :disabled="requestInFlight">
-    create mixtape
-  </button>
+  <add-song-button @click="handleCreateMixtape" :disabled="requestInFlight">
+    + new mixtape
+  </add-song-button>
 </template>
 
 <script>
+import AddSongButton from './AddSongButton.vue';
+
 export default {
+  components: { AddSongButton },
+
   data() {
     return {
       requestInFlight: false,
@@ -36,21 +40,3 @@ export default {
   },
 };
 </script>
-
-<style scoped lang="scss">
-@import '../../styles/mixins.scss';
-
-button {
-  text-decoration: underline;
-  margin-right: 15px;
-
-  &:hover,
-  &:active {
-    text-decoration: none;
-  }
-
-  @media (max-width: $breakpoint-small) {
-    display: none;
-  }
-}
-</style>
