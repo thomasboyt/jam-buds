@@ -1,9 +1,14 @@
 import Vue from 'vue';
 
 function denormalizeItem(entry) {
+  const entryId = entry.song
+    ? `song:${entry.song.id}`
+    : `mixtape:${entry.mixtape.id}`;
+
   const denormalizedItem = {
     ...entry,
     songId: entry.song && entry.song.id,
+    id: entryId,
   };
 
   delete denormalizedItem.song;
@@ -36,15 +41,19 @@ const playlists = {
     addToPlaylistHead(state, { key, items }) {
       const denormalizedItems = items.map((entry) => denormalizeItem(entry));
 
+      // if a playlist item we've already loaded "reappears" further up in the
+      // feed, we need to remove it from its old spot
+      //
+      // this happens if the current user posts a song that was already in their
+      // feed, or when the feed is refreshed due to fuzziness in the after=
+      // param
+      //
       // XXX: This is like O(n^2)-ish but probably fine
       for (let newItem of denormalizedItems) {
         for (let existingItem of state[key].items) {
           if (newItem.id === existingItem.id) {
-            // if a playlist item we've already loaded "reappears" further up in
-            // the feed, this means that the current user has reposted it, and
-            // we need to remove it from its old spot
             state[key].items = state[key].items.filter(
-              (playlistItem) => playlistItem.songId !== newItem.songId
+              (playlistItem) => playlistItem.id !== newItem.id
             );
           }
         }
