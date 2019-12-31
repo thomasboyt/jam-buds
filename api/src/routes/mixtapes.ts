@@ -1,7 +1,11 @@
 import { Router } from 'express';
 import wrapAsyncRoute from '../util/wrapAsyncRoute';
 
-import { UserModel } from '../models/user';
+import {
+  UserModel,
+  getUserByName,
+  getUserProfileForUser,
+} from '../models/user';
 
 import { isAuthenticated, getUserFromRequest } from '../auth';
 import {
@@ -14,11 +18,13 @@ import {
   publishMixtape,
   getDraftMixtapeIdForUserId,
   deleteMixtape,
+  getPublishedMixtapesByUserId,
   getDraftMixtapesByUserId,
 } from '../models/mixtapes';
 import { getOrCreateSong, hydrateSongMeta } from '../models/song';
-import { Mixtape } from '../resources';
+import { Mixtape, UserPostList } from '../resources';
 import { JamBudsHTTPError } from '../util/errors';
+import { ENTRY_PAGE_LIMIT } from '../constants';
 
 function validateMixtapeExists(mixtape: Mixtape | null): Mixtape {
   if (!mixtape) {
@@ -280,6 +286,41 @@ export default function registerMixtapeEndpoints(router: Router) {
     })
   );
 
+  // Get mixtapes for a specific user
+  router.get(
+    '/users/:userName/mixtapes',
+    wrapAsyncRoute(async (req, res) => {
+      const userName = req.params.userName;
+      const user = await getUserByName(userName);
+      const currentUser = await getUserFromRequest(req);
+
+      if (!user) {
+        res.status(400).json({
+          error: `Could not find user with name ${userName}`,
+        });
+
+        return;
+      }
+
+      const beforeTimestamp = req.query.before;
+      const afterTimestamp = req.query.after;
+
+      const items = await getPublishedMixtapesByUserId(user.id, {
+        currentUserId: currentUser ? currentUser.id : undefined,
+        beforeTimestamp,
+        afterTimestamp,
+      });
+
+      const resp: UserPostList = {
+        userProfile: await getUserProfileForUser(user),
+        items,
+        limit: ENTRY_PAGE_LIMIT,
+      };
+
+      res.json(resp);
+    })
+  );
+
   // Get draft mixtapes for the current user
   router.get(
     '/draft-mixtapes',
@@ -287,7 +328,7 @@ export default function registerMixtapeEndpoints(router: Router) {
     wrapAsyncRoute(async (req, res) => {
       const user = res.locals.user as UserModel;
 
-      const mixtapesList = getDraftMixtapesByUserId(user.id);
+      const mixtapesList = await getDraftMixtapesByUserId(user.id);
 
       res.json(mixtapesList);
     })

@@ -4,9 +4,16 @@ import { date as dateType } from 'io-ts-types/lib/date';
 import { db } from '../db';
 import { UserModel, getUserProfileForUser, getUserByUserId } from './user';
 import { selectSongsQuery, serializeSong } from './song';
-import { Mixtape, Song, DraftMixtapeListItem } from '../resources';
+import {
+  Mixtape,
+  Song,
+  PostListItem,
+  DraftMixtapeListItem,
+} from '../resources';
 import validateOrThrow from '../util/validateOrThrow';
-import { tPropNames, namespacedAliases } from './utils';
+import { tPropNames, namespacedAliases, paginate } from './utils';
+import { ENTRY_PAGE_LIMIT } from '../constants';
+import { serializePostListItem } from './feed';
 
 export const MixtapeModelV = t.type({
   id: t.number,
@@ -22,12 +29,13 @@ export const MixtapeSongEntryModelV = t.type({
   rank: t.number,
 });
 
-export const MixtapePreviewModelV = t.type({
-  id: t.number,
-  title: t.string,
-  songCount: t.string,
-  authorName: t.string,
-});
+export const MixtapePreviewModelV = t.intersection([
+  MixtapeModelV,
+  t.type({
+    songCount: t.string,
+    authorName: t.string,
+  }),
+]);
 
 export function selectMixtapePreviews() {
   return [
@@ -229,6 +237,44 @@ export async function getDraftMixtapeIdForUserId(
   return mixtape.id;
 }
 
+interface QueryOptions {
+  currentUserId?: number;
+  beforeTimestamp?: string;
+  afterTimestamp?: string;
+}
+
+export async function getPublishedMixtapesByUserId(
+  userId: number,
+  opts: QueryOptions = {}
+): Promise<PostListItem[]> {
+  let query = db!('mixtapes')
+    .select(selectMixtapePreviews())
+    .select({
+      timestamp: 'mixtapes.published_at',
+      userName: 'users.name',
+    })
+    .join('users', { 'users.id': 'mixtapes.user_id' })
+    .where({ 'mixtapes.user_id': userId })
+    .whereNot({ 'mixtapes.published_at': null })
+    .orderBy('mixtapes.published_at', 'desc');
+
+  query = paginate(query, {
+    limit: ENTRY_PAGE_LIMIT,
+    before: opts.beforeTimestamp,
+    after: opts.afterTimestamp,
+    columnName: 'mixtapes.published_at',
+  });
+
+  const rows = await query;
+
+  return rows.map((row: any) =>
+    serializePostListItem({
+      ...row,
+      userNames: [row.userName],
+    })
+  );
+}
+
 export async function getDraftMixtapesByUserId(
   userId: number
 ): Promise<DraftMixtapeListItem[]> {
@@ -247,7 +293,7 @@ export async function getDraftMixtapesByUserId(
   const rows = await query;
 
   return rows.map((row: any) => {
-    const mixtape = validateOrThrow(MixtapeModelV, row);
+    const mixtape = validateOrThrow(MixtapeModelV, row.mixtape);
 
     return {
       id: mixtape.id,
