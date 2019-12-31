@@ -225,18 +225,6 @@ export async function getSongsByMixtapeId(
   return songRows.map((row: any) => serializeSong(row));
 }
 
-export async function getDraftMixtapeIdForUserId(
-  userId: number
-): Promise<number | null> {
-  const [mixtape] = await db!('mixtapes').where({ userId, publishedAt: null });
-
-  if (!mixtape) {
-    return null;
-  }
-
-  return mixtape.id;
-}
-
 interface QueryOptions {
   currentUserId?: number;
   beforeTimestamp?: string;
