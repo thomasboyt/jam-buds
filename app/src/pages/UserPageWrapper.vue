@@ -1,6 +1,10 @@
 <template>
   <sidebar-wrapper v-slot="{ withSidebar }">
-    <main-wrapper :with-sidebar="withSidebar" :color-scheme="colorScheme">
+    <main-wrapper
+      :with-sidebar="withSidebar"
+      :with-color-scheme-override="true"
+      :color-scheme="colorScheme"
+    >
       <router-view />
     </main-wrapper>
   </sidebar-wrapper>

@@ -18,7 +18,7 @@ export default {
   components: {
     LoggedOutHeader,
   },
-  props: ['colorScheme', 'withSidebar'],
+  props: ['colorScheme', 'withSidebar', 'withColorSchemeOverride'],
 
   computed: {
     ...mapState({
@@ -29,12 +29,10 @@ export default {
     cssTheme() {
       let colorScheme;
 
-      if (this.colorScheme) {
-        colorScheme = this.colorScheme;
-      } else if (this.currentUserScheme) {
-        colorScheme = this.currentUserScheme;
+      if (this.withColorSchemeOverride) {
+        colorScheme = this.colorScheme || defaultColorScheme;
       } else {
-        colorScheme = defaultColorScheme;
+        colorScheme = this.currentUserScheme || defaultColorScheme;
       }
 
       return getCSSVariablesFromColorScheme(colorScheme);

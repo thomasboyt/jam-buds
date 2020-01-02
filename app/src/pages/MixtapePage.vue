@@ -2,6 +2,7 @@
   <sidebar-wrapper v-slot="{ withSidebar }">
     <main-wrapper
       :with-sidebar="withSidebar"
+      :with-color-scheme-override="true"
       :color-scheme="mixtape.author.colorScheme"
     >
       <share-landing-banner>
