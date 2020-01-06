@@ -79,6 +79,13 @@ export default {
       } finally {
         this.requestInFlight = false;
       }
+
+      this.$store.dispatch('setFlashMessage', {
+        message: this.newsletterSubscribed
+          ? 'Thanks for subscribing!'
+          : "You've been unsubscribed from the newsletter.",
+        clearMs: 4000,
+      });
     },
   },
 };

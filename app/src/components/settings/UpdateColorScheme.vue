@@ -67,6 +67,11 @@ export default {
       }
 
       this.$store.commit('updateColorScheme', { ...this.colorScheme });
+
+      this.$store.dispatch('setFlashMessage', {
+        message: 'Your color scheme has been updated.',
+        clearMs: 4000,
+      });
     },
   },
 };

@@ -64,6 +64,13 @@ export default {
       this.$store.commit('updateUserPrivacy', {
         showInPublicFeed: this.showInPublicFeed,
       });
+
+      this.$store.dispatch('setFlashMessage', {
+        message: this.showInPublicFeed
+          ? 'Your posts are now on the public feed!'
+          : 'Your posts are now hidden from the public feed.',
+        clearMs: 4000,
+      });
     },
   },
 };
