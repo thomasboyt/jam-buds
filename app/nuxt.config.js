@@ -79,7 +79,7 @@ export default {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ['~/plugins/axios'],
+  plugins: ['~/plugins/axios', '~/plugins/spriteExtract'],
   /*
    ** Nuxt.js dev-modules
    */
@@ -87,11 +87,7 @@ export default {
   /*
    ** Nuxt.js modules
    */
-  modules: [
-    '@nuxtjs/axios',
-    // '@nuxtjs/dotenv',
-    '@nuxtjs/proxy',
-  ],
+  modules: ['@nuxtjs/axios', '@nuxtjs/proxy', '~modules/spriteInject'],
   /*
    ** Axios module configuration
    ** See https://axios.nuxtjs.org/options
@@ -118,6 +114,39 @@ export default {
     /*
      ** You can extend webpack config here
      */
-    // extend(config, ctx) {},
+    extend(config) {
+      removeExistingSvgRule(config);
+
+      config.module.rules.push({
+        test: /assets\/(.*)\.svg$/,
+        loader: 'svg-sprite-loader',
+        options: {
+          esModule: false,
+        },
+      });
+    },
   },
 };
+
+// Borrowed from https://github.com/nuxt-community/svg-module/blob/master/lib/module.js
+function removeExistingSvgRule(config) {
+  const ORIGINAL_TEST = /\.(png|jpe?g|gif|svg|webp)$/;
+  const REPLACEMENT_TEST = /\.(png|jpe?g|gif|webp)$/;
+
+  const rules = config.module.rules;
+
+  // Remove any original svg rules
+  const svgRules = rules.filter((rule) => rule.test.test('.svg'));
+
+  for (const rule of svgRules) {
+    if (
+      rule.test.source !== ORIGINAL_TEST.source &&
+      rule.test.source !== REPLACEMENT_TEST.source
+    ) {
+      throw new Error(
+        "nuxt-svg: Unexpected '.svg' rule in the webpack configuration"
+      );
+    }
+    rule.test = REPLACEMENT_TEST;
+  }
+}

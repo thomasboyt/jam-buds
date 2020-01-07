@@ -12,8 +12,8 @@ export default function({ $axios }) {
     }
   }
 
-  $axios.onRequest((config) => {
-    // TODO: Add a nice request log somehow
-    // console.log('Making request to ' + config.url);
-  });
+  // TODO: Add a nice request log somehow
+  // $axios.onRequest((config) => {
+  //   console.log('Making request to ' + config.url);
+  // });
 }
