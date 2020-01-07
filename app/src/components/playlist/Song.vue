@@ -70,16 +70,23 @@ export default {
         return state.songs[this.songId];
       },
 
+      // users can't delete other ppl's posts
       showDeleteMenuItem(state) {
-        // users can't delete other ppl's posts
-        return (
-          state.auth.authenticated &&
-          // TODO: this is a good argument for turning the userNames on a
-          // playlist entry resource into only users who have _posted_ a song so
-          // it doesn't mix up w/ likes...
-          this.postedUserNames &&
-          this.postedUserNames.includes(state.currentUser.name)
-        );
+        if (!state.auth.authenticated) {
+          return false;
+        }
+
+        if (this.postedUserNames) {
+          return this.postedUserNames.includes(state.currentUser.name);
+        }
+
+        // HACK: This should probably use props passed down instead of going off
+        // of route
+        if (this.$route.path === `/users/${state.currentUser.name}`) {
+          return true;
+        }
+
+        return false;
       },
     }),
 
