@@ -124,6 +124,8 @@ export default {
           esModule: false,
         },
       });
+
+      config.devtool = '#source-map';
     },
   },
 };
