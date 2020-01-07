@@ -6,3 +6,4 @@ errorShots/
 secrets/
 api/dist
 tmp/
+.nuxt/

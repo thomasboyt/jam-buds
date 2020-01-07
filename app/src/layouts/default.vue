@@ -3,7 +3,7 @@
     <mobile-nav />
 
     <div class="page-container">
-      <slot />
+      <nuxt />
     </div>
 
     <add-song-modal
