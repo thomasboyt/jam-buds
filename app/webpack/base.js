@@ -39,7 +39,7 @@ const baseConfig = {
   resolve: {
     extensions: ['.jsx', '.js'],
     alias: {
-      '~': path.resolve(__dirname, '..'),
+      '~': path.resolve(__dirname, '../src'),
     },
   },
 
