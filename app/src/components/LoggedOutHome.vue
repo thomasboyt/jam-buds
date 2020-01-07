@@ -63,7 +63,7 @@
 
 <script>
 import SignInForm from './SignInForm.vue';
-import corgi from '../../assets/ghettoblaster_corgi.png';
+import corgi from '~/assets/ghettoblaster_corgi.png';
 import getGradient from '../util/gradients';
 
 export default {

@@ -28,7 +28,7 @@
 <script>
 import Panel from './Panel.vue';
 import Icon from './Icon.vue';
-import closeIcon from '../../assets/close.svg';
+import closeIcon from '~/assets/close.svg';
 
 export default {
   components: { Panel, Icon },

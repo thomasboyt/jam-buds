@@ -13,8 +13,8 @@
 
 <script>
 import Icon from '../Icon.vue';
-const albumPlaceholderIcon = require('../../../assets/record.svg');
-const playIcon = require('../../../assets/play-filled.svg');
+const albumPlaceholderIcon = require('~/assets/record.svg');
+const playIcon = require('~/assets/play-filled.svg');
 
 export default {
   components: { Icon },

@@ -41,9 +41,9 @@ import Icon from '../Icon.vue';
 import AudioPlayerSongDisplay from './AudioPlayerSongDisplay.vue';
 import LoadingSpinner from './LoadingSpinner.vue';
 
-const playIcon = require('../../../assets/play.svg');
-const pauseIcon = require('../../../assets/pause.svg');
-const nextIcon = require('../../../assets/next.svg');
+const playIcon = require('~/assets/play.svg');
+const pauseIcon = require('~/assets/pause.svg');
+const nextIcon = require('~/assets/next.svg');
 
 export default {
   components: {

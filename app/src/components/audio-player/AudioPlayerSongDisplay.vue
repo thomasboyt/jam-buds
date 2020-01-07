@@ -25,7 +25,7 @@
 <script>
 import Icon from '../Icon.vue';
 
-const placeholderIcon = require('../../../assets/record.svg');
+const placeholderIcon = require('~/assets/record.svg');
 
 export default {
   components: {

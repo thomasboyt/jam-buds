@@ -16,8 +16,8 @@
 import Icon from '../Icon.vue';
 import { mapState } from 'vuex';
 
-const heartOpenIcon = require('../../../assets/heart_open.svg');
-const heartFilledIcon = require('../../../assets/heart_filled.svg');
+const heartOpenIcon = require('~/assets/heart_open.svg');
+const heartFilledIcon = require('~/assets/heart_filled.svg');
 
 export default {
   components: { Icon },
