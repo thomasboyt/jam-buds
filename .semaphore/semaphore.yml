@@ -96,6 +96,6 @@ blocks:
       - name: Integration Tests
         commands:
           - cd ../app
-          - npm run build-assets
+          - npm run build
           - cd ../spec
           - npm test

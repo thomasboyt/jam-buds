@@ -29,7 +29,7 @@ blocks:
             - cd app
             - cache restore node-modules-app-$SEMAPHORE_GIT_BRANCH-$(checksum package-lock.json),node-modules-app-$SEMAPHORE_GIT_BRANCH,node-modules-app-master
             - npm install
-            - npm run build-assets
+            - npm run build
             - docker build -t "gcr.io/${GCP_PROJECT_ID}/jambuds-app" .
             - docker push "gcr.io/${GCP_PROJECT_ID}/jambuds-app"
 
