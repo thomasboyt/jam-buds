@@ -2,16 +2,17 @@ import * as Knex from 'knex';
 
 import { db } from '../db';
 import { ENTRY_PAGE_LIMIT } from '../constants';
-import {
-  PostListSongItem,
-  PostListItem,
-  PostListMixtapeItem,
-} from '../resources';
+import { selectSongs } from './song';
 import { serializeSong, selectSongsQuery } from './song';
 import { MixtapePreviewModelV, selectMixtapePreviews } from './mixtapes';
+import {
+  PlaylistSongItem,
+  PlaylistItem,
+  PlaylistMixtapeItem,
+} from '../resources';
 import validateOrThrow from '../util/validateOrThrow';
 
-function serializePostListSongItem(row: any): PostListSongItem {
+function serializePlaylistSongItem(row: any): PlaylistSongItem {
   return {
     type: 'song',
     song: serializeSong(row),
@@ -20,7 +21,7 @@ function serializePostListSongItem(row: any): PostListSongItem {
   };
 }
 
-function serializePostListMixtapeItem(row: any): PostListMixtapeItem {
+function serializePlaylistMixtapeItem(row: any): PlaylistMixtapeItem {
   const preview = validateOrThrow(MixtapePreviewModelV, row.mixtape);
 
   return {
@@ -36,11 +37,11 @@ function serializePostListMixtapeItem(row: any): PostListMixtapeItem {
   };
 }
 
-export function serializePostListItem(row: any): PostListItem {
+export function serializePlaylistItem(row: any): PlaylistItem {
   if (row.song && row.song.id !== null) {
-    return serializePostListSongItem(row);
+    return serializePlaylistSongItem(row);
   } else if (row.mixtape) {
-    return serializePostListMixtapeItem(row);
+    return serializePlaylistMixtapeItem(row);
   } else {
     throw new Error('cannot serialize post item');
   }
@@ -52,10 +53,66 @@ interface QueryOptions {
   afterTimestamp?: string;
 }
 
+export async function getPostsByUserId(
+  userId: number,
+  opts: QueryOptions = {}
+): Promise<PlaylistItem[]> {
+  let query = db!('posts')
+    .select(selectSongs(opts))
+    .select(selectMixtapePreviews())
+    .select({
+      timestamp: 'posts.created_at',
+      userName: 'users.name',
+    })
+    .join('users', { 'users.id': 'posts.user_id' })
+    .leftOuterJoin('songs', { 'songs.id': 'posts.song_id' })
+    .leftOuterJoin('mixtapes', { 'mixtapes.id': 'posts.mixtape_id' })
+    .where({ 'posts.user_id': userId })
+    .orderBy('posts.created_at', 'desc');
+
+  query = paginate(query, {
+    limit: ENTRY_PAGE_LIMIT,
+    before: opts.beforeTimestamp,
+    after: opts.afterTimestamp,
+    columnName: 'posts.created_at',
+  });
+
+  const rows = await query;
+
+  return rows.map(serializePlaylistItem);
+}
+
+export async function getPublishedMixtapesByUserId(
+  userId: number,
+  opts: QueryOptions = {}
+): Promise<PlaylistItem[]> {
+  let query = db!('mixtapes')
+    .select(selectMixtapePreviews())
+    .select({
+      timestamp: 'mixtapes.published_at',
+      userName: 'users.name',
+    })
+    .join('users', { 'users.id': 'mixtapes.user_id' })
+    .where({ 'mixtapes.user_id': userId })
+    .whereNot({ 'mixtapes.published_at': null })
+    .orderBy('mixtapes.published_at', 'desc');
+
+  query = paginate(query, {
+    limit: ENTRY_PAGE_LIMIT,
+    before: opts.beforeTimestamp,
+    after: opts.afterTimestamp,
+    columnName: 'mixtapes.published_at',
+  });
+
+  const rows = await query;
+
+  return rows.map(serializePlaylistItem);
+}
+
 export async function getFeedByUserId(
   id: number,
   opts: QueryOptions = {}
-): Promise<PostListItem[]> {
+): Promise<PlaylistItem[]> {
   opts.currentUserId = id;
 
   // XXX: This wacky subquery (which probably performs like ass) ensures that
@@ -116,14 +173,14 @@ export async function getFeedByUserId(
 
   const rows = await query;
 
-  return rows.map(serializePostListItem);
+  return rows.map(serializePlaylistItem);
 }
 
 // XXX: A whole bunch of this is duplicated with getFeedByUserId, should
 // probably dedupe some day
 export async function getPublicFeed(
   opts: QueryOptions = {}
-): Promise<PostListItem[]> {
+): Promise<PlaylistItem[]> {
   let query = selectSongsQuery(db!('posts'), opts)
     .select([
       ...selectMixtapePreviews(),
@@ -153,5 +210,60 @@ export async function getPublicFeed(
 
   const rows = await query;
 
-  return rows.map(serializePostListItem);
+  return rows.map(serializePlaylistItem);
+}
+
+export async function getLikesByUserId(
+  userId: number,
+  opts: QueryOptions
+): Promise<PlaylistSongItem[]> {
+  const { currentUserId } = opts;
+
+  const query = selectSongsQuery(db!('likes'), { currentUserId })
+    .select([db!.raw('likes.created_at as timestamp')])
+    .join('songs', {
+      'songs.id': 'likes.song_id',
+    })
+    .join('users', {
+      'users.id': 'likes.user_id',
+    })
+    .where({
+      user_id: userId,
+    })
+    .orderBy('likes.id', 'desc');
+
+  const rows = await paginate(query, {
+    limit: ENTRY_PAGE_LIMIT,
+    before: opts.beforeTimestamp,
+    after: opts.afterTimestamp,
+    columnName: 'likes.created_at',
+  });
+
+  return rows.map(serializePlaylistSongItem);
+}
+
+interface PaginationOptions {
+  limit: number;
+  columnName: string;
+  before?: string;
+  after?: string;
+}
+
+/**
+ * Only use this for playlist pagination, due to the weird limiting rules
+ */
+export function paginate(query: Knex.QueryBuilder, opts: PaginationOptions) {
+  if (opts.before !== undefined) {
+    query = query.where(opts.columnName, '<', opts.before);
+  }
+  if (opts.after !== undefined) {
+    query = query.where(opts.columnName, '>', opts.after);
+  }
+
+  // after queries are unlimited since there's no UI for "head" pagination
+  if (opts.after === undefined) {
+    query = query.limit(opts.limit);
+  }
+
+  return query;
 }

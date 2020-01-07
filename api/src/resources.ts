@@ -20,17 +20,15 @@ export interface Song {
   likeCount: number;
 }
 
-export interface PostListMixtapeItem {
+export interface PlaylistMixtapeItem {
   type: 'mixtape';
   mixtape: MixtapePreview;
   timestamp: string;
 }
 
-export interface PostListSongItem {
+export interface PlaylistSongItem {
   type: 'song';
-
   song: Song;
-
   /**
    * Either the earliest time a song was posted by someone you follow, or the
    * earliest time _you_ posted a song.
@@ -43,39 +41,19 @@ export interface PostListSongItem {
   userNames: string[];
 }
 
-export type PostListItem = PostListSongItem | PostListMixtapeItem;
+export type PlaylistItem = PlaylistSongItem | PlaylistMixtapeItem;
 
-export interface PostList {
-  items: PostListItem[];
+export interface Playlist {
+  items: PlaylistItem[];
   limit: number;
 }
 
 /**
- * The post list for a specific user, used on the profile pages.
+ * The playlist for a specific user, used on the profile pages.
  */
-export interface UserPostList {
+export interface UserPlaylist {
   userProfile: UserProfile;
-  items: PostListItem[];
-  limit: number;
-}
-
-/*
- *  --- likes ---
- */
-
-// likes are very similar to posts with some stuff missing
-// may change in the future...
-
-export interface LikedSongItem {
-  type: 'song';
-  song: Song;
-  /** the time a song was liked */
-  timestamp: string;
-}
-
-export interface UserLikeList {
-  userProfile: UserProfile;
-  items: LikedSongItem[];
+  items: PlaylistItem[];
   limit: number;
 }
 

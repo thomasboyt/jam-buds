@@ -4,16 +4,9 @@ import { date as dateType } from 'io-ts-types/lib/date';
 import { db } from '../db';
 import { UserModel, getUserProfileForUser, getUserByUserId } from './user';
 import { selectSongsQuery, serializeSong } from './song';
-import {
-  Mixtape,
-  Song,
-  PostListItem,
-  DraftMixtapeListItem,
-} from '../resources';
+import { Mixtape, Song, DraftMixtapeListItem } from '../resources';
 import validateOrThrow from '../util/validateOrThrow';
-import { tPropNames, namespacedAliases, paginate, findMany } from './utils';
-import { ENTRY_PAGE_LIMIT } from '../constants';
-import { serializePostListItem } from './feed';
+import { tPropNames, namespacedAliases, findMany } from './utils';
 
 export const MixtapeModelV = t.type({
   id: t.number,
@@ -229,38 +222,6 @@ interface QueryOptions {
   currentUserId?: number;
   beforeTimestamp?: string;
   afterTimestamp?: string;
-}
-
-export async function getPublishedMixtapesByUserId(
-  userId: number,
-  opts: QueryOptions = {}
-): Promise<PostListItem[]> {
-  let query = db!('mixtapes')
-    .select(selectMixtapePreviews())
-    .select({
-      timestamp: 'mixtapes.published_at',
-      userName: 'users.name',
-    })
-    .join('users', { 'users.id': 'mixtapes.user_id' })
-    .where({ 'mixtapes.user_id': userId })
-    .whereNot({ 'mixtapes.published_at': null })
-    .orderBy('mixtapes.published_at', 'desc');
-
-  query = paginate(query, {
-    limit: ENTRY_PAGE_LIMIT,
-    before: opts.beforeTimestamp,
-    after: opts.afterTimestamp,
-    columnName: 'mixtapes.published_at',
-  });
-
-  const rows = await query;
-
-  return rows.map((row: any) =>
-    serializePostListItem({
-      ...row,
-      userNames: [row.userName],
-    })
-  );
 }
 
 export async function getDraftMixtapesByUserId(

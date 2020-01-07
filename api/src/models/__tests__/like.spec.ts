@@ -1,7 +1,7 @@
 import expect from 'expect';
 import { songFactory, userFactory } from '../../__tests__/factories';
 
-import { createLike, likeExists, removeLike, getLikesByUserId } from '../like';
+import { createLike, likeExists, removeLike } from '../like';
 
 describe('models/like', () => {
   describe('likeExists', () => {
@@ -18,18 +18,6 @@ describe('models/like', () => {
       await removeLike(params);
       hasLike = await likeExists(params);
       expect(hasLike).toBe(false);
-    });
-  });
-
-  describe('getLikesByUserId', () => {
-    it("returns a user's liked songs", async () => {
-      const user = await userFactory();
-      const { id } = await songFactory();
-      await createLike({ userId: user.id, songId: id });
-
-      const items = await getLikesByUserId(user.id, { currentUserId: user.id });
-      expect(items.length).toBe(1);
-      expect(items[0].song.id).toBe(id);
     });
   });
 });
