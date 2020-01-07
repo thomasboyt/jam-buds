@@ -1,4 +1,5 @@
 import Vuex from 'vuex';
+import { parse as parseCookie } from 'cookie';
 
 import auth from './modules/auth';
 import currentUser from './modules/currentUser';
@@ -50,7 +51,20 @@ const root = {
     },
   },
 
-  actions: {},
+  actions: {
+    async nuxtServerInit(context, { req }) {
+      const cookie = parseCookie(req.headers.cookie || '');
+      const authToken = cookie.jamBudsAuthToken;
+
+      if (authToken) {
+        this.$axios.defaults.headers = {
+          'X-Auth-Token': authToken,
+        };
+      }
+
+      await context.dispatch('fetchCurrentUser');
+    },
+  },
 
   getters: {
     getSongsForQueue(state, getters) {
