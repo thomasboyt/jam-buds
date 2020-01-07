@@ -44,7 +44,7 @@ export async function getFollowingForUserId(
     .where({ user_id: userId })
     .join('users', { 'users.id': 'following.following_id' });
 
-  return await findMany(query, UserModelV);
+  return findMany(query, UserModelV);
 }
 
 export async function getFollowersForUserId(
@@ -54,5 +54,5 @@ export async function getFollowersForUserId(
     .where({ following_id: userId })
     .join('users', { 'users.id': 'following.user_id' });
 
-  return await findMany(query, UserModelV);
+  return findMany(query, UserModelV);
 }

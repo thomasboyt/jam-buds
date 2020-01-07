@@ -152,7 +152,7 @@ export async function getOrCreateSong(
     appleMusicUrl: searchCacheEntry.appleMusicUrl,
   };
 
-  return await createSong(params);
+  return createSong(params);
 }
 
 export async function hydrateSongMeta(
