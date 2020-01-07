@@ -4,7 +4,7 @@ import { db } from '../db';
 import { Song } from '../resources';
 import validateOrThrow from '../util/validateOrThrow';
 import { getOrCreateSongCacheEntryWithExternalIds } from '../util/songSearchCache';
-import { namespacedAliases, tPropNames, selectNamespacedModel } from './utils';
+import { selectNamespacedModel } from './utils';
 
 export const SongModelV = t.type({
   id: t.number,
@@ -104,19 +104,6 @@ export function getMetaQuery(opts: SongsQueryOptions): Knex.Raw[] {
   }
 
   return query;
-}
-
-/**
- * @deprecated
- */
-export function selectSongsQuery(
-  baseQuery: Knex.QueryBuilder,
-  opts: SongsQueryOptions
-): Knex.QueryBuilder {
-  return baseQuery.select([
-    db!.raw(namespacedAliases('songs', 'song', tPropNames(SongModelV))),
-    ...getMetaQuery(opts),
-  ]);
 }
 
 export function selectSongs(opts: SongsQueryOptions) {

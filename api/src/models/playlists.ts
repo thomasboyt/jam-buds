@@ -2,8 +2,7 @@ import * as Knex from 'knex';
 
 import { db } from '../db';
 import { ENTRY_PAGE_LIMIT } from '../constants';
-import { selectSongs } from './song';
-import { serializeSong, selectSongsQuery } from './song';
+import { selectSongs, serializeSong } from './song';
 import { MixtapePreviewModelV, selectMixtapePreviews } from './mixtapes';
 import {
   PlaylistSongItem,
@@ -133,8 +132,9 @@ export async function getFeedByUserId(
     )
   `;
 
-  let query = selectSongsQuery(db!('posts'), opts)
+  let query = db!('posts')
     .select([
+      ...selectSongs(opts),
       ...selectMixtapePreviews(),
       db!.raw(`${timestampQuery} as timestamp`, [opts.currentUserId]),
       db!.raw('ARRAY_AGG(users.name) as user_names'),
@@ -181,8 +181,9 @@ export async function getFeedByUserId(
 export async function getPublicFeed(
   opts: QueryOptions = {}
 ): Promise<PlaylistItem[]> {
-  let query = selectSongsQuery(db!('posts'), opts)
+  let query = db!('posts')
     .select([
+      ...selectSongs(opts),
       ...selectMixtapePreviews(),
       db!.raw(`MIN(posts.created_at) as timestamp`),
       db!.raw('ARRAY_AGG(users.name) as user_names'),
@@ -217,10 +218,8 @@ export async function getLikesByUserId(
   userId: number,
   opts: QueryOptions
 ): Promise<PlaylistSongItem[]> {
-  const { currentUserId } = opts;
-
-  const query = selectSongsQuery(db!('likes'), { currentUserId })
-    .select([db!.raw('likes.created_at as timestamp')])
+  const query = db!('likes')
+    .select([...selectSongs(opts), db!.raw('likes.created_at as timestamp')])
     .join('songs', {
       'songs.id': 'likes.song_id',
     })

@@ -3,7 +3,7 @@ import { date as dateType } from 'io-ts-types/lib/date';
 
 import { db } from '../db';
 import { Song } from '../resources';
-import { selectSongsQuery, serializeSong } from './song';
+import { serializeSong, selectSongs } from './song';
 
 export const PostModelV = t.type({
   id: t.number,
@@ -25,9 +25,10 @@ export interface PostSongParams {
 export async function postSong(values: PostSongParams): Promise<Song> {
   await db!.insert(values).into('posts');
 
-  const [row] = await selectSongsQuery(db!('songs'), {
-    currentUserId: values.userId,
-  }).where({ id: values.songId });
+  const query = db!('songs')
+    .select(selectSongs({ currentUserId: values.userId }))
+    .where({ id: values.songId });
+  const [row] = await query;
 
   return serializeSong(row);
 }

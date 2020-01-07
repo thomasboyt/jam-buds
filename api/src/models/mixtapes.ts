@@ -3,7 +3,7 @@ import { date as dateType } from 'io-ts-types/lib/date';
 
 import { db } from '../db';
 import { UserModel, getUserProfileForUser, getUserByUserId } from './user';
-import { selectSongsQuery, serializeSong } from './song';
+import { serializeSong, selectSongs } from './song';
 import { Mixtape, Song, DraftMixtapeListItem } from '../resources';
 import validateOrThrow from '../util/validateOrThrow';
 import { tPropNames, namespacedAliases, findMany } from './utils';
@@ -208,7 +208,8 @@ export async function getSongsByMixtapeId(
   mixtapeId: number,
   songQueryOptions: { currentUserId?: number }
 ): Promise<Song[]> {
-  const query = selectSongsQuery(db!('mixtape_song_entries'), songQueryOptions)
+  const query = db!('mixtape_song_entries')
+    .select(selectSongs(songQueryOptions))
     .join('songs', { 'songs.id': 'mixtape_song_entries.song_id' })
     .where({ mixtape_id: mixtapeId })
     .orderBy('mixtape_song_entries.rank', 'asc');
