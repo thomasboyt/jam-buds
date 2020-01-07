@@ -83,7 +83,7 @@ export default {
   /*
    ** Nuxt.js dev-modules
    */
-  buildModules: [],
+  buildModules: ['~/modules/appleMusicTokenInject'],
   /*
    ** Nuxt.js modules
    */
