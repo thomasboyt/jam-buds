@@ -75,7 +75,7 @@ export default {
 
   .user-header-top {
     display: flex;
-    align-items: start;
+    align-items: flex-start;
 
     > * {
       flex: 0 0 auto;
