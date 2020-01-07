@@ -3,17 +3,9 @@ import { date as dateType } from 'io-ts-types/lib/date';
 
 import { db } from '../db';
 import { UserModel, getUserProfileForUser, getUserByUserId } from './user';
-import { selectSongsQuery, serializeSong } from './song';
-import {
-  Mixtape,
-  Song,
-  PostListItem,
-  DraftMixtapeListItem,
-} from '../resources';
-import validateOrThrow from '../util/validateOrThrow';
-import { tPropNames, namespacedAliases, paginate } from './utils';
-import { ENTRY_PAGE_LIMIT } from '../constants';
-import { serializePostListItem } from './feed';
+import { serializeSong, selectSongs } from './song';
+import { Mixtape, Song, DraftMixtapeListItem } from '../resources';
+import { tPropNames, namespacedAliases, findMany, findOne } from './utils';
 
 export const MixtapeModelV = t.type({
   id: t.number,
@@ -179,13 +171,12 @@ export async function getMixtapeById(
   mixtapeId: number,
   songQueryOptions: { currentUserId?: number }
 ): Promise<Mixtape | null> {
-  const [row] = await db!('mixtapes').where({ id: mixtapeId });
+  const mixtapeQuery = db!('mixtapes').where({ id: mixtapeId });
+  const mixtapeModel = await findOne(mixtapeQuery, MixtapeModelV);
 
-  if (!row) {
+  if (!mixtapeModel) {
     return null;
   }
-
-  const mixtapeModel = validateOrThrow(MixtapeModelV, row);
 
   const tracks = await getSongsByMixtapeId(mixtapeId, songQueryOptions);
   const authorUser = await getUserByUserId(mixtapeModel.userId);
@@ -195,10 +186,7 @@ export async function getMixtapeById(
   }
 
   const author = await getUserProfileForUser(authorUser);
-
-  // XXX: watch out for this suddenly being a string if we start using a
-  // json-namespaced query
-  const publishedAt = mixtapeModel.publishedAt as Date | null;
+  const publishedAt = mixtapeModel.publishedAt;
   const serializedDate = publishedAt ? publishedAt.toISOString() : null;
 
   return {
@@ -215,7 +203,8 @@ export async function getSongsByMixtapeId(
   mixtapeId: number,
   songQueryOptions: { currentUserId?: number }
 ): Promise<Song[]> {
-  const query = selectSongsQuery(db!('mixtape_song_entries'), songQueryOptions)
+  const query = db!('mixtape_song_entries')
+    .select(selectSongs(songQueryOptions))
     .join('songs', { 'songs.id': 'mixtape_song_entries.song_id' })
     .where({ mixtape_id: mixtapeId })
     .orderBy('mixtape_song_entries.rank', 'asc');
@@ -231,58 +220,20 @@ interface QueryOptions {
   afterTimestamp?: string;
 }
 
-export async function getPublishedMixtapesByUserId(
-  userId: number,
-  opts: QueryOptions = {}
-): Promise<PostListItem[]> {
-  let query = db!('mixtapes')
-    .select(selectMixtapePreviews())
-    .select({
-      timestamp: 'mixtapes.published_at',
-      userName: 'users.name',
-    })
-    .join('users', { 'users.id': 'mixtapes.user_id' })
-    .where({ 'mixtapes.user_id': userId })
-    .whereNot({ 'mixtapes.published_at': null })
-    .orderBy('mixtapes.published_at', 'desc');
-
-  query = paginate(query, {
-    limit: ENTRY_PAGE_LIMIT,
-    before: opts.beforeTimestamp,
-    after: opts.afterTimestamp,
-    columnName: 'mixtapes.published_at',
-  });
-
-  const rows = await query;
-
-  return rows.map((row: any) =>
-    serializePostListItem({
-      ...row,
-      userNames: [row.userName],
-    })
-  );
-}
-
 export async function getDraftMixtapesByUserId(
   userId: number
 ): Promise<DraftMixtapeListItem[]> {
   const query = db!('mixtapes')
-    .select(
-      db!.raw(
-        namespacedAliases('mixtapes', 'mixtape', tPropNames(MixtapeModelV))
-      )
-    )
+    .select('*')
     .where({
       'mixtapes.user_id': userId,
       'mixtapes.published_at': null,
     })
     .orderBy('mixtapes.created_at', 'desc');
 
-  const rows = await query;
+  const mixtapes = await findMany(query, MixtapeModelV);
 
-  return rows.map((row: any) => {
-    const mixtape = validateOrThrow(MixtapeModelV, row.mixtape);
-
+  return mixtapes.map((mixtape: t.TypeOf<typeof MixtapeModelV>) => {
     return {
       id: mixtape.id,
       title: mixtape.title,

@@ -88,7 +88,7 @@ export async function getOrCreateSongCacheEntryWithExternalIds(
     : null;
 
   if (appleMusicInfo) {
-    return await updateCacheWithAppleMusicInfo(spotifyId, appleMusicInfo);
+    return updateCacheWithAppleMusicInfo(spotifyId, appleMusicInfo);
   }
 
   return cacheEntry;

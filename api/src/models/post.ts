@@ -2,12 +2,8 @@ import * as t from 'io-ts';
 import { date as dateType } from 'io-ts-types/lib/date';
 
 import { db } from '../db';
-import { Song, PostListItem } from '../resources';
-import { ENTRY_PAGE_LIMIT } from '../constants';
-import { selectSongsQuery, serializeSong, selectSongs } from './song';
-import { paginate } from './utils';
-import { selectMixtapePreviews } from './mixtapes';
-import { serializePostListItem } from './feed';
+import { Song } from '../resources';
+import { serializeSong, selectSongs } from './song';
 
 export const PostModelV = t.type({
   id: t.number,
@@ -29,51 +25,12 @@ export interface PostSongParams {
 export async function postSong(values: PostSongParams): Promise<Song> {
   await db!.insert(values).into('posts');
 
-  const [row] = await selectSongsQuery(db!('songs'), {
-    currentUserId: values.userId,
-  }).where({ id: values.songId });
+  const query = db!('songs')
+    .select(selectSongs({ currentUserId: values.userId }))
+    .where({ id: values.songId });
+  const [row] = await query;
 
   return serializeSong(row);
-}
-
-interface QueryOptions {
-  currentUserId?: number;
-  beforeTimestamp?: string;
-  afterTimestamp?: string;
-}
-
-export async function getPostsByUserId(
-  userId: number,
-  opts: QueryOptions = {}
-): Promise<PostListItem[]> {
-  let query = db!('posts')
-    .select(selectSongs(opts))
-    .select(selectMixtapePreviews())
-    .select({
-      timestamp: 'posts.created_at',
-      userName: 'users.name',
-    })
-    .join('users', { 'users.id': 'posts.user_id' })
-    .leftOuterJoin('songs', { 'songs.id': 'posts.song_id' })
-    .leftOuterJoin('mixtapes', { 'mixtapes.id': 'posts.mixtape_id' })
-    .where({ 'posts.user_id': userId })
-    .orderBy('posts.created_at', 'desc');
-
-  query = paginate(query, {
-    limit: ENTRY_PAGE_LIMIT,
-    before: opts.beforeTimestamp,
-    after: opts.afterTimestamp,
-    columnName: 'posts.created_at',
-  });
-
-  const rows = await query;
-
-  return rows.map((row: any) =>
-    serializePostListItem({
-      ...row,
-      userNames: [row.userName],
-    })
-  );
 }
 
 interface GetOwnPostForSongIdOptions {

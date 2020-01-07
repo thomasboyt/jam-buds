@@ -6,7 +6,7 @@ import createApp from '../../createApp';
 import { userFactory, songFactory } from '../../__tests__/factories';
 
 import { postSong } from '../../models/post';
-import { getLikesByUserId } from '../../models/like';
+import { getLikesByUserId } from '../../models/playlists';
 import { createAuthTokenForUserId } from '../../models/authTokens';
 
 const app = createApp();

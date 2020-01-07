@@ -1,8 +1,4 @@
 import { db } from '../db';
-import { paginate } from './utils';
-import { ENTRY_PAGE_LIMIT } from '../constants';
-import { selectSongsQuery, serializeSong } from './song';
-import { LikedSongItem } from '../resources';
 
 interface LikeModel {
   id: number;
@@ -44,49 +40,4 @@ export async function removeLike(params: LikeParams): Promise<void> {
     .delete();
 
   await query;
-}
-
-function serializeLike(row: any): LikedSongItem {
-  const song = serializeSong(row);
-
-  return {
-    type: 'song',
-    song,
-    timestamp: row.timestamp.toISOString(),
-  };
-}
-
-interface GetLikesOptions {
-  currentUserId: number | undefined;
-  beforeTimestamp?: string;
-  afterTimestamp?: string;
-}
-
-export async function getLikesByUserId(
-  userId: number,
-  opts: GetLikesOptions
-): Promise<LikedSongItem[]> {
-  const { currentUserId } = opts;
-
-  const query = selectSongsQuery(db!('likes'), { currentUserId })
-    .select([db!.raw('likes.created_at as timestamp')])
-    .join('songs', {
-      'songs.id': 'likes.song_id',
-    })
-    .join('users', {
-      'users.id': 'likes.user_id',
-    })
-    .where({
-      user_id: userId,
-    })
-    .orderBy('likes.id', 'desc');
-
-  const rows = await paginate(query, {
-    limit: ENTRY_PAGE_LIMIT,
-    before: opts.beforeTimestamp,
-    after: opts.afterTimestamp,
-    columnName: 'likes.created_at',
-  });
-
-  return rows.map(serializeLike);
 }

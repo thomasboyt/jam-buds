@@ -1,7 +1,6 @@
 import * as t from 'io-ts';
 import { date as dateType } from 'io-ts-types/lib/date';
 import { db } from '../db';
-import validateOrThrow from '../util/validateOrThrow';
 import {
   PublicUser,
   CurrentUser,
@@ -11,6 +10,7 @@ import {
 import { getFollowingForUserId } from './following';
 import { getColorSchemeForUserId } from './colorSchemes';
 import { getNewNotificationsCount } from './notifications';
+import { findOneOrThrow, findOne, findMany } from './utils';
 
 export const UserModelV = t.type({
   id: t.number,
@@ -34,30 +34,21 @@ interface CreateUserOptions {
   showInPublicFeed?: boolean;
 }
 
-export async function createUser(opts: CreateUserOptions) {
+export async function createUser(opts: CreateUserOptions): Promise<UserModel> {
   const query = db!
     .insert(opts)
     .returning('*')
     .into('users');
 
-  const [row] = await query;
-  const user = validateOrThrow(UserModelV, row);
-
-  return user;
+  return findOneOrThrow(query, UserModelV);
 }
 
-async function getUserWhere(params: Partial<UserModel>) {
+async function getUserWhere(
+  params: Partial<UserModel>
+): Promise<UserModel | null> {
   const query = db!('users').where(params);
 
-  const [row] = await query;
-
-  if (!row) {
-    return null;
-  }
-
-  const user = validateOrThrow(UserModelV, row);
-
-  return user;
+  return findOne(query, UserModelV);
 }
 
 export async function getUserByAuthToken(
@@ -67,33 +58,25 @@ export async function getUserByAuthToken(
     .join('auth_tokens', { 'users.id': 'auth_tokens.user_id' })
     .where({ authToken });
 
-  const [row] = await query;
-
-  if (!row) {
-    return null;
-  }
-
-  const user = validateOrThrow(UserModelV, row);
-
-  return user;
+  return findOne(query, UserModelV);
 }
 
 export async function getUserByTwitterId(
   twitterId: string
 ): Promise<UserModel | null> {
-  return await getUserWhere({ twitterId });
+  return getUserWhere({ twitterId });
 }
 
 export async function getUserByName(name: string): Promise<UserModel | null> {
-  return await getUserWhere({ name });
+  return getUserWhere({ name });
 }
 
 export async function getUserByUserId(id: number): Promise<UserModel | null> {
-  return await getUserWhere({ id });
+  return getUserWhere({ id });
 }
 
 export async function getUserByEmail(email: string): Promise<UserModel | null> {
-  return await getUserWhere({ email });
+  return getUserWhere({ email });
 }
 
 // TODO: move to following.ts
@@ -113,12 +96,7 @@ export async function getUnfollowedUsersByTwitterIds(
     .whereIn('twitterId', twitterIds)
     .where('id', 'not in', followQuery);
 
-  const rows = await query;
-  const users: UserModel[] = rows.map((row: any) =>
-    validateOrThrow(UserModelV, row)
-  );
-
-  return users;
+  return findMany(query, UserModelV);
 }
 
 export async function getUserProfileForUser(
@@ -188,13 +166,15 @@ interface UpdateTwitterCredentialsOptions extends Partial<UserModel> {
 export async function updateTwitterCredentials(
   user: UserModel,
   twitterParams: UpdateTwitterCredentialsOptions
-) {
+): Promise<void> {
   return db!('users')
     .where({ id: user.id })
     .update(twitterParams);
 }
 
-export async function deleteTwitterCredentialsFromUser(user: UserModel) {
+export async function deleteTwitterCredentialsFromUser(
+  user: UserModel
+): Promise<void> {
   const updateParams: Partial<UserModel> = {
     twitterId: null,
     twitterName: null,
@@ -254,7 +234,9 @@ export async function updateRefreshedSpotifyCredentialsForUser(
     .update(updateParams);
 }
 
-export async function deleteSpotifyCredentialsFromUser(user: UserModel) {
+export async function deleteSpotifyCredentialsFromUser(
+  user: UserModel
+): Promise<void> {
   const updateParams: Partial<UserModel> = {
     spotifyAccessToken: null,
     spotifyRefreshToken: null,
@@ -266,13 +248,13 @@ export async function deleteSpotifyCredentialsFromUser(user: UserModel) {
     .update(updateParams);
 }
 
-export async function setUserFeedToPublic(user: UserModel) {
+export async function setUserFeedToPublic(user: UserModel): Promise<void> {
   return db!('users')
     .where({ id: user.id })
     .update({ showInPublicFeed: true });
 }
 
-export async function setUserFeedToPrivate(user: UserModel) {
+export async function setUserFeedToPrivate(user: UserModel): Promise<void> {
   return db!('users')
     .where({ id: user.id })
     .update({ showInPublicFeed: false });

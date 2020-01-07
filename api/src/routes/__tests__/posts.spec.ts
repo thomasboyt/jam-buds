@@ -6,8 +6,9 @@ import {
   postFactory,
   songFactory,
 } from '../../__tests__/factories';
-import { getPostsByUserId, postSong } from '../../models/post';
+import { postSong } from '../../models/post';
 import { createAuthTokenForUserId } from '../../models/authTokens';
+import { getPostsByUserId } from '../../models/playlists';
 
 import createApp from '../../createApp';
 

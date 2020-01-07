@@ -1,18 +1,55 @@
-import { Router } from 'express';
+import { Router, Request } from 'express';
 
 import {
   UserModel,
   getUserByName,
   getUserProfileForUser,
 } from '../models/user';
-import { getPostsByUserId } from '../models/post';
-import { getFeedByUserId, getPublicFeed } from '../models/feed';
-import { getLikesByUserId } from '../models/like';
+import {
+  getPostsByUserId,
+  getLikesByUserId,
+  getFeedByUserId,
+  getPublicFeed,
+  getPublishedMixtapesByUserId,
+} from '../models/playlists';
 
 import { getUserFromRequest, isAuthenticated } from '../auth';
 import wrapAsyncRoute from '../util/wrapAsyncRoute';
 import { ENTRY_PAGE_LIMIT } from '../constants';
-import { UserPostList, PostList, UserLikeList } from '../resources';
+import { UserPlaylist, Playlist } from '../resources';
+import { JamBudsHTTPError } from '../util/errors';
+
+async function getUser(userName: string): Promise<UserModel> {
+  const user = await getUserByName(userName);
+
+  if (!user) {
+    throw new JamBudsHTTPError({
+      statusCode: 404,
+      message: `No user found with name ${userName}`,
+    });
+  }
+
+  return user;
+}
+
+async function getPlaylistQueryOptions(
+  req: Request,
+  currentUser?: UserModel | null
+) {
+  if (!currentUser) {
+    currentUser = await getUserFromRequest(req);
+  }
+
+  // TODO: validate these
+  const beforeTimestamp = req.query.before;
+  const afterTimestamp = req.query.after;
+
+  return {
+    currentUserId: currentUser ? currentUser.id : undefined,
+    beforeTimestamp,
+    afterTimestamp,
+  };
+}
 
 export default function registerPlaylistEndpoints(router: Router) {
   // get a user's playlist
@@ -20,27 +57,12 @@ export default function registerPlaylistEndpoints(router: Router) {
     '/playlists/:userName',
     wrapAsyncRoute(async (req, res) => {
       const userName = req.params.userName;
-      const user = await getUserByName(userName);
-      const currentUser = await getUserFromRequest(req);
+      const user = await getUser(userName);
+      const queryOptions = await getPlaylistQueryOptions(req);
 
-      if (!user) {
-        res.status(404).json({
-          error: `No user found with name ${userName}`,
-        });
+      const items = await getPostsByUserId(user.id, queryOptions);
 
-        return;
-      }
-
-      const beforeTimestamp = req.query.before;
-      const afterTimestamp = req.query.after;
-
-      const items = await getPostsByUserId(user.id, {
-        currentUserId: currentUser ? currentUser.id : undefined,
-        beforeTimestamp,
-        afterTimestamp,
-      });
-
-      const resp: UserPostList = {
+      const resp: UserPlaylist = {
         userProfile: await getUserProfileForUser(user),
         items,
         limit: ENTRY_PAGE_LIMIT,
@@ -50,32 +72,37 @@ export default function registerPlaylistEndpoints(router: Router) {
     })
   );
 
-  // TODO: move this to likes.ts probably
+  // get a user's likes
   router.get(
     '/playlists/:userName/liked',
     wrapAsyncRoute(async (req, res) => {
       const userName = req.params.userName;
-      const user = await getUserByName(userName);
-      const currentUser = await getUserFromRequest(req);
+      const user = await getUser(userName);
+      const queryOptions = await getPlaylistQueryOptions(req);
 
-      if (!user) {
-        res.status(404).json({
-          error: `No user found with name ${userName}`,
-        });
+      const items = await getLikesByUserId(user.id, queryOptions);
 
-        return;
-      }
+      const resp: UserPlaylist = {
+        userProfile: await getUserProfileForUser(user),
+        items,
+        limit: ENTRY_PAGE_LIMIT,
+      };
 
-      const beforeTimestamp = req.query.before;
-      const afterTimestamp = req.query.after;
+      res.json(resp);
+    })
+  );
 
-      const items = await getLikesByUserId(user.id, {
-        currentUserId: currentUser ? currentUser.id : undefined,
-        beforeTimestamp,
-        afterTimestamp,
-      });
+  // Get mixtapes for a specific user
+  router.get(
+    '/users/:userName/mixtapes',
+    wrapAsyncRoute(async (req, res) => {
+      const userName = req.params.userName;
+      const user = await getUser(userName);
+      const queryOptions = await getPlaylistQueryOptions(req);
 
-      const resp: UserLikeList = {
+      const items = await getPublishedMixtapesByUserId(user.id, queryOptions);
+
+      const resp: UserPlaylist = {
         userProfile: await getUserProfileForUser(user),
         items,
         limit: ENTRY_PAGE_LIMIT,
@@ -89,19 +116,12 @@ export default function registerPlaylistEndpoints(router: Router) {
     '/feed',
     isAuthenticated,
     wrapAsyncRoute(async (req, res) => {
-      const user: UserModel = res.locals.user;
+      const currentUser: UserModel = res.locals.user;
+      const queryOptions = await getPlaylistQueryOptions(req, currentUser);
 
-      // TODO: validate
-      const beforeTimestamp = req.query.before;
-      const afterTimestamp = req.query.after;
+      const items = await getFeedByUserId(currentUser.id, queryOptions);
 
-      const items = await getFeedByUserId(user.id, {
-        currentUserId: user.id,
-        beforeTimestamp,
-        afterTimestamp,
-      });
-
-      const feed: PostList = {
+      const feed: Playlist = {
         items,
         limit: ENTRY_PAGE_LIMIT,
       };
@@ -113,19 +133,11 @@ export default function registerPlaylistEndpoints(router: Router) {
   router.get(
     '/public-feed',
     wrapAsyncRoute(async (req, res) => {
-      const currentUser = await getUserFromRequest(req);
+      const queryOptions = await getPlaylistQueryOptions(req);
 
-      // TODO: validate
-      const beforeTimestamp = req.query.before;
-      const afterTimestamp = req.query.after;
+      const items = await getPublicFeed(queryOptions);
 
-      const items = await getPublicFeed({
-        currentUserId: currentUser ? currentUser.id : undefined,
-        beforeTimestamp,
-        afterTimestamp,
-      });
-
-      const feed: PostList = {
+      const feed: Playlist = {
         items,
         limit: ENTRY_PAGE_LIMIT,
       };

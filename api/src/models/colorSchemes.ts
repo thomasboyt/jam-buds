@@ -1,7 +1,7 @@
 import * as t from 'io-ts';
 import { db } from '../db';
 import { ColorScheme } from '../resources';
-import validateOrThrow from '../util/validateOrThrow';
+import { findOne } from './utils';
 
 const ColorSchemeModelV = t.type({
   id: t.number,
@@ -20,13 +20,11 @@ export async function getColorSchemeForUserId(
     .from('color_schemes')
     .where({ user_id: userId });
 
-  const [row] = await query;
+  const colorSchemeModel = await findOne(query, ColorSchemeModelV);
 
-  if (!row) {
+  if (!colorSchemeModel) {
     return null;
   }
-
-  const colorSchemeModel = validateOrThrow(ColorSchemeModelV, row);
 
   return serializeColorScheme(colorSchemeModel);
 }
