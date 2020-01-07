@@ -1,16 +1,19 @@
 import '~/assets/styles/main.scss';
 
 import Vue from 'vue';
+import Vuex from 'vuex';
 import { sync } from 'vuex-router-sync';
 import VueMq from 'vue-mq';
 import Meta from 'vue-meta';
 
 import App from './App.vue';
-import createStore from './stores';
+import createStore from './store';
 import createRouter from './router';
 import injectAxios from './util/injectAxios';
 
 export default function createApp() {
+  Vue.use(Vuex);
+
   Vue.use(VueMq, {
     breakpoints: {
       phone: 768,
