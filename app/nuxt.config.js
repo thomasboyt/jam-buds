@@ -1,6 +1,14 @@
+// TODO
+//
+// if (process.env.ENABLE_STACKDRIVER_TRACE) {
+//   require('@google-cloud/trace-agent').start({
+//     ignoreUrls: ['^/assets', '^/favicon.ico$', '^/robots.txt$'],
+//   });
+// }
+
 import dotenv from 'dotenv';
 
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV !== 'production' || process.env.USE_DOTENV) {
   if (!process.env.CI) {
     if (process.env.NODE_ENV === 'test') {
       dotenv.config({
