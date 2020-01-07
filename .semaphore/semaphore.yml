@@ -65,7 +65,7 @@ blocks:
           value: "postgres://postgres@localhost:5432/jambuds_test"
         - name: REDIS_URL
           value: "redis://localhost:6379"
-        - name: API_URL
+        - name: API_URL_NUXT
           value: http://localhost:3001
         - name: APP_URL
           value: http://localhost:8080

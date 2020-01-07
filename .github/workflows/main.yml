@@ -99,6 +99,6 @@ jobs:
           DISABLE_APPLE_MUSIC: true
           DISABLE_BUTTONDOWN: true
           CI: true
-          API_URL: http://localhost:3001
+          API_URL_NUXT: http://localhost:3001
           APP_URL: http://localhost:8080
           STATIC_URL: http://localhost:8080/assets

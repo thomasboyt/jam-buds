@@ -16,7 +16,7 @@ TWITTER_API_KEY=
 TWITTER_API_SECRET=
 
 # The root origin of the API server.
-API_URL=http://localhost:3000
+API_URL_NUXT=http://localhost:3000/api
 
 # The root origin of the app (rendering) server.
 APP_URL=http://localhost:8080

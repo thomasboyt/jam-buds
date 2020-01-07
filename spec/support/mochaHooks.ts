@@ -10,7 +10,7 @@ if (!process.env.CI) {
   });
 }
 
-const requiredEnv = ['DATABASE_URL', 'APP_URL', 'API_URL', 'STATIC_URL'];
+const requiredEnv = ['DATABASE_URL', 'APP_URL', 'API_URL_NUXT', 'STATIC_URL'];
 
 for (let key of requiredEnv) {
   if (!process.env[key]) {
