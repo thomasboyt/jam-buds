@@ -147,7 +147,7 @@ async function main() {
   }
 
   if (useDevServer) {
-    app.use('/assets', express.static('static/'));
+    app.use('/assets', express.static('src/static/'));
   } else {
     app.use(
       '/assets',
@@ -160,7 +160,7 @@ async function main() {
 
     app.use(
       '/assets',
-      express.static('static/', {
+      express.static('src/static/', {
         // TODO: so, currently, these assets aren't sha-stamped, and I don't have a way to invalidate
         // cloudfront in my deploy process
         // once invalidation is added this should have a maxAge block

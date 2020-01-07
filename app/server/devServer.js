@@ -19,8 +19,6 @@ module.exports = function setupDevServer(
   app,
   { onStart, onComplete, onError }
 ) {
-  app.use('/', express.static('static/'));
-
   let bundle;
   let clientManifest;
 

@@ -21,7 +21,7 @@
 }
 
 .error-404 {
-  background-image: url('../../static/404_dog.jpg');
+  background-image: url('~assets/404_dog.jpg');
 }
 
 .error-label {
@@ -29,8 +29,7 @@
      WHAT https://www.w3.org/TR/2012/NOTE-WCAG20-TECHS-20120103/C7 */
   height: 1px;
   width: 1px;
-  position:
-  absolute;
+  position: absolute;
   overflow: hidden;
   top: -10px;
 }
