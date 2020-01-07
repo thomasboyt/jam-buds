@@ -1,5 +1,5 @@
 import { UserModel, createUser } from '../models/user';
-import { createSongFromManualEntry, SongModel } from '../models/song';
+import { SongModel, createSong } from '../models/song';
 import { postSong, getOwnPostForSongId, PostModel } from '../models/post';
 import { createMixtapeForUser, publishMixtape } from '../models/mixtapes';
 
@@ -28,7 +28,12 @@ export async function songFactory(
   artist: string = uniqueString(),
   title: string = uniqueString()
 ): Promise<SongModel> {
-  const song = await createSongFromManualEntry(artist, title);
+  const song = await createSong({
+    artists: [artist],
+    title,
+    spotifyId: uniqueString(),
+  });
+
   return song;
 }
 

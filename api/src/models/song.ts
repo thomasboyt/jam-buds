@@ -53,24 +53,6 @@ export async function createSong(
   return song;
 }
 
-export async function createSongFromManualEntry(
-  artist: string,
-  title: string
-): Promise<SongModel> {
-  const values = {
-    artists: [artist],
-    title: title,
-  };
-
-  const query = db!
-    .insert(values)
-    .returning('*')
-    .into('songs');
-
-  const song = await findOneOrThrow(query, SongModelV);
-  return song;
-}
-
 interface SongsQueryOptions {
   currentUserId?: number;
 }
