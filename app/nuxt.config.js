@@ -87,11 +87,17 @@ export default {
   /*
    ** Nuxt.js modules
    */
-  modules: ['@nuxtjs/axios', '@nuxtjs/proxy', '~modules/spriteInject'],
-  /*
-   ** Axios module configuration
-   ** See https://axios.nuxtjs.org/options
-   */
+  modules: [
+    '@nuxtjs/sentry',
+    '@nuxtjs/axios',
+    '@nuxtjs/proxy',
+    '~modules/spriteInject',
+  ],
+
+  sentry: {
+    dsn: process.env.SENTRY_PUBLIC_DSN_APP,
+  },
+
   axios: {
     proxy: true,
     baseURL: `${process.env.API_URL_NUXT}/api`,
