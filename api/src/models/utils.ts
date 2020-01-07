@@ -2,6 +2,7 @@ import Knex from 'knex';
 import { snakecase } from 'stringcase';
 import * as t from 'io-ts';
 import { db } from '../db';
+import validateOrThrow from '../util/validateOrThrow';
 
 interface PaginationOptions {
   limit: number;
@@ -116,4 +117,41 @@ export function selectNamespacedModel(
   keyName: string
 ) {
   return db!.raw(namespacedAliases(tableName, keyName, tPropNames(model)));
+}
+
+export async function findOne<T extends t.TypeC<any>>(
+  query: Knex.QueryBuilder,
+  model: T
+): Promise<t.TypeOf<T> | null> {
+  const rows = await query;
+
+  if (rows.length > 1) {
+    throw new Error('more than 1 result found for query');
+  } else if (rows.length === 0) {
+    return null;
+  }
+
+  const row = validateOrThrow(model, rows[0]);
+  return row;
+}
+
+export async function findOneOrThrow<T extends t.TypeC<any>>(
+  query: Knex.QueryBuilder,
+  model: T
+): Promise<t.TypeOf<T>> {
+  const row = await findOne(query, model);
+
+  if (!row) {
+    throw new Error('no result found for query');
+  }
+
+  return row;
+}
+
+export async function findMany<T extends t.TypeC<any>>(
+  query: Knex.QueryBuilder,
+  model: T
+): Promise<t.TypeOf<T>[]> {
+  const rows = await query;
+  return rows.map((row: any) => validateOrThrow(model, row));
 }

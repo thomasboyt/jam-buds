@@ -11,7 +11,7 @@ import {
   DraftMixtapeListItem,
 } from '../resources';
 import validateOrThrow from '../util/validateOrThrow';
-import { tPropNames, namespacedAliases, paginate } from './utils';
+import { tPropNames, namespacedAliases, paginate, findMany } from './utils';
 import { ENTRY_PAGE_LIMIT } from '../constants';
 import { serializePostListItem } from './feed';
 
@@ -267,22 +267,16 @@ export async function getDraftMixtapesByUserId(
   userId: number
 ): Promise<DraftMixtapeListItem[]> {
   const query = db!('mixtapes')
-    .select(
-      db!.raw(
-        namespacedAliases('mixtapes', 'mixtape', tPropNames(MixtapeModelV))
-      )
-    )
+    .select('*')
     .where({
       'mixtapes.user_id': userId,
       'mixtapes.published_at': null,
     })
     .orderBy('mixtapes.created_at', 'desc');
 
-  const rows = await query;
+  const mixtapes = await findMany(query, MixtapeModelV);
 
-  return rows.map((row: any) => {
-    const mixtape = validateOrThrow(MixtapeModelV, row.mixtape);
-
+  return mixtapes.map((mixtape: t.TypeOf<typeof MixtapeModelV>) => {
     return {
       id: mixtape.id,
       title: mixtape.title,

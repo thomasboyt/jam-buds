@@ -2,7 +2,7 @@ import * as t from 'io-ts';
 
 import { db } from '../db';
 import genAuthToken from '../util/genAuthToken';
-import validateOrThrow from '../util/validateOrThrow';
+import { findOneOrThrow } from './utils';
 
 export const AuthTokenModelV = t.type({
   authToken: t.string,
@@ -21,9 +21,7 @@ export async function createAuthTokenForUserId(
     .returning('*')
     .into('auth_tokens');
 
-  const [row] = await query;
-  const tokenModel = validateOrThrow(AuthTokenModelV, row);
-
+  const tokenModel = await findOneOrThrow(query, AuthTokenModelV);
   return tokenModel.authToken;
 }
 

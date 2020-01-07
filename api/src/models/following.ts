@@ -1,7 +1,7 @@
 import { db } from '../db';
 import { UserModel, UserModelV } from './user';
-import validateOrThrow from '../util/validateOrThrow';
 import { createNotification, deleteNotification } from './notifications';
+import { findMany } from './utils';
 
 export async function followUser(userId: number, followingId: number) {
   const query = db!
@@ -44,13 +44,7 @@ export async function getFollowingForUserId(
     .where({ user_id: userId })
     .join('users', { 'users.id': 'following.following_id' });
 
-  const rows = await query;
-
-  const users: UserModel[] = rows.map((row: any) =>
-    validateOrThrow(UserModelV, row)
-  );
-
-  return users;
+  return await findMany(query, UserModelV);
 }
 
 export async function getFollowersForUserId(
@@ -60,11 +54,5 @@ export async function getFollowersForUserId(
     .where({ following_id: userId })
     .join('users', { 'users.id': 'following.user_id' });
 
-  const rows = await query;
-
-  const users: UserModel[] = rows.map((row: any) =>
-    validateOrThrow(UserModelV, row)
-  );
-
-  return users;
+  return await findMany(query, UserModelV);
 }
