@@ -16,7 +16,7 @@
     "lint": "eslint src/**/*.ts"
   },
   "author": "Thomas Boyt <me@thomasboyt.com>",
-  "license": "MIT",
+  "license": "Parity-6.0.0",
   "devDependencies": {
     "@types/body-parser": "^1.17.1",
     "@types/cheerio": "^0.22.14",

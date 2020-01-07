@@ -7,7 +7,7 @@
     "test": "NODE_ENV=test TEST_ENV=feature mocha --exit --timeout 15000 --require ts-node/register 'features/**/*.spec.ts'"
   },
   "author": "",
-  "license": "MIT",
+  "license": "Parity-6.0.0",
   "dependencies": {
     "@types/expect": "^24.3.0",
     "@types/expect-puppeteer": "^3.3.3",
