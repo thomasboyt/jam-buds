@@ -20,10 +20,10 @@
 
 <script>
 import { mapState } from 'vuex';
-import AppleMusicLoader from './AppleMusicLoader.vue';
-import AudioPlayer from './audio-player/AudioPlayer.vue';
-import AddSongModal from './new-song-modal/AddSongModal.vue';
-import MobileNav from './MobileNav.vue';
+import AppleMusicLoader from '~/components/AppleMusicLoader.vue';
+import AudioPlayer from '~/components/audio-player/AudioPlayer.vue';
+import AddSongModal from '~/components/new-song-modal/AddSongModal.vue';
+import MobileNav from '~/components/MobileNav.vue';
 
 export default {
   components: {

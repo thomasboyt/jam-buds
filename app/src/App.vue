@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import AppContainer from './components/AppContainer.vue';
+import AppContainer from '~/layouts/default.vue';
 
 export default {
   components: { AppContainer },
