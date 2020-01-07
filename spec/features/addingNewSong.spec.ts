@@ -1,8 +1,7 @@
 import expect from 'expect';
 import puppeteer from 'puppeteer';
 
-import { getPage } from '../support/browser';
-import { asDevUser } from '../support/utils';
+import { createPageSession } from '../support/browser';
 import '../support/mochaHooks';
 
 async function searchForSong(page: puppeteer.Page, query: string) {
@@ -36,9 +35,7 @@ async function expectPlaylistEntry(page: puppeteer.Page, text: string) {
 describe('posting a new song', function() {
   describe('via spotify', () => {
     it('creates an entry in your feed', async () => {
-      const page = await getPage('/');
-
-      await asDevUser(page, 'jeff');
+      const page = await createPageSession('/', 'jeff@jambuds.club');
 
       await searchForSong(page, 'Kanye Wolves');
 

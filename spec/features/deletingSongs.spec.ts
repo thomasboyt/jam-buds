@@ -1,8 +1,7 @@
 import expect from 'expect';
 import puppeteer from 'puppeteer';
 
-import { getPage } from '../support/browser';
-import { asDevUser } from '../support/utils';
+import { createPageSession } from '../support/browser';
 import '../support/mochaHooks';
 
 const findSong = async (page: puppeteer.Page, content: string) =>
@@ -30,8 +29,7 @@ const deleteSong = async (page: puppeteer.Page, content: string) => {
 
 describe('deleting songs', function() {
   it('removes a song from feed when song was only posted by you', async () => {
-    const page = await getPage('/');
-    await asDevUser(page, 'jeff');
+    const page = await createPageSession('/', 'jeff@jambuds.club');
 
     await deleteSong(page, 'The Chemical Brothers');
 
@@ -40,8 +38,7 @@ describe('deleting songs', function() {
   });
 
   it("removes your name from a song's post in your feed if you were one of several posters", async () => {
-    const page = await getPage('/');
-    await asDevUser(page, 'jeff');
+    const page = await createPageSession('/', 'jeff@jambuds.club');
 
     await deleteSong(page, 'Drive');
     let drive = await findSong(page, 'Drive');
@@ -55,8 +52,7 @@ describe('deleting songs', function() {
   });
 
   it('removes song from your playlist when deleted from playlist screen', async () => {
-    const page = await getPage('/users/jeff');
-    await asDevUser(page, 'jeff');
+    const page = await createPageSession('/users/jeff', 'jeff@jambuds.club');
 
     await deleteSong(page, 'The Chemical Brothers');
 

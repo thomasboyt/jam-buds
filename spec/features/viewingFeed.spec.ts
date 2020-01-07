@@ -1,13 +1,11 @@
 import expect from 'expect';
 import expectPuppeteer from 'expect-puppeteer';
 
-import { getPage } from '../support/browser';
-import { asDevUser } from '../support/utils';
+import { createPageSession } from '../support/browser';
 
 describe('viewing feed', function() {
   it('aggregates duplicate entries', async () => {
-    const page = await getPage('/');
-    await asDevUser(page, 'jeff');
+    const page = await createPageSession('/', 'jeff@jambuds.club');
 
     const entriesText: string[] = await page.$$eval(
       '.playlist-entries li',
@@ -20,8 +18,7 @@ describe('viewing feed', function() {
   });
 
   it('includes mixtapes', async () => {
-    const page = await getPage('/');
-    await asDevUser(page, 'jeff');
+    const page = await createPageSession('/', 'jeff@jambuds.club');
 
     await expectPuppeteer(page).toMatchElement('.playlist-mixtape', {
       text: "vinny's mixtape",
