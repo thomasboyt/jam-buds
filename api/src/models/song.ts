@@ -4,7 +4,7 @@ import { db } from '../db';
 import { Song } from '../resources';
 import validateOrThrow from '../util/validateOrThrow';
 import { getOrCreateSongCacheEntryWithExternalIds } from '../util/songSearchCache';
-import { selectNamespacedModel } from './utils';
+import { selectNamespacedModel, findOne, findOneOrThrow } from './utils';
 
 export const SongModelV = t.type({
   id: t.number,
@@ -29,28 +29,16 @@ export type SongModel = t.TypeOf<typeof SongModelV>;
 
 export async function getSongById(id: number): Promise<SongModel | null> {
   const query = db!('songs').where({ id });
-
-  const [row] = await query;
-
-  if (!row) {
-    return null;
-  }
-
-  return validateOrThrow(SongModelV, row);
+  const song = await findOne(query, SongModelV);
+  return song;
 }
 
 export async function getSongBySpotifyId(
   spotifyId: string
 ): Promise<SongModel | null> {
   const query = db!('songs').where({ spotify_id: spotifyId });
-
-  const [row] = await query;
-
-  if (!row) {
-    return null;
-  }
-
-  return validateOrThrow(SongModelV, row);
+  const song = await findOne(query, SongModelV);
+  return song;
 }
 
 export async function createSong(
@@ -61,8 +49,8 @@ export async function createSong(
     .returning('*')
     .into('songs');
 
-  const [row] = await query;
-  return validateOrThrow(SongModelV, row);
+  const song = await findOneOrThrow(query, SongModelV);
+  return song;
 }
 
 export async function createSongFromManualEntry(
@@ -79,8 +67,8 @@ export async function createSongFromManualEntry(
     .returning('*')
     .into('songs');
 
-  const [row] = await query;
-  return validateOrThrow(SongModelV, row);
+  const song = await findOneOrThrow(query, SongModelV);
+  return song;
 }
 
 interface SongsQueryOptions {
@@ -171,11 +159,11 @@ export async function hydrateSongMeta(
   song: SongModel,
   opts: SongsQueryOptions
 ): Promise<Song> {
-  const [row] = await db!('songs')
+  const query = db!('songs')
     .select(getMetaQuery(opts))
     .where({ 'songs.id': song.id });
 
-  const meta = validateOrThrow(SongMetaV, row);
+  const meta = await findOneOrThrow(query, SongMetaV);
 
   return {
     ...song,

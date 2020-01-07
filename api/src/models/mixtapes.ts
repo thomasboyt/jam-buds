@@ -5,8 +5,7 @@ import { db } from '../db';
 import { UserModel, getUserProfileForUser, getUserByUserId } from './user';
 import { serializeSong, selectSongs } from './song';
 import { Mixtape, Song, DraftMixtapeListItem } from '../resources';
-import validateOrThrow from '../util/validateOrThrow';
-import { tPropNames, namespacedAliases, findMany } from './utils';
+import { tPropNames, namespacedAliases, findMany, findOne } from './utils';
 
 export const MixtapeModelV = t.type({
   id: t.number,
@@ -172,13 +171,12 @@ export async function getMixtapeById(
   mixtapeId: number,
   songQueryOptions: { currentUserId?: number }
 ): Promise<Mixtape | null> {
-  const [row] = await db!('mixtapes').where({ id: mixtapeId });
+  const mixtapeQuery = db!('mixtapes').where({ id: mixtapeId });
+  const mixtapeModel = await findOne(mixtapeQuery, MixtapeModelV);
 
-  if (!row) {
+  if (!mixtapeModel) {
     return null;
   }
-
-  const mixtapeModel = validateOrThrow(MixtapeModelV, row);
 
   const tracks = await getSongsByMixtapeId(mixtapeId, songQueryOptions);
   const authorUser = await getUserByUserId(mixtapeModel.userId);
@@ -188,10 +186,7 @@ export async function getMixtapeById(
   }
 
   const author = await getUserProfileForUser(authorUser);
-
-  // XXX: watch out for this suddenly being a string if we start using a
-  // json-namespaced query
-  const publishedAt = mixtapeModel.publishedAt as Date | null;
+  const publishedAt = mixtapeModel.publishedAt;
   const serializedDate = publishedAt ? publishedAt.toISOString() : null;
 
   return {
