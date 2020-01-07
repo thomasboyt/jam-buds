@@ -77,6 +77,8 @@ blocks:
           value: "1"
         - name: DISABLE_BUTTONDOWN
           value: "1"
+        - name: DANGER_SKIP_AUTH
+          value: "1"
       prologue:
         commands:
           - checkout

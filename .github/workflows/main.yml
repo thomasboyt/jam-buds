@@ -98,6 +98,7 @@ jobs:
           SPOTIFY_CLIENT_SECRET: ${{ secrets.SPOTIFY_CLIENT_SECRET }}
           DISABLE_APPLE_MUSIC: true
           DISABLE_BUTTONDOWN: true
+          DANGER_SKIP_AUTH: true
           CI: true
           API_URL_NUXT: http://localhost:3001
           APP_URL: http://localhost:8080
