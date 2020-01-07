@@ -81,17 +81,17 @@
 </template>
 
 <script>
-import Mixtape from '../components/mixtapes/Mixtape.vue';
-import MainWrapper from '../components/MainWrapper.vue';
-import SidebarWrapper from '../components/SidebarWrapper.vue';
-import AddSongButton from '../components/AddSongButton.vue';
-import AddSongModal from '../components/new-song-modal/AddSongModal.vue';
-import EditableTitle from '../components/mixtapes/EditableTitle.vue';
-import PublishButton from '../components/mixtapes/PublishButton.vue';
-import Panel from '../components/Panel.vue';
-import ShareLandingBanner from '../components/ShareLandingBanner.vue';
+import Mixtape from '../../components/mixtapes/Mixtape.vue';
+import MainWrapper from '../../components/MainWrapper.vue';
+import SidebarWrapper from '../../components/SidebarWrapper.vue';
+import AddSongButton from '../../components/AddSongButton.vue';
+import AddSongModal from '../../components/new-song-modal/AddSongModal.vue';
+import EditableTitle from '../../components/mixtapes/EditableTitle.vue';
+import PublishButton from '../../components/mixtapes/PublishButton.vue';
+import Panel from '../../components/Panel.vue';
+import ShareLandingBanner from '../../components/ShareLandingBanner.vue';
 
-import getMixtapeArt from '../util/getMixtapeArt';
+import getMixtapeArt from '../../util/getMixtapeArt';
 
 export default {
   components: {
@@ -219,7 +219,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '../../styles/mixins.scss';
+@import '../../../styles/mixins.scss';
 
 ul.playlist-entries {
   list-style-type: none;

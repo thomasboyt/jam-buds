@@ -8,12 +8,16 @@
       @requestNextPage="handleRequestNextPage"
     >
       <template v-slot:item="{ item }">
-        <post-item :item="item" @requestPlay="handleRequestPlay" verb="liked" />
+        <post-item
+          :item="item"
+          @requestPlay="handleRequestPlay"
+          verb="posted"
+        />
       </template>
 
       <template v-slot:placeholder>
         <p>
-          This user has not liked any songs yet :(
+          This user has not posted any songs yet :(
         </p>
       </template>
     </playlist>
@@ -22,9 +26,9 @@
 
 <script>
 import { mapState } from 'vuex';
-import ProfileNav from '../../components/ProfileNav.vue';
-import Playlist from '../../components/playlist/Playlist.vue';
-import PostItem from '../../components/playlist/PostItem.vue';
+import ProfileNav from '../../../components/ProfileNav.vue';
+import Playlist from '../../../components/playlist/Playlist.vue';
+import PostItem from '../../../components/playlist/PostItem.vue';
 
 export default {
   components: {
@@ -34,13 +38,45 @@ export default {
   },
 
   metaInfo() {
+    let meta = {
+      title: `${this.name}'s playlist`,
+      description: 'check out this playlist on jam buds!',
+      image: `${process.env.STATIC_URL}/corgi_icon_square.png`,
+    };
+
+    if (this.$route.query.song) {
+      const song = this.$store.state.songs[this.$route.query.song];
+      if (song) {
+        meta = {
+          title: song.title,
+          description: `${this.name} posted ${song.title} by ${
+            song.artists[0]
+          } on Jam Buds!`,
+          image: song.albumArt,
+        };
+      }
+    }
+
     return {
       title: this.title,
+      meta: [
+        { name: 'twitter:card', content: 'summary' },
+        { vmid: 'title', name: 'og:title', content: meta.title },
+        {
+          vmid: 'description',
+          name: 'og:description',
+          content: meta.description,
+        },
+        {
+          name: 'og:image',
+          content: meta.image,
+        },
+      ],
     };
   },
 
   async asyncData({ store, route }) {
-    await store.dispatch('loadProfileLikesPlaylist', route.params.id);
+    await store.dispatch('loadProfilePostsPlaylist', route.params.id);
   },
 
   data() {
@@ -54,7 +90,7 @@ export default {
       name: (state) => state.profile.user.name,
     }),
     playlistKey() {
-      return `${this.name}/likes`;
+      return `${this.name}/posts`;
     },
     items() {
       return this.$store.getters.playlistItems(this.playlistKey);
@@ -63,10 +99,10 @@ export default {
       return this.$store.state.playlists[this.playlistKey].itemsExhausted;
     },
     playbackSourcePath() {
-      return `/users/${this.name}/liked`;
+      return `/users/${this.name}`;
     },
     title() {
-      return `${this.name}'s liked tracks`;
+      return `${this.name}'s playlist`;
     },
   },
 

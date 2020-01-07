@@ -7,8 +7,8 @@
 
 <script>
 import { mapState } from 'vuex';
-import ProfileNav from '../../components/ProfileNav.vue';
-import UsersList from '../../components/UsersList.vue';
+import ProfileNav from '../../../components/ProfileNav.vue';
+import UsersList from '../../../components/UsersList.vue';
 
 export default {
   components: {

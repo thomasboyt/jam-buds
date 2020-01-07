@@ -12,8 +12,8 @@
 
 <script>
 import { mapState } from 'vuex';
-import SidebarWrapper from '../components/SidebarWrapper.vue';
-import MainWrapper from '../components/MainWrapper.vue';
+import SidebarWrapper from '../../components/SidebarWrapper.vue';
+import MainWrapper from '../../components/MainWrapper.vue';
 
 export default {
   components: { SidebarWrapper, MainWrapper },

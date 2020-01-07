@@ -1,31 +1,32 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 
-import HomePage from '../pages/HomePage.vue';
-import AboutPage from '../pages/AboutPage.vue';
+import HomePage from '../pages/index.vue';
+import AboutPage from '../pages/about.vue';
 
-import WelcomePageWrapper from '../pages/WelcomePageWrapper.vue';
-import RegistrationPage from '../pages/welcome/RegistrationPage.vue';
-import ConnectPage from '../pages/welcome/ConnectPage.vue';
-import ConnectTwitterPage from '../pages/welcome/ConnectTwitterPage.vue';
+import WelcomePageWrapper from '../pages/welcome.vue';
+import RegistrationPage from '../pages/welcome/registration.vue';
+import ConnectPage from '../pages/welcome/connect.vue';
+import ConnectTwitterPage from '../pages/welcome/connect-twitter.vue';
 
-import UserPageWrapper from '../pages/UserPageWrapper.vue';
-import UserPlaylistPage from '../pages/users/UserPlaylistPage.vue';
-import UserLikedPage from '../pages/users/UserLikedPage.vue';
-import UserFollowingPage from '../pages/users/UserFollowingPage.vue';
-import UserFollowersPage from '../pages/users/UserFollowersPage.vue';
-import UserMixtapesPage from '../pages/users/UserMixtapesPage.vue';
+import UserPageWrapper from '../pages/users/_id.vue';
+import UserPlaylistPage from '../pages/users/_id/index.vue';
+import UserLikedPage from '../pages/users/_id/liked.vue';
+import UserFollowingPage from '../pages/users/_id/following.vue';
+import UserFollowersPage from '../pages/users/_id/followers.vue';
+import UserMixtapesPage from '../pages/users/_id/mixtapes.vue';
 
-import PublicFeedPage from '../pages/PublicFeedPage.vue';
-import FindFriendsPage from '../pages/FindFriendsPage.vue';
+import PublicFeedPage from '../pages/public-feed.vue';
+import FindFriendsPage from '../pages/find-friends.vue';
 
-import SettingsPageWrapper from '../pages/SettingsPageWrapper.vue';
-import ConnectionSettingsPage from '../pages/settings/ConnectionSettingsPage.vue';
-import ProfileSettingsPage from '../pages/settings/ProfileSettingsPage.vue';
-import NotificationSettingsPage from '../pages/settings/NotificationSettingsPage.vue';
+import SettingsPageWrapper from '../pages/settings.vue';
+import ConnectionSettingsPage from '../pages/settings/index.vue';
+import ProfileSettingsPage from '../pages/settings/profile.vue';
+import NotificationSettingsPage from '../pages/settings/notifications.vue';
 
-import MixtapePage from '../pages/MixtapePage.vue';
+import MixtapePage from '../pages/mixtapes/_id.vue';
 
+// TODO: turn into Nuxt error page https://nuxtjs.org/guide/views#layouts
 import NotFoundPage from '../pages/NotFoundPage.vue';
 
 Vue.use(Router);
