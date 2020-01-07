@@ -106,7 +106,7 @@ export default {
     ShareLandingBanner,
   },
 
-  async asyncData({ store, route }) {
+  async fetch({ store, route }) {
     await store.dispatch('loadMixtape', route.params.id);
   },
 

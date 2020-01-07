@@ -22,7 +22,7 @@ export default {
     };
   },
 
-  async asyncData({ store, route }) {
+  async fetch({ store, route }) {
     await store.dispatch('loadProfileFollowers', route.params.id);
   },
 

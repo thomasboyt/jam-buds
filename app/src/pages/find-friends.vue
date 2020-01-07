@@ -56,7 +56,7 @@ export default {
     title: 'Find Friends',
   },
 
-  async asyncData({ store }) {
+  async fetch({ store }) {
     if (store.state.currentUser.twitterName) {
       await store.dispatch('loadFriendSuggestions');
     }

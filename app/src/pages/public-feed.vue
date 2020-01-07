@@ -19,7 +19,7 @@ export default {
     SidebarWrapper,
   },
 
-  async asyncData({ store }) {
+  async fetch({ store }) {
     await store.dispatch('loadPlaylist', {
       key: 'publicFeed',
       url: '/public-feed',

@@ -59,7 +59,7 @@ export default {
     };
   },
 
-  async asyncData({ store, route }) {
+  async fetch({ store, route }) {
     await store.dispatch('loadProfileMixtapes', route.params.id);
 
     if (
