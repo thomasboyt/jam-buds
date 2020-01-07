@@ -31,7 +31,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import '../../../styles/mixins.scss';
+@import '~/assets/styles/mixins.scss';
 
 .album-art-container {
   flex: 0 0 auto;

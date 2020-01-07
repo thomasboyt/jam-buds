@@ -42,7 +42,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '../../../styles/mixins.scss';
+@import '~/assets/styles/mixins.scss';
 
 .playlist-mixtape {
   padding: 10px;

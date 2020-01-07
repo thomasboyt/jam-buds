@@ -120,7 +120,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import '../../../styles/mixins.scss';
+@import '~/assets/styles/mixins.scss';
 
 .playlist-song {
   padding: 10px;

@@ -16,7 +16,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import '../../styles/mixins.scss';
+@import '~/assets/styles/mixins.scss';
 
 .link-tabs {
   font-size: 18px;

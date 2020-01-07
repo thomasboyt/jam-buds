@@ -32,7 +32,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '../../../styles/mixins.scss';
+@import '~/assets/styles/mixins.scss';
 
 .posted-by {
   padding: 5px 0px;

@@ -115,7 +115,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '../../styles/mixins';
+@import '~/assets/styles/mixins.scss';
 
 .sidebar {
   padding: 10px 20px;

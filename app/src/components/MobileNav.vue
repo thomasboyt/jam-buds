@@ -32,8 +32,8 @@ export default {
 </script>
 
 <style lang="scss">
-@import '../../styles/mixins.scss';
-@import '../../styles/z-index.scss';
+@import '~/assets/styles/mixins.scss';
+@import '~/assets/styles/z-index.scss';
 
 .mobile-header {
   position: fixed;

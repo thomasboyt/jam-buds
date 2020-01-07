@@ -38,6 +38,9 @@ const baseConfig = {
 
   resolve: {
     extensions: ['.jsx', '.js'],
+    alias: {
+      '~': path.resolve(__dirname, '..'),
+    },
   },
 
   devtool: 'source-map',
