@@ -23,6 +23,13 @@ export default {
     port: 8080,
   },
 
+  env: {
+    NODE_ENV: process.env.NODE_ENV,
+    DANGER_SKIP_AUTH: process.env.DANGER_SKIP_AUTH,
+    DISABLE_APPLE_MUSIC: process.env.DISABLE_APPLE_MUSIC,
+    STATIC_URL: process.env.STATIC_URL,
+  },
+
   /*
    ** Headers of the page
    */
@@ -99,14 +106,10 @@ export default {
     '/api': {
       target: process.env.API_URL_NUXT,
     },
+    '/auth': {
+      target: process.env.API_URL_NUXT,
+    },
   },
-  //     pathRewrite: { '^/': '/apiapiapiapi/' },
-  //     // pathRewrite: {'^/api/': ''}
-  //     // onProxyRes() {
-  //     //   console.log('hi!!!');
-  //     // },
-  //   },
-  // },
 
   /*
    ** Build configuration
