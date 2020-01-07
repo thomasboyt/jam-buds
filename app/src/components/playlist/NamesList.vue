@@ -13,7 +13,7 @@
 
       <span v-if="name === currentUserName">You</span>
       <span v-else>
-        <router-link :to="`/users/${name}`">{{ name }}</router-link>
+        <nuxt-link :to="`/users/${name}`">{{ name }}</nuxt-link>
       </span>
     </span>
   </span>

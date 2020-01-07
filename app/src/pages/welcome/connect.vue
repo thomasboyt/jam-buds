@@ -25,15 +25,15 @@
 
       <div class="lower">
         <template v-if="hasSpotify || hasAppleMusic">
-          <settings-button tag="router-link" :to="nextPage"
+          <settings-button tag="nuxt-link" :to="nextPage"
             >continue</settings-button
           >
         </template>
         <template v-else>
           <p>
-            <router-link :to="nextPage">
+            <nuxt-link :to="nextPage">
               continue without connecting
-            </router-link>
+            </nuxt-link>
           </p>
 
           <p>

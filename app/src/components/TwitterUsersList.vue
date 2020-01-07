@@ -6,9 +6,9 @@
       <div class="body">
         <div>
           <span class="name"
-            ><router-link :to="`/users/${user.name}`">{{
+            ><nuxt-link :to="`/users/${user.name}`">{{
               user.name
-            }}</router-link></span
+            }}</nuxt-link></span
           >
           @{{ user.twitterName }}
         </div>

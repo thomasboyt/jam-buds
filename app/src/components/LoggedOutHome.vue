@@ -55,7 +55,7 @@
         <a href="https://jambuds.club/users/thomas">thomas</a>
         &middot;
       </span>
-      <router-link to="/about">about jam buds</router-link> &middot;
+      <nuxt-link to="/about">about jam buds</nuxt-link> &middot;
       <a href="mailto:hello@jambuds.club">hello@jambuds.club</a>
     </footer>
   </div>

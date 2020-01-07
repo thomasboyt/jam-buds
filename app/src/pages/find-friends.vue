@@ -5,7 +5,7 @@
 
       <p :style="{ marginBottom: '32px' }">
         jam buds is more fun with more pals! make sure to check out the
-        <router-link to="/public-feed">public feed</router-link> too to find
+        <nuxt-link to="/public-feed">public feed</nuxt-link> too to find
         more folks to follow.
       </p>
 

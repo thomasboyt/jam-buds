@@ -48,7 +48,7 @@
       <p>
         this site was built by <a href="https://thomasboyt.com/">thomas</a>, who
         feels weird writing this in the third person. you can
-        <router-link to="/users/thomas">follow him on here</router-link> if
+        <nuxt-link to="/users/thomas">follow him on here</nuxt-link> if
         you'd like.
       </p>
 

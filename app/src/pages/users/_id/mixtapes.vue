@@ -10,9 +10,9 @@
       <p>You've started on the following draft mixtapes:</p>
       <ul>
         <li v-for="mixtape of draftMixtapes" :key="mixtape.id">
-          <router-link :to="`/mixtapes/${mixtape.id}`">
+          <nuxt-link :to="`/mixtapes/${mixtape.id}`">
             {{ mixtape.title }}
-          </router-link>
+          </nuxt-link>
         </li>
       </ul>
     </panel>

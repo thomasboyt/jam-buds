@@ -12,7 +12,7 @@
       you have public posts
       <strong>{{ publicPostsStatus }}</strong> and will
       <span v-if="!enabledPublicPosts">not</span> show up in this feed. you can
-      change that <router-link to="/settings/profile">here</router-link> if
+      change that <nuxt-link to="/settings/profile">here</nuxt-link> if
       you'd like.
     </p>
 

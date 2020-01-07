@@ -6,7 +6,7 @@
       :color-scheme="mixtape.author.colorScheme"
     >
       <share-landing-banner>
-        <router-link to="/">sign up</router-link>
+        <nuxt-link to="/">sign up</nuxt-link>
         to listen to this mixtape in your browser by connecting spotify or apple
         music!
       </share-landing-banner>
@@ -27,9 +27,9 @@
         </span>
         <span v-else>
           a mixtape by
-          <router-link :to="`/users/${mixtape.author.name}`">{{
+          <nuxt-link :to="`/users/${mixtape.author.name}`">{{
             mixtape.author.name
-          }}</router-link>
+          }}</nuxt-link>
         </span>
 
         <span v-if="!isEditing">&middot; posted {{ publishedAt }}</span>

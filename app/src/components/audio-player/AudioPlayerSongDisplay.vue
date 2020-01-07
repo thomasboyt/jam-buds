@@ -14,9 +14,9 @@
 
       <div>
         <span class="hide-mobile">playing</span> from
-        <router-link :to="playbackSourcePath">
+        <nuxt-link :to="playbackSourcePath">
           {{ playbackSourceLabel }}
-        </router-link>
+        </nuxt-link>
       </div>
     </div>
   </div>

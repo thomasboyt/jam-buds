@@ -1,6 +1,6 @@
 <template>
   <div :class="{ logo: true, small }">
-    <router-link to="/">jam buds!</router-link>
+    <nuxt-link to="/">jam buds!</nuxt-link>
   </div>
 </template>
 

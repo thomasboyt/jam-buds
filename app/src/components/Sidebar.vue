@@ -6,22 +6,22 @@
 
     <p>
       what up,
-      <router-link
+      <nuxt-link
         :to="`/users/${currentUserName}`"
         @click.native="handleClick"
       >
         {{ currentUserName }}
-      </router-link>
+      </nuxt-link>
     </p>
 
     <ul>
       <li>
-        <router-link to="/" @click.native="handleClick">
+        <nuxt-link to="/" @click.native="handleClick">
           your feed
-        </router-link>
+        </nuxt-link>
       </li>
       <li>
-        <router-link
+        <nuxt-link
           :to="`/users/${currentUserName}`"
           @click.native="handleClick"
           :class="{
@@ -30,35 +30,35 @@
           }"
         >
           your profile
-        </router-link>
+        </nuxt-link>
       </li>
       <li>
-        <router-link
+        <nuxt-link
           :to="`/users/${currentUserName}/mixtapes`"
           @click.native="handleClick"
         >
           your mixtapes
-        </router-link>
+        </nuxt-link>
       </li>
       <li>
-        <router-link to="/find-friends" @click.native="handleClick">
+        <nuxt-link to="/find-friends" @click.native="handleClick">
           find friends
-        </router-link>
+        </nuxt-link>
       </li>
       <li>
-        <router-link to="/public-feed" @click.native="handleClick">
+        <nuxt-link to="/public-feed" @click.native="handleClick">
           public feed
-        </router-link>
+        </nuxt-link>
       </li>
       <li>
-        <router-link to="/settings" @click.native="handleClick">
+        <nuxt-link to="/settings" @click.native="handleClick">
           your settings
-        </router-link>
+        </nuxt-link>
       </li>
       <li>
-        <router-link to="/about" @click.native="handleClick">
+        <nuxt-link to="/about" @click.native="handleClick">
           about jam buds
-        </router-link>
+        </nuxt-link>
       </li>
     </ul>
 
@@ -166,10 +166,10 @@ export default {
       text-decoration: none;
       padding: 8px 0;
 
-      &.router-link-exact-active,
+      &.nuxt-link-exact-active,
       // 1) prevent "your feed" from always being highlighted!
       // 2) special case so profile is always highlighted unless "your mixtapes" is active
-      &.router-link-active:not([href='/']):not(.profile-link),
+      &.nuxt-link-active:not([href='/']):not(.profile-link),
       &.profile-link-active {
         color: white;
         font-weight: 600;

@@ -11,7 +11,7 @@
         </p>
 
         <div class="lower">
-          <settings-button tag="router-link" :to="nextPage"
+          <settings-button tag="nuxt-link" :to="nextPage"
             >continue</settings-button
           >
         </div>
@@ -28,9 +28,9 @@
 
         <div class="lower">
           <p>
-            <router-link :to="nextPage">
+            <nuxt-link :to="nextPage">
               continue without connecting
-            </router-link>
+            </nuxt-link>
           </p>
         </div>
       </template>

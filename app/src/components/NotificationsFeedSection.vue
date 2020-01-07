@@ -13,9 +13,9 @@
     <ul :style="{ marginBottom: '0px' }">
       <li v-for="notification of notifications" :key="notification.id">
         <strong
-          ><router-link :to="`/users/${notification.user.name}`">{{
+          ><nuxt-link :to="`/users/${notification.user.name}`">{{
             notification.user.name
-          }}</router-link></strong
+          }}</nuxt-link></strong
         >
         is now following you.
       </li>
