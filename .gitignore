@@ -1,11 +1,9 @@
 node_modules/
-build/
-.firebaserc
-errorShots/
-secrets/
-api/dist
 tmp/
-.nuxt/
+api/build
+app/.nuxt/
 
 .env
 .env.test
+
+spec/cypress/videos
