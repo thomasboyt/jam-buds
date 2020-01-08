@@ -2,20 +2,12 @@
 
 ![](https://github.com/thomasboyt/jam-buds/workflows/Run%20Tests/badge.svg)
 
-Jam Buds is a lil web application that helps you share music with your friends.
-
-In Jam Buds, a user can paste links to songs that like. These links are then put into a playlist for that user that their friends can access and play through at their leisure.
-
 ## Overview
 
 Jam Buds is split into two self-contained "apps," intended for separate deployment.
 
 * The *API app* is the API server that powers the backend.
-* The *App app* (I know, I know) is the frontend app, which is itself two pieces:
-    * The Vue browser app
-    * A server that renders the Vue app. This is the web app the user actually hits directly (e.g. it's what's located at `jambuds.club`). It also hosts static assets for the client, which should be behind a CDN
-
-These two apps currently don't currently share any dependencies. This might change if I get lerna or something set up.
+* The *App app* (I know, I know) is the frontend app powered by [Nuxt.js](https://nuxtjs.org/). The app is initially server-side rendered before being used as a SPA once laded.
 
 In addition, this repo also contains some development-specific configuration and feature tests that interact with both the browser app and API.
 
@@ -23,8 +15,8 @@ In addition, this repo also contains some development-specific configuration and
 
 Base requirements:
 
-- Node: 8.x or higher is probably fine.
-- NPM: 5.x or higher is a-ok.
+- Node: 12.x
+- NPM: 6.x
 - Postgres: 11.x recommended
 - Redis: 5.x recommended
 
@@ -60,7 +52,7 @@ npm install
 
 ## Run in development
 
-First, copy over `_env` to `.env` and fill it out. There's lots of API key provisioning and stuff to do there.
+First, copy over `.env.defaults` to `.env` and fill it out. There's lots of API key provisioning and stuff to do there.
 
 Make sure your `.env` has your username replaced for the DB connection, then set up your database:
 
@@ -78,16 +70,23 @@ cd app && npm run dev
 
 ## Testing
 
-First, copy over `_env.test` to `.env.test` and replace the values as you did for `.env`.
+First, copy over `.env.test.defaults` to `.env.test` and replace the values as you did for `.env`.
 
 Then just run `cd api && npm test`.
 
 ### Feature Tests
 
-```
-# in one session:
-cd app && API_URL_NUXT=http://localhost:3001 npm run dev
+To run feature tests locally, you need to spin up the API and App servers:
 
+```
+# in two different sessions:
+cd api && npm run e2e
+cd app && npm run e2e
+```
+
+Once they're started, just run the tests via `npm test`:
+
+```
 # in another:
 cd spec && npm test
 ```
@@ -96,36 +95,11 @@ cd spec && npm test
 
 This repo contains two separate apps: the API server and the app (rendering) server & Vue client.
 
-There's a few ways to handle deploying them.
-
 ### Docker
 
-Both apps have their own Dockerfiles, and can be run on a Docker host together.
+The recommended way to deploy the Jam Buds is with Docker. Both apps have their own Dockerfiles, and can be run on a Docker host together.
 
 When building for Docker, the Webpack builds are done totally locally before being copied into the Docker images, meaning certain production environment variables need to be set for the build. See the `_env.deploy` template for these variables, as well as variables used for SSH-based deploys.
-
-### Heroku
-
-You can deploy Jam Buds to Heroku, where you could run it as two separate apps using the included Procfiles. You do need a little magic to deploy two apps from one repo:
-
-```
-heroku git:remote -a jambuds-app -r heroku-app
-heroku git:remote -a jambuds-api -r heroku-api
-```
-
-You'll want to use `heroku:config` to set everything listed in the production requirements. Note that App and API have different requirements, but it's probably easiest to just keep all the config in sync between them, just in case.
-
-You're gonna want a database:
-
-```
-heroku addons:create heroku-postgresql:hobby-dev
-```
-
-After deploying for the first time, run migrations:
-
-```
-heroku run npx knex migrate:latest --app jambuds-api
-```
 
 ### Configure CDN
 
