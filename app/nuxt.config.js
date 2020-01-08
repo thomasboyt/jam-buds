@@ -44,7 +44,7 @@ export default {
 
       {
         name: 'og:image',
-        content: `${process.env.STATIC_URL}/corgi_icon_square.png`,
+        content: `${process.env.JB_STATIC_URL}/corgi_icon_square.png`,
       },
     ],
 
@@ -52,13 +52,13 @@ export default {
       {
         rel: 'icon',
         type: 'image/png',
-        href: `${process.env.STATIC_URL}/favicon16.png`,
+        href: `${process.env.JB_STATIC_URL}/favicon16.png`,
         sizes: '16x16',
       },
       {
         rel: 'icon',
         type: 'image/png',
-        href: `${process.env.STATIC_URL}/favicon32.png`,
+        href: `${process.env.JB_STATIC_URL}/favicon32.png`,
         sizes: '32x32',
       },
     ],
