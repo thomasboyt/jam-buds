@@ -5,6 +5,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "test": "cypress run"
   },
   "author": "Thomas Boyt <me@thomasboyt.com>",
   "license": "Parity-6.0.0",

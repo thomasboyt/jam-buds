@@ -29,12 +29,6 @@ blocks:
           - cache restore node-modules-app-$SEMAPHORE_GIT_BRANCH-$(checksum package-lock.json),node-modules-app-$SEMAPHORE_GIT_BRANCH,node-modules-app-master
           - npm install
           - cache store node-modules-app-$SEMAPHORE_GIT_BRANCH-$(checksum package-lock.json) node_modules
-      - name: "Spec: npm install"
-        commands:
-          - cd spec
-          - cache restore node-modules-spec-$SEMAPHORE_GIT_BRANCH-$(checksum package-lock.json),node-modules-spec-$SEMAPHORE_GIT_BRANCH,node-modules-spec-master
-          - npm install
-          - cache store node-modules-spec-$SEMAPHORE_GIT_BRANCH-$(checksum package-lock.json) node_modules
 
   - name: "Unit Tests"
     task:
@@ -50,7 +44,7 @@ blocks:
           - checkout
           - sem-version node 12
           - cd api
-          - cache restore node-modules-api-$SEMAPHORE_GIT_BRANCH-$(checksum package-lock.json),node-modules-api-$SEMAPHORE_GIT_BRANCH,node-modules-api-master
+          - cache restore node-modules-api-$SEMAPHORE_GIT_BRANCH-$(checksum package-lock.json)
           - sem-service start postgres
           - sem-service start redis
       jobs:
@@ -65,6 +59,8 @@ blocks:
       env_vars:
         - name: NODE_ENV
           value: "test"
+        - name: TEST_ENV
+          value: "feature"
         - name: DATABASE_URL
           value: "postgres://postgres@localhost:5432/jambuds_test"
         - name: REDIS_URL
@@ -76,11 +72,16 @@ blocks:
           - checkout
           - sem-version node 12
           - cd api
-          - cache restore node-modules-api-$SEMAPHORE_GIT_BRANCH-$(checksum package-lock.json),node-modules-api-$SEMAPHORE_GIT_BRANCH,node-modules-api-master
+          - cache restore node-modules-api-$SEMAPHORE_GIT_BRANCH-$(checksum package-lock.json)
           - cd ../app
-          - cache restore node-modules-app-$SEMAPHORE_GIT_BRANCH-$(checksum package-lock.json),node-modules-app-$SEMAPHORE_GIT_BRANCH,node-modules-app-master
+          - cache restore node-modules-app-$SEMAPHORE_GIT_BRANCH-$(checksum package-lock.json)
+
           - cd ../spec
-          - cache restore node-modules-spec-$SEMAPHORE_GIT_BRANCH-$(checksum package-lock.json),node-modules-spec-$SEMAPHORE_GIT_BRANCH,node-modules-spec-master
+          - cache restore cypress-$(checksum package-lock.json)
+          - npm ci
+          - cache store cypress-$(checksum package-lock.json) ~/.cache/Cypress
+          - npm install -g wait-on
+
           - sem-service start postgres
           - createdb -U postgres -h 0.0.0.0 jambuds_test
           - sem-service start redis
@@ -89,5 +90,8 @@ blocks:
         commands:
           - cd ../app
           - npm run build
+          - npm start & wait-on -t 20000 http://localhost:8081
+          - cd ../api
+          - npm run e2e & wait-on -t 20000 tcp:3001
           - cd ../spec
           - npm test
