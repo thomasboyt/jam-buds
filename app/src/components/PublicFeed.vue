@@ -12,8 +12,8 @@
       you have public posts
       <strong>{{ publicPostsStatus }}</strong> and will
       <span v-if="!enabledPublicPosts">not</span> show up in this feed. you can
-      change that <nuxt-link to="/settings/profile">here</nuxt-link> if
-      you'd like.
+      change that <nuxt-link to="/settings/profile">here</nuxt-link> if you'd
+      like.
     </p>
 
     <playlist
@@ -48,8 +48,10 @@ import PageHeader from './PageHeader.vue';
 export default {
   components: { Playlist, PostItem, PageHeader },
 
-  metaInfo: {
-    title: 'Public Feed',
+  head() {
+    return {
+      title: 'Public Feed',
+    };
   },
 
   data() {

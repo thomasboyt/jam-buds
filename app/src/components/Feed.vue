@@ -53,8 +53,10 @@ export default {
     NotificationsFeedSection,
   },
 
-  metaInfo: {
-    title: 'Feed',
+  head() {
+    return {
+      title: 'Feed',
+    };
   },
 
   data() {

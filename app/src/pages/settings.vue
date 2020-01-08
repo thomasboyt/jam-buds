@@ -24,6 +24,12 @@ export default {
     LinkTabs,
   },
 
+  head() {
+    return {
+      title: 'Settings',
+    };
+  },
+
   data() {
     return {
       navLinks: [
@@ -32,10 +38,6 @@ export default {
         { to: '/notifications', label: 'Notifications' },
       ],
     };
-  },
-
-  metaInfo: {
-    title: 'Settings',
   },
 };
 </script>

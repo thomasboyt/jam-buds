@@ -53,7 +53,7 @@ export default {
     CreateMixtapeButton,
   },
 
-  metaInfo() {
+  head() {
     return {
       title: this.title,
     };

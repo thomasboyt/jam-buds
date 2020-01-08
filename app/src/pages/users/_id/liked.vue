@@ -33,7 +33,7 @@ export default {
     PostItem,
   },
 
-  metaInfo() {
+  head() {
     return {
       title: this.title,
     };

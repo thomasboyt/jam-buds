@@ -48,8 +48,8 @@
       <p>
         this site was built by <a href="https://thomasboyt.com/">thomas</a>, who
         feels weird writing this in the third person. you can
-        <nuxt-link to="/users/thomas">follow him on here</nuxt-link> if
-        you'd like.
+        <nuxt-link to="/users/thomas">follow him on here</nuxt-link> if you'd
+        like.
       </p>
 
       <p>
@@ -98,8 +98,10 @@ import MainWrapper from '../components/MainWrapper.vue';
 export default {
   components: { SidebarWrapper, MainWrapper },
 
-  metaInfo: {
-    title: 'About',
+  head() {
+    return {
+      title: 'About',
+    };
   },
 
   data() {

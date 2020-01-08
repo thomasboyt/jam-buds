@@ -106,11 +106,7 @@ export default {
     ShareLandingBanner,
   },
 
-  async fetch({ store, route }) {
-    await store.dispatch('loadMixtape', route.params.id);
-  },
-
-  metaInfo() {
+  head() {
     if (!this.mixtape) {
       return;
     }
@@ -120,9 +116,9 @@ export default {
 
       meta: [
         { name: 'twitter:card', content: 'summary' },
-        { vmid: 'title', name: 'og:title', content: this.mixtape.title },
+        { hid: 'title', name: 'og:title', content: this.mixtape.title },
         {
-          vmid: 'description',
+          hid: 'description',
           name: 'og:description',
           content: `check out this mixtape by ${
             this.mixtape.author.name
@@ -134,6 +130,10 @@ export default {
         },
       ],
     };
+  },
+
+  async fetch({ store, route }) {
+    await store.dispatch('loadMixtape', route.params.id);
   },
 
   data() {

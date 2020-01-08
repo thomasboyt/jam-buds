@@ -21,8 +21,10 @@ import LoggedOutHeader from '../components/LoggedOutHeader.vue';
 export default {
   components: { LoggedOutHeader },
 
-  metaInfo: {
-    title: 'Welcome',
+  head() {
+    return {
+      title: 'Welcome',
+    };
   },
 
   data() {

@@ -37,7 +37,7 @@ export default {
     PostItem,
   },
 
-  metaInfo() {
+  head() {
     let meta = {
       title: `${this.name}'s playlist`,
       description: 'check out this playlist on jam buds!',
@@ -61,9 +61,9 @@ export default {
       title: this.title,
       meta: [
         { name: 'twitter:card', content: 'summary' },
-        { vmid: 'title', name: 'og:title', content: meta.title },
+        { hid: 'title', name: 'og:title', content: meta.title },
         {
-          vmid: 'description',
+          hid: 'description',
           name: 'og:description',
           content: meta.description,
         },

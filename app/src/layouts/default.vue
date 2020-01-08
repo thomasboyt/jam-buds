@@ -33,10 +33,6 @@ export default {
     MobileNav,
   },
 
-  metaInfo: {
-    titleTemplate: (title) => (title ? `${title} | Jam Buds` : 'Jam Buds'),
-  },
-
   computed: mapState({
     authenticated: (state) => state.auth.authenticated,
     addSongModalIsOpen: (state) => state.addSong.showModal,

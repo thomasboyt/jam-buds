@@ -5,8 +5,8 @@
 
       <p :style="{ marginBottom: '32px' }">
         jam buds is more fun with more pals! make sure to check out the
-        <nuxt-link to="/public-feed">public feed</nuxt-link> too to find
-        more folks to follow.
+        <nuxt-link to="/public-feed">public feed</nuxt-link> too to find more
+        folks to follow.
       </p>
 
       <panel title="find by username">
@@ -52,8 +52,10 @@ export default {
     Panel,
   },
 
-  metaInfo: {
-    title: 'Find Friends',
+  head() {
+    return {
+      title: 'Find Friends',
+    };
   },
 
   async fetch({ store }) {

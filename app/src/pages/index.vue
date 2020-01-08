@@ -24,20 +24,22 @@ export default {
     LoggedOutHome,
   },
 
-  metaInfo: {
-    meta: [
-      { name: 'twitter:card', content: 'summary' },
-      { vmid: 'title', name: 'og:title', content: 'jam buds!' },
-      {
-        vmid: 'description',
-        name: 'og:description',
-        content: 'a place for sharing music with your friends!',
-      },
-      {
-        name: 'og:image',
-        content: `${process.env.STATIC_URL}/corgi_icon_square.png`,
-      },
-    ],
+  head() {
+    return {
+      meta: [
+        { name: 'twitter:card', content: 'summary' },
+        { hid: 'title', name: 'og:title', content: 'jam buds!' },
+        {
+          hid: 'description',
+          name: 'og:description',
+          content: 'a place for sharing music with your friends!',
+        },
+        {
+          name: 'og:image',
+          content: `${process.env.STATIC_URL}/corgi_icon_square.png`,
+        },
+      ],
+    };
   },
 
   async fetch({ store }) {

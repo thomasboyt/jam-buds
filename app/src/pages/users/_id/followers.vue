@@ -16,7 +16,7 @@ export default {
     UsersList,
   },
 
-  metaInfo() {
+  head() {
     return {
       title: this.title,
     };
