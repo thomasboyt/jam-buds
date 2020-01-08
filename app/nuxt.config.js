@@ -22,7 +22,7 @@ export default {
     NODE_ENV: process.env.NODE_ENV,
     DANGER_SKIP_AUTH: process.env.DANGER_SKIP_AUTH,
     DISABLE_APPLE_MUSIC: process.env.DISABLE_APPLE_MUSIC,
-    STATIC_URL: process.env.STATIC_URL,
+    STATIC_URL: process.env.JB_STATIC_URL,
   },
 
   /*
