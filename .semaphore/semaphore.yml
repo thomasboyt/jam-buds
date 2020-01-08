@@ -65,19 +65,7 @@ blocks:
           value: "postgres://postgres@localhost:5432/jambuds_test"
         - name: REDIS_URL
           value: "redis://localhost:6379"
-        - name: API_URL_NUXT
-          value: http://localhost:3001
-        - name: APP_URL
-          value: http://localhost:8080
-        - name: STATIC_URL
-          value: http://localhost:8080/assets
         - name: CI
-          value: "1"
-        - name: DISABLE_APPLE_MUSIC
-          value: "1"
-        - name: DISABLE_BUTTONDOWN
-          value: "1"
-        - name: DANGER_SKIP_AUTH
           value: "1"
       prologue:
         commands:

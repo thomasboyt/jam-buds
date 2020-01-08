@@ -15,7 +15,7 @@ import {
   getAndClearOAuthState,
 } from '../models/cache/oauthStateCache';
 
-const redirectUri = `${process.env.APP_URL}/auth/spotify-connect/cb`;
+const redirectUri = `${process.env.JB_APP_URL}/auth/spotify-connect/cb`;
 
 const spotifyApi = new SpotifyWebApi({
   redirectUri,
@@ -83,7 +83,7 @@ export default function registerSpotifyAuthEndpoints(router: Router) {
 
       if (userInformation.body.product !== 'premium') {
         res.redirect(
-          `${process.env.APP_URL}${redirect}?failed-spotify-connect`
+          `${process.env.JB_APP_URL}${redirect}?failed-spotify-connect`
         );
         return;
       }
@@ -94,7 +94,7 @@ export default function registerSpotifyAuthEndpoints(router: Router) {
         expiresIn,
       });
 
-      res.redirect(`${process.env.APP_URL}${redirect}`);
+      res.redirect(`${process.env.JB_APP_URL}${redirect}`);
     })
   );
 

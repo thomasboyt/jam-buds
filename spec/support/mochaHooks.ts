@@ -10,25 +10,12 @@ if (!process.env.CI) {
   });
 }
 
-const requiredEnv = ['DATABASE_URL', 'APP_URL', 'API_URL_NUXT', 'STATIC_URL'];
-
-for (let key of requiredEnv) {
-  if (!process.env[key]) {
-    throw new Error(`missing required env var ${key}`);
-  }
-}
-
-// TODO: parse this from API_URL and APP_URL
-const API_PORT = 3001;
-const APP_PORT = 8080;
-
 function resetDb() {
   childProcess.spawnSync('npm', ['run', 'resetdb'], {
     cwd: path.join(__dirname, '../../api'),
     stdio: 'inherit',
     env: {
       ...process.env,
-      PORT: API_PORT.toString(),
     },
   });
 }
@@ -41,7 +28,6 @@ async function startApiServer() {
     stdio: 'inherit',
     env: {
       ...process.env,
-      PORT: API_PORT.toString(),
       DANGER_SKIP_AUTH: 'true',
     },
   });
@@ -51,7 +37,7 @@ async function startApiServer() {
   });
 
   const started = await waitPort({
-    port: API_PORT,
+    port: parseInt(process.env.JB_API_PORT!),
     timeout: 15 * 1000,
   });
 
@@ -63,7 +49,7 @@ async function startApiServer() {
 async function startAppServer() {
   try {
     // If this doesn't throw an error, the server's already running!
-    await got(process.env.APP_URL!);
+    await got(process.env.JB_APP_URL!);
     return;
   } catch {
     // continue
@@ -74,7 +60,6 @@ async function startAppServer() {
     stdio: 'inherit',
     env: {
       ...process.env,
-      PORT: APP_PORT.toString(),
       DANGER_SKIP_AUTH: 'true',
     },
   });
@@ -84,7 +69,7 @@ async function startAppServer() {
   });
 
   const appStarted = await waitPort({
-    port: APP_PORT,
+    port: parseInt(process.env.JB_APP_PORT!),
     timeout: 10 * 1000,
   });
 
@@ -93,7 +78,7 @@ async function startAppServer() {
   }
 
   console.log('Waiting for app server...');
-  await got(process.env.APP_URL!);
+  await got(process.env.JB_APP_URL!);
 }
 
 before(async function() {

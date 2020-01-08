@@ -36,7 +36,7 @@ function createOAuthClient(stateToken: string): OAuth {
     process.env.TWITTER_API_KEY!,
     process.env.TWITTER_API_SECRET!,
     '1.0A',
-    `${process.env.APP_URL}/auth/twitter-connect/cb?state=${stateToken}`,
+    `${process.env.JB_APP_URL}/auth/twitter-connect/cb?state=${stateToken}`,
     'HMAC-SHA1'
   );
 }
@@ -121,7 +121,7 @@ export default function registerTwitterAuthEndpoints(router: Router) {
         twitterSecret: secret,
       });
 
-      res.redirect(`${process.env.APP_URL}${redirect}`);
+      res.redirect(`${process.env.JB_APP_URL}${redirect}`);
     })
   );
 

@@ -14,7 +14,7 @@ configureRedis();
 
 const app = createApp();
 
-const port = process.env.PORT || 3000;
+const port = process.env.JB_API_PORT || 3000;
 
 app.listen(port, () => {
   console.log(`*** Listening on port ${port}`);

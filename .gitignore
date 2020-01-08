@@ -1,9 +1,11 @@
 node_modules/
 build/
-.env*
 .firebaserc
 errorShots/
 secrets/
 api/dist
 tmp/
 .nuxt/
+
+.env
+.env.test

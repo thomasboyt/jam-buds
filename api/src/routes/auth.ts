@@ -62,7 +62,7 @@ export default function registerAuthEndpoints(router: Router) {
       const user = await getUserByEmail(email);
 
       if (user) {
-        const link = `${process.env.APP_URL}/auth/sign-in?t=${token}`;
+        const link = `${process.env.JB_APP_URL}/auth/sign-in?t=${token}`;
 
         await sendEmail(email, 'Your sign-in link for jambuds.club', {
           templateName: 'log-in',
@@ -76,7 +76,9 @@ export default function registerAuthEndpoints(router: Router) {
           await setSignUpReferral(token, req.body.signupReferral);
         }
 
-        const link = `${process.env.APP_URL}/welcome/registration?t=${token}`;
+        const link = `${
+          process.env.JB_APP_URL
+        }/welcome/registration?t=${token}`;
 
         await sendEmail(email, 'Welcome to jambuds.club!', {
           templateName: 'sign-up',
@@ -107,7 +109,7 @@ export default function registerAuthEndpoints(router: Router) {
     wrapAsyncRoute(async (req, res) => {
       if (await maybeGetUserFromCookie(req)) {
         // user's already loaded, SHRUG
-        res.redirect(process.env.APP_URL!);
+        res.redirect(process.env.JB_APP_URL!);
         return;
       }
 
@@ -143,7 +145,7 @@ export default function registerAuthEndpoints(router: Router) {
       });
       await deleteSignInToken(token);
 
-      res.redirect(process.env.APP_URL!);
+      res.redirect(process.env.JB_APP_URL!);
     })
   );
 

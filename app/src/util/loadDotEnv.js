@@ -2,7 +2,6 @@ if (process.env.NODE_ENV !== 'production') {
   console.log('*** Loading .env files!');
 
   // listed as a dev dependency, so we defer loading it
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const dotenv = require('dotenv');
 
   if (process.env.NODE_ENV === 'test') {

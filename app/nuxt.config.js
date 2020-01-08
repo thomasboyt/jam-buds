@@ -6,21 +6,7 @@
 //   });
 // }
 
-if (process.env.NODE_ENV !== 'production' || process.env.USE_DOTENV) {
-  const dotenv = require('dotenv');
-
-  if (!process.env.CI) {
-    if (process.env.NODE_ENV === 'test') {
-      dotenv.config({
-        path: '../.env.test',
-      });
-    } else {
-      dotenv.config({
-        path: '../.env',
-      });
-    }
-  }
-}
+import './src/util/loadDotEnv';
 
 export default {
   mode: 'universal',
@@ -28,8 +14,8 @@ export default {
   srcDir: 'src/',
 
   server: {
-    host: '0.0.0.0',
-    port: 8080,
+    host: process.env.JB_APP_HOST || '0.0.0.0',
+    port: process.env.JB_APP_PORT || 8080,
   },
 
   env: {
@@ -110,7 +96,7 @@ export default {
   axios: {
     proxy: true,
     // only used during server-side renders
-    baseURL: `${process.env.API_URL_NUXT}/api`,
+    baseURL: `${process.env.JB_API_URL}/api`,
     // only used for client-side renders
     prefix: '/api/',
   },
@@ -118,13 +104,13 @@ export default {
   // proxy whines if it gets passed an undefined target so we only set it if the
   // variable is present (it's only needed for server builds but there doesn't
   // seem to be a way to only configure for server builds?)
-  proxy: process.env.API_URL_NUXT
+  proxy: process.env.JB_API_URL
     ? {
         '/api': {
-          target: process.env.API_URL_NUXT,
+          target: process.env.JB_API_URL,
         },
         '/auth': {
-          target: process.env.API_URL_NUXT,
+          target: process.env.JB_API_URL,
         },
       }
     : undefined,

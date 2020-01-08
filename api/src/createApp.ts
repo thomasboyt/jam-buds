@@ -41,7 +41,7 @@ export default function createApp() {
 
   app.use(
     cors({
-      origin: process.env.APP_URL,
+      origin: process.env.JB_APP_URL,
     })
   );
 

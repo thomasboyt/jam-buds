@@ -33,7 +33,7 @@ function getTwitterClient(user: UserModel): Twit {
 }
 
 export async function postSongTweet({ text, song, user }: PostSongTweetParams) {
-  const link = `${process.env.APP_URL}/users/${user.name}?song=${song.id}`;
+  const link = `${process.env.JB_APP_URL}/users/${user.name}?song=${song.id}`;
 
   const tweet = `${text} ${link}`;
 
