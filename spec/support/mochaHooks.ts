@@ -10,6 +10,10 @@ if (!process.env.CI) {
   });
 }
 
+dotenv.config({
+  path: '../.env.test.defaults',
+});
+
 function resetDb() {
   childProcess.spawnSync('npm', ['run', 'resetdb'], {
     cwd: path.join(__dirname, '../../api'),
