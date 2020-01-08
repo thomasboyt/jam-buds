@@ -108,18 +108,25 @@ export default {
 
   axios: {
     proxy: true,
+    // only used during server-side renders
     baseURL: `${process.env.API_URL_NUXT}/api`,
+    // only used for client-side renders
     prefix: '/api/',
   },
 
-  proxy: {
-    '/api': {
-      target: process.env.API_URL_NUXT,
-    },
-    '/auth': {
-      target: process.env.API_URL_NUXT,
-    },
-  },
+  // proxy whines if it gets passed an undefined target so we only set it if the
+  // variable is present (it's only needed for server builds but there doesn't
+  // seem to be a way to only configure for server builds?)
+  proxy: process.env.API_URL_NUXT
+    ? {
+        '/api': {
+          target: process.env.API_URL_NUXT,
+        },
+        '/auth': {
+          target: process.env.API_URL_NUXT,
+        },
+      }
+    : undefined,
 
   /*
    ** Build configuration
