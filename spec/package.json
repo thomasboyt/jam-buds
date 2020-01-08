@@ -9,11 +9,7 @@
   },
   "author": "Thomas Boyt <me@thomasboyt.com>",
   "license": "Parity-6.0.0",
-  "dependencies": {
-    "dotenv": "^8.2.0",
-    "got": "^10.2.1",
-    "wait-port": "^0.2.7"
-  },
+  "dependencies": {},
   "devDependencies": {
     "cypress": "^3.8.1"
   }
