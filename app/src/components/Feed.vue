@@ -26,9 +26,9 @@
       <template #placeholder>
         <p>
           Your feed doesn't have any items yet!
-          <router-link to="/find-friends">
+          <nuxt-link to="/find-friends">
             Find some friends to follow!
-          </router-link>
+          </nuxt-link>
         </p>
       </template>
     </playlist>

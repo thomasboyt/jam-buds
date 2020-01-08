@@ -1,9 +1,9 @@
 <template>
   <div class="link-tabs">
     <span v-for="(link, idx) of links" :key="link.to">
-      <router-link :to="`${linkPrefix || ''}${link.to}`">{{
+      <nuxt-link :to="`${linkPrefix || ''}${link.to}`">{{
         link.label
-      }}</router-link>
+      }}</nuxt-link>
       <span v-if="idx !== links.length - 1">/&nbsp;</span>
     </span>
   </div>
@@ -16,7 +16,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import '../../styles/mixins.scss';
+@import '~/assets/styles/mixins.scss';
 
 .link-tabs {
   font-size: 18px;
@@ -26,7 +26,7 @@ export default {
   }
 }
 
-.link-tabs a.router-link-exact-active {
+.link-tabs a.nuxt-link-exact-active {
   font-weight: 600;
 }
 </style:>

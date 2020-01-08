@@ -23,8 +23,8 @@
 <script>
 import Icon from '../Icon.vue';
 
-const playIcon = require('../../../assets/play-outline.svg');
-const youtubeIcon = require('../../../assets/youtube.svg');
+const playIcon = require('~/assets/play-outline.svg');
+const youtubeIcon = require('~/assets/youtube.svg');
 
 export default {
   components: { Icon },

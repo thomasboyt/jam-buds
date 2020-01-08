@@ -1,4 +1,5 @@
 import puppeteer from 'puppeteer';
+import { login, appUrl } from './utils';
 
 export let browser: puppeteer.Browser;
 
@@ -12,16 +13,29 @@ after(async () => {
   await browser.close();
 });
 
-const appUrl = (path: string) => `${process.env.APP_URL}${path}`;
+export const createPageSession = async (url: string, userEmail?: string) => {
+  // close any existing pages since HMR can't handle more than like 3 open tabs
+  const pages = await browser.pages();
+  for (let page of pages) {
+    await page.close();
+  }
 
-export const getPage = async (url: string) => {
   const page = await browser.newPage();
+
+  await page.setCacheEnabled(false);
+  const client = await page.target().createCDPSession();
+  await client.send('Network.clearBrowserCookies');
+  await client.send('Network.clearBrowserCache');
 
   page.on('console', (msg) => console.log('PAGE LOG:', msg.text()));
   page.on('pageerror', (err) => {
     console.log('Error on page');
     console.log(err);
   });
+
+  if (userEmail) {
+    await login(page, userEmail);
+  }
 
   await page.goto(appUrl(url));
 

@@ -30,7 +30,6 @@
 </template>
 
 <script>
-import { getPlaybackSourceForUrl } from '../../playbackSources';
 import SpotifyResults from './SpotifyResults.vue';
 
 export default {
@@ -62,13 +61,6 @@ export default {
 
     async handleSubmit(evt) {
       evt.preventDefault();
-
-      if (this.songInput.startsWith('https://')) {
-        if (!getPlaybackSourceForUrl(this.songInput)) {
-          this.invalid = true;
-          return;
-        }
-      }
 
       this.requestInFlight = true;
 

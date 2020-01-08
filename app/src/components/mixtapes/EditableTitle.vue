@@ -71,7 +71,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import '../../../styles/mixins.scss';
+@import '~/assets/styles/mixins.scss';
 
 form {
   display: flex;

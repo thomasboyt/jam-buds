@@ -2,7 +2,11 @@
   <div class="audio-player--song-display">
     <div class="audio-player--art-container">
       <img v-if="albumArt" :src="albumArt" class="audio-player--art" />
-      <icon v-else :glyph="placeholderIcon" class="audio-player--art-placeholder" />
+      <icon
+        v-else
+        :glyph="placeholderIcon"
+        class="audio-player--art-placeholder"
+      />
     </div>
     <div class="audio-player--label-container">
       <div :style="{ fontWeight: '600' }">{{ artist }}</div>
@@ -10,11 +14,9 @@
 
       <div>
         <span class="hide-mobile">playing</span> from
-        <router-link :to="playbackSourcePath">
-          {{
-          playbackSourceLabel
-          }}
-        </router-link>
+        <nuxt-link :to="playbackSourcePath">
+          {{ playbackSourceLabel }}
+        </nuxt-link>
       </div>
     </div>
   </div>
@@ -23,7 +25,7 @@
 <script>
 import Icon from '../Icon.vue';
 
-const placeholderIcon = require('../../../assets/record.svg');
+const placeholderIcon = require('~/assets/record.svg');
 
 export default {
   components: {
@@ -55,7 +57,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '../../../styles/mixins.scss';
+@import '~/assets/styles/mixins.scss';
 
 .audio-player--song-display {
   display: flex;

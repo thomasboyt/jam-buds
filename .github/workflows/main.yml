@@ -82,7 +82,7 @@ jobs:
         working-directory: ./spec
         name: Install integration test dependencies
 
-      - run: npm run build-assets
+      - run: npm run build
         working-directory: ./app
         env:
           DISABLE_APPLE_MUSIC: true
@@ -98,7 +98,8 @@ jobs:
           SPOTIFY_CLIENT_SECRET: ${{ secrets.SPOTIFY_CLIENT_SECRET }}
           DISABLE_APPLE_MUSIC: true
           DISABLE_BUTTONDOWN: true
+          DANGER_SKIP_AUTH: true
           CI: true
-          API_URL: http://localhost:3001
+          API_URL_NUXT: http://localhost:3001
           APP_URL: http://localhost:8080
           STATIC_URL: http://localhost:8080/assets

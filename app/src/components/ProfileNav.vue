@@ -1,7 +1,7 @@
 <template>
   <div class="user-header">
     <share-landing-banner>
-      <router-link :to="`/?signup-ref=${name}`">sign up</router-link> to follow
+      <nuxt-link :to="`/?signup-ref=${name}`">sign up</nuxt-link> to follow
       what <strong>{{ name }}</strong> is listening to, and share your own jams!
     </share-landing-banner>
 
@@ -75,7 +75,7 @@ export default {
 
   .user-header-top {
     display: flex;
-    align-items: start;
+    align-items: flex-start;
 
     > * {
       flex: 0 0 auto;

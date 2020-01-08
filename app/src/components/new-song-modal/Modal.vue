@@ -33,7 +33,7 @@ import { enableBodyScroll, disableBodyScroll } from 'body-scroll-lock';
 
 import Icon from '../Icon.vue';
 
-const closeIcon = require('../../../assets/close.svg');
+const closeIcon = require('~/assets/close.svg');
 
 export default {
   components: { Icon },

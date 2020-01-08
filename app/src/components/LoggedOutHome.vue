@@ -55,7 +55,7 @@
         <a href="https://jambuds.club/users/thomas">thomas</a>
         &middot;
       </span>
-      <router-link to="/about">about jam buds</router-link> &middot;
+      <nuxt-link to="/about">about jam buds</nuxt-link> &middot;
       <a href="mailto:hello@jambuds.club">hello@jambuds.club</a>
     </footer>
   </div>
@@ -63,7 +63,7 @@
 
 <script>
 import SignInForm from './SignInForm.vue';
-import corgi from '../../assets/ghettoblaster_corgi.png';
+import corgi from '~/assets/ghettoblaster_corgi.png';
 import getGradient from '../util/gradients';
 
 export default {
@@ -86,7 +86,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import '../../styles/mixins.scss';
+@import '~/assets/styles/mixins.scss';
 
 .logged-out-home {
   background-attachment: fixed;

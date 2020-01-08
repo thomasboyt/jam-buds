@@ -6,7 +6,7 @@
       verb="posted"
     />
 
-    <router-link class="playlist-mixtape" :to="mixtapeLink">
+    <nuxt-link class="playlist-mixtape" :to="mixtapeLink">
       <img class="art" :src="art" />
 
       <div class="label">
@@ -16,7 +16,7 @@
           a mixtape with {{ mixtape.numTracks }} tracks
         </div>
       </div>
-    </router-link>
+    </nuxt-link>
   </div>
 </template>
 
@@ -42,7 +42,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '../../../styles/mixins.scss';
+@import '~/assets/styles/mixins.scss';
 
 .playlist-mixtape {
   padding: 10px;

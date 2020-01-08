@@ -17,7 +17,7 @@ USER node
 
 # Create static folder that can be served from e.g. Caddy
 RUN mkdir -p public
-RUN cp -r build/. static/. public
+RUN cp -r .nuxt/dist/client/. src/static/. public
 
 EXPOSE 8080
 CMD [ "npm", "start" ]

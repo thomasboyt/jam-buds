@@ -1,1 +1,0 @@
-this is here until actual static files are here so the build step doesn't freak out

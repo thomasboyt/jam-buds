@@ -13,9 +13,9 @@
     <ul :style="{ marginBottom: '0px' }">
       <li v-for="notification of notifications" :key="notification.id">
         <strong
-          ><router-link :to="`/users/${notification.user.name}`">{{
+          ><nuxt-link :to="`/users/${notification.user.name}`">{{
             notification.user.name
-          }}</router-link></strong
+          }}</nuxt-link></strong
         >
         is now following you.
       </li>
@@ -28,7 +28,7 @@
 <script>
 import Panel from './Panel.vue';
 import Icon from './Icon.vue';
-import closeIcon from '../../assets/close.svg';
+import closeIcon from '~/assets/close.svg';
 
 export default {
   components: { Panel, Icon },

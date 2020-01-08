@@ -32,7 +32,7 @@ import Song from '../playlist/Song.vue';
 import SongRemoveFromMixtapeAction from './SongRemoveFromMixtapeAction.vue';
 import Icon from '../Icon.vue';
 
-const dragIcon = require('../../../assets/menu.svg');
+const dragIcon = require('~/assets/menu.svg');
 
 export default {
   components: {

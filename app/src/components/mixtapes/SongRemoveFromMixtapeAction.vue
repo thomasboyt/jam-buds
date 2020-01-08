@@ -11,7 +11,7 @@
 <script>
 import Icon from '../Icon.vue';
 
-const deleteIcon = require('../../../assets/close.svg');
+const deleteIcon = require('~/assets/close.svg');
 
 export default {
   components: { Icon },

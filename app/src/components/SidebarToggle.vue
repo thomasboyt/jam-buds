@@ -9,7 +9,7 @@
 </template>
 
 <script>
-const menuIcon = require('../../assets/menu.svg');
+const menuIcon = require('~/assets/menu.svg');
 import Icon from './Icon.vue';
 
 export default {

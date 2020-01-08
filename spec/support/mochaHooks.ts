@@ -10,7 +10,7 @@ if (!process.env.CI) {
   });
 }
 
-const requiredEnv = ['DATABASE_URL', 'APP_URL', 'API_URL', 'STATIC_URL'];
+const requiredEnv = ['DATABASE_URL', 'APP_URL', 'API_URL_NUXT', 'STATIC_URL'];
 
 for (let key of requiredEnv) {
   if (!process.env[key]) {
@@ -22,7 +22,7 @@ for (let key of requiredEnv) {
 const API_PORT = 3001;
 const APP_PORT = 8080;
 
-async function resetDb() {
+function resetDb() {
   childProcess.spawnSync('npm', ['run', 'resetdb'], {
     cwd: path.join(__dirname, '../../api'),
     stdio: 'inherit',
@@ -42,6 +42,7 @@ async function startApiServer() {
     env: {
       ...process.env,
       PORT: API_PORT.toString(),
+      DANGER_SKIP_AUTH: 'true',
     },
   });
 
@@ -74,6 +75,7 @@ async function startAppServer() {
     env: {
       ...process.env,
       PORT: APP_PORT.toString(),
+      DANGER_SKIP_AUTH: 'true',
     },
   });
 
@@ -100,6 +102,6 @@ before(async function() {
   await Promise.all([startApiServer(), startAppServer()]);
 });
 
-beforeEach(async () => {
-  await resetDb();
+beforeEach(() => {
+  resetDb();
 });

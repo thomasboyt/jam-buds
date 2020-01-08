@@ -13,9 +13,8 @@ export default {
 };
 </script>
 
-
 <style lang="scss">
-@import '../../styles/mixins.scss';
+@import '~/assets/styles/mixins.scss';
 
 .logged-out-header {
   margin-bottom: 40px;

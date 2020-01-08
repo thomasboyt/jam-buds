@@ -41,9 +41,9 @@ import Icon from '../Icon.vue';
 import AudioPlayerSongDisplay from './AudioPlayerSongDisplay.vue';
 import LoadingSpinner from './LoadingSpinner.vue';
 
-const playIcon = require('../../../assets/play.svg');
-const pauseIcon = require('../../../assets/pause.svg');
-const nextIcon = require('../../../assets/next.svg');
+const playIcon = require('~/assets/play.svg');
+const pauseIcon = require('~/assets/pause.svg');
+const nextIcon = require('~/assets/next.svg');
 
 export default {
   components: {
@@ -104,8 +104,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '../../../styles/mixins.scss';
-@import '../../../styles/z-index.scss';
+@import '~/assets/styles/mixins.scss';
+@import '~/assets/styles/z-index.scss';
 
 .audio-player--bar {
   background: $black;

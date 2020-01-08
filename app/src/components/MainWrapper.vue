@@ -42,7 +42,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import '../../styles/mixins.scss';
+@import '~/assets/styles/mixins.scss';
 
 .main {
   background: var(--theme-body-background);

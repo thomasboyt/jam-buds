@@ -1,9 +1,9 @@
 <template>
   <ul>
     <li v-for="user of users" :key="user.id">
-      <router-link :to="`/users/${user.name}`">
+      <nuxt-link :to="`/users/${user.name}`">
         {{ user.name }}
-      </router-link>
+      </nuxt-link>
     </li>
   </ul>
 </template>

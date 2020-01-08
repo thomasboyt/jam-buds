@@ -36,7 +36,7 @@
 
 <script>
 import Icon from '../Icon.vue';
-import dropdownIcon from '../../../assets/kebab-vertical.svg';
+import dropdownIcon from '~/assets/kebab-vertical.svg';
 
 export default {
   components: { Icon },

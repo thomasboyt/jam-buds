@@ -1,13 +1,11 @@
 import expect from 'expect';
 import expectPuppeteer from 'expect-puppeteer';
 
-import { getPage } from '../support/browser';
-import { asDevUser } from '../support/utils';
+import { createPageSession } from '../support/browser';
 import '../support/mochaHooks';
 
 async function followAbe() {
-  const page = await getPage('/users/abe');
-  await asDevUser(page, 'jeff');
+  const page = await createPageSession('/users/abe', 'jeff@jambuds.club');
 
   await expectPuppeteer(page).toClick('.follow-toggle');
 
@@ -20,17 +18,14 @@ async function followAbe() {
 describe('following a user', () => {
   it('displays their entries in your feed', async () => {
     await followAbe();
-
-    const page = await getPage('/');
+    const page = await createPageSession('/', 'jeff@jambuds.club');
 
     await expectPuppeteer(page).toMatch('abe posted');
   });
 
   it('shows that user a notification', async () => {
     await followAbe();
-
-    const page = await getPage('/');
-    await asDevUser(page, 'abe');
+    const page = await createPageSession('/', 'abe@jambuds.club');
 
     await expectPuppeteer(page).toMatch('1 new update since your last visit');
     await expectPuppeteer(page).toMatch('jeff is now following');
