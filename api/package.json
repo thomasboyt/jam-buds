@@ -13,7 +13,8 @@
     "start": "node build/src/entry.js",
     "build-prod": "tsc -p tsconfig.build.json",
     "test": "NODE_ENV=test mocha --exit --require ts-node/register 'src/**/*.spec.ts'",
-    "lint": "eslint src/**/*.ts"
+    "lint": "eslint src/**/*.ts",
+    "e2e": "NODE_ENV=test TEST_ENV=feature npm run dev-no-watch"
   },
   "author": "Thomas Boyt <me@thomasboyt.com>",
   "license": "Parity-6.0.0",
