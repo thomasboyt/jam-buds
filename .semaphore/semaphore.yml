@@ -39,6 +39,8 @@ blocks:
   - name: "Unit Tests"
     task:
       env_vars:
+        - name: NODE_ENV
+          value: "test"
         - name: DATABASE_URL
           value: "postgres://postgres@localhost:5432/jambuds_test"
         - name: REDIS_URL
@@ -61,6 +63,8 @@ blocks:
       secrets:
         - name: jambuds-integration-keys
       env_vars:
+        - name: NODE_ENV
+          value: "test"
         - name: DATABASE_URL
           value: "postgres://postgres@localhost:5432/jambuds_test"
         - name: REDIS_URL
