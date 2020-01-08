@@ -60,6 +60,15 @@ jobs:
           - 6379/tcp
         options: --entrypoint redis-server
 
+    env:
+      NODE_ENV: test
+      TEST_ENV: feature
+      CI: "1"
+      DATABASE_URL: "postgres://postgres@localhost:${{ job.services.postgres.ports[5432] }}/jambuds_test"
+      REDIS_URL: "redis://localhost:${{ job.services.redis.ports[6379] }}"
+      SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
+      SPOTIFY_CLIENT_SECRET: ${{ secrets.SPOTIFY_CLIENT_SECRET }}
+
     steps:
       - uses: actions/checkout@v1
         with:
@@ -82,24 +91,20 @@ jobs:
         working-directory: ./spec
         name: Install integration test dependencies
 
+      - run: npm install -g wait-on
+
       - run: npm run build
         working-directory: ./app
-        env:
-          DISABLE_APPLE_MUSIC: true
-          CI: true
-          STATIC_URL: http://localhost:8080/assets
+        name: Build app
+
+      - run: npm start & wait-on -t 20000 http://localhost:8081
+        working-directory: ./app
+        name: Start App server
+      
+      - run: npm run e2e & wait-on -t 20000 tcp:3001
+        working-directory: ./api
+        name: Start API server
 
       - run: npm test
         working-directory: ./spec
-        env:
-          DATABASE_URL: "postgres://postgres@localhost:${{ job.services.postgres.ports[5432] }}/jambuds_test"
-          REDIS_URL: "redis://localhost:${{ job.services.redis.ports[6379] }}"
-          SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
-          SPOTIFY_CLIENT_SECRET: ${{ secrets.SPOTIFY_CLIENT_SECRET }}
-          DISABLE_APPLE_MUSIC: true
-          DISABLE_BUTTONDOWN: true
-          DANGER_SKIP_AUTH: true
-          CI: true
-          API_URL_NUXT: http://localhost:3001
-          APP_URL: http://localhost:8080
-          STATIC_URL: http://localhost:8080/assets
+        name: Run Cypress
