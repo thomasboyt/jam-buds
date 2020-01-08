@@ -1,6 +1,6 @@
 import puppeteer from 'puppeteer';
 
-export const appUrl = (path: string) => `${process.env.APP_URL}${path}`;
+export const appUrl = (path: string) => `${process.env.JB_APP_URL}${path}`;
 
 export async function login(page: puppeteer.Page, email: string) {
   await page.goto(appUrl('/'));
