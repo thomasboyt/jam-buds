@@ -64,8 +64,6 @@ jobs:
       NODE_ENV: test
       TEST_ENV: feature
       CI: "1"
-      DATABASE_URL: "postgres://postgres@localhost:${{ job.services.postgres.ports[5432] }}/jambuds_test"
-      REDIS_URL: "redis://localhost:${{ job.services.redis.ports[6379] }}"
       SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
       SPOTIFY_CLIENT_SECRET: ${{ secrets.SPOTIFY_CLIENT_SECRET }}
 
@@ -104,7 +102,13 @@ jobs:
       - run: npm run e2e & wait-on -t 20000 tcp:3001
         working-directory: ./api
         name: Start API server
+        env:
+          DATABASE_URL: "postgres://postgres@localhost:${{ job.services.postgres.ports[5432] }}/jambuds_test"
+          REDIS_URL: "redis://localhost:${{ job.services.redis.ports[6379] }}"
 
       - run: npm test
         working-directory: ./spec
         name: Run Cypress
+        env:
+          DATABASE_URL: "postgres://postgres@localhost:${{ job.services.postgres.ports[5432] }}/jambuds_test"
+          REDIS_URL: "redis://localhost:${{ job.services.redis.ports[6379] }}"
