@@ -6,9 +6,9 @@
 //   });
 // }
 
-import dotenv from 'dotenv';
-
 if (process.env.NODE_ENV !== 'production' || process.env.USE_DOTENV) {
+  const dotenv = require('dotenv');
+
   if (!process.env.CI) {
     if (process.env.NODE_ENV === 'test') {
       dotenv.config({
