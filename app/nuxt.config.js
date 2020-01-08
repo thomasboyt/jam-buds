@@ -122,7 +122,7 @@ export default {
     /*
      ** You can extend webpack config here
      */
-    extend(config) {
+    extend(config, { loaders }) {
       removeExistingSvgRule(config);
 
       config.module.rules.push({
@@ -134,6 +134,10 @@ export default {
       });
 
       config.devtool = '#source-map';
+
+      loaders.vue.compilerOptions = {
+        whitespace: 'condense',
+      };
     },
   },
 };

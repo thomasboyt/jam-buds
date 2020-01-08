@@ -4,7 +4,7 @@
       <nuxt-link :to="`${linkPrefix || ''}${link.to}`">{{
         link.label
       }}</nuxt-link>
-      <span v-if="idx !== links.length - 1">/&nbsp;</span>
+      <span v-if="idx !== links.length - 1">&nbsp;/&nbsp;</span>
     </span>
   </div>
 </template>
