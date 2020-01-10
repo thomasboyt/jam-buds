@@ -78,16 +78,15 @@ export default {
 
   computed: {
     ...mapState({
-      name: (state) => state.profile.user.name,
       draftMixtapes: (state) => state.currentUser.draftMixtapes,
 
       isCurrentUserPage(state) {
-        return (
-          state.auth.authenticated &&
-          state.currentUser.name === this.$route.params.id
-        );
+        return state.auth.authenticated && state.currentUser.name === this.name;
       },
     }),
+    name() {
+      return this.$route.params.id;
+    },
     playlistKey() {
       return `${this.name}/mixtapes`;
     },

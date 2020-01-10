@@ -28,9 +28,11 @@ export default {
 
   computed: {
     ...mapState({
-      name: (state) => state.profile.user.name,
       following: (state) => state.profile.following,
     }),
+    name() {
+      return this.$route.params.id;
+    },
     title() {
       return `${this.name}'s followed users`;
     },

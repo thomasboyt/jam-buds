@@ -25,7 +25,6 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
 import ProfileNav from '../../../components/ProfileNav.vue';
 import Playlist from '../../../components/playlist/Playlist.vue';
 import PostItem from '../../../components/playlist/PostItem.vue';
@@ -86,9 +85,9 @@ export default {
   },
 
   computed: {
-    ...mapState({
-      name: (state) => state.profile.user.name,
-    }),
+    name() {
+      return this.$route.params.id;
+    },
     playlistKey() {
       return `${this.name}/posts`;
     },

@@ -1,8 +1,8 @@
 <template>
   <div class="user-header">
     <share-landing-banner>
-      <nuxt-link :to="`/?signup-ref=${name}`">sign up</nuxt-link> to follow
-      what <strong>{{ name }}</strong> is listening to, and share your own jams!
+      <nuxt-link :to="`/?signup-ref=${name}`">sign up</nuxt-link> to follow what
+      <strong>{{ name }}</strong> is listening to, and share your own jams!
     </share-landing-banner>
 
     <div class="user-header-top">
@@ -59,12 +59,14 @@ export default {
 
   computed: {
     ...mapState({
-      name: (state) => state.profile.user.name,
       authenticated: (state) => state.auth.authenticated,
-      showFollowToggle: (state) =>
-        state.auth.authenticated &&
-        state.profile.user.name !== state.currentUser.name,
+      showFollowToggle(state) {
+        return state.auth.authenticated && state.currentUser.name !== this.name;
+      },
     }),
+    name() {
+      return this.$route.params.id;
+    },
   },
 };
 </script>
