@@ -28,6 +28,7 @@
 import ProfileNav from '../../../components/ProfileNav.vue';
 import Playlist from '../../../components/playlist/Playlist.vue';
 import PostItem from '../../../components/playlist/PostItem.vue';
+import with404Handler from '~/util/with404Handler';
 
 export default {
   components: {
@@ -74,8 +75,11 @@ export default {
     };
   },
 
-  async fetch({ store, route }) {
-    await store.dispatch('loadProfilePostsPlaylist', route.params.id);
+  async fetch({ store, route, error }) {
+    await with404Handler(
+      error,
+      store.dispatch('loadProfilePostsPlaylist', route.params.id)
+    );
   },
 
   data() {

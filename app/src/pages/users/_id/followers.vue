@@ -9,6 +9,7 @@
 import { mapState } from 'vuex';
 import ProfileNav from '../../../components/ProfileNav.vue';
 import UsersList from '../../../components/UsersList.vue';
+import with404Handler from '~/util/with404Handler';
 
 export default {
   components: {
@@ -22,8 +23,11 @@ export default {
     };
   },
 
-  async fetch({ store, route }) {
-    await store.dispatch('loadProfileFollowers', route.params.id);
+  async fetch({ store, route, error }) {
+    await with404Handler(
+      error,
+      store.dispatch('loadProfileFollowers', route.params.id)
+    );
   },
 
   computed: {

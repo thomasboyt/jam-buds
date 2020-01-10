@@ -90,8 +90,8 @@ import EditableTitle from '../../components/mixtapes/EditableTitle.vue';
 import PublishButton from '../../components/mixtapes/PublishButton.vue';
 import Panel from '../../components/Panel.vue';
 import ShareLandingBanner from '../../components/ShareLandingBanner.vue';
-
 import getMixtapeArt from '../../util/getMixtapeArt';
+import with404Handler from '../../util/with404Handler';
 
 export default {
   components: {
@@ -132,8 +132,8 @@ export default {
     };
   },
 
-  async fetch({ store, route }) {
-    await store.dispatch('loadMixtape', route.params.id);
+  async fetch({ store, route, error }) {
+    await with404Handler(error, store.dispatch('loadMixtape', route.params.id));
   },
 
   data() {

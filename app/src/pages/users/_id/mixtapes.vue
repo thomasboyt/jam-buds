@@ -43,6 +43,7 @@ import Playlist from '../../../components/playlist/Playlist.vue';
 import MixtapeItem from '../../../components/playlist/MixtapeItem.vue';
 import Panel from '../../../components/Panel.vue';
 import CreateMixtapeButton from '../../../components/CreateMixtapeButton.vue';
+import with404Handler from '~/util/with404Handler';
 
 export default {
   components: {
@@ -59,15 +60,17 @@ export default {
     };
   },
 
-  async fetch({ store, route }) {
-    await store.dispatch('loadProfileMixtapes', route.params.id);
+  async fetch({ store, route, error }) {
+    const requests = [store.dispatch('loadProfileMixtapes', route.params.id)];
 
     if (
       store.state.auth.authenticated &&
       store.state.currentUser.name === route.params.id
     ) {
-      await store.dispatch('loadDraftMixtapes');
+      requests.push(store.dispatch('loadDraftMixtapes'));
     }
+
+    await with404Handler(error, Promise.all(requests));
   },
 
   data() {
