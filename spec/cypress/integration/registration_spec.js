@@ -3,17 +3,20 @@ describe('registration', () => {
     cy.visit('/');
 
     cy.get('input[type="email"]').type('newuser@jambuds.club');
-    cy.get('button[type="submit"').click();
+    cy.get('button[type="submit"]').click();
 
     cy.contains('welcome!');
 
     cy.get('input.url-name').type('newuser');
+    cy.get('button[type="submit"]').click();
 
     cy.contains('connect a streaming service');
     cy.contains('continue without connecting').click();
 
-    cy.contains('connect to twitter');
-    cy.contains('continue without connecting').click();
+    cy.get('.connect-twitter')
+      .should('contain', 'connect to twitter')
+      .contains('continue without connecting')
+      .click();
 
     cy.contains('your feed');
   });

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="connect-page">
+    <div class="connect-page connect-twitter">
       <h3>connect to twitter <small>(optional!)</small></h3>
 
       <template v-if="twitterName">
