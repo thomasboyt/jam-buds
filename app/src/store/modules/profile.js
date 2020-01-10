@@ -28,7 +28,7 @@ const profile = {
         url: `/playlists/${userName}`,
       });
 
-      this.commit('setViewedProfile', data.userProfile);
+      context.commit('setViewedProfile', data.userProfile);
     },
 
     async loadProfileLikesPlaylist(context, userName) {
@@ -37,7 +37,7 @@ const profile = {
         url: `/playlists/${userName}/liked`,
       });
 
-      this.commit('setViewedProfile', data.userProfile);
+      context.commit('setViewedProfile', data.userProfile);
     },
 
     async loadProfileFollowing(context, userName) {
@@ -48,8 +48,8 @@ const profile = {
       const userProfile = resp.data.userProfile;
       const following = resp.data.users;
 
-      this.commit('setViewedProfile', userProfile);
-      this.commit('setFollowing', following);
+      context.commit('setViewedProfile', userProfile);
+      context.commit('setFollowing', following);
     },
 
     async loadProfileFollowers(context, userName) {
@@ -60,8 +60,8 @@ const profile = {
       const userProfile = resp.data.userProfile;
       const followers = resp.data.users;
 
-      this.commit('setViewedProfile', userProfile);
-      this.commit('setFollowers', followers);
+      context.commit('setViewedProfile', userProfile);
+      context.commit('setFollowers', followers);
     },
 
     async loadProfileMixtapes(context, userName) {
@@ -70,7 +70,7 @@ const profile = {
         url: `/users/${userName}/mixtapes`,
       });
 
-      this.commit('setViewedProfile', data.userProfile);
+      context.commit('setViewedProfile', data.userProfile);
     },
   },
 };
