@@ -13,6 +13,10 @@ export default {
 
   srcDir: 'src/',
 
+  features: {
+    transitions: false,
+  },
+
   server: {
     host: process.env.JB_APP_HOST || '0.0.0.0',
     port: process.env.JB_APP_PORT || 8080,

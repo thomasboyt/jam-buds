@@ -5,7 +5,7 @@
       :with-color-scheme-override="true"
       :color-scheme="colorScheme"
     >
-      <router-view />
+      <nuxt-child />
     </main-wrapper>
   </sidebar-wrapper>
 </template>

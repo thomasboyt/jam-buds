@@ -8,7 +8,7 @@
     </h2>
 
     <transition name="fade">
-      <router-view class="fade-page"></router-view>
+      <nuxt-child class="fade-page" />
     </transition>
   </div>
 </template>

@@ -12,7 +12,6 @@
 import { mapState } from 'vuex';
 import Feed from '../components/Feed.vue';
 import LoggedOutHome from '../components/LoggedOutHome.vue';
-
 import MainWrapper from '../components/MainWrapper.vue';
 import SidebarWrapper from '../components/SidebarWrapper.vue';
 

@@ -6,7 +6,7 @@
       <link-tabs link-prefix="/settings" :links="navLinks" />
 
       <div :style="{ marginTop: '30px' }">
-        <router-view />
+        <nuxt-child />
       </div>
     </main-wrapper>
   </sidebar-wrapper>
