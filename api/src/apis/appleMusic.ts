@@ -1,5 +1,6 @@
 import axios from 'axios';
 import generateMusicKitToken from '@tboyt/music-kit-jwt';
+import { SpotifySongResource } from './spotify';
 
 let cachedToken: string;
 function getToken(): string {
@@ -21,6 +22,28 @@ export interface AppleMusicInfo {
   url: string;
 }
 
+export async function getAppleMusicInfoForSpotifyTrack(
+  spotifyTrack: SpotifySongResource
+): Promise<AppleMusicInfo | null> {
+  if (process.env.NODE_ENV === 'test' || process.env.DISABLE_APPLE_MUSIC) {
+    return null;
+  }
+
+  const isrc = spotifyTrack.external_ids.isrc;
+
+  let appleMusicInfo: AppleMusicInfo | null = null;
+
+  if (isrc) {
+    appleMusicInfo = await getAppleMusicInfoByISRC(isrc);
+  }
+
+  if (!appleMusicInfo) {
+    appleMusicInfo = await getAppleMusicInfoByTrackInformation(spotifyTrack);
+  }
+
+  return appleMusicInfo;
+}
+
 /**
  * Looks up a Apple Music song resource given a song's ISRC. Returns subset of
  * info that needs to be stored in the DB.
@@ -28,10 +51,6 @@ export interface AppleMusicInfo {
 export async function getAppleMusicInfoByISRC(
   isrc: string
 ): Promise<AppleMusicInfo | null> {
-  if (process.env.NODE_ENV === 'test' || process.env.DISABLE_APPLE_MUSIC) {
-    return null;
-  }
-
   const token = getToken();
 
   const searchUrl = `https://api.music.apple.com/v1/catalog/us/songs?filter[isrc]=${isrc}`;
@@ -46,18 +65,7 @@ export async function getAppleMusicInfoByISRC(
 
   if (!song) {
     return null;
-  } else if (!song.attributes.playParams) {
-    // XXX: So, for some fucking reason, the Apple Music API appears to return
-    // songs that are _only on iTunes_, and not actually have any clear key to
-    // distinguish "this can be played" from "this cannot be played"
-    //
-    // It _looks_ like the `playParams` key only exists on songs that can be
-    // played through Apple Music, so I'm going to try using that for now.
-    console.log(
-      `*** Missing playParams for Apple Music song ${
-        song.id
-      }! Probably only on iTunes?`
-    );
+  } else if (!appleMusicSearchResultCanBePlayed(song)) {
     return null;
   } else {
     return {
@@ -65,4 +73,28 @@ export async function getAppleMusicInfoByISRC(
       url: song.attributes.url,
     };
   }
+}
+
+export async function getAppleMusicInfoByTrackInformation(
+  spotifyTrack: SpotifySongResource
+): Promise<AppleMusicInfo | null> {}
+
+/**
+ * XXX: So, for some fucking reason, the Apple Music API appears to return songs
+ * that are _only on iTunes_, and not actually have any clear key to distinguish
+ * "this can be played" from "this cannot be played"
+ *
+ * It _looks_ like the `playParams` key only exists on songs that can be played
+ * through Apple Music, so I'm going to try using that for now.
+ */
+function appleMusicSearchResultCanBePlayed(song: any): boolean {
+  if (!song.attributes.playParams) {
+    console.log(
+      `*** Missing playParams for Apple Music song ${
+        song.id
+      }! Probably only on iTunes?`
+    );
+    return false;
+  }
+  return true;
 }

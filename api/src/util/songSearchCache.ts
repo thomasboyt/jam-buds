@@ -6,7 +6,6 @@ interface CacheEntry {
   // full spotify search result
   spotify: spotify.SpotifySongResource;
   spotifyId: string;
-  isrc?: string;
   // external ids
   didHydrateExternalIds: boolean;
   appleMusicId?: string;
@@ -24,12 +23,9 @@ export async function cacheSongFromSearchResult(
   id: string,
   result: spotify.SpotifySongResource
 ): Promise<CacheEntry> {
-  const isrc = result.external_ids.isrc;
-
   searchCache[id] = {
     spotify: result,
     spotifyId: id,
-    isrc,
     didHydrateExternalIds: false,
   };
 
@@ -83,9 +79,13 @@ export async function getOrCreateSongCacheEntryWithExternalIds(
     return cacheEntry;
   }
 
-  const appleMusicInfo = cacheEntry.isrc
-    ? await getAppleMusicInfoByISRC(cacheEntry.isrc)
-    : null;
+  // const appleMusicInfo = cacheEntry.isrc
+  //   ? await getAppleMusicInfoByISRC(cacheEntry.isrc)
+  //   : null;
+
+  const appleMusicInfo = await getAppleMusicInfoForSpotifyTrack(
+    cacheEntry.spotify
+  );
 
   if (appleMusicInfo) {
     return updateCacheWithAppleMusicInfo(spotifyId, appleMusicInfo);
