@@ -132,8 +132,15 @@ export default {
     };
   },
 
-  async fetch({ store, route, error }) {
-    await with404Handler(error, store.dispatch('loadMixtape', route.params.id));
+  async fetch({ store, route, error, redirect }) {
+    const mixtape = await with404Handler(
+      error,
+      store.dispatch('loadMixtape', route.params.id)
+    );
+
+    if (route.params.slug !== mixtape.slug) {
+      redirect(`/mixtapes/${route.params.id}/${mixtape.slug}`);
+    }
   },
 
   data() {
