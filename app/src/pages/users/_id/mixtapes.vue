@@ -10,7 +10,7 @@
       <p>You've started on the following draft mixtapes:</p>
       <ul>
         <li v-for="mixtape of draftMixtapes" :key="mixtape.id">
-          <nuxt-link :to="`/mixtapes/${mixtape.id}`">
+          <nuxt-link :to="`/mixtapes/${mixtape.id}/${mixtape.slug}`">
             {{ mixtape.title }}
           </nuxt-link>
         </li>

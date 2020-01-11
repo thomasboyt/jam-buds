@@ -67,6 +67,17 @@ export default {
       },
     ],
   },
+
+  router: {
+    extendRoutes(routes, resolve) {
+      routes.push({
+        name: 'mixtape-with-slug',
+        path: '/mixtapes/:id/:slug',
+        component: resolve(__dirname, 'src/pages/mixtapes/_id.vue'),
+      });
+    },
+  },
+
   /*
    ** Customize the progress-bar color
    */

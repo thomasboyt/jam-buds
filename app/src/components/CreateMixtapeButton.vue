@@ -34,8 +34,8 @@ export default {
         this.requestInFlight = false;
       }
 
-      const mixtapeId = resp.data.mixtapeId;
-      this.$router.push(`/mixtapes/${mixtapeId}`);
+      const { mixtapeId, slug } = resp.data;
+      this.$router.push(`/mixtapes/${mixtapeId}/${slug}`);
     },
   },
 };

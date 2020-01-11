@@ -32,7 +32,7 @@
           }}</nuxt-link>
         </span>
 
-        <span v-if="!isEditing">&middot; posted {{ publishedAt }}</span>
+        <span v-if="!isEditing"> &middot; posted {{ publishedAt }}</span>
 
         <span v-if="isOwnMixtape">
           <span v-if="isEditing">
