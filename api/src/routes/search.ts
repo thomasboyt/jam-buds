@@ -8,6 +8,7 @@ import {
   cacheSongFromSearchResult,
   getOrCreateSongCacheEntryWithExternalIds,
 } from '../util/songSearchCache';
+import { getSongBySpotifyId } from '../models/song';
 
 /**
  * Many songs on Spotify have multiple entries for e.g. deluxe editions, or live
@@ -92,6 +93,15 @@ export default function registerSearchEndpoints(router: Router) {
     isAuthenticated,
     wrapAsyncRoute(async (req, res) => {
       const spotifyId = req.params.spotifyId;
+
+      const song = await getSongBySpotifyId(spotifyId);
+
+      if (song) {
+        return res.send({
+          spotifyId: song.spotifyId,
+          appleMusicId: song.appleMusicId,
+        });
+      }
 
       const entry = await getOrCreateSongCacheEntryWithExternalIds(spotifyId);
 
