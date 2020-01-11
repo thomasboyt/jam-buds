@@ -12,6 +12,8 @@ describe('viewing feed', () => {
     cy.login('jeff@jambuds.club');
     cy.visit('/');
 
-    cy.get('.playlist-mixtape').contains("vinny's mixtape");
+    cy.get('.playlist-mixtape')
+      .should('contain', "vinny's mixtape")
+      .get('a[href="/mixtapes/1/vinny-s-mixtape"]');
   });
 });
