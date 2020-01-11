@@ -1,19 +1,29 @@
 import * as t from 'io-ts';
 import { date as dateType } from 'io-ts-types/lib/date';
+import slugify from '@sindresorhus/slugify';
 
 import { db } from '../db';
 import { UserModel, getUserProfileForUser, getUserByUserId } from './user';
 import { serializeSong, selectSongs } from './song';
 import { Mixtape, Song, DraftMixtapeListItem } from '../resources';
-import { tPropNames, namespacedAliases, findMany, findOne } from './utils';
+import {
+  tPropNames,
+  namespacedAliases,
+  findMany,
+  findOne,
+  findOneOrThrow,
+} from './utils';
 
 export const MixtapeModelV = t.type({
   id: t.number,
   title: t.string,
+  slug: t.string,
   userId: t.number,
   createdAt: dateType,
   publishedAt: t.union([dateType, t.null]),
 });
+
+type MixtapeModel = t.TypeOf<typeof MixtapeModelV>;
 
 export const MixtapeSongEntryModelV = t.type({
   songId: t.number,
@@ -46,25 +56,37 @@ interface CreateMixtapeOptions {
   title: string;
 }
 
+const slugifyTitle = (title: string): string =>
+  slugify(title, { decamelize: false });
+
 /**
  * Create a mixtape for a given user.
  *
- * Returns the mixtape ID as a number so the _app_ can redirect to /mixtapes/:id.
+ * Returns the mixtape model so the app can redirect to /mixtapes/:id/:slug.
  */
 export async function createMixtapeForUser(
   user: UserModel,
   options: CreateMixtapeOptions
-): Promise<number> {
-  const [{ id }] = await db!('mixtapes').insert(
-    { title: options.title, userId: user.id },
-    ['id']
-  );
+): Promise<MixtapeModel> {
+  const slug = slugifyTitle(options.title);
 
-  return id;
+  const query = db!('mixtapes')
+    .insert({
+      title: options.title,
+      userId: user.id,
+      slug,
+    })
+    .returning('*');
+
+  const mixtape = await findOneOrThrow(query, MixtapeModelV);
+
+  return mixtape;
 }
 
 /**
  * Set the title of a given mixtape.
+ *
+ * Returns the mixtape slug so the app can redirect to /mixtapes/:id/:slug.
  */
 export async function setMixtapeTitle({
   mixtapeId,
@@ -72,10 +94,14 @@ export async function setMixtapeTitle({
 }: {
   mixtapeId: number;
   title: string;
-}): Promise<void> {
+}): Promise<string> {
+  const slug = slugifyTitle(title);
+
   await db!('mixtapes')
     .where({ id: mixtapeId })
-    .update({ title });
+    .update({ title, slug });
+
+  return slug;
 }
 
 /**
