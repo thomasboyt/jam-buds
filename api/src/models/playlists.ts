@@ -29,6 +29,7 @@ function serializePlaylistMixtapeItem(row: any): PlaylistMixtapeItem {
 
     mixtape: {
       id: preview.id,
+      slug: preview.slug,
       authorName: preview.authorName,
       title: preview.title,
       numTracks: parseInt(preview.songCount),

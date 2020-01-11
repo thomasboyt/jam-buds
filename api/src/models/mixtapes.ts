@@ -52,12 +52,13 @@ export function selectMixtapePreviews() {
     ),
   ];
 }
-interface CreateMixtapeOptions {
-  title: string;
-}
 
 const slugifyTitle = (title: string): string =>
   slugify(title, { decamelize: false });
+
+interface CreateMixtapeOptions {
+  title: string;
+}
 
 /**
  * Create a mixtape for a given user.
@@ -217,6 +218,7 @@ export async function getMixtapeById(
 
   return {
     id: mixtapeModel.id,
+    slug: mixtapeModel.slug,
     isPublished: !!mixtapeModel.publishedAt,
     publishedAt: serializedDate,
     title: mixtapeModel.title,
@@ -240,12 +242,6 @@ export async function getSongsByMixtapeId(
   return songRows.map((row: any) => serializeSong(row));
 }
 
-interface QueryOptions {
-  currentUserId?: number;
-  beforeTimestamp?: string;
-  afterTimestamp?: string;
-}
-
 export async function getDraftMixtapesByUserId(
   userId: number
 ): Promise<DraftMixtapeListItem[]> {
@@ -263,6 +259,7 @@ export async function getDraftMixtapesByUserId(
     return {
       id: mixtape.id,
       title: mixtape.title,
+      slug: mixtape.slug,
     };
   });
 }

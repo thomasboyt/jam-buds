@@ -64,12 +64,14 @@ export interface UserPlaylist {
 export interface MixtapePreview {
   id: number;
   title: string;
+  slug: string;
   authorName: string;
   numTracks: number;
 }
 
 export interface Mixtape {
   id: number;
+  slug: string;
   title: string;
   tracks: Song[];
   isPublished: boolean;
@@ -80,6 +82,7 @@ export interface Mixtape {
 export interface DraftMixtapeListItem {
   id: number;
   title: string;
+  slug: string;
 }
 
 /*
