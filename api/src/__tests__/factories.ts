@@ -61,5 +61,5 @@ export async function mixtapeFactory(user: UserModel) {
     title: 'test mixtape',
   });
 
-  publishMixtape(mixtape);
+  publishMixtape(mixtape.id);
 }

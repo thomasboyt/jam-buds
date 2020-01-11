@@ -23,6 +23,10 @@ const mixtapes = {
       state[mixtapeId].title = title;
     },
 
+    setMixtapeSlug(state, { mixtapeId, slug }) {
+      state[mixtapeId].slug = slug;
+    },
+
     setMixtapePublished(state, { mixtapeId }) {
       state[mixtapeId].isPublished = true;
       state[mixtapeId].publishedAt = new Date().toISOString();
@@ -92,10 +96,15 @@ const mixtapes = {
       context.commit('setMixtapeTitle', { mixtapeId, title });
 
       try {
-        await this.$axios({
+        const resp = await this.$axios({
           method: 'POST',
           url: `/mixtapes/${mixtapeId}/title`,
           data: { title },
+        });
+
+        context.commit('setMixtapeSlug', {
+          mixtapeId,
+          slug: resp.data.newSlug,
         });
       } catch (err) {
         context.commit('setMixtapeTitle', { mixtapeId, title: prevTitle });

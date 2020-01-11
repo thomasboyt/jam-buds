@@ -196,10 +196,10 @@ const playback = {
     /**
      * Play a mixtape starting with a specific song ID.
      */
-    playFromMixtape(context, { mixtapeId, songId }) {
+    playFromMixtape(context, { mixtapeId, mixtapeSlug, songId }) {
       const mixtape = context.rootState.mixtapes[mixtapeId];
       const playbackSourceLabel = mixtape.title;
-      const playbackSourcePath = `/mixtapes/${mixtapeId}`;
+      const playbackSourcePath = `/mixtapes/${mixtapeId}/${mixtapeSlug}`;
 
       context.commit('setPlaybackSource', {
         mixtapeId,

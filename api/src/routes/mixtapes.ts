@@ -96,10 +96,11 @@ export default function registerMixtapeEndpoints(router: Router) {
       // TODO: validate
       const title = req.body.title;
 
-      const id = await createMixtapeForUser(user, { title });
+      const { id, slug } = await createMixtapeForUser(user, { title });
 
       res.json({
         mixtapeId: id,
+        slug,
       });
     })
   );
@@ -263,9 +264,12 @@ export default function registerMixtapeEndpoints(router: Router) {
       mixtape = validateMixtapeExists(mixtape);
       validateCanUpdateMixtape({ mixtape, user });
 
-      await setMixtapeTitle({ mixtapeId: mixtape.id, title: req.body.title });
+      const slug = await setMixtapeTitle({
+        mixtapeId: mixtape.id,
+        title: req.body.title,
+      });
 
-      res.json({ succes: true });
+      res.json({ newSlug: slug });
     })
   );
 

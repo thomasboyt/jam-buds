@@ -94,12 +94,12 @@ export default async function seed() {
   }
 
   // vinny's tape
-  const mixtapeId = await createMixtapeForUser(vinny, {
+  const mixtape = await createMixtapeForUser(vinny, {
     title: "vinny's mixtape",
   });
 
-  await addSongToMixtape(mixtapeId, 1); // freebird
-  await addSongToMixtape(mixtapeId, 3); // drive
+  await addSongToMixtape(mixtape.id, 1); // freebird
+  await addSongToMixtape(mixtape.id, 3); // drive
 
-  await publishMixtape(mixtapeId);
+  await publishMixtape(mixtape.id);
 }

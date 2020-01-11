@@ -35,7 +35,7 @@ export default {
     },
 
     mixtapeLink() {
-      return `/mixtapes/${this.mixtape.id}`;
+      return `/mixtapes/${this.mixtape.id}/${this.mixtape.slug}`;
     },
   },
 };
