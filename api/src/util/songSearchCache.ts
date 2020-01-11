@@ -1,5 +1,8 @@
 import * as spotify from '../apis/spotify';
-import { getAppleMusicInfoByISRC, AppleMusicInfo } from '../apis/appleMusic';
+import {
+  AppleMusicInfo,
+  getAppleMusicInfoForSpotifyTrack,
+} from '../apis/appleMusic';
 
 // result format, currently
 interface CacheEntry {
@@ -78,10 +81,6 @@ export async function getOrCreateSongCacheEntryWithExternalIds(
     // fully hydrated already
     return cacheEntry;
   }
-
-  // const appleMusicInfo = cacheEntry.isrc
-  //   ? await getAppleMusicInfoByISRC(cacheEntry.isrc)
-  //   : null;
 
   const appleMusicInfo = await getAppleMusicInfoForSpotifyTrack(
     cacheEntry.spotify
