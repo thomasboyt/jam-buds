@@ -23,12 +23,22 @@ export default {
   },
 
   methods: {
-    handleFollow() {
-      this.$store.dispatch('followUser', this.name);
+    async handleFollow() {
+      await this.$store.dispatch('followUser', this.name);
+
+      this.$store.dispatch('setFlashMessage', {
+        message: `You're now following ${this.name}!`,
+        clearMs: 4000,
+      });
     },
 
     handleUnfollow() {
       this.$store.dispatch('unfollowUser', this.name);
+
+      this.$store.dispatch('setFlashMessage', {
+        message: `You have unfollowed ${this.name}.`,
+        clearMs: 4000,
+      });
     },
   },
 };

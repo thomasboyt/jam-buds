@@ -15,6 +15,7 @@
 
     <audio-player />
     <apple-music-loader v-if="authenticated" />
+    <flash-message />
   </div>
 </template>
 
@@ -24,6 +25,7 @@ import AppleMusicLoader from '~/components/AppleMusicLoader.vue';
 import AudioPlayer from '~/components/audio-player/AudioPlayer.vue';
 import AddSongModal from '~/components/new-song-modal/AddSongModal.vue';
 import MobileNav from '~/components/MobileNav.vue';
+import FlashMessage from '~/components/FlashMessage.vue';
 
 export default {
   components: {
@@ -31,6 +33,7 @@ export default {
     AddSongModal,
     AppleMusicLoader,
     MobileNav,
+    FlashMessage,
   },
 
   computed: mapState({

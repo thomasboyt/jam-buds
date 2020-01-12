@@ -28,6 +28,7 @@ const root = {
     return {
       isSidebarOpen: false,
       mobileHeaderTitle: null,
+      flashMessage: null,
     };
   },
 
@@ -49,6 +50,14 @@ const root = {
     hideMobileHeaderTitle(state) {
       state.mobileHeaderTitle = null;
     },
+    setFlashMessage(state, { message, timeoutHandle }) {
+      state.flashMessage = message;
+      state.timeoutHandle = timeoutHandle;
+    },
+    clearFlashMessage(state) {
+      state.flashMessage = null;
+      state.timeoutHandle = null;
+    },
   },
 
   actions: {
@@ -63,6 +72,26 @@ const root = {
       }
 
       await context.dispatch('fetchCurrentUser');
+    },
+
+    setFlashMessage(state, { message, clearMs }) {
+      if (state.timeoutHandle) {
+        clearTimeout(state.timeoutHandle);
+      }
+
+      const timeoutHandle = setTimeout(() => {
+        this.commit('clearFlashMessage');
+      }, clearMs);
+
+      this.commit('setFlashMessage', { message, timeoutHandle });
+    },
+
+    clearFlashMessage(state) {
+      if (state.timeoutHandle) {
+        clearTimeout(state.timeoutHandle);
+      }
+
+      this.commit('clearFlashMessage');
     },
   },
 
