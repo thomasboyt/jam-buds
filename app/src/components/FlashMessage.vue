@@ -1,7 +1,9 @@
 <template>
   <transition name="message-slide">
     <div v-if="activeFlashMessage" class="message-box" @click="handleClose">
-      {{ activeFlashMessage }}
+      <div class="message-box-content">
+        {{ activeFlashMessage }}
+      </div>
     </div>
   </transition>
 </template>
@@ -23,8 +25,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '../../styles/mixins.scss';
-@import '../../styles/z-index.scss';
+@import '~/assets/styles/mixins.scss';
+@import '~/assets/styles/z-index.scss';
 
 .message-box {
   background: $black;
@@ -34,10 +36,21 @@ export default {
   border-radius: 5px;
 
   position: fixed;
+  // XXX: this is a pretty brittle magic number :\
   top: calc(100% - 160px);
-  left: calc(50% + #{$sidebar-width / 2});
   transform: translateX(-50%);
-  padding: 15 30px;
+
+  left: calc(50%);
+  width: 80%;
+  @media (min-width: $breakpoint-small) {
+    left: calc(50% + #{$sidebar-width / 2});
+    width: auto;
+  }
+}
+
+.message-box-content {
+  text-align: center;
+  padding: 15px 30px;
 }
 
 .message-slide-enter,
@@ -50,9 +63,9 @@ export default {
 }
 
 .message-slide-enter-active {
-  transition: all 0.1s ease-out;
+  transition: all 0.15s cubic-bezier(0, 0, 0.2, 1);
 }
 .message-slide-leave-active {
-  transition: all 0.2s ease-out;
+  transition: all 0.2s linear;
 }
 </style>
