@@ -68,6 +68,10 @@ export default {
         );
       },
 
+      userHasStreamingService(state) {
+        return state.currentUser.hasSpotify || state.currentUser.hasAppleMusic;
+      },
+
       // TODO: once a modal is implemented for apple music song-missing state,
       // this will just always be true
       canClickSong(state) {
@@ -123,8 +127,10 @@ export default {
         return;
       }
 
-      if (this.canPlay) {
-        this.handlePlay();
+      if (this.userHasStreamingService) {
+        if (this.canPlay) {
+          this.handlePlay();
+        }
       } else {
         this.$store.commit('showConnectStreamingBanner');
       }
