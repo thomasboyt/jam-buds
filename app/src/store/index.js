@@ -10,6 +10,7 @@ import profile from './modules/profile';
 import addSong from './modules/addSong';
 import mixtapes from './modules/mixtapes';
 import notifications from './modules/notifications';
+import streaming from './modules/streaming';
 
 const root = {
   modules: {
@@ -22,6 +23,7 @@ const root = {
     addSong,
     mixtapes,
     notifications,
+    streaming,
   },
 
   state() {

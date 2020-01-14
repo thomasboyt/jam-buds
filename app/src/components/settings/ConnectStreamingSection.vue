@@ -46,10 +46,10 @@ export default {
 
   computed: {
     ...mapState({
-      hasSpotify: (state) => state.currentUser.hasSpotify,
-      hasAppleMusic: (state) => state.currentUser.hasAppleMusic,
+      hasSpotify: (state) => state.streaming.hasSpotify,
+      hasAppleMusic: (state) => state.streaming.hasAppleMusic,
       serviceName: (state) =>
-        state.currentUser.hasSpotify ? 'Spotify' : 'Apple Music',
+        state.streaming.hasSpotify ? 'Spotify' : 'Apple Music',
     }),
   },
 
@@ -72,8 +72,7 @@ export default {
 
       try {
         await this.$axios({
-          baseURL: null,
-          url: '/auth/spotify-connect',
+          url: '/spotify-token',
           method: 'DELETE',
         });
       } catch (err) {

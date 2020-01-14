@@ -63,29 +63,13 @@ export default {
     ...mapState({
       canPlay(state) {
         return (
-          (state.currentUser.hasSpotify && this.song.spotifyId) ||
-          (state.currentUser.hasAppleMusic && this.song.appleMusicId)
+          (state.streaming.hasSpotify && this.song.spotifyId) ||
+          (state.streaming.hasAppleMusic && this.song.appleMusicId)
         );
       },
 
       userHasStreamingService(state) {
-        return state.currentUser.hasSpotify || state.currentUser.hasAppleMusic;
-      },
-
-      // TODO: once a modal is implemented for apple music song-missing state,
-      // this will just always be true
-      canClickSong(state) {
-        // for users with a connected streaming service, the song is clickable
-        // if it can be played on that service
-        if (state.currentUser.hasSpotify) {
-          return !!this.song.spotifyId;
-        } else if (state.currentUser.hasAppleMusic) {
-          return !!this.song.appleMusicId;
-        }
-
-        // for all other users, the song is always clickable, so it can trigger
-        // the connect-streaming banner
-        return true;
+        return state.streaming.hasSpotify || state.streaming.hasAppleMusic;
       },
 
       song(state) {
@@ -114,6 +98,24 @@ export default {
 
     ...mapGetters('playback', ['currentSong']),
 
+    // TODO: once a modal is implemented for apple music song-missing state,
+    // this will just always be true
+    canClickSong() {
+      const { streaming } = this.$store.state;
+
+      // for users with a connected streaming service, the song is clickable
+      // if it can be played on that service
+      if (streaming.hasSpotify) {
+        return !!this.song.spotifyId;
+      } else if (streaming.hasAppleMusic) {
+        return !!this.song.appleMusicId;
+      }
+
+      // for all other users, the song is always clickable, so it can trigger
+      // the connect-streaming banner
+      return true;
+    },
+
     isPlaying() {
       return this.currentSong && this.currentSong.id === this.song.id;
     },
@@ -124,6 +126,12 @@ export default {
       // Don't trigger playback if user was clicking on one of the action
       // buttons
       if (e.target.closest('.action-button')) {
+        return;
+      }
+
+      // Don't pop show-connect banner if the streaming services haven't loaded yet
+      // In the future this may do some kind of special queueing...
+      if (!this.$store.getters.loadedStreaming) {
         return;
       }
 

@@ -15,6 +15,7 @@
 
     <audio-player />
     <apple-music-loader />
+    <spotify-loader />
     <flash-message />
   </div>
 </template>
@@ -22,6 +23,7 @@
 <script>
 import { mapState } from 'vuex';
 import AppleMusicLoader from '~/components/AppleMusicLoader.vue';
+import SpotifyLoader from '~/components/SpotifyLoader.vue';
 import AudioPlayer from '~/components/audio-player/AudioPlayer.vue';
 import AddSongModal from '~/components/new-song-modal/AddSongModal.vue';
 import MobileNav from '~/components/MobileNav.vue';
@@ -32,6 +34,7 @@ export default {
     AudioPlayer,
     AddSongModal,
     AppleMusicLoader,
+    SpotifyLoader,
     MobileNav,
     FlashMessage,
   },
