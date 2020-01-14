@@ -63,8 +63,8 @@ export default {
   },
 
   computed: mapState({
-    hasSpotify: (state) => state.currentUser.hasSpotify,
-    hasAppleMusic: (state) => state.currentUser.hasAppleMusic,
+    hasSpotify: (state) => state.streaming.hasSpotify,
+    hasAppleMusic: (state) => state.streaming.hasAppleMusic,
   }),
 
   methods: {

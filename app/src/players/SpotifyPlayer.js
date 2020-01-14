@@ -139,9 +139,10 @@ export default class SpotifyPlayer {
     }
 
     const resp = await this.store.$axios({
-      baseURL: null,
-      url: '/auth/spotify-connect/token',
+      url: '/spotify-token',
       method: 'GET',
+      // pull anonymous auth token out of cookie
+      withCredentials: true,
     });
 
     this._token = resp.data.token;

@@ -1,28 +1,31 @@
 <template>
-  <draggable
-    v-model="mixtapeTracks"
-    handle=".drag-handle"
-    tag="ul"
-    class="playlist-entries"
-  >
-    <li v-for="songId in mixtapeTracks" :key="songId">
-      <song
-        :song-id="songId"
-        :posted-user-names="null"
-        @requestPlay="handleRequestPlay"
-      >
-        <template v-slot:actions v-if="isEditing">
-          <song-remove-from-mixtape-action
-            :song-id="songId"
-            :mixtape-id="mixtapeId"
-          />
-          <button class="action-button drag-handle">
-            <icon :glyph="dragIcon" />
-          </button>
-        </template>
-      </song>
-    </li>
-  </draggable>
+  <div>
+    <draggable
+      v-model="mixtapeTracks"
+      handle=".drag-handle"
+      tag="ul"
+      class="playlist-entries"
+    >
+      <li v-for="songId in mixtapeTracks" :key="songId">
+        <song
+          :song-id="songId"
+          :posted-user-names="null"
+          @requestPlay="handleRequestPlay"
+        >
+          <template v-slot:actions v-if="isEditing">
+            <song-remove-from-mixtape-action
+              :song-id="songId"
+              :mixtape-id="mixtapeId"
+            />
+            <button class="action-button drag-handle">
+              <icon :glyph="dragIcon" />
+            </button>
+          </template>
+        </song>
+      </li>
+    </draggable>
+    <connect-streaming-banner />
+  </div>
 </template>
 
 <script>
@@ -31,6 +34,7 @@ import Draggable from 'vuedraggable';
 import Song from '../playlist/Song.vue';
 import SongRemoveFromMixtapeAction from './SongRemoveFromMixtapeAction.vue';
 import Icon from '../Icon.vue';
+import ConnectStreamingBanner from '../playlist/ConnectStreamingBanner.vue';
 
 const dragIcon = require('~/assets/menu.svg');
 
@@ -40,6 +44,7 @@ export default {
     SongRemoveFromMixtapeAction,
     Draggable,
     Icon,
+    ConnectStreamingBanner,
   },
 
   props: ['mixtapeId', 'isEditing'],

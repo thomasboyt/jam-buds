@@ -9,7 +9,7 @@
   </button>
 
   <a
-    v-else
+    v-else-if="loadedStreaming"
     class="action-button"
     :href="searchUrl"
     target="_blank"
@@ -44,6 +44,10 @@ export default {
         this.song.artists[0] + ' ' + this.song.title
       );
       return `https://www.youtube.com/results?search_query=${query}`;
+    },
+
+    loadedStreaming() {
+      return this.$store.getters.loadedStreaming;
     },
   },
 

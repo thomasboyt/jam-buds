@@ -118,7 +118,6 @@ export interface CurrentUser {
   following: PublicUser[];
   colorScheme: ColorScheme | null;
   twitterName: string | null;
-  hasSpotify: boolean;
   showInPublicFeed: boolean;
   email: string;
   unreadNotificationCount: number;

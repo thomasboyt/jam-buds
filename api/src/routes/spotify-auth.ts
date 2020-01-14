@@ -3,17 +3,30 @@ import SpotifyWebApi from 'spotify-web-api-node';
 import axios from 'axios';
 
 import wrapAsyncRoute from '../util/wrapAsyncRoute';
+import { UserModel } from '../models/user';
 import {
   addSpotifyCredentialsToUser,
   deleteSpotifyCredentialsFromUser,
-  UserModel,
   updateRefreshedSpotifyCredentialsForUser,
-} from '../models/user';
-import { getUserFromCookie, isAuthenticated } from '../auth';
+  createAnonymousSpotifyCredentials,
+  getAnonymousSpotifyCredentialsByToken,
+  updateAnonymousSpotifyCredentials,
+  deleteAnonymousSpotifyCredentials,
+} from '../models/spotifyCredentials';
+import {
+  isAuthenticated,
+  maybeGetUserFromCookie,
+  getUserFromRequest,
+} from '../auth';
 import {
   createOAuthState,
   getAndClearOAuthState,
 } from '../models/cache/oauthStateCache';
+import {
+  getRefreshedAccessToken,
+  RefreshResponse,
+  SpotifyDisconnectedError,
+} from '../apis/spotifyAuth';
 
 const redirectUri = `${process.env.JB_APP_URL}/auth/spotify-connect/cb`;
 
@@ -22,7 +35,9 @@ const spotifyApi = new SpotifyWebApi({
   clientId: process.env.SPOTIFY_CLIENT_ID,
 });
 
-export default function registerSpotifyAuthEndpoints(router: Router) {
+const ANON_SPOTIFY_AUTH_TOKEN_COOKIE = 'anonSpotifyAuthToken';
+
+export function registerSpotifyAuthEndpoints(router: Router) {
   router.get(
     '/spotify-connect',
     wrapAsyncRoute(async (req, res) => {
@@ -52,8 +67,6 @@ export default function registerSpotifyAuthEndpoints(router: Router) {
       if (!redirect) {
         return res.status(400).send('Invalid state param');
       }
-
-      const user = await getUserFromCookie(req);
 
       const code = req.query.code;
       const auth =
@@ -88,62 +101,115 @@ export default function registerSpotifyAuthEndpoints(router: Router) {
         return;
       }
 
-      await addSpotifyCredentialsToUser(user, {
-        accessToken,
-        refreshToken,
-        expiresIn,
-      });
+      const user = await maybeGetUserFromCookie(req);
+
+      if (user) {
+        await addSpotifyCredentialsToUser(user, {
+          accessToken,
+          refreshToken,
+          expiresIn,
+        });
+      } else {
+        const token = await createAnonymousSpotifyCredentials({
+          accessToken,
+          refreshToken,
+          expiresIn,
+        });
+
+        res.cookie(ANON_SPOTIFY_AUTH_TOKEN_COOKIE, token, {
+          maxAge: 1000 * 60 * 60 * 24 * 365,
+          httpOnly: true,
+          sameSite: 'strict',
+        });
+      }
 
       res.redirect(`${process.env.JB_APP_URL}${redirect}`);
     })
   );
+}
 
+export function registerSpotifyApiEndpoints(router: Router) {
   router.get(
-    '/spotify-connect/token',
-    isAuthenticated,
+    '/spotify-token',
     wrapAsyncRoute(async (req, res) => {
-      const user: UserModel = res.locals.user;
+      const user = await getUserFromRequest(req);
 
-      const auth =
-        process.env.SPOTIFY_CLIENT_ID + ':' + process.env.SPOTIFY_CLIENT_SECRET;
+      if (user) {
+        const { spotifyExpiresAt } = user;
 
-      const { spotifyExpiresAt } = user;
+        if (!spotifyExpiresAt) {
+          return res.json({ spotifyConnected: false });
+        }
 
-      // If token hasn't expired yet, don't bother refreshing
-      if (spotifyExpiresAt && spotifyExpiresAt.valueOf() > Date.now()) {
-        return res.json({ token: user.spotifyAccessToken });
+        // If token hasn't expired yet, don't bother refreshing
+        if (spotifyExpiresAt && spotifyExpiresAt.valueOf() > Date.now()) {
+          return res.json({ token: user.spotifyAccessToken });
+        }
+
+        let resp: RefreshResponse | undefined;
+        try {
+          resp = await getRefreshedAccessToken(user.spotifyRefreshToken!);
+        } catch (err) {
+          if (err instanceof SpotifyDisconnectedError) {
+            await deleteSpotifyCredentialsFromUser(user);
+            return res.json({ spotifyConnected: false });
+          }
+          throw err;
+        }
+
+        await updateRefreshedSpotifyCredentialsForUser(user, {
+          accessToken: resp.accessToken,
+          expiresIn: resp.expiresIn,
+        });
+
+        res.json({ token: resp.accessToken, expiresIn: resp.expiresIn });
+      } else {
+        const token = req.cookies[ANON_SPOTIFY_AUTH_TOKEN_COOKIE];
+
+        if (!token) {
+          return res.json({ spotifyConnected: false });
+        }
+
+        const spotifyCredentials = await getAnonymousSpotifyCredentialsByToken(
+          token
+        );
+
+        if (!spotifyCredentials) {
+          return res.json({ spotifyConnected: false });
+        }
+
+        // If token hasn't expired yet, don't bother refreshing
+        if (
+          spotifyCredentials.expiresAt &&
+          spotifyCredentials.expiresAt.valueOf() > Date.now()
+        ) {
+          return res.json({ token: spotifyCredentials.accessToken });
+        }
+
+        let resp: RefreshResponse | undefined;
+        try {
+          resp = await getRefreshedAccessToken(spotifyCredentials.refreshToken);
+        } catch (err) {
+          if (err instanceof SpotifyDisconnectedError) {
+            await deleteAnonymousSpotifyCredentials(token);
+            res.clearCookie(ANON_SPOTIFY_AUTH_TOKEN_COOKIE);
+            return res.json({ spotifyConnected: false });
+          }
+          throw err;
+        }
+
+        await updateAnonymousSpotifyCredentials(token, {
+          accessToken: resp.accessToken,
+          expiresIn: resp.expiresIn,
+        });
+
+        res.json({ token: resp.accessToken, expiresIn: resp.expiresIn });
       }
-
-      // Refresh flow
-      const resp = await axios({
-        method: 'post',
-        url: 'https://accounts.spotify.com/api/token',
-        params: {
-          refresh_token: user.spotifyRefreshToken,
-          grant_type: 'refresh_token',
-        },
-        headers: {
-          Authorization: 'Basic ' + new Buffer(auth).toString('base64'),
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-      });
-
-      const accessToken = resp.data.access_token;
-      // goofy hack: to ensure we refresh "on time," we subtract 20 seconds from
-      // this expiration time
-      const expiresIn = resp.data.expires_in - 20;
-
-      await updateRefreshedSpotifyCredentialsForUser(user, {
-        accessToken,
-        expiresIn,
-      });
-
-      res.status(200).json({ token: accessToken, expiresIn });
     })
   );
 
   router.delete(
-    '/spotify-connect',
+    '/spotify-token',
     isAuthenticated,
     wrapAsyncRoute(async (req, res) => {
       const user: UserModel = res.locals.user;

@@ -1,6 +1,9 @@
 <template>
   <div
-    :class="['playlist-song', { 'is-playing': isPlaying, 'can-play': canPlay }]"
+    :class="[
+      'playlist-song',
+      { 'is-playing': isPlaying, 'can-click': canClickSong },
+    ]"
   >
     <div class="playlist-song--main" @click="handleClick">
       <album-art :album-art="song.albumArt" :is-playing="isPlaying" />
@@ -60,10 +63,13 @@ export default {
     ...mapState({
       canPlay(state) {
         return (
-          state.auth.authenticated &&
-          ((state.currentUser.hasSpotify && this.song.spotifyId) ||
-            (state.currentUser.hasAppleMusic && this.song.appleMusicId))
+          (state.streaming.hasSpotify && this.song.spotifyId) ||
+          (state.streaming.hasAppleMusic && this.song.appleMusicId)
         );
+      },
+
+      userHasStreamingService(state) {
+        return state.streaming.hasSpotify || state.streaming.hasAppleMusic;
       },
 
       song(state) {
@@ -92,6 +98,24 @@ export default {
 
     ...mapGetters('playback', ['currentSong']),
 
+    // TODO: once a modal is implemented for apple music song-missing state,
+    // this will just always be true
+    canClickSong() {
+      const { streaming } = this.$store.state;
+
+      // for users with a connected streaming service, the song is clickable
+      // if it can be played on that service
+      if (streaming.hasSpotify) {
+        return !!this.song.spotifyId;
+      } else if (streaming.hasAppleMusic) {
+        return !!this.song.appleMusicId;
+      }
+
+      // for all other users, the song is always clickable, so it can trigger
+      // the connect-streaming banner
+      return true;
+    },
+
     isPlaying() {
       return this.currentSong && this.currentSong.id === this.song.id;
     },
@@ -105,15 +129,25 @@ export default {
         return;
       }
 
-      this.handlePlay();
-    },
-
-    handlePlay() {
-      if (!this.canPlay) {
+      // Don't pop show-connect banner if the streaming services haven't loaded yet
+      // In the future this may do some kind of special queueing...
+      if (!this.$store.getters.loadedStreaming) {
         return;
       }
 
-      this.$emit('requestPlay', this.songId);
+      if (this.userHasStreamingService) {
+        if (this.canPlay) {
+          this.handlePlay();
+        }
+      } else {
+        this.$store.commit('showConnectStreamingBanner');
+      }
+    },
+
+    handlePlay() {
+      if (this.canPlay) {
+        this.$emit('requestPlay', this.songId);
+      }
     },
   },
 };
@@ -129,7 +163,7 @@ export default {
   &:hover {
     background: rgba(0, 0, 0, 0.1);
 
-    &.can-play {
+    &.can-click {
       cursor: pointer;
     }
   }

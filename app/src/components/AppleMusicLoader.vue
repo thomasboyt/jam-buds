@@ -32,9 +32,7 @@ export default {
       });
 
       const music = MusicKit.getInstance();
-      if (music.isAuthorized) {
-        this.$store.commit('authorizedAppleMusic');
-      }
+      this.$store.commit('loadedAppleMusic', music.isAuthorized);
     },
   },
 };

@@ -10,6 +10,7 @@ import profile from './modules/profile';
 import addSong from './modules/addSong';
 import mixtapes from './modules/mixtapes';
 import notifications from './modules/notifications';
+import streaming from './modules/streaming';
 
 const root = {
   modules: {
@@ -22,6 +23,7 @@ const root = {
     addSong,
     mixtapes,
     notifications,
+    streaming,
   },
 
   state() {
@@ -29,6 +31,7 @@ const root = {
       isSidebarOpen: false,
       mobileHeaderTitle: null,
       flashMessage: null,
+      isConnectStreamingBannerOpen: false,
     };
   },
 
@@ -57,6 +60,12 @@ const root = {
     clearFlashMessage(state) {
       state.flashMessage = null;
       state.timeoutHandle = null;
+    },
+    showConnectStreamingBanner(state) {
+      state.isConnectStreamingBannerOpen = true;
+    },
+    hideConnectStreamingBanner(state) {
+      state.isConnectStreamingBannerOpen = false;
     },
   },
 

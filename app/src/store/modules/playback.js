@@ -94,7 +94,7 @@ const playback = {
      * Play a specific song by ID.
      */
     async playSong(context, { songId, songPlaylistTimestamp }) {
-      const player = context.rootState.currentUser.hasSpotify
+      const player = context.rootState.streaming.hasSpotify
         ? 'spotify'
         : 'applemusic';
 

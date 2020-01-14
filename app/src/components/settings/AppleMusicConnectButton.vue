@@ -16,6 +16,7 @@ export default {
     async handleConnectAppleMusic() {
       await MusicKit.getInstance().authorize();
       this.$store.commit('authorizedAppleMusic');
+      this.$store.commit('hideConnectStreamingBanner');
       this.$emit('connectedAppleMusic');
     },
   },

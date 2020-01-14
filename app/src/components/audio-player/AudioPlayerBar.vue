@@ -72,9 +72,9 @@ export default {
 
     ...mapState({
       hasStreamingService: (state) =>
-        state.currentUser.hasSpotify || state.currentUser.hasAppleMusic,
-      hasSpotify: (state) => state.currentUser.hasSpotify,
-      hasAppleMusic: (state) => state.currentUser.hasAppleMusic,
+        state.streaming.hasSpotify || state.streaming.hasAppleMusic,
+      hasSpotify: (state) => state.streaming.hasSpotify,
+      hasAppleMusic: (state) => state.streaming.hasAppleMusic,
       authenticated: (state) => state.auth.authenticated,
     }),
 
