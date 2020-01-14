@@ -19,11 +19,17 @@
         Load next page
       </a>
     </div>
+
+    <connect-streaming-banner />
   </div>
 </template>
 
 <script>
+import ConnectStreamingBanner from './ConnectStreamingBanner.vue';
+
 export default {
+  components: { ConnectStreamingBanner },
+
   props: ['items', 'itemsExhausted', 'loadingNextPage'],
 
   methods: {

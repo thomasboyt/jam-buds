@@ -14,7 +14,7 @@
     />
 
     <audio-player />
-    <apple-music-loader v-if="authenticated" />
+    <apple-music-loader />
     <flash-message />
   </div>
 </template>

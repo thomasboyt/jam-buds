@@ -29,6 +29,7 @@ const root = {
       isSidebarOpen: false,
       mobileHeaderTitle: null,
       flashMessage: null,
+      isConnectStreamingBannerOpen: false,
     };
   },
 
@@ -57,6 +58,12 @@ const root = {
     clearFlashMessage(state) {
       state.flashMessage = null;
       state.timeoutHandle = null;
+    },
+    showConnectStreamingBanner(state) {
+      state.isConnectStreamingBannerOpen = true;
+    },
+    hideConnectStreamingBanner(state) {
+      state.isConnectStreamingBannerOpen = false;
     },
   },
 

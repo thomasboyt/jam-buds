@@ -1,6 +1,9 @@
 <template>
   <div
-    :class="['playlist-song', { 'is-playing': isPlaying, 'can-play': canPlay }]"
+    :class="[
+      'playlist-song',
+      { 'is-playing': isPlaying, 'can-click': canClickSong },
+    ]"
   >
     <div class="playlist-song--main" @click="handleClick">
       <album-art :album-art="song.albumArt" :is-playing="isPlaying" />
@@ -60,10 +63,25 @@ export default {
     ...mapState({
       canPlay(state) {
         return (
-          state.auth.authenticated &&
-          ((state.currentUser.hasSpotify && this.song.spotifyId) ||
-            (state.currentUser.hasAppleMusic && this.song.appleMusicId))
+          (state.currentUser.hasSpotify && this.song.spotifyId) ||
+          (state.currentUser.hasAppleMusic && this.song.appleMusicId)
         );
+      },
+
+      // TODO: once a modal is implemented for apple music song-missing state,
+      // this will just always be true
+      canClickSong(state) {
+        // for users with a connected streaming service, the song is clickable
+        // if it can be played on that service
+        if (state.currentUser.hasSpotify) {
+          return !!this.song.spotifyId;
+        } else if (state.currentUser.hasAppleMusic) {
+          return !!this.song.appleMusicId;
+        }
+
+        // for all other users, the song is always clickable, so it can trigger
+        // the connect-streaming banner
+        return true;
       },
 
       song(state) {
@@ -105,15 +123,17 @@ export default {
         return;
       }
 
-      this.handlePlay();
+      if (this.canPlay) {
+        this.handlePlay();
+      } else {
+        this.$store.commit('showConnectStreamingBanner');
+      }
     },
 
     handlePlay() {
-      if (!this.canPlay) {
-        return;
+      if (this.canPlay) {
+        this.$emit('requestPlay', this.songId);
       }
-
-      this.$emit('requestPlay', this.songId);
     },
   },
 };
@@ -129,7 +149,7 @@ export default {
   &:hover {
     background: rgba(0, 0, 0, 0.1);
 
-    &.can-play {
+    &.can-click {
       cursor: pointer;
     }
   }
