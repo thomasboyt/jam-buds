@@ -15,7 +15,10 @@ import registerPostEndpoints from './routes/posts';
 import registerLikesEndpoints from './routes/likes';
 import registerMixtapeEndpoints from './routes/mixtapes';
 import registerSettingsEndpoints from './routes/settings';
-import registerSpotifyAuthEndpoints from './routes/spotify-auth';
+import {
+  registerSpotifyAuthEndpoints,
+  registerSpotifyApiEndpoints,
+} from './routes/spotify-auth';
 import registerTwitterAuthEndpoints from './routes/twitter-auth';
 import registerNotificationsEndpoints from './routes/notifications';
 
@@ -55,6 +58,7 @@ export default function createApp() {
   registerPostEndpoints(apiRouter);
   registerMixtapeEndpoints(apiRouter);
   registerNotificationsEndpoints(apiRouter);
+  registerSpotifyApiEndpoints(apiRouter);
   app.use('/api', apiRouter);
 
   const authRouter = express.Router();

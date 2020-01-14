@@ -145,7 +145,6 @@ export async function serializeCurrentUser(
     following: serializedUsers,
     colorScheme,
     twitterName: user.twitterName,
-    hasSpotify: !!user.spotifyAccessToken,
     showInPublicFeed: !!user.showInPublicFeed,
     email: user.email,
     unreadNotificationCount,
@@ -180,67 +179,6 @@ export async function deleteTwitterCredentialsFromUser(
     twitterName: null,
     twitterSecret: null,
     twitterToken: null,
-  };
-
-  return db!('users')
-    .where({ id: user.id })
-    .update(updateParams);
-}
-
-//
-// Spotify credentials
-//
-
-interface SpotifyCredentials {
-  accessToken: string;
-  refreshToken: string;
-  expiresIn: number;
-}
-
-const toExpiresAt = (expiresInSec: number) =>
-  new Date(Date.now() + expiresInSec * 1000);
-
-export async function addSpotifyCredentialsToUser(
-  user: UserModel,
-  spotifyCredentials: SpotifyCredentials
-): Promise<void> {
-  const updateParams: Partial<UserModel> = {
-    spotifyAccessToken: spotifyCredentials.accessToken,
-    spotifyRefreshToken: spotifyCredentials.refreshToken,
-    spotifyExpiresAt: toExpiresAt(spotifyCredentials.expiresIn),
-  };
-
-  return db!('users')
-    .where({ id: user.id })
-    .update(updateParams);
-}
-
-interface SpotifyRefreshCredentials {
-  accessToken: string;
-  expiresIn: number;
-}
-
-export async function updateRefreshedSpotifyCredentialsForUser(
-  user: UserModel,
-  spotifyCredentials: SpotifyRefreshCredentials
-): Promise<void> {
-  const updateParams: Partial<UserModel> = {
-    spotifyAccessToken: spotifyCredentials.accessToken,
-    spotifyExpiresAt: toExpiresAt(spotifyCredentials.expiresIn),
-  };
-
-  return db!('users')
-    .where({ id: user.id })
-    .update(updateParams);
-}
-
-export async function deleteSpotifyCredentialsFromUser(
-  user: UserModel
-): Promise<void> {
-  const updateParams: Partial<UserModel> = {
-    spotifyAccessToken: null,
-    spotifyRefreshToken: null,
-    spotifyExpiresAt: null,
   };
 
   return db!('users')
