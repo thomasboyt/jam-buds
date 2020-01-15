@@ -12,6 +12,7 @@
 
 <script>
 import Icon from '../Icon.vue';
+import getYoutubeSearchUrl from '~/util/getYoutubeSearchUrl';
 
 const youtubeIcon = require('~/assets/youtube.svg');
 
@@ -28,10 +29,7 @@ export default {
 
   computed: {
     searchUrl() {
-      const query = encodeURIComponent(
-        this.song.artists[0] + ' ' + this.song.title
-      );
-      return `https://www.youtube.com/results?search_query=${query}`;
+      return getYoutubeSearchUrl(this.song);
     },
   },
 };

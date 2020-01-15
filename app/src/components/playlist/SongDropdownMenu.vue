@@ -24,6 +24,9 @@
             >Open in Apple Music</a
           >
         </li>
+        <li class="menu-item">
+          <youtube-search-link :song="song" @click.native="handleClickItem" />
+        </li>
         <li class="menu-item" v-if="showDelete">
           <button data-test="delete-song" @click="handleClickDelete">
             Delete
@@ -36,10 +39,11 @@
 
 <script>
 import Icon from '../Icon.vue';
+import YoutubeSearchLink from './YoutubeSearchLink.vue';
 import dropdownIcon from '~/assets/kebab-vertical.svg';
 
 export default {
-  components: { Icon },
+  components: { Icon, YoutubeSearchLink },
 
   props: ['song', 'showDelete'],
 
