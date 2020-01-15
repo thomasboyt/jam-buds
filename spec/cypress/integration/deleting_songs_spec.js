@@ -32,6 +32,7 @@ describe('deleting songs', () => {
     deleteSong('Drive');
 
     cy.contains('ul.playlist-entries li', 'Drive')
+      .find('.posted-by')
       .and('contain', 'vinny')
       .and('not.contain', 'You');
   });
