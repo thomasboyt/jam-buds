@@ -16,20 +16,39 @@
 
       <h3>the rules of the place</h3>
 
-      <p>
-        we don't currently have a proper code of conduct in place, but we do
-        have a simple, enforced rule of <strong>don't be a dick.</strong> we
-        take user safety seriously here, and are quick to ban if necessary.
-      </p>
+      <ul>
+        <li>
+          <p>
+            <strong>
+              jam buds is dedicated to providing a harassment-free experience
+              for everyone.
+            </strong>
+            I do not tolerate harassment of participants in any form.
+          </p>
+        </li>
+        <li>
+          <p>
+            <strong> do not maliciously spam posts.</strong>
+            if you are really excited to share a lot of new music you're into,
+            that's okay, but if you're clogging up the feed by posting 27 cover
+            versions of "who let the dogs out" at once, i will probably remove
+            your ability to post to the public feed at the very least. if you
+            want to share a whole lot of music at once, consider
+            <a href="https://jambuds.club/mixtapes/29/who-did-it">a mixtape</a>
+            instead!
+          </p>
+        </li>
+      </ul>
 
       <p>
-        we'll have a real code of conduct, as well as a real reporting system,
-        in place once more of the social features of the site are built out. in
-        the mean time, if someone's being a jerk, please reach out to us at
+        to report any violations of the above rules you have experienced, seen,
+        or heard about, please reach out to me at
         <a href="mailto:hello@jambuds.club">hello@jambuds.club</a>.
       </p>
 
-      <h3>something's broken / i have an idea</h3>
+      <p>I reserve the right to remove any user from the site at any time.</p>
+
+      <h3>something's broken / I have an idea</h3>
 
       <p>
         jam buds is under active development and exists in a constant state of
