@@ -53,15 +53,19 @@ export default {
       this.requestInFlight = true;
 
       try {
+        const prevSlug = this.mixtape.slug;
+
         await this.$store.dispatch('renameMixtape', {
           mixtapeId: this.mixtape.id,
           title: this.value,
         });
 
-        this.$router.replace({
-          name: 'mixtape-with-slug',
-          params: { id: this.mixtape.id, slug: this.mixtape.slug },
-        });
+        if (this.mixtape.slug !== prevSlug) {
+          this.$router.replace({
+            name: 'mixtape-with-slug',
+            params: { id: this.mixtape.id, slug: this.mixtape.slug },
+          });
+        }
       } catch (err) {
         this.$store.commit('showErrorModal');
         throw err;
