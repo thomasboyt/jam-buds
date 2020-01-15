@@ -18,10 +18,11 @@
 
       <apple-music-connect-button />
     </p>
-    <p>
-      nb: i've got all the love in the world for all of y'all on google play
-      music, tidal, and... idk, whatever garbage streaming service amazon has?
-      unfortunately, none of these services have APIs for in-browser playback.
+    <p class="streaming-disclaimer">
+      <em>n.b.</em>: i've got all the love in the world for all of y'all on
+      google play music, tidal, and... idk, whatever streaming service amazon
+      has? unfortunately, none of these services have APIs for in-browser
+      playback.
     </p>
   </div>
 </template>
@@ -97,5 +98,9 @@ export default {
     flex: 0 0 auto;
     margin: 10px;
   }
+}
+
+.streaming-disclaimer {
+  font-size: 14px;
 }
 </style>
