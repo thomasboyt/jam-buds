@@ -41,7 +41,7 @@ import Icon from '../Icon.vue';
 import AudioPlayerSongDisplay from './AudioPlayerSongDisplay.vue';
 import LoadingSpinner from './LoadingSpinner.vue';
 
-const playIcon = require('~/assets/play.svg');
+const playIcon = require('~/assets/play-filled.svg');
 const pauseIcon = require('~/assets/pause.svg');
 const nextIcon = require('~/assets/next.svg');
 
@@ -172,12 +172,14 @@ export default {
     height: 40px;
     width: 40px;
     border-radius: 40px;
+    display: block;
+
+    background: none;
+    color: white;
 
     &:hover,
     &:active {
-      .icon {
-        fill: #ccc;
-      }
+      color: #ccc;
     }
 
     &.play-pause-button {
@@ -187,21 +189,14 @@ export default {
       &:active {
         background: white;
         border-color: white;
-
-        .icon {
-          fill: black;
-        }
+        color: black;
       }
     }
-
-    display: block;
-    background: none;
   }
 
   .icon {
     width: 100%;
     height: 100%;
-    fill: white;
   }
 
   button.play .icon {
