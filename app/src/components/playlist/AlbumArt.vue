@@ -3,11 +3,12 @@
     <img v-if="albumArt" class="album-art" :src="albumArt" />
     <icon v-else class="album-art -placeholder" :glyph="albumPlaceholderIcon" />
 
-    <transition name="overlay-animation">
-      <div v-if="isPlaying" class="album-art-overlay">
-        <icon class="playing-icon" :glyph="playIcon" />
-      </div>
-    </transition>
+    <div v-if="isPlaying || isHovering" class="album-art-overlay">
+      <icon
+        :class="['playing-icon', { 'is-playing': isPlaying }]"
+        :glyph="playIcon"
+      />
+    </div>
   </div>
 </template>
 
@@ -19,7 +20,7 @@ const playIcon = require('~/assets/play-filled.svg');
 export default {
   components: { Icon },
 
-  props: ['albumArt', 'isPlaying'],
+  props: ['albumArt', 'isPlaying', 'isHovering'],
 
   data() {
     return {
@@ -43,6 +44,7 @@ export default {
   width: 64px;
   height: auto;
   border: 1px black solid;
+  display: block;
 
   &.-placeholder {
     border: none;
@@ -69,26 +71,24 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.3);
 }
 
 .playing-icon {
   position: absolute;
-  top: calc(50% - 15px);
-  left: calc(50% - 15px);
-  width: 30px;
-  height: 30px;
+  width: 40px;
+  height: 40px;
+  padding: 5px;
+  top: calc(50% - 20px);
+  left: calc(50% - 20px);
+
   color: white;
-}
+  border: 2px transparent solid;
+  border-radius: 40px;
 
-.overlay-animation-enter,
-.overlay-animation-leave-to {
-  opacity: 0;
-}
-
-.overlay-animation-enter-active,
-.overlay-animation-leave-active {
-  // kept in sync w/ <audio-player-bar /> open animation time
-  transition: opacity 0.2s cubic-bezier(0, 0, 0.2, 1);
+  &.is-playing {
+    border-color: white;
+    transition: 0.15s border-color ease-out;
+  }
 }
 </style>

@@ -2,29 +2,29 @@
   <div
     :class="[
       'playlist-song',
-      { 'is-playing': isPlaying, 'can-click': canClickSong },
+      { 'is-playing': isPlaying, 'can-play': canRequestPlay },
     ]"
+    @mouseover="isHovering = true"
+    @mouseleave="isHovering = false"
   >
     <div class="playlist-song--main" @click="handleClick">
-      <album-art :album-art="song.albumArt" :is-playing="isPlaying" />
+      <album-art
+        :album-art="song.albumArt"
+        :is-playing="isPlaying"
+        :is-hovering="isHovering"
+      />
 
-      <div class="playlist-song--title">
-        <div class="title-content">
-          <span class="title-artist">{{ song.artists.join(', ') }}</span>
-          <br />
-          {{ song.title }}
+      <div class="playlist-song--label">
+        <div class="label-content">
+          <div class="label-artist">{{ song.artists.join(', ') }}</div>
+          <div class="label-title">{{ song.title }}</div>
         </div>
         <song-like-action :mobile="true" :song="song" />
       </div>
 
       <span class="playlist-song--actions">
         <slot name="actions">
-          <song-play-action
-            v-if="!isPlaying"
-            :song="song"
-            @play="handlePlay"
-            :can-play="canPlay"
-          />
+          <song-youtube-action v-if="showYoutube" :song="song" />
           <song-like-action :song="song" />
           <song-dropdown-menu :song="song" :show-delete="showDeleteMenuItem" />
         </slot>
@@ -38,14 +38,14 @@ import { mapState, mapGetters } from 'vuex';
 
 import AlbumArt from './AlbumArt.vue';
 import SongLikeAction from './SongLikeAction.vue';
-import SongPlayAction from './SongPlayAction.vue';
+import SongYoutubeAction from './SongYoutubeAction.vue';
 import SongDropdownMenu from './SongDropdownMenu.vue';
 
 export default {
   components: {
     AlbumArt,
     SongLikeAction,
-    SongPlayAction,
+    SongYoutubeAction,
     SongDropdownMenu,
   },
 
@@ -57,6 +57,12 @@ export default {
     postedUserNames: {
       type: Array,
     },
+  },
+
+  data() {
+    return {
+      isHovering: false,
+    };
   },
 
   computed: {
@@ -99,8 +105,8 @@ export default {
     ...mapGetters('playback', ['currentSong']),
 
     // TODO: once a modal is implemented for apple music song-missing state,
-    // this will just always be true
-    canClickSong() {
+    // this will just always be true after loading
+    canRequestPlay() {
       const { streaming } = this.$store.state;
 
       // for users with a connected streaming service, the song is clickable
@@ -118,6 +124,10 @@ export default {
 
     isPlaying() {
       return this.currentSong && this.currentSong.id === this.song.id;
+    },
+
+    showYoutube() {
+      return this.$store.getters.loadedStreaming && !this.canPlay;
     },
   },
 
@@ -163,7 +173,7 @@ export default {
   &:hover {
     background: rgba(0, 0, 0, 0.1);
 
-    &.can-click {
+    &.can-play {
       cursor: pointer;
     }
   }
@@ -176,15 +186,15 @@ export default {
   text-decoration: none;
 }
 
-.playlist-song--title {
-  .title-artist {
+.playlist-song--label {
+  .label-artist {
     font-weight: 500;
   }
 
-  > .title-content {
+  .label-artist,
+  .label-title {
     display: inline-block;
     width: 100%;
-
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -194,9 +204,7 @@ export default {
   flex-grow: 1;
   max-width: 100%;
   min-width: 0;
-
   margin-right: 10px;
-  line-height: 24px;
 }
 
 .playlist-song--actions {
@@ -216,6 +224,7 @@ export default {
   padding: 8px;
 
   .icon {
+    display: block;
     width: 25px;
     height: 25px;
   }
@@ -242,9 +251,9 @@ export default {
     margin: 0 -5px 15px -5px;
   }
 
-  .playlist-song--title {
+  .playlist-song--label {
     font-size: 14px;
-    line-height: 20px;
+    line-height: 1.25em;
   }
 
   .playlist-song--actions > * {

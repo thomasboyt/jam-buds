@@ -1,15 +1,5 @@
 <template>
-  <button
-    v-if="canPlay"
-    class="action-button"
-    @click="handlePlay"
-    type="button"
-  >
-    <icon :glyph="playIcon" />
-  </button>
-
   <a
-    v-else-if="loadedStreaming"
     class="action-button"
     :href="searchUrl"
     target="_blank"
@@ -23,17 +13,15 @@
 <script>
 import Icon from '../Icon.vue';
 
-const playIcon = require('~/assets/play-outline.svg');
 const youtubeIcon = require('~/assets/youtube.svg');
 
 export default {
   components: { Icon },
 
-  props: ['song', 'canPlay'],
+  props: ['song'],
 
   data() {
     return {
-      playIcon,
       youtubeIcon,
     };
   },
@@ -44,17 +32,6 @@ export default {
         this.song.artists[0] + ' ' + this.song.title
       );
       return `https://www.youtube.com/results?search_query=${query}`;
-    },
-
-    loadedStreaming() {
-      return this.$store.getters.loadedStreaming;
-    },
-  },
-
-  methods: {
-    handlePlay(e) {
-      e.preventDefault();
-      this.$emit('play');
     },
   },
 };
