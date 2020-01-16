@@ -15,7 +15,12 @@ export const getBooleanEnv = (key: string): boolean => {
 
   if (val === '1' || val === 'true') {
     return true;
-  } else if (val === '0' || val === 'false' || val === '') {
+  } else if (
+    val === '0' ||
+    val === 'false' ||
+    val === '' ||
+    val === undefined
+  ) {
     return false;
   } else {
     throw new Error(`unrecognized boolean value for env var ${key}: ${val}`);
