@@ -1,20 +1,17 @@
 import axios from 'axios';
+import config from '../config';
 import externalCallWrapper from '../util/externalCallWrapper';
 
 function getApiHeaders() {
-  if (!process.env.BUTTONDOWN_API_KEY) {
-    throw new Error('missing buttondown api key!');
-  }
-
   return {
-    Authorization: `Token ${process.env.BUTTONDOWN_API_KEY}`,
+    Authorization: `Token ${config.require('BUTTONDOWN_API_KEY')}`,
   };
 }
 
 export async function getButtondownSubscriptionId(
   email: string
 ): Promise<string | null> {
-  if (process.env.DISABLE_BUTTONDOWN) {
+  if (config.get('DISABLE_BUTTONDOWN')) {
     return null;
   }
 
@@ -39,7 +36,7 @@ export async function getButtondownSubscriptionId(
 export async function subscribeToButtondownNewsletter(
   email: string
 ): Promise<void> {
-  if (process.env.DISABLE_BUTTONDOWN) {
+  if (config.get('DISABLE_BUTTONDOWN')) {
     return Promise.resolve();
   }
 
@@ -57,7 +54,7 @@ export async function subscribeToButtondownNewsletter(
 export async function unsubscribeFromButtondownNewsletter(
   buttondownId: string
 ): Promise<void> {
-  if (process.env.DISABLE_BUTTONDOWN) {
+  if (config.get('DISABLE_BUTTONDOWN')) {
     return Promise.resolve();
   }
 

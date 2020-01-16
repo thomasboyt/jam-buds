@@ -1,4 +1,5 @@
 import axios from 'axios';
+import config from '../config';
 import externalCallWrapper from '../util/externalCallWrapper';
 import { ExternalApiCallError } from '../util/errors';
 
@@ -13,7 +14,9 @@ export async function getRefreshedAccessToken(
   refreshToken: string
 ): Promise<RefreshResponse> {
   const auth =
-    process.env.SPOTIFY_CLIENT_ID + ':' + process.env.SPOTIFY_CLIENT_SECRET;
+    config.require('SPOTIFY_CLIENT_ID') +
+    ':' +
+    config.require('SPOTIFY_CLIENT_SECRET');
 
   // Refresh flow
   let resp;

@@ -1,5 +1,6 @@
 import axios from 'axios';
 import generateMusicKitToken from '@tboyt/music-kit-jwt';
+import config from '../config';
 
 let cachedToken: string;
 function getToken(): string {
@@ -8,9 +9,9 @@ function getToken(): string {
   }
 
   cachedToken = generateMusicKitToken({
-    pathToPrivateKey: process.env.MUSICKIT_PRIVATE_KEY_PATH!,
-    keyId: process.env.MUSICKIT_KEY_ID!,
-    teamId: process.env.MUSICKIT_TEAM_ID!,
+    pathToPrivateKey: config.require('MUSICKIT_PRIVATE_KEY_PATH'),
+    keyId: config.require('MUSICKIT_KEY_ID'),
+    teamId: config.require('MUSICKIT_TEAM_ID'),
   });
 
   return cachedToken;
@@ -28,7 +29,7 @@ export interface AppleMusicInfo {
 export async function getAppleMusicInfoByISRC(
   isrc: string
 ): Promise<AppleMusicInfo | null> {
-  if (process.env.NODE_ENV === 'test' || process.env.DISABLE_APPLE_MUSIC) {
+  if (config.get('NODE_ENV') === 'test' || config.get('DISABLE_APPLE_MUSIC')) {
     return null;
   }
 

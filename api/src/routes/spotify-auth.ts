@@ -2,6 +2,7 @@ import { Router } from 'express';
 import SpotifyWebApi from 'spotify-web-api-node';
 import axios from 'axios';
 
+import config from '../config';
 import wrapAsyncRoute from '../util/wrapAsyncRoute';
 import { UserModel } from '../models/user';
 import {
@@ -28,12 +29,7 @@ import {
   SpotifyDisconnectedError,
 } from '../apis/spotifyAuth';
 
-const redirectUri = `${process.env.JB_APP_URL}/auth/spotify-connect/cb`;
-
-const spotifyApi = new SpotifyWebApi({
-  redirectUri,
-  clientId: process.env.SPOTIFY_CLIENT_ID,
-});
+const redirectUri = `${config.get('JB_APP_URL')}/auth/spotify-connect/cb`;
 
 const ANON_SPOTIFY_AUTH_TOKEN_COOKIE = 'anonSpotifyAuthToken';
 
@@ -42,6 +38,11 @@ export function registerSpotifyAuthEndpoints(router: Router) {
     '/spotify-connect',
     wrapAsyncRoute(async (req, res) => {
       const state = await createOAuthState(req.query.redirect || '/');
+
+      const spotifyApi = new SpotifyWebApi({
+        redirectUri,
+        clientId: config.require('SPOTIFY_CLIENT_ID'),
+      });
 
       res.redirect(
         spotifyApi.createAuthorizeURL(
@@ -70,7 +71,9 @@ export function registerSpotifyAuthEndpoints(router: Router) {
 
       const code = req.query.code;
       const auth =
-        process.env.SPOTIFY_CLIENT_ID + ':' + process.env.SPOTIFY_CLIENT_SECRET;
+        config.require('SPOTIFY_CLIENT_ID') +
+        ':' +
+        config.require('SPOTIFY_CLIENT_SECRET');
 
       const resp = await axios({
         method: 'post',
@@ -94,10 +97,10 @@ export function registerSpotifyAuthEndpoints(router: Router) {
       spotifyClient.setAccessToken(accessToken);
       const userInformation = await spotifyClient.getMe();
 
+      const rootUrl = config.get('JB_APP_URL');
+
       if (userInformation.body.product !== 'premium') {
-        res.redirect(
-          `${process.env.JB_APP_URL}${redirect}?failed-spotify-connect`
-        );
+        res.redirect(`${rootUrl}${redirect}?failed-spotify-connect`);
         return;
       }
 
@@ -123,7 +126,7 @@ export function registerSpotifyAuthEndpoints(router: Router) {
         });
       }
 
-      res.redirect(`${process.env.JB_APP_URL}${redirect}`);
+      res.redirect(`${rootUrl}${redirect}`);
     })
   );
 }

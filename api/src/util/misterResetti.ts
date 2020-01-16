@@ -1,12 +1,13 @@
 import { Client } from 'pg';
 import { parse } from 'pg-connection-string';
 
+import config from '../config';
 import { db, configureDatabase } from '../db';
 import { configureRedis, redis } from '../redis';
 import seed from '../../seeds';
 
 async function createDatabase(): Promise<void> {
-  const connection = parse(process.env.DATABASE_URL!) as any;
+  const connection = parse(config.get('DATABASE_URL')) as any;
   const client = new Client({
     ...connection,
     database: 'postgres',

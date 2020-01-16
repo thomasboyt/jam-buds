@@ -4,6 +4,7 @@ if (process.env.ENABLE_STACKDRIVER_TRACE) {
 }
 
 import './util/loadDotEnv';
+import config from './config';
 import createApp from './createApp';
 
 import { configureDatabase } from './db';
@@ -14,7 +15,7 @@ configureRedis();
 
 const app = createApp();
 
-const port = process.env.JB_API_PORT || 3000;
+const port = config.get('JB_API_PORT') || 3000;
 
 app.listen(port, () => {
   console.log(`*** Listening on port ${port}`);

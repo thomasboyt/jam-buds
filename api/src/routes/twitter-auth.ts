@@ -1,6 +1,8 @@
 import { Router } from 'express';
-import wrapAsyncRoute from '../util/wrapAsyncRoute';
 import { OAuth } from 'oauth';
+
+import config from '../config';
+import wrapAsyncRoute from '../util/wrapAsyncRoute';
 import {
   updateTwitterCredentials,
   UserModel,
@@ -33,10 +35,10 @@ function createOAuthClient(stateToken: string): OAuth {
   return new OAuth(
     'https://api.twitter.com/oauth/request_token',
     'https://api.twitter.com/oauth/access_token',
-    process.env.TWITTER_API_KEY!,
-    process.env.TWITTER_API_SECRET!,
+    config.require('TWITTER_API_KEY'),
+    config.require('TWITTER_API_SECRET'),
     '1.0A',
-    `${process.env.JB_APP_URL}/auth/twitter-connect/cb?state=${stateToken}`,
+    `${config.get('JB_APP_URL')}/auth/twitter-connect/cb?state=${stateToken}`,
     'HMAC-SHA1'
   );
 }
@@ -121,7 +123,7 @@ export default function registerTwitterAuthEndpoints(router: Router) {
         twitterSecret: secret,
       });
 
-      res.redirect(`${process.env.JB_APP_URL}${redirect}`);
+      res.redirect(`${config.get('JB_APP_URL')}${redirect}`);
     })
   );
 

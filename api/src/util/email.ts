@@ -1,9 +1,10 @@
 import { writeFileSync, mkdirSync } from 'fs';
 import * as path from 'path';
-
 import nunjucks from 'nunjucks';
 import sgMail from '@sendgrid/mail';
 import juice from 'juice';
+
+import config from '../config';
 
 function writeEmailToDisk(subject: string, html: string) {
   const date = new Date().toISOString();
@@ -59,8 +60,8 @@ export async function sendEmail(
 ) {
   const html = renderHtml(templateOptions, subject);
 
-  if (process.env.NODE_ENV === 'production') {
-    const key = process.env.SENDGRID_API_KEY;
+  if (config.get('NODE_ENV') === 'production') {
+    const key = config.require('SENDGRID_API_KEY');
 
     if (!key) {
       throw new Error('Tried to send email, but missing SENDGRID_API_KEY!');
@@ -80,7 +81,7 @@ export async function sendEmail(
     };
 
     await sgMail.send(msg);
-  } else if (process.env.NODE_ENV !== 'test') {
+  } else if (config.get('NODE_ENV') !== 'test') {
     console.log(`\n*** sending email to ${recipientEmail}: ${subject}`);
     console.log(renderTxt(templateOptions));
     console.log('');

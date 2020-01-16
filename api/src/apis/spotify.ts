@@ -1,16 +1,27 @@
 import SpotifyWebApi from 'spotify-web-api-node';
+import config from '../config';
 
-const spotifyApi = new SpotifyWebApi({
-  clientId: process.env.SPOTIFY_CLIENT_ID,
-  clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
-});
+let spotifyApi: unknown;
+
+function getSpotifyApi() {
+  if (spotifyApi) {
+    return spotifyApi;
+  }
+
+  spotifyApi = new SpotifyWebApi({
+    clientId: config.require('SPOTIFY_CLIENT_ID'),
+    clientSecret: config.require('SPOTIFY_CLIENT_SECRET'),
+  });
+
+  return spotifyApi as any;
+}
 
 async function getToken() {
   console.log('*** Refreshing Spotify token');
 
   try {
-    const data = await spotifyApi.clientCredentialsGrant();
-    spotifyApi.setAccessToken(data.body['access_token']);
+    const data = await getSpotifyApi().clientCredentialsGrant();
+    getSpotifyApi().setAccessToken(data.body['access_token']);
   } catch (err) {
     console.error(`*** Failed to acquire Spotify token:`);
     throw err;
@@ -19,7 +30,10 @@ async function getToken() {
 }
 
 export function startSpotifyTokenUpdates() {
-  if (process.env.NODE_ENV !== 'test' || process.env.TEST_ENV === 'feature') {
+  if (
+    config.get('NODE_ENV') !== 'test' ||
+    config.get('TEST_ENV') === 'feature'
+  ) {
     getToken();
     // new token very five minutes
     setInterval(getToken, 60 * 5 * 1000);
@@ -48,7 +62,7 @@ export async function getTrackById(
 ): Promise<SpotifySongResource | null> {
   let res;
   try {
-    res = await spotifyApi.getTrack(id);
+    res = await getSpotifyApi().getTrack(id);
   } catch (err) {
     if (err.status === 400) {
       return null;
@@ -63,7 +77,7 @@ export async function getTrackById(
  * Get a list of Spotify search results for a specific query.
  */
 export async function search(query: string): Promise<SpotifySongResource[]> {
-  const res = await spotifyApi.searchTracks(query);
+  const res = await getSpotifyApi().searchTracks(query);
   const tracks = res.body.tracks.items;
   return tracks;
 }

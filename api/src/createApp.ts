@@ -4,6 +4,7 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import * as Sentry from '@sentry/node';
 
+import config from './config';
 import { startSpotifyTokenUpdates } from './apis/spotify';
 import { errorHandlerMiddleware } from './util/errors';
 
@@ -22,11 +23,11 @@ import {
 import registerTwitterAuthEndpoints from './routes/twitter-auth';
 import registerNotificationsEndpoints from './routes/notifications';
 
-const env = process.env.NODE_ENV;
+const env = config.get('NODE_ENV');
 
 if (env === 'production') {
   Sentry.init({
-    dsn: process.env.SENTRY_DSN_API,
+    dsn: config.require('SENTRY_DSN_API'),
   });
 }
 
@@ -44,7 +45,7 @@ export default function createApp() {
 
   app.use(
     cors({
-      origin: process.env.JB_APP_URL,
+      origin: config.get('JB_APP_URL'),
     })
   );
 

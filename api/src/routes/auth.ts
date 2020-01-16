@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import * as Sentry from '@sentry/node';
 
+import config from '../config';
 import wrapAsyncRoute from '../util/wrapAsyncRoute';
 import { AUTH_TOKEN_COOKIE } from '../constants';
 import { getUserByEmail, getUserByName, createUser } from '../models/user';
@@ -61,8 +62,10 @@ export default function registerAuthEndpoints(router: Router) {
 
       const user = await getUserByEmail(email);
 
+      const rootUrl = config.get('JB_APP_URL');
+
       if (user) {
-        const link = `${process.env.JB_APP_URL}/auth/sign-in?t=${token}`;
+        const link = `${rootUrl}/auth/sign-in?t=${token}`;
 
         await sendEmail(email, 'Your sign-in link for jambuds.club', {
           templateName: 'log-in',
@@ -76,9 +79,7 @@ export default function registerAuthEndpoints(router: Router) {
           await setSignUpReferral(token, req.body.signupReferral);
         }
 
-        const link = `${
-          process.env.JB_APP_URL
-        }/welcome/registration?t=${token}`;
+        const link = `${rootUrl}/welcome/registration?t=${token}`;
 
         await sendEmail(email, 'Welcome to jambuds.club!', {
           templateName: 'sign-up',
@@ -88,7 +89,7 @@ export default function registerAuthEndpoints(router: Router) {
         });
       }
 
-      if (process.env.DANGER_SKIP_AUTH) {
+      if (config.get('DANGER_SKIP_AUTH')) {
         return res.json({
           token,
           isRegistration: !user,
@@ -109,7 +110,7 @@ export default function registerAuthEndpoints(router: Router) {
     wrapAsyncRoute(async (req, res) => {
       if (await maybeGetUserFromCookie(req)) {
         // user's already loaded, SHRUG
-        res.redirect(process.env.JB_APP_URL!);
+        res.redirect(config.get('JB_APP_URL'));
         return;
       }
 
@@ -145,7 +146,7 @@ export default function registerAuthEndpoints(router: Router) {
       });
       await deleteSignInToken(token);
 
-      res.redirect(process.env.JB_APP_URL!);
+      res.redirect(config.get('JB_APP_URL'));
     })
   );
 
