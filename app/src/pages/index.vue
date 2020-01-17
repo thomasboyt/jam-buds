@@ -1,6 +1,13 @@
 <template>
   <sidebar-wrapper v-if="authenticated" v-slot="{ withSidebar }">
     <main-wrapper :with-sidebar="withSidebar">
+      <panel>
+        <strong>jan 17:</strong> spotify playback is currently buggy due to
+        <a href="https://github.com/spotify/web-playback-sdk/issues/99"
+          >an issue i'm pretty sure is not my fault</a
+        >. if you're having trouble getting a song to play, try using the "find
+        on youtube" option instead!
+      </panel>
       <feed />
     </main-wrapper>
   </sidebar-wrapper>
@@ -14,6 +21,7 @@ import Feed from '../components/Feed.vue';
 import LoggedOutHome from '../components/LoggedOutHome.vue';
 import MainWrapper from '../components/MainWrapper.vue';
 import SidebarWrapper from '../components/SidebarWrapper.vue';
+import Panel from '../components/Panel.vue';
 
 export default {
   components: {
@@ -21,6 +29,7 @@ export default {
     MainWrapper,
     SidebarWrapper,
     LoggedOutHome,
+    Panel,
   },
 
   head() {
