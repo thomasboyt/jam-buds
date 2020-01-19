@@ -32,8 +32,8 @@ export default {
       });
     },
 
-    handleUnfollow() {
-      this.$store.dispatch('unfollowUser', this.name);
+    async handleUnfollow() {
+      await this.$store.dispatch('unfollowUser', this.name);
 
       this.$store.dispatch('setFlashMessage', {
         message: `You have unfollowed ${this.name}.`,
