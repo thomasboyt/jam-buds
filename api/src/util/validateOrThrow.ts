@@ -2,7 +2,7 @@ import * as t from 'io-ts';
 import { isLeft } from 'fp-ts/lib/Either';
 import { PathReporter } from 'io-ts/lib/PathReporter';
 
-type IoTypeC = t.TypeC<any> | t.IntersectionC<any>;
+export type IoTypeC = t.TypeC<any> | t.IntersectionC<any>;
 
 export default function validateOrThrow<T extends IoTypeC>(
   codec: T,

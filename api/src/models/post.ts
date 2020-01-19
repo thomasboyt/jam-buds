@@ -3,11 +3,13 @@ import { date as dateType } from 'io-ts-types/lib/date';
 
 import { db } from '../db';
 import { Song } from '../resources';
-import { serializeSong, selectSongs } from './song';
+import { serializeSong, selectSongs, SongWithMetaModelV } from './song';
+import { findOneOrThrow } from './utils';
 
 export const PostModelV = t.type({
   id: t.number,
-  songId: t.number,
+  songId: t.union([t.number, t.null]),
+  mixtapeId: t.union([t.number, t.null]),
   userId: t.number,
   createdAt: dateType,
 });
@@ -28,7 +30,7 @@ export async function postSong(values: PostSongParams): Promise<Song> {
   const query = db!('songs')
     .select(selectSongs({ currentUserId: values.userId }))
     .where({ id: values.songId });
-  const [row] = await query;
+  const row = await findOneOrThrow(query, SongWithMetaModelV);
 
   return serializeSong(row);
 }

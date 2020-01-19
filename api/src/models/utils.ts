@@ -2,7 +2,7 @@ import Knex from 'knex';
 import { snakecase } from 'stringcase';
 import * as t from 'io-ts';
 import { db } from '../db';
-import validateOrThrow from '../util/validateOrThrow';
+import validateOrThrow, { IoTypeC } from '../util/validateOrThrow';
 
 /**
  * Utility function that creates dot-separated select aliases for fields:
@@ -93,7 +93,15 @@ export function selectNamespacedModel(
   return db!.raw(namespacedAliases(tableName, keyName, tPropNames(model)));
 }
 
-export async function findOne<T extends t.TypeC<any>>(
+export function selectModelFields(
+  model: t.TypeC<any>,
+  tableName: string
+): string[] {
+  const fields = tPropNames(model);
+  return fields.map((field) => `${tableName}.${field}`);
+}
+
+export async function findOne<T extends IoTypeC>(
   query: Knex.QueryBuilder,
   model: T
 ): Promise<t.TypeOf<T> | null> {
@@ -109,7 +117,7 @@ export async function findOne<T extends t.TypeC<any>>(
   return row;
 }
 
-export async function findOneOrThrow<T extends t.TypeC<any>>(
+export async function findOneOrThrow<T extends IoTypeC>(
   query: Knex.QueryBuilder,
   model: T
 ): Promise<t.TypeOf<T>> {
@@ -122,7 +130,7 @@ export async function findOneOrThrow<T extends t.TypeC<any>>(
   return row;
 }
 
-export async function findMany<T extends t.TypeC<any>>(
+export async function findMany<T extends IoTypeC>(
   query: Knex.QueryBuilder,
   model: T
 ): Promise<t.TypeOf<T>[]> {

@@ -2,9 +2,8 @@ import Knex from 'knex';
 import * as t from 'io-ts';
 import { db } from '../db';
 import { Song } from '../resources';
-import validateOrThrow from '../util/validateOrThrow';
 import { getOrCreateSongCacheEntryWithExternalIds } from '../util/songSearchCache';
-import { selectNamespacedModel, findOne, findOneOrThrow } from './utils';
+import { findOne, findOneOrThrow, tPropNames } from './utils';
 
 export const SongModelV = t.type({
   id: t.number,
@@ -26,6 +25,9 @@ export const SongMetaV = t.type({
 });
 
 export type SongModel = t.TypeOf<typeof SongModelV>;
+
+export const SongWithMetaModelV = t.intersection([SongModelV, SongMetaV]);
+export type SongWithMetaModel = t.TypeOf<typeof SongWithMetaModelV>;
 
 export async function getSongById(id: number): Promise<SongModel | null> {
   const query = db!('songs').where({ id });
@@ -57,7 +59,7 @@ interface SongsQueryOptions {
   currentUserId?: number;
 }
 
-export function getMetaQuery(opts: SongsQueryOptions): Knex.Raw[] {
+function getMetaQuery(opts: SongsQueryOptions): Knex.Raw[] {
   const query = [
     db!.raw(
       '(SELECT COUNT(*) FROM likes WHERE likes.song_id=songs.id) as like_count'
@@ -77,16 +79,10 @@ export function getMetaQuery(opts: SongsQueryOptions): Knex.Raw[] {
 }
 
 export function selectSongs(opts: SongsQueryOptions) {
-  return [
-    selectNamespacedModel(SongModelV, 'songs', 'song'),
-    ...getMetaQuery(opts),
-  ];
+  return [...tPropNames(SongModelV), ...getMetaQuery(opts)];
 }
 
-export function serializeSong(row: any): Song {
-  const song = validateOrThrow(SongModelV, row.song);
-  const meta = validateOrThrow(SongMetaV, row);
-
+export function serializeSong(song: SongWithMetaModel): Song {
   return {
     id: song.id,
     album: song.album,
@@ -96,8 +92,8 @@ export function serializeSong(row: any): Song {
     spotifyId: song.spotifyId,
     appleMusicId: song.appleMusicId,
     appleMusicUrl: song.appleMusicUrl,
-    isLiked: meta.isLiked || false,
-    likeCount: parseInt(meta.likeCount),
+    isLiked: song.isLiked || false,
+    likeCount: parseInt(song.likeCount),
   };
 }
 

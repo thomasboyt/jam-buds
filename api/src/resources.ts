@@ -38,7 +38,7 @@ export interface PlaylistSongItem {
   /**
    * A list of names of users you follow who posted the song.
    */
-  userNames: string[];
+  userNames?: string[];
 }
 
 export type PlaylistItem = PlaylistSongItem | PlaylistMixtapeItem;

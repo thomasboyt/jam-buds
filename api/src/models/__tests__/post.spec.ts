@@ -10,7 +10,7 @@ describe('models/post', () => {
       const entry = await postFactory({ userId: user.id });
       const post = await getOwnPostForSongId({
         userId: user.id,
-        songId: entry.songId,
+        songId: entry.songId!,
       });
 
       expect(post).toBeTruthy();
@@ -20,7 +20,7 @@ describe('models/post', () => {
       expect(
         await getOwnPostForSongId({
           userId: user.id,
-          songId: entry.songId,
+          songId: entry.songId!,
         })
       ).toBeFalsy();
     });

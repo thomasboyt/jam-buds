@@ -84,7 +84,7 @@ describe('models/playlists', () => {
       });
 
       const post = await getOwnPostForSongId({
-        songId: dupPost.songId,
+        songId: dupPost.songId!,
         userId: jeff.id,
       });
 
@@ -161,7 +161,8 @@ describe('models/playlists', () => {
 
       const items = await getLikesByUserId(user.id, { currentUserId: user.id });
       expect(items.length).toBe(1);
-      expect(items[0].song.id).toBe(id);
+      expect(items[0].type).toBe('song');
+      expect((items[0] as PlaylistSongItem).song.id).toBe(id);
     });
   });
 

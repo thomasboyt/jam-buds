@@ -8,6 +8,7 @@ import { userFactory, songFactory } from '../../__tests__/factories';
 import { postSong } from '../../models/post';
 import { getLikesByUserId } from '../../models/playlists';
 import { createAuthTokenForUserId } from '../../models/authTokens';
+import { PlaylistSongItem } from '../../resources';
 
 const app = createApp();
 
@@ -40,8 +41,10 @@ describe('routes/likes', () => {
         currentUserId: jeff!.id,
       });
       expect(likes.length).toBe(1);
-      expect(likes[0].song.id).toBe(song.id);
-      expect(likes[0].song.isLiked).toBe(true);
+      const like = likes[0];
+      expect(like.type).toBe('song');
+      expect((like as PlaylistSongItem).song.id).toBe(song.id);
+      expect((like as PlaylistSongItem).song.isLiked).toBe(true);
     });
   });
 });

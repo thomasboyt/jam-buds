@@ -4,15 +4,9 @@ import slugify from '@sindresorhus/slugify';
 
 import { db } from '../db';
 import { UserModel, getUserProfileForUser, getUserByUserId } from './user';
-import { serializeSong, selectSongs } from './song';
+import { serializeSong, selectSongs, SongWithMetaModelV } from './song';
 import { Mixtape, Song, DraftMixtapeListItem } from '../resources';
-import {
-  tPropNames,
-  namespacedAliases,
-  findMany,
-  findOne,
-  findOneOrThrow,
-} from './utils';
+import { findMany, findOne, findOneOrThrow, selectModelFields } from './utils';
 
 export const MixtapeModelV = t.type({
   id: t.number,
@@ -23,7 +17,7 @@ export const MixtapeModelV = t.type({
   publishedAt: t.union([dateType, t.null]),
 });
 
-type MixtapeModel = t.TypeOf<typeof MixtapeModelV>;
+export type MixtapeModel = t.TypeOf<typeof MixtapeModelV>;
 
 export const MixtapeSongEntryModelV = t.type({
   songId: t.number,
@@ -39,16 +33,16 @@ export const MixtapePreviewModelV = t.intersection([
   }),
 ]);
 
+export type MixtapePreviewModel = t.TypeOf<typeof MixtapePreviewModelV>;
+
 export function selectMixtapePreviews() {
   return [
+    ...selectModelFields(MixtapeModelV, 'mixtapes'),
     db!.raw(
-      namespacedAliases('mixtapes', 'mixtape', tPropNames(MixtapeModelV))
+      '(SELECT users.name FROM users WHERE users.id=mixtapes.user_id) as "author_name"'
     ),
     db!.raw(
-      '(SELECT users.name FROM users WHERE users.id=mixtapes.user_id) as "mixtape.author_name"'
-    ),
-    db!.raw(
-      '(SELECT COUNT (*) FROM mixtape_song_entries WHERE mixtape_id=mixtapes.id) as "mixtape.song_count"'
+      '(SELECT COUNT (*) FROM mixtape_song_entries WHERE mixtape_id=mixtapes.id) as "song_count"'
     ),
   ];
 }
@@ -237,9 +231,8 @@ export async function getSongsByMixtapeId(
     .where({ mixtape_id: mixtapeId })
     .orderBy('mixtape_song_entries.rank', 'asc');
 
-  const songRows = await query;
-
-  return songRows.map((row: any) => serializeSong(row));
+  const songRows = await findMany(query, SongWithMetaModelV);
+  return songRows.map(serializeSong);
 }
 
 export async function getDraftMixtapesByUserId(

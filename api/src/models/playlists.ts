@@ -1,50 +1,113 @@
 import * as Knex from 'knex';
+import * as t from 'io-ts';
+import { date as dateType } from 'io-ts-types/lib/date';
 
 import { db } from '../db';
 import { ENTRY_PAGE_LIMIT } from '../constants';
-import { selectSongs, serializeSong } from './song';
-import { MixtapePreviewModelV, selectMixtapePreviews } from './mixtapes';
+import {
+  serializeSong,
+  selectSongs,
+  SongWithMetaModelV,
+  SongWithMetaModel,
+} from './song';
+import {
+  MixtapePreviewModelV,
+  selectMixtapePreviews,
+  MixtapePreviewModel,
+} from './mixtapes';
 import {
   PlaylistSongItem,
   PlaylistItem,
   PlaylistMixtapeItem,
 } from '../resources';
-import validateOrThrow from '../util/validateOrThrow';
+import { findMany } from './utils';
 
-function serializePlaylistSongItem(row: any): PlaylistSongItem {
+const PlaylistItemModelV = t.type({
+  timestamp: dateType,
+  userNames: t.union([t.array(t.string), t.null, t.undefined]),
+  songId: t.union([t.number, t.null, t.undefined]),
+  mixtapeId: t.union([t.number, t.null, t.undefined]),
+});
+
+type PlaylistItemModel = t.TypeOf<typeof PlaylistItemModelV>;
+
+interface PlaylistItemModelWithRelationships extends PlaylistItemModel {
+  song?: SongWithMetaModel;
+  mixtape?: MixtapePreviewModel;
+}
+
+function serializePlaylistSongItem(
+  item: PlaylistItemModelWithRelationships
+): PlaylistSongItem {
+  const song = item.song!;
   return {
     type: 'song',
-    song: serializeSong(row),
-    userNames: row.userNames,
-    timestamp: row.timestamp.toISOString(),
+    song: serializeSong(song),
+    userNames: item.userNames || undefined,
+    timestamp: item.timestamp.toISOString(),
   };
 }
 
-function serializePlaylistMixtapeItem(row: any): PlaylistMixtapeItem {
-  const preview = validateOrThrow(MixtapePreviewModelV, row.mixtape);
+function serializePlaylistMixtapeItem(
+  item: PlaylistItemModelWithRelationships
+): PlaylistMixtapeItem {
+  const mixtape = item.mixtape!;
 
   return {
     type: 'mixtape',
-    timestamp: row.timestamp.toISOString(),
+    timestamp: item.timestamp.toISOString(),
 
     mixtape: {
-      id: preview.id,
-      slug: preview.slug,
-      authorName: preview.authorName,
-      title: preview.title,
-      numTracks: parseInt(preview.songCount),
+      id: mixtape.id,
+      slug: mixtape.slug,
+      authorName: mixtape.authorName,
+      title: mixtape.title,
+      numTracks: parseInt(mixtape.songCount),
     },
   };
 }
 
-export function serializePlaylistItem(row: any): PlaylistItem {
-  if (row.song && row.song.id !== null) {
-    return serializePlaylistSongItem(row);
-  } else if (row.mixtape) {
-    return serializePlaylistMixtapeItem(row);
+export function serializePlaylistItem(
+  item: PlaylistItemModelWithRelationships
+): PlaylistItem {
+  if (item.song && item.song.id !== null) {
+    return serializePlaylistSongItem(item);
+  } else if (item.mixtape) {
+    return serializePlaylistMixtapeItem(item);
   } else {
     throw new Error('cannot serialize post item');
   }
+}
+
+async function hydratePlaylistItems(
+  playlistItems: PlaylistItemModel[],
+  opts: QueryOptions
+): Promise<PlaylistItemModelWithRelationships[]> {
+  const songIds = playlistItems
+    .map((item) => item.songId)
+    .filter((songId) => !!songId);
+  const mixtapeIds = playlistItems
+    .map((item) => item.mixtapeId)
+    .filter((mixtapeId) => !!mixtapeId);
+
+  const songsQuery = db!('songs')
+    .select(selectSongs(opts))
+    .whereIn('songs.id', songIds);
+  const songs = await findMany(songsQuery, SongWithMetaModelV);
+
+  const mixtapesQuery = db!('mixtapes')
+    .select(selectMixtapePreviews())
+    .join('users', { 'users.id': 'mixtapes.user_id' })
+    .whereIn('mixtapes.id', mixtapeIds);
+  const mixtapes = await findMany(mixtapesQuery, MixtapePreviewModelV);
+
+  return playlistItems.map((item) => {
+    return {
+      ...item,
+      song: songs.find((song) => song.id === item.songId),
+      mixtape: mixtapes.find((mixtape) => mixtape.id === item.mixtapeId),
+    };
+  });
 }
 
 interface QueryOptions {
@@ -58,15 +121,11 @@ export async function getPostsByUserId(
   opts: QueryOptions = {}
 ): Promise<PlaylistItem[]> {
   let query = db!('posts')
-    .select(selectSongs(opts))
-    .select(selectMixtapePreviews())
     .select({
+      songId: 'posts.song_id',
+      mixtapeId: 'posts.mixtape_id',
       timestamp: 'posts.created_at',
-      userName: 'users.name',
     })
-    .join('users', { 'users.id': 'posts.user_id' })
-    .leftOuterJoin('songs', { 'songs.id': 'posts.song_id' })
-    .leftOuterJoin('mixtapes', { 'mixtapes.id': 'posts.mixtape_id' })
     .where({ 'posts.user_id': userId })
     .orderBy('posts.created_at', 'desc');
 
@@ -77,36 +136,11 @@ export async function getPostsByUserId(
     columnName: 'posts.created_at',
   });
 
-  const rows = await query;
-
-  return rows.map(serializePlaylistItem);
-}
-
-export async function getPublishedMixtapesByUserId(
-  userId: number,
-  opts: QueryOptions = {}
-): Promise<PlaylistItem[]> {
-  let query = db!('mixtapes')
-    .select(selectMixtapePreviews())
-    .select({
-      timestamp: 'mixtapes.published_at',
-      userName: 'users.name',
-    })
-    .join('users', { 'users.id': 'mixtapes.user_id' })
-    .where({ 'mixtapes.user_id': userId })
-    .whereNot({ 'mixtapes.published_at': null })
-    .orderBy('mixtapes.published_at', 'desc');
-
-  query = paginate(query, {
-    limit: ENTRY_PAGE_LIMIT,
-    before: opts.beforeTimestamp,
-    after: opts.afterTimestamp,
-    columnName: 'mixtapes.published_at',
-  });
-
-  const rows = await query;
-
-  return rows.map(serializePlaylistItem);
+  const playlistItems = await hydratePlaylistItems(
+    await findMany(query, PlaylistItemModelV),
+    opts
+  );
+  return playlistItems.map(serializePlaylistItem);
 }
 
 export async function getFeedByUserId(
@@ -127,22 +161,29 @@ export async function getFeedByUserId(
   const timestampQuery = `
     COALESCE(
       (
-        SELECT posts.created_at FROM posts WHERE user_id=? AND song_id=songs.id
+        SELECT
+          user_posts.created_at
+        FROM
+          posts
+        AS
+          user_posts
+        WHERE user_id=?
+        AND user_posts.song_id=posts.song_id
       ),
       MIN(posts.created_at)
     )
   `;
 
-  let query = db!('posts')
+  let postsQuery = db!('posts')
     .select([
-      ...selectSongs(opts),
-      ...selectMixtapePreviews(),
+      {
+        songId: 'posts.song_id',
+        mixtapeId: 'posts.mixtape_id',
+      },
       db!.raw(`${timestampQuery} as timestamp`, [opts.currentUserId]),
       db!.raw('ARRAY_AGG(users.name) as user_names'),
     ])
     .join('users', { 'users.id': 'posts.user_id' })
-    .leftOuterJoin('songs', { 'songs.id': 'posts.song_id' })
-    .leftOuterJoin('mixtapes', { 'mixtapes.id': 'posts.mixtape_id' })
     .where(function(this: Knex.QueryBuilder) {
       this.whereIn('posts.user_id', function() {
         this.select('following_id')
@@ -150,18 +191,17 @@ export async function getFeedByUserId(
           .where({ 'following.user_id': id });
       }).orWhere({ 'posts.user_id': id });
     })
-    // TODO: =\ not sure why all this is needed
-    .groupBy('songs.*', 'songs.id', 'mixtapes.*', 'mixtapes.id')
+    .groupBy('posts.song_id', 'posts.mixtape_id')
     .orderBy('timestamp', 'desc');
 
   if (opts.beforeTimestamp !== undefined) {
-    query = query.havingRaw(`${timestampQuery} < ?`, [
+    postsQuery = postsQuery.havingRaw(`${timestampQuery} < ?`, [
       opts.currentUserId,
       opts.beforeTimestamp,
     ]);
   }
   if (opts.afterTimestamp !== undefined) {
-    query = query.havingRaw(`${timestampQuery} > ?`, [
+    postsQuery = postsQuery.havingRaw(`${timestampQuery} > ?`, [
       opts.currentUserId,
       opts.afterTimestamp,
     ]);
@@ -169,12 +209,14 @@ export async function getFeedByUserId(
 
   // after queries are unlimited since there's no UI for "head" pagination
   if (opts.afterTimestamp === undefined) {
-    query = query.limit(ENTRY_PAGE_LIMIT);
+    postsQuery = postsQuery.limit(ENTRY_PAGE_LIMIT);
   }
 
-  const rows = await query;
-
-  return rows.map(serializePlaylistItem);
+  const playlistItems = await hydratePlaylistItems(
+    await findMany(postsQuery, PlaylistItemModelV),
+    opts
+  );
+  return playlistItems.map(serializePlaylistItem);
 }
 
 // XXX: A whole bunch of this is duplicated with getFeedByUserId, should
@@ -184,16 +226,16 @@ export async function getPublicFeed(
 ): Promise<PlaylistItem[]> {
   let query = db!('posts')
     .select([
-      ...selectSongs(opts),
-      ...selectMixtapePreviews(),
+      {
+        songId: 'posts.song_id',
+        mixtapeId: 'posts.mixtape_id',
+      },
       db!.raw(`MIN(posts.created_at) as timestamp`),
       db!.raw('ARRAY_AGG(users.name) as user_names'),
     ])
     .join('users', { 'users.id': 'posts.user_id' })
-    .leftOuterJoin('songs', { 'songs.id': 'posts.song_id' })
-    .leftOuterJoin('mixtapes', { 'mixtapes.id': 'posts.mixtape_id' })
     .where({ show_in_public_feed: true })
-    .groupBy('songs.*', 'songs.id', 'mixtapes.*', 'mixtapes.id')
+    .groupBy('posts.song_id', 'posts.mixtape_id')
     .orderBy('timestamp', 'desc');
 
   if (opts.beforeTimestamp !== undefined) {
@@ -210,36 +252,68 @@ export async function getPublicFeed(
     query = query.limit(ENTRY_PAGE_LIMIT);
   }
 
-  const rows = await query;
-
-  return rows.map(serializePlaylistItem);
+  const playlistItems = await hydratePlaylistItems(
+    await findMany(query, PlaylistItemModelV),
+    opts
+  );
+  return playlistItems.map(serializePlaylistItem);
 }
 
 export async function getLikesByUserId(
   userId: number,
   opts: QueryOptions
-): Promise<PlaylistSongItem[]> {
-  const query = db!('likes')
-    .select([...selectSongs(opts), db!.raw('likes.created_at as timestamp')])
-    .join('songs', {
-      'songs.id': 'likes.song_id',
-    })
-    .join('users', {
-      'users.id': 'likes.user_id',
+): Promise<PlaylistItem[]> {
+  let query = db!('likes')
+    .select({
+      songId: 'likes.song_id',
+      // mixtapeId: 'likes.mixtape_id',
+      timestamp: 'likes.created_at',
     })
     .where({
       user_id: userId,
     })
     .orderBy('likes.id', 'desc');
 
-  const rows = await paginate(query, {
+  query = paginate(query, {
     limit: ENTRY_PAGE_LIMIT,
     before: opts.beforeTimestamp,
     after: opts.afterTimestamp,
     columnName: 'likes.created_at',
   });
 
-  return rows.map(serializePlaylistSongItem);
+  const playlistItems = await hydratePlaylistItems(
+    await findMany(query, PlaylistItemModelV),
+    opts
+  );
+  return playlistItems.map(serializePlaylistItem);
+}
+
+export async function getPublishedMixtapesByUserId(
+  userId: number,
+  opts: QueryOptions = {}
+): Promise<PlaylistItem[]> {
+  let query = db!('mixtapes')
+    .select({
+      mixtapeId: 'mixtapes.id',
+      timestamp: 'mixtapes.published_at',
+    })
+    .join('users', { 'users.id': 'mixtapes.user_id' })
+    .where({ 'mixtapes.user_id': userId })
+    .whereNot({ 'mixtapes.published_at': null })
+    .orderBy('mixtapes.published_at', 'desc');
+
+  query = paginate(query, {
+    limit: ENTRY_PAGE_LIMIT,
+    before: opts.beforeTimestamp,
+    after: opts.afterTimestamp,
+    columnName: 'mixtapes.published_at',
+  });
+
+  const playlistItems = await hydratePlaylistItems(
+    await findMany(query, PlaylistItemModelV),
+    opts
+  );
+  return playlistItems.map(serializePlaylistItem);
 }
 
 interface PaginationOptions {
