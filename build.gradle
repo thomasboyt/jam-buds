@@ -15,6 +15,12 @@ group 'club.jambuds'
 version '0.0.1-SNAPSHOT'
 mainClassName = "io.ktor.server.netty.EngineMain"
 
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+
 sourceSets {
     main.kotlin.srcDirs = main.java.srcDirs = ['src']
     test.kotlin.srcDirs = test.java.srcDirs = ['test']
@@ -31,5 +37,14 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation "io.ktor:ktor-server-netty:$ktor_version"
     implementation "ch.qos.logback:logback-classic:$logback_version"
+    implementation "io.ktor:ktor-gson:$ktor_version"
     testImplementation "io.ktor:ktor-server-tests:$ktor_version"
+
+    implementation "org.jdbi:jdbi3-core:$jdbi3_version"
+    implementation "org.jdbi:jdbi3-postgres:$jdbi3_version"
+    implementation "org.jdbi:jdbi3-sqlobject:$jdbi3_version"
+    implementation "org.jdbi:jdbi3-kotlin:$jdbi3_version"
+    implementation "org.jdbi:jdbi3-kotlin-sqlobject:$jdbi3_version"
+
+    implementation "org.postgresql:postgresql:42.2.9"
 }
