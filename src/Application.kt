@@ -11,6 +11,7 @@ import org.jdbi.v3.sqlobject.kotlin.KotlinSqlObjectPlugin
 import org.jdbi.v3.sqlobject.kotlin.onDemand
 
 import dao.PostDao
+import dao.SongDao
 import service.FeedService
 import util.registerInstantTypeAdapter
 import util.registerLocalDateTimeAdapter
@@ -58,8 +59,9 @@ fun Application.module(testing: Boolean = false) {
     // TODO: I guess this should just become dependency injection at some point?
     val jdbi = createJdbi(environment.config.property("jambuds.database_url").getString())
     val postDao = jdbi.onDemand<PostDao>()
+    val songDao = jdbi.onDemand<SongDao>()
 
-    val feedService = FeedService(postDao)
+    val feedService = FeedService(postDao, songDao)
 
     routing {
         feed(feedService)
