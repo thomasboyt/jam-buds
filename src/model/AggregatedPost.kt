@@ -1,11 +1,11 @@
 package model
 
-import java.time.LocalDateTime
+import java.time.Instant
 
 data class AggregatedPost(
     val songId: Int?,
     val mixtapeId: Int?,
-    val timestamp: LocalDateTime,
+    val timestamp: Instant,
     val userNames: List<String>
 )
 

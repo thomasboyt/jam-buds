@@ -6,9 +6,14 @@ import io.ktor.http.*
 import io.ktor.routing.*
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.kotlin.KotlinPlugin
+import org.jdbi.v3.postgres.PostgresPlugin
 import org.jdbi.v3.sqlobject.kotlin.KotlinSqlObjectPlugin
+import org.jdbi.v3.sqlobject.kotlin.onDemand
 
+import dao.PostDao
 import service.FeedService
+import util.registerInstantTypeAdapter
+import util.registerLocalDateTimeAdapter
 import web.feed
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
@@ -17,6 +22,7 @@ fun createJdbi(databaseUri: String): Jdbi {
     val jdbi = Jdbi.create(databaseUri)
     jdbi.installPlugin(KotlinPlugin())
     jdbi.installPlugin(KotlinSqlObjectPlugin())
+    jdbi.installPlugin(PostgresPlugin())
     return jdbi
 }
 
@@ -30,6 +36,8 @@ fun Application.module(testing: Boolean = false) {
         gson {
             setPrettyPrinting()
             setDateFormat("yyyy-MM-dd'T'HH:mmX")
+            registerInstantTypeAdapter(this)
+            registerLocalDateTimeAdapter(this)
         }
     }
     install(StatusPages) {
@@ -47,9 +55,11 @@ fun Application.module(testing: Boolean = false) {
         }
     }
 
+    // TODO: I guess this should just become dependency injection at some point?
     val jdbi = createJdbi(environment.config.property("jambuds.database_url").getString())
+    val postDao = jdbi.onDemand<PostDao>()
 
-    val feedService = FeedService(jdbi)
+    val feedService = FeedService(postDao)
 
     routing {
         feed(feedService)
