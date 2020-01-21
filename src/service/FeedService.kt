@@ -24,13 +24,21 @@ class FeedService(
         )
 
         val songIds = posts.mapNotNull { it.songId }
-        // TODO: pass current user ID from something
-        val songsList = songDao.getSongsByIds(songIds, 8)
-        val songsMap = songsList.map { it.id to it }.toMap()
+        val songsMap = if (songIds.isNotEmpty()) {
+            // TODO: pass current user ID from something
+            val songsList = songDao.getSongsByIds(songIds, 8)
+            songsList.map { it.id to it }.toMap()
+        } else {
+            emptyMap()
+        }
 
         val mixtapeIds = posts.mapNotNull { it.mixtapeId }
-        val mixtapesList = mixtapeDao.getMixtapesByIds(mixtapeIds)
-        val mixtapesMap = mixtapesList.map {it.id to it}.toMap()
+        val mixtapesMap = if (mixtapeIds.isNotEmpty()) {
+            val mixtapesList = mixtapeDao.getMixtapesByIds(mixtapeIds)
+            mixtapesList.map { it.id to it }.toMap()
+        } else {
+            emptyMap()
+        }
 
         return posts.map {
             FeedEntryResource(
