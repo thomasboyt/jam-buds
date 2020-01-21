@@ -10,8 +10,6 @@ import org.jdbi.v3.postgres.PostgresPlugin
 import org.jdbi.v3.sqlobject.kotlin.KotlinSqlObjectPlugin
 import org.jdbi.v3.sqlobject.kotlin.onDemand
 
-import dao.PostDao
-import dao.SongDao
 import service.FeedService
 import util.registerInstantTypeAdapter
 import util.registerLocalDateTimeAdapter
@@ -42,12 +40,21 @@ fun Application.module(testing: Boolean = false) {
         }
     }
     install(StatusPages) {
+        exception<BadRequestException> { cause ->
+            val errorResource = JamBudsErrorResource(
+                code = HttpStatusCode.BadRequest.value,
+                message = cause.message,
+                request = call.request.local.uri,
+                cause = cause
+            )
+            call.respond(HttpStatusCode.BadRequest, errorResource)
+        }
         exception<Throwable> { cause ->
             environment.log.error("Error", cause)
 
             // TODO: in production, set message to "Internal server error"
             val errorResource = JamBudsErrorResource(
-                code = HttpStatusCode.InternalServerError,
+                code = HttpStatusCode.InternalServerError.value,
                 request = call.request.local.uri,
                 message = cause.toString(),
                 cause = cause
@@ -58,10 +65,11 @@ fun Application.module(testing: Boolean = false) {
 
     // TODO: I guess this should just become dependency injection at some point?
     val jdbi = createJdbi(environment.config.property("jambuds.database_url").getString())
-    val postDao = jdbi.onDemand<PostDao>()
-    val songDao = jdbi.onDemand<SongDao>()
+    val postDao = jdbi.onDemand<dao.PostDao>()
+    val songDao = jdbi.onDemand<dao.SongDao>()
+    val mixtapeDao = jdbi.onDemand<dao.MixtapeDao>()
 
-    val feedService = FeedService(postDao, songDao)
+    val feedService = FeedService(postDao, songDao, mixtapeDao)
 
     routing {
         feed(feedService)
@@ -70,7 +78,7 @@ fun Application.module(testing: Boolean = false) {
         route("{...}") {
             handle {
                 val error = JamBudsErrorResource(
-                    code = HttpStatusCode.NotFound,
+                    code = HttpStatusCode.NotFound.value,
                     request = call.request.local.uri,
                     message = "Route not found"
                 )
