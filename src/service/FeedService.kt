@@ -33,7 +33,7 @@ class FeedService(
         val songIds = posts.mapNotNull { it.songId }
         val songsMap = if (songIds.isNotEmpty()) {
             // TODO: pass current user ID from something
-            val songsList = songDao.getSongsByIds(songIds, 8)
+            val songsList = songDao.getSongsByIds(songIds)
             songsList.map { it.id to it }.toMap()
         } else {
             emptyMap()
