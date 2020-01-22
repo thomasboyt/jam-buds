@@ -8,6 +8,10 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.BeforeAll
 import createJdbi
 
+private fun getDatabaseUrl(): String {
+    return System.getenv("JDBC_DATABASE_URL") ?: "jdbc:postgresql://localhost:5433/jambuds_kotlin_test"
+}
+
 open class BaseTest {
     private lateinit var jdbi: Jdbi
 
@@ -16,7 +20,8 @@ open class BaseTest {
         @JvmStatic
         internal fun beforeAll() {
             val flyway = Flyway.configure()
-                .dataSource("jdbc:postgresql://localhost:5433/jambuds_kotlin_test", "postgres", "")
+                // note: if the dbUrl has a ?user=bob&password=secret param, it *should* take priority here
+                .dataSource(getDatabaseUrl(), "postgres", "")
                 .load()
             flyway.clean()
             flyway.migrate()
@@ -25,7 +30,7 @@ open class BaseTest {
 
     @BeforeEach
     fun beforeEach() {
-        jdbi = createJdbi("jdbc:postgresql://localhost:5433/jambuds_kotlin_test?user=postgres")
+        jdbi = createJdbi(getDatabaseUrl())
     }
 
     internal fun withTransaction(cb: (txn: Handle) -> Unit) {
