@@ -13,14 +13,21 @@ data class FeedEntryResource(
     val mixtape: MixtapePreview? = null
 )
 
+private const val DEFAULT_FEED_LIMIT = 20
+
 class FeedService(
     private val postDao: dao.PostDao,
     private val songDao: dao.SongDao,
     private val mixtapeDao: dao.MixtapeDao) {
-    fun getPublicFeed(beforeTimestamp: Instant?, afterTimestamp: Instant?) : List<FeedEntryResource> {
+    fun getPublicFeed(
+        beforeTimestamp: Instant?,
+        afterTimestamp: Instant?,
+        limit: Int = DEFAULT_FEED_LIMIT
+    ) : List<FeedEntryResource> {
         val posts = postDao.getPublicAggregatedPosts(
             beforeTimestamp = beforeTimestamp,
-            afterTimestamp = afterTimestamp
+            afterTimestamp = afterTimestamp,
+            limit = limit
         )
 
         val songIds = posts.mapNotNull { it.songId }

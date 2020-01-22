@@ -10,7 +10,7 @@ import org.jdbi.v3.sqlobject.customizer.Bind
 interface PostDao {
     @SqlQuery
     fun getPublicAggregatedPosts(
-        @Bind("limit") limit: Int = 20,
+        @Bind("limit") limit: Int,
         @Bind("beforeTimestamp") beforeTimestamp: Instant?,
         @Bind("afterTimestamp") afterTimestamp: Instant?
     ): List<AggregatedPost>

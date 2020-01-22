@@ -9,7 +9,7 @@ import io.ktor.response.*
 import io.ktor.routing.*
 import service.FeedService
 
-fun getTimestampParam(params: Parameters, key: String): Instant? {
+private fun getTimestampParam(params: Parameters, key: String): Instant? {
     val str = params[key] ?: return null
     return try {
         Instant.parse(str)
