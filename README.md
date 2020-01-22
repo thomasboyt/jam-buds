@@ -21,9 +21,9 @@ As part of this, I want to rewrite the unit tests. I will come up with specific 
 
 I also want to figure out, uh, how the hell to deploy this thing. This will entail:
 
-* [ ] Building a self-contained app for distribution in Docker
-* [ ] Creating a docker image
-* [ ] Running the docker image locally to confirm it works
+* [x] Building a self-contained app for distribution in Docker
+* [x] Creating a docker image
+* [x] Running the docker image locally to confirm it works
 * [ ] Deploying the image to my docker box against the production Jam Buds DB to see if it works well and how the performance is
 
 ### Questions I have
