@@ -1,4 +1,4 @@
-# jambuds-rhiannon
+# rhiannon
 
 This repo is an experiment in using Kotlin to build a new backend for [Jam Buds](https://github.com/thomasboyt/jam-buds).
 

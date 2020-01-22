@@ -8,7 +8,7 @@ RUN chown -R $APPLICATION_USER /app
 
 USER $APPLICATION_USER
 
-COPY ./build/libs/jambuds-rihannon.jar /app/jambuds-rihannon.jar
+COPY ./build/libs/jambuds-rhiannon.jar /app/jambuds-rhiannon.jar
 WORKDIR /app
 
 # uhhh

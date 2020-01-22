@@ -74,7 +74,7 @@ flyway {
 }
 
 shadowJar {
-    baseName = 'jambuds-rihannon'
+    baseName = 'jambuds-rhiannon'
     classifier = null
     version = null
 }
