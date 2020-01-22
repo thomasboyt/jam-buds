@@ -26,11 +26,17 @@ I also want to figure out, uh, how the hell to deploy this thing. This will enta
 * [ ] Running the docker image locally to confirm it works
 * [ ] Deploying the image to my docker box against the production Jam Buds DB to see if it works well and how the performance is
 
+### Questions I have
+
+* [ ] What's a good way of creating test data inside an app that isn't using an ORM? Should I create factories, or rely on SQL scripts/seeds?
+
 ## Architecture
 
-This project is a Kotlin app that uses Jetbrains's [Ktor](https://ktor.io/) framework. The Ktor documentation fails to describe how to build anything with any kind of actual scale, so I sort of cargo-culted the current project structure from various sources.
+This project is a Kotlin app that uses Jetbrains's [Ktor](https://ktor.io/) framework. The Ktor documentation fails to describe how to build anything with any kind of actual scale, so I more or less copied the current project structure from various sources.
 
-While usually I associate JVM apps with having folders nested about seven levels deep with a bunch of bullshit (and how excited I was to be able to have a path that started with `src/club/jambuds`), apparently in pure-Kotlin projects you're able to have everything in the top level, which is kinda neat.
+One notable difference with those sources: While usually I associate JVM apps with having folders nested about seven levels deep with a bunch of bullshit (and how excited I was to be able to have a path that started with `src/club/jambuds`), apparently in pure-Kotlin projects you're able to have everything in the top level, which is actually really neat. This may all break at some point in the future, considering I don't really know how classpath works when you bundle an app for deployment, but I hope it's okay!
+
+I've imported the Jam Buds schema and I've created an isolated database for tests using [Flyway](https://flywaydb.org/). It took me forever to get up and running (turns out there are very specific file naming rules for migrations, who knew?). It runs before every test, clearing the DB - theoretically I've figured out a way to wrap tests in transactions to not require this recreation, but I need to figure out how to run the migrations once before starting the tests before disabling that. 
 
 _(todo...)_
 
@@ -48,10 +54,14 @@ This is a fundamental limitation of TypeScript's goal of being an "erased types"
 
 This _really_ came to a head with database access, which, in the Jam Buds API, is a mess of different functions using Knex to output various objects. I think it's gotten really messy and difficult to reason about. I've tried finding ORMs, but found them generally way too heavy-weight for my needs. The closest-to-usable wrapper I've found is [typed-knex](https://github.com/wwwouter/typed-knex), which is another incredibly impressive feat of engineering, but it's feature-incomplete (due to being used primarily by its author, who, I assume, is focused mainly on their own needs, and that's fine!).
 
+I started realizing what I really wanted wasn't just static types. What I really need is nice runtime validation of my inputs and outputs: something that will let me run a SQL query, cast the output row into a typed object, throw an error if it doesn't match the expected types of the object, and if it succeeds, will cast the object to its static type.
+
 ### Why Kotlin?
 
 The back-end developers at my employer use Kotlin, and thus I already had IntelliJ installed on this computer, which is about half of the work of spinning up a new JVM project, so why not?
 
-More seriously: I did a quick hunt for "static-typed backend languages," and came up pretty empty. The hot new shit is microservices and services, and the runtime characteristics of that have led people to shun JVM languages, but the replacements seem rather awful. Go is, somehow, against all odds, a very popular web language, even though doing the most basic data processing required of all CRUD apps requires piling `for` loops and copy-pasted per-type boilerplate in a large tower. I also found very little coherent documentation on structuring web services (shoutout to the [legacy version of Fathom](https://github.com/usefathom/fathom) for being the only real-world open source Go web app I could find).
+More seriously: I did a quick hunt for "static-typed backend languages," and came up pretty empty. The hot new thing is microservices and serverless, and the runtime characteristics of those have led people to shun JVM languages, so I figured I'd be able to find some options.
+
+The main one I saw was Go which is, against all odds, a very popular web language. I respect that people manage to get stuff done with it, but I found it very difficult to work with, especailly for the context of web programming. With the lack of higher-order functions and generics, the most basic data processing required of all CRUD apps felt like it required a lot more `for` loops and copy-pasted per-type logic than I wanted. I also found very little coherent documentation on structuring web services (shoutout to the [legacy version of Fathom](https://github.com/usefathom/fathom) for being the only real-world open source Go web app I could find).
 
 _(todo...)_
