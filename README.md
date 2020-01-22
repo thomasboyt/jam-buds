@@ -15,9 +15,9 @@ My plan for this experiment is to reimplement the parts of Jam Buds I feel the w
 As part of this, I want to rewrite the unit tests. I will come up with specific scenarios in a separate list, but here's a rough outline of the plan:
 
 * [x] Create new test database with schema copied from Jam Buds
-* [ ] Create SQL database seeds with easy-to-use data (maybe do factories as a stretch goal, just to see what that looks like)
+* [x] Create SQL database seeds with easy-to-use data (maybe do factories as a stretch goal, just to see what that looks like)
+* [x] Tests for pagination
 * [ ] Tests for pulling the correct mixtapes & songs
-* [ ] Tests for pagination
 
 I also want to figure out, uh, how the hell to deploy this thing. This will entail:
 
