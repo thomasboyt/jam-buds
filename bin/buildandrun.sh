@@ -1,0 +1,10 @@
+./gradlew build
+docker build -t jambuds-rihannon .
+docker run \
+  -p 3333:3333 \
+  --rm \
+  --network jam-buds_default \
+  --env DATABASE_URL="jdbc:postgresql://jam-buds_db_1:5432/jambuds?user=postgres" \
+  -m512M \
+  --cpus 1 \
+  jambuds-rihannon

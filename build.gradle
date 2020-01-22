@@ -5,6 +5,7 @@ buildscript {
     
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.github.jengelman.gradle.plugins:shadow:5.2.0'
     }
 }
 
@@ -12,16 +13,9 @@ plugins {
     id "org.flywaydb.flyway" version "6.1.4"
 }
 
-flyway {
-    url = "jdbc:postgresql://localhost:5433/jambuds_kotlin_test"
-    user = "postgres"
-    password = ""
-    baselineOnMigrate=true
-    locations = ["filesystem:./resources/db/migration"]
-}
-
 apply plugin: 'kotlin'
 apply plugin: 'application'
+apply plugin: 'com.github.johnrengelman.shadow'
 
 group 'club.jambuds'
 version '0.0.1-SNAPSHOT'
@@ -71,4 +65,17 @@ test {
     testLogging.showStandardStreams = true
 }
 
+flyway {
+    url = "jdbc:postgresql://localhost:5433/jambuds_kotlin_test"
+    user = "postgres"
+    password = ""
+    baselineOnMigrate=true
+    locations = ["filesystem:./resources/db/migration"]
+}
+
+shadowJar {
+    baseName = 'jambuds-rihannon'
+    classifier = null
+    version = null
+}
 

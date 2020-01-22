@@ -1,0 +1,9 @@
+.git/
+.idea/
+build
+gradle/
+resources/
+src/
+test/
+
+!build/libs/
