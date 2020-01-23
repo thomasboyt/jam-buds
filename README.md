@@ -25,6 +25,7 @@ I also want to figure out, uh, how the hell to deploy this thing. This will enta
 * [x] Creating a docker image
 * [x] Running the docker image locally to confirm it works
 * [ ] Deploying the image to my docker box against the production Jam Buds DB to see if it works well and how the performance is
+* [ ] Hook up Sentry for monitoring (can test locally)
 
 ### Questions I have
 

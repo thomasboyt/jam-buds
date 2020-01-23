@@ -1,3 +1,4 @@
+#!/bin/sh
 ./gradlew build
 docker build -t jambuds-rhiannon .
 docker run \
