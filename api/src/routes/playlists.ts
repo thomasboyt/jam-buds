@@ -18,6 +18,8 @@ import wrapAsyncRoute from '../util/wrapAsyncRoute';
 import { ENTRY_PAGE_LIMIT } from '../constants';
 import { UserPlaylist, Playlist } from '../resources';
 import { JamBudsHTTPError } from '../util/errors';
+import { getRhiannonClient } from '../util/rhiannon';
+import config from '../config';
 
 async function getUser(userName: string): Promise<UserModel> {
   const user = await getUserByName(userName);
@@ -135,14 +137,33 @@ export default function registerPlaylistEndpoints(router: Router) {
     wrapAsyncRoute(async (req, res) => {
       const queryOptions = await getPlaylistQueryOptions(req);
 
-      const items = await getPublicFeed(queryOptions);
+      if (config.get('ENABLE_RHIANNON')) {
+        const client = getRhiannonClient();
+        try {
+          const resp = await client.get('/public-feed', {
+            params: queryOptions,
+          });
+          res.json(resp.data);
+        } catch (err) {
+          if (err.isAxiosError && err.response.status === 400) {
+            throw new JamBudsHTTPError({
+              message: err.response.data.message,
+              statusCode: 400,
+            });
+          } else {
+            throw err;
+          }
+        }
+      } else {
+        const items = await getPublicFeed(queryOptions);
 
-      const feed: Playlist = {
-        items,
-        limit: ENTRY_PAGE_LIMIT,
-      };
+        const feed: Playlist = {
+          items,
+          limit: ENTRY_PAGE_LIMIT,
+        };
 
-      res.json(feed);
+        res.json(feed);
+      }
     })
   );
 }

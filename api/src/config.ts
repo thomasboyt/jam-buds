@@ -36,6 +36,9 @@ const configDef = {
 
   SENTRY_DSN_API: getEnv('SENTRY_DSN_API'),
   ENABLE_STACKDRIVER_TRACE: getEnv('ENABLE_STACKDRIVER_TRACE'),
+
+  JB_RHIANNON_URL: getEnv('JB_RHIANNON_URL'),
+  ENABLE_RHIANNON: getBooleanEnv('ENABLE_RHIANNON'),
 };
 
 const config = createConfig(configDef);
@@ -52,6 +55,7 @@ const requiredProductionKeys: Array<keyof typeof configDef> = [
   'BUTTONDOWN_API_KEY',
   'SENDGRID_API_KEY',
   'SENTRY_DSN_API',
+  'JB_RHIANNON_URL',
 ];
 
 if (config.get('NODE_ENV') === 'production') {
