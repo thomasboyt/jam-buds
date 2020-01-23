@@ -22,6 +22,7 @@ class FeedService(
     fun getPublicFeed(
         beforeTimestamp: Instant?,
         afterTimestamp: Instant?,
+        currentUserId: Int?,
         limit: Int = DEFAULT_FEED_LIMIT
     ) : List<FeedEntryResource> {
         val posts = postDao.getPublicAggregatedPosts(
@@ -32,8 +33,8 @@ class FeedService(
 
         val songIds = posts.mapNotNull { it.songId }
         val songsMap = if (songIds.isNotEmpty()) {
-            // TODO: pass current user ID from something
-            val songsList = songDao.getSongsByIds(songIds)
+            val currentUserId = currentUserId ?: -1
+            val songsList = songDao.getSongsByIds(songIds, currentUserId)
             songsList.map { it.id to it }.toMap()
         } else {
             emptyMap()

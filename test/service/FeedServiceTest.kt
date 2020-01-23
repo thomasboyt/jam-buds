@@ -11,7 +11,11 @@ class FeedServiceTest : BaseTest() {
     fun `getPublicFeed - returns an empty list with no items`() {
         withTransaction { txn ->
             val feedService = createFeedService(txn)
-            val results = feedService.getPublicFeed(beforeTimestamp = null, afterTimestamp = null)
+            val results = feedService.getPublicFeed(
+                beforeTimestamp = null,
+                afterTimestamp = null,
+                currentUserId = null
+            )
             assertEquals(0, results.size)
         }
     }
@@ -28,7 +32,11 @@ class FeedServiceTest : BaseTest() {
             createSongPost(txn, userId = vinnyId, songId = privateSongId)
 
             val feedService = createFeedService(txn)
-            val results = feedService.getPublicFeed(beforeTimestamp = null, afterTimestamp = null)
+            val results = feedService.getPublicFeed(
+                beforeTimestamp = null,
+                afterTimestamp = null,
+                currentUserId = null
+            )
             assertEquals(1, results.size)
             assertEquals(publicSongId, results[0].song!!.id)
         }
@@ -45,14 +53,19 @@ class FeedServiceTest : BaseTest() {
             }
             val feedService = createFeedService(txn)
 
-            val firstPage = feedService.getPublicFeed(beforeTimestamp = null, afterTimestamp = null)
+            val firstPage = feedService.getPublicFeed(
+                beforeTimestamp = null,
+                afterTimestamp = null,
+                currentUserId = null
+            )
             val expectedFirstPageIds = songIds.reversed().slice(0..19)
             assertEquals(expectedFirstPageIds, firstPage.map { it.song!!.id })
 
             val timestampCursor = firstPage.last().timestamp
             val secondPage = feedService.getPublicFeed(
                 beforeTimestamp = timestampCursor,
-                afterTimestamp = null
+                afterTimestamp = null,
+                currentUserId = null
             )
 
             val expectedSecondPageIds = songIds.reversed().slice(20..39)
@@ -75,14 +88,16 @@ class FeedServiceTest : BaseTest() {
             val allPosts = feedService.getPublicFeed(
                 beforeTimestamp = null,
                 afterTimestamp = null,
-                limit = 100
+                limit = 100,
+                currentUserId = null
             )
             val timestampCursor = allPosts.last().timestamp
 
             val newPosts = feedService.getPublicFeed(
                 beforeTimestamp = null,
                 afterTimestamp = timestampCursor,
-                limit = 20
+                limit = 20,
+                currentUserId = null
             )
 
             // remove the last item since it's the after cursor
@@ -100,10 +115,40 @@ class FeedServiceTest : BaseTest() {
             createSongPost(txn, userId = vinnyId, songId = songId)
 
             val feedService = createFeedService(txn)
-            val results = feedService.getPublicFeed(beforeTimestamp = null, afterTimestamp = null)
+            val results = feedService.getPublicFeed(
+                beforeTimestamp = null,
+                afterTimestamp = null,
+                currentUserId = null
+            )
             assertEquals(1, results.size)
             assertEquals(songId, results[0].song!!.id)
             assertEquals(firstTimestamp, results[0].timestamp)
+        }
+    }
+
+    @Test
+    fun `getPublicFeed - sets isLiked to true for a user who has liked a song`() {
+        withTransaction { txn ->
+            val songId = createSong(txn)
+            val jeffId = createUser(txn, "jeff", true)
+            createSongPost(txn, userId = jeffId, songId = songId)
+
+            val feedService = createFeedService(txn)
+            val beforeLikeResults = feedService.getPublicFeed(
+                currentUserId = jeffId,
+                beforeTimestamp = null,
+                afterTimestamp = null
+            )
+            assertEquals(false, beforeLikeResults[0].song!!.isLiked)
+
+            createLike(txn, jeffId, songId)
+
+            val afterLikeResults = feedService.getPublicFeed(
+                currentUserId = jeffId,
+                beforeTimestamp = null,
+                afterTimestamp = null
+            )
+            assertEquals(true, afterLikeResults[0].song!!.isLiked)
         }
     }
 
@@ -138,6 +183,15 @@ class FeedServiceTest : BaseTest() {
             .executeAndReturnGeneratedKeys("id")
             .mapTo(Int::class.java)
             .one()
+    }
+
+    private fun createLike(txn: Handle, userId: Int, songId: Int): Int {
+        return txn.createUpdate("""
+                insert into likes (user_id, song_id) values (:userId, :songId)
+                """.trimIndent())
+            .bind("userId", userId)
+            .bind("songId", songId)
+            .execute()
     }
 
     private fun createFeedService(txn: Handle): FeedService {

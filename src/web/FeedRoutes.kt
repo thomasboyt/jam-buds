@@ -28,9 +28,16 @@ fun Routing.feed(feedService: FeedService) {
         val beforeTimestamp = getTimestampParam(params, "beforeTimestamp")
         val afterTimestamp = getTimestampParam(params, "afterTimestamp")
 
+        val currentUserId = try {
+            params["currentUserId"]?.toInt()
+        } catch (e:  NumberFormatException) {
+            throw BadRequestException("Invalid currentUserId param")
+        }
+
         val feedItems = feedService.getPublicFeed(
             beforeTimestamp = beforeTimestamp,
-            afterTimestamp =  afterTimestamp
+            afterTimestamp =  afterTimestamp,
+            currentUserId = currentUserId
         )
         call.respond(feedItems)
     }

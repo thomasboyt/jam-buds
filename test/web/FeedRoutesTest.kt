@@ -33,5 +33,16 @@ class FeedRoutesTest : BaseTest() {
             assertEquals(400, response.status()?.value)
         }
     }
+
+    @Test
+    fun `GET public-feed - returns 400 for invalid currentUserId`() = withTestApp {
+        handleRequest(HttpMethod.Get, "/public-feed?currentUserId=1").apply {
+            assertEquals(200, response.status()?.value)
+        }
+
+        handleRequest(HttpMethod.Get, "/public-feed?currentUserId=asdf").apply {
+            assertEquals(400, response.status()?.value)
+        }
+    }
 }
 
