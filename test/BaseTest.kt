@@ -1,15 +1,15 @@
-package service
-
+import io.ktor.config.MapApplicationConfig
+import io.ktor.server.testing.TestApplicationEngine
+import io.ktor.server.testing.withTestApplication
 import org.flywaydb.core.Flyway
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.kotlin.useTransactionUnchecked
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.BeforeAll
-import createJdbi
 
 private fun getDatabaseUrl(): String {
-    return System.getenv("JDBC_DATABASE_URL") ?: "jdbc:postgresql://localhost:5433/jambuds_kotlin_test"
+    return System.getenv("JDBC_DATABASE_URL") ?: "jdbc:postgresql://localhost:5433/jambuds_kotlin_test?user=postgres"
 }
 
 open class BaseTest {
@@ -40,5 +40,18 @@ open class BaseTest {
             // manual rollback if we made it this far
             it.rollback()
         }
+    }
+
+    internal fun withTestApp(cb: TestApplicationEngine.() -> Unit) {
+        // TODO: this should also provide a transaction I guess? or maybe all app-level tests should
+        // do a db reset? may need to come up with a second BaseTest or use some kind of mixins
+        // or whatever....
+        withTestApplication({
+            (environment.config as MapApplicationConfig).apply {
+                // TODO: Can put test-specific config here
+                put("jambuds.database_url", getDatabaseUrl())
+            }
+            mainModule()
+        }, cb)
     }
 }

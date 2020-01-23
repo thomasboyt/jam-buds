@@ -4,6 +4,7 @@ import org.jdbi.v3.core.Handle
 import java.time.Instant
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
+import BaseTest
 
 class FeedServiceTest : BaseTest() {
     @Test

@@ -17,6 +17,7 @@ import web.feed
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
+// TODO: extract into own file?
 fun createJdbi(databaseUri: String): Jdbi {
     val jdbi = Jdbi.create(databaseUri)
     jdbi.installPlugin(KotlinPlugin())
@@ -25,9 +26,33 @@ fun createJdbi(databaseUri: String): Jdbi {
     return jdbi
 }
 
+// TODO: extract into own file?
+fun StatusPages.Configuration.errorHandlers() {
+    exception<BadRequestException> { cause ->
+        val errorResource = JamBudsErrorResource(
+            code = HttpStatusCode.BadRequest.value,
+            message = cause.message,
+            request = call.request.local.uri,
+            cause = cause
+        )
+        call.respond(HttpStatusCode.BadRequest, errorResource)
+    }
+    exception<Throwable> { cause ->
+        call.application.environment.log.error("Error", cause)
+
+        // TODO: in production, set message to "Internal server error"
+        val errorResource = JamBudsErrorResource(
+            code = HttpStatusCode.InternalServerError.value,
+            request = call.request.local.uri,
+            message = cause.toString(),
+            cause = cause
+        )
+        call.respond(errorResource)
+    }
+}
+
 @Suppress("unused") // Referenced in application.conf
-@kotlin.jvm.JvmOverloads
-fun Application.module(testing: Boolean = false) {
+fun Application.mainModule(testing: Boolean = false) {
     install(DefaultHeaders)
     install(CallLogging)
     install(ConditionalHeaders)
@@ -40,27 +65,7 @@ fun Application.module(testing: Boolean = false) {
         }
     }
     install(StatusPages) {
-        exception<BadRequestException> { cause ->
-            val errorResource = JamBudsErrorResource(
-                code = HttpStatusCode.BadRequest.value,
-                message = cause.message,
-                request = call.request.local.uri,
-                cause = cause
-            )
-            call.respond(HttpStatusCode.BadRequest, errorResource)
-        }
-        exception<Throwable> { cause ->
-            environment.log.error("Error", cause)
-
-            // TODO: in production, set message to "Internal server error"
-            val errorResource = JamBudsErrorResource(
-                code = HttpStatusCode.InternalServerError.value,
-                request = call.request.local.uri,
-                message = cause.toString(),
-                cause = cause
-            )
-            call.respond(errorResource)
-        }
+        errorHandlers()
     }
 
     // TODO: I guess this should just become dependency injection at some point?
