@@ -21,10 +21,10 @@ private fun getTimestampParam(params: Parameters, key: String): Instant? {
 fun Routing.feed(feedService: FeedService) {
     get("/public-feed") {
         val params = call.request.queryParameters
+
         if (params.contains("beforeTimestamp") && params.contains("afterTimestamp")) {
             throw BadRequestException("Cannot have both before & after timestamps")
         }
-        // TODO: catch timestamp parse errors instead of silently failing
         val beforeTimestamp = getTimestampParam(params, "beforeTimestamp")
         val afterTimestamp = getTimestampParam(params, "afterTimestamp")
 
