@@ -1,18 +1,32 @@
 package web
 
 import BaseTest
-
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import io.ktor.http.HttpMethod
 import io.ktor.server.testing.*
 import kotlin.test.*
 import org.junit.jupiter.api.Test
+import service.FeedEntryResource
+import service.ListWithLimitResource
+
+// via https://codereview.stackexchange.com/a/159531
+inline fun <reified T> Gson.fromJsonToGeneric(json: String): T {
+    return fromJson(json, object : TypeToken<T>() {}.type)
+}
 
 class FeedRoutesTest : BaseTest() {
     @Test
     fun `GET public-feed - returns json response`() = withTestApp {
         handleRequest(HttpMethod.Get, "/public-feed").apply {
             assertEquals(200, response.status()?.value)
-            assertEquals("[]", response.content)
+            val gson = Gson()
+            val expected = ListWithLimitResource(
+                items = listOf<FeedEntryResource>(),
+                limit = 20
+            )
+            val resp = gson.fromJsonToGeneric<ListWithLimitResource<FeedEntryResource>>(response.content!!)
+            assertEquals(expected, resp)
         }
     }
 

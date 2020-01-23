@@ -16,7 +16,8 @@ class FeedServiceTest : BaseTest() {
                 afterTimestamp = null,
                 currentUserId = null
             )
-            assertEquals(0, results.size)
+            assertEquals(0, results.items.size)
+            assertEquals(20, results.limit)
         }
     }
 
@@ -37,8 +38,8 @@ class FeedServiceTest : BaseTest() {
                 afterTimestamp = null,
                 currentUserId = null
             )
-            assertEquals(1, results.size)
-            assertEquals(publicSongId, results[0].song!!.id)
+            assertEquals(1, results.items.size)
+            assertEquals(publicSongId, results.items[0].song!!.id)
         }
     }
 
@@ -59,9 +60,9 @@ class FeedServiceTest : BaseTest() {
                 currentUserId = null
             )
             val expectedFirstPageIds = songIds.reversed().slice(0..19)
-            assertEquals(expectedFirstPageIds, firstPage.map { it.song!!.id })
+            assertEquals(expectedFirstPageIds, firstPage.items.map { it.song!!.id })
 
-            val timestampCursor = firstPage.last().timestamp
+            val timestampCursor = firstPage.items.last().timestamp
             val secondPage = feedService.getPublicFeed(
                 beforeTimestamp = timestampCursor,
                 afterTimestamp = null,
@@ -69,7 +70,7 @@ class FeedServiceTest : BaseTest() {
             )
 
             val expectedSecondPageIds = songIds.reversed().slice(20..39)
-            assertEquals(expectedSecondPageIds, secondPage.map { it.song!!.id })
+            assertEquals(expectedSecondPageIds, secondPage.items.map { it.song!!.id })
         }
     }
 
@@ -91,7 +92,7 @@ class FeedServiceTest : BaseTest() {
                 limit = 100,
                 currentUserId = null
             )
-            val timestampCursor = allPosts.last().timestamp
+            val timestampCursor = allPosts.items.last().timestamp
 
             val newPosts = feedService.getPublicFeed(
                 beforeTimestamp = null,
@@ -101,7 +102,7 @@ class FeedServiceTest : BaseTest() {
             )
 
             // remove the last item since it's the after cursor
-            assertEquals(songIds.reversed().slice(0..98), newPosts.map { it.song!!.id })
+            assertEquals(songIds.reversed().slice(0..98), newPosts.items.map { it.song!!.id })
         }
     }
 
@@ -120,9 +121,9 @@ class FeedServiceTest : BaseTest() {
                 afterTimestamp = null,
                 currentUserId = null
             )
-            assertEquals(1, results.size)
-            assertEquals(songId, results[0].song!!.id)
-            assertEquals(firstTimestamp, results[0].timestamp)
+            assertEquals(1, results.items.size)
+            assertEquals(songId, results.items[0].song!!.id)
+            assertEquals(firstTimestamp, results.items[0].timestamp)
         }
     }
 
@@ -139,7 +140,7 @@ class FeedServiceTest : BaseTest() {
                 beforeTimestamp = null,
                 afterTimestamp = null
             )
-            assertEquals(false, beforeLikeResults[0].song!!.isLiked)
+            assertEquals(false, beforeLikeResults.items[0].song!!.isLiked)
 
             createLike(txn, jeffId, songId)
 
@@ -148,7 +149,7 @@ class FeedServiceTest : BaseTest() {
                 beforeTimestamp = null,
                 afterTimestamp = null
             )
-            assertEquals(true, afterLikeResults[0].song!!.isLiked)
+            assertEquals(true, afterLikeResults.items[0].song!!.isLiked)
         }
     }
 

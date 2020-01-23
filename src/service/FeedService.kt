@@ -13,6 +13,11 @@ data class FeedEntryResource(
     val mixtape: MixtapePreview? = null
 )
 
+data class ListWithLimitResource<T>(
+    val items: List<T>,
+    val limit: Int
+)
+
 private const val DEFAULT_FEED_LIMIT = 20
 
 class FeedService(
@@ -24,7 +29,7 @@ class FeedService(
         afterTimestamp: Instant?,
         currentUserId: Int?,
         limit: Int = DEFAULT_FEED_LIMIT
-    ) : List<FeedEntryResource> {
+    ) : ListWithLimitResource<FeedEntryResource> {
         val posts = postDao.getPublicAggregatedPosts(
             beforeTimestamp = beforeTimestamp,
             afterTimestamp = afterTimestamp,
@@ -48,7 +53,7 @@ class FeedService(
             emptyMap()
         }
 
-        return posts.map {
+        val items = posts.map {
             FeedEntryResource(
                 timestamp = it.timestamp,
                 userNames = it.userNames,
@@ -56,5 +61,7 @@ class FeedService(
                 mixtape = mixtapesMap[it.mixtapeId]
             )
         }
+
+        return ListWithLimitResource(items = items, limit = limit)
     }
 }
