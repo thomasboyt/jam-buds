@@ -14,7 +14,7 @@ private fun getTimestampParam(params: Parameters, key: String): Instant? {
     return try {
         Instant.parse(str)
     } catch(err: DateTimeException) {
-        null
+        throw BadRequestException("Invalid $key param")
     }
 }
 
