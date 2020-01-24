@@ -3,6 +3,7 @@ package service
 import com.google.gson.annotations.SerializedName
 import java.time.Instant
 
+import model.AggregatedPost
 import model.MixtapePreview
 import model.SongWithMeta
 
@@ -33,6 +34,24 @@ class FeedService(
     private val postDao: dao.PostDao,
     private val songDao: dao.SongDao,
     private val mixtapeDao: dao.MixtapeDao) {
+
+    fun getUserFeed(
+        currentUserId: Int,
+        beforeTimestamp: Instant?,
+        afterTimestamp: Instant?,
+        limit: Int = DEFAULT_FEED_LIMIT
+    ) : ListWithLimitResource<FeedEntryResource> {
+        val posts = postDao.getAggregatedPostsByUserFeed(
+            currentUserId = currentUserId,
+            beforeTimestamp = beforeTimestamp,
+            afterTimestamp = afterTimestamp,
+            limit = limit
+        )
+
+        val items = getFeedEntriesForPosts(posts, currentUserId)
+        return ListWithLimitResource(items = items, limit = limit)
+    }
+
     fun getPublicFeed(
         beforeTimestamp: Instant?,
         afterTimestamp: Instant?,
@@ -45,6 +64,14 @@ class FeedService(
             limit = limit
         )
 
+        val items = getFeedEntriesForPosts(posts, currentUserId)
+        return ListWithLimitResource(items = items, limit = limit)
+    }
+
+    private fun getFeedEntriesForPosts(
+        posts: List<AggregatedPost>,
+        currentUserId: Int?
+    ) : List<FeedEntryResource> {
         val songIds = posts.mapNotNull { it.songId }
         val songsMap = if (songIds.isNotEmpty()) {
             val currentUserId = currentUserId ?: -1
@@ -62,7 +89,7 @@ class FeedService(
             emptyMap()
         }
 
-        val items = posts.map {
+        return posts.map {
             val song = songsMap[it.songId]
             val mixtape = mixtapesMap[it.mixtapeId]
             val type = when {
@@ -78,7 +105,5 @@ class FeedService(
                 type = type
             )
         }
-
-        return ListWithLimitResource(items = items, limit = limit)
     }
 }

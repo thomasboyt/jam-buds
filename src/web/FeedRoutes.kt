@@ -9,6 +9,12 @@ import io.ktor.response.*
 import io.ktor.routing.*
 import service.FeedService
 
+private data class FeedParams(
+    val currentUserId: Int?,
+    val beforeTimestamp: Instant?,
+    val afterTimestamp: Instant?
+)
+
 private fun getTimestampParam(params: Parameters, key: String): Instant? {
     val str = params[key] ?: return null
     return try {
@@ -18,26 +24,45 @@ private fun getTimestampParam(params: Parameters, key: String): Instant? {
     }
 }
 
+private fun parseParams(params: Parameters): FeedParams {
+    if (params.contains("beforeTimestamp") && params.contains("afterTimestamp")) {
+        throw BadRequestException("Cannot have both before & after timestamps")
+    }
+    val beforeTimestamp = getTimestampParam(params, "beforeTimestamp")
+    val afterTimestamp = getTimestampParam(params, "afterTimestamp")
+
+    val currentUserId = try {
+        params["currentUserId"]?.toInt()
+    } catch (e:  NumberFormatException) {
+        throw BadRequestException("Invalid currentUserId param")
+    }
+
+    return FeedParams(currentUserId, beforeTimestamp, afterTimestamp)
+}
+
 fun Routing.feed(feedService: FeedService) {
     get("/public-feed") {
-        val params = call.request.queryParameters
-
-        if (params.contains("beforeTimestamp") && params.contains("afterTimestamp")) {
-            throw BadRequestException("Cannot have both before & after timestamps")
-        }
-        val beforeTimestamp = getTimestampParam(params, "beforeTimestamp")
-        val afterTimestamp = getTimestampParam(params, "afterTimestamp")
-
-        val currentUserId = try {
-            params["currentUserId"]?.toInt()
-        } catch (e:  NumberFormatException) {
-            throw BadRequestException("Invalid currentUserId param")
-        }
+        val params = parseParams(call.request.queryParameters)
 
         val feedItems = feedService.getPublicFeed(
-            beforeTimestamp = beforeTimestamp,
-            afterTimestamp =  afterTimestamp,
-            currentUserId = currentUserId
+            currentUserId = params.currentUserId,
+            beforeTimestamp = params.beforeTimestamp,
+            afterTimestamp =  params.afterTimestamp
+        )
+        call.respond(feedItems)
+    }
+
+    get("/feed") {
+        val params = parseParams(call.request.queryParameters)
+
+        if (params.currentUserId == null) {
+            throw BadRequestException("currentUserId must be set")
+        }
+
+        val feedItems = feedService.getUserFeed(
+            currentUserId = params.currentUserId,
+            beforeTimestamp = params.beforeTimestamp,
+            afterTimestamp =  params.afterTimestamp
         )
         call.respond(feedItems)
     }

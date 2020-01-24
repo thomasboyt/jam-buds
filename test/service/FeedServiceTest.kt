@@ -1,9 +1,12 @@
 package service
 
 import org.jdbi.v3.core.Handle
-import java.time.Instant
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
+import helpers.TestDataFactories.createLike
+import helpers.TestDataFactories.createSong
+import helpers.TestDataFactories.createSongPost
+import helpers.TestDataFactories.createUser
 import BaseTest
 
 class FeedServiceTest : BaseTest() {
@@ -151,48 +154,6 @@ class FeedServiceTest : BaseTest() {
             )
             assertEquals(true, afterLikeResults.items[0].song!!.isLiked)
         }
-    }
-
-    private fun createSongPost(txn: Handle, userId: Int, songId: Int): Instant {
-        return txn.createUpdate("""
-                insert into posts (user_id, song_id) values (:userId, :songId)
-                """.trimIndent())
-            .bind("userId", userId)
-            .bind("songId", songId)
-            .executeAndReturnGeneratedKeys("created_at")
-            .mapTo(Instant::class.java)
-            .one()
-    }
-
-    private fun createSong(txn: Handle): Int {
-        return txn.createUpdate("""
-                insert into songs (title, artists) values (:title, :artist)
-                """.trimIndent())
-            .bind("title", "song")
-            .bindArray("artist", String::class.java, listOf("song"))
-            .executeAndReturnGeneratedKeys("id")
-            .mapTo(Int::class.java)
-            .one()
-    }
-
-    private fun createUser(txn: Handle, name: String, showInFeed: Boolean): Int {
-        return txn.createUpdate("""
-                insert into users (name, show_in_public_feed) values (:name, :show_in_public_feed)
-                """.trimIndent())
-            .bind("name", name)
-            .bind("show_in_public_feed", showInFeed)
-            .executeAndReturnGeneratedKeys("id")
-            .mapTo(Int::class.java)
-            .one()
-    }
-
-    private fun createLike(txn: Handle, userId: Int, songId: Int): Int {
-        return txn.createUpdate("""
-                insert into likes (user_id, song_id) values (:userId, :songId)
-                """.trimIndent())
-            .bind("userId", userId)
-            .bind("songId", songId)
-            .execute()
     }
 
     private fun createFeedService(txn: Handle): FeedService {

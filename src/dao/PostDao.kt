@@ -14,4 +14,12 @@ interface PostDao {
         @Bind("beforeTimestamp") beforeTimestamp: Instant?,
         @Bind("afterTimestamp") afterTimestamp: Instant?
     ): List<AggregatedPost>
+
+    @SqlQuery
+    fun getAggregatedPostsByUserFeed(
+        currentUserId: Int,
+        limit: Int,
+        beforeTimestamp: Instant?,
+        afterTimestamp: Instant?
+    ): List<AggregatedPost>
 }
