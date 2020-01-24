@@ -1,16 +1,25 @@
 package service
 
+import com.google.gson.annotations.SerializedName
 import java.time.Instant
 
 import model.MixtapePreview
 import model.SongWithMeta
+
+enum class FeedEntryType {
+    @SerializedName("song")
+    SONG,
+    @SerializedName("mixtape")
+    MIXTAPE
+}
 
 // TODO: move somewhere else?
 data class FeedEntryResource(
     val timestamp: Instant,
     val userNames: List<String>,
     val song: SongWithMeta? = null,
-    val mixtape: MixtapePreview? = null
+    val mixtape: MixtapePreview? = null,
+    val type: FeedEntryType
 )
 
 data class ListWithLimitResource<T>(
@@ -54,11 +63,19 @@ class FeedService(
         }
 
         val items = posts.map {
+            val song = songsMap[it.songId]
+            val mixtape = mixtapesMap[it.mixtapeId]
+            val type = when {
+                song != null -> FeedEntryType.SONG
+                mixtape != null -> FeedEntryType.MIXTAPE
+                else -> throw Error("Could not match post ID to mixtape or song ID")
+            }
             FeedEntryResource(
                 timestamp = it.timestamp,
                 userNames = it.userNames,
                 song = songsMap[it.songId],
-                mixtape = mixtapesMap[it.mixtapeId]
+                mixtape = mixtapesMap[it.mixtapeId],
+                type = type
             )
         }
 
