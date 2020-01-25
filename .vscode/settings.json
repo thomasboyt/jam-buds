@@ -15,7 +15,9 @@
   "eslint.workingDirectories": [
     {"directory": "./api", "changeProcessCWD": true},
     {"directory": "./app", "changeProcessCWD": true},
+    {"directory": "./neo", "changeProcessCWD": true},
   ],
   "vetur.format.enable": true,
-  "vetur.format.defaultFormatter.html": "prettier"
+  "vetur.format.defaultFormatter.html": "prettier",
+  "eslint.enable": true
 }

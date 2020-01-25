@@ -1,0 +1,20 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "target": "ES2019",
+    "esModuleInterop": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "typeRoots": ["./node_modules/@types", "./typings"],
+    "strictNullChecks": true,
+    "noImplicitAny": true,
+    "noImplicitThis": true
+  },
+  "include": [
+    "src/**/*",
+    "seeds/**/*",
+    "scripts/**/*",
+    "migrations/**/*"
+  ]
+}
