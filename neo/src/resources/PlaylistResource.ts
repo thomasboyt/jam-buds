@@ -17,10 +17,12 @@ export const schema: JsonSchema<Interface> = {
   properties: {
     items: {
       type: 'array',
-      items: [
-        PlaylistSongItemResource.schema,
-        PlaylistMixtapeItemResource.schema,
-      ],
+      items: {
+        oneOf: [
+          PlaylistSongItemResource.schema,
+          PlaylistMixtapeItemResource.schema,
+        ],
+      },
     },
     limit: {
       type: 'number',

@@ -13,7 +13,7 @@ export const schema: JsonSchema<Interface> = {
   required: ['type', 'mixtape', 'timestamp'],
   properties: {
     type: {
-      const: 'song',
+      const: 'mixtape',
     },
     mixtape: MixtapePreviewResource.schema,
     timestamp: {

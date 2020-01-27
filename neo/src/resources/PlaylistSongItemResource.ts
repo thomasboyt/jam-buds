@@ -11,7 +11,7 @@ export interface Interface {
 
 export const schema: JsonSchema<Interface> = {
   type: 'object',
-  required: ['type', 'mixtape', 'timestamp'],
+  required: ['type', 'song', 'timestamp'],
   properties: {
     type: {
       const: 'song',

@@ -28,16 +28,16 @@ export const schema: JsonSchema<Interface> = {
       type: 'string',
     },
     albumArt: {
-      type: 'string',
+      type: ['string', 'null'],
     },
     spotifyId: {
-      type: 'string',
+      type: ['string', 'null'],
     },
     appleMusicId: {
-      type: 'string',
+      type: ['string', 'null'],
     },
     appleMusicUrl: {
-      type: 'string',
+      type: ['string', 'null'],
     },
     isLiked: {
       type: 'boolean',
