@@ -19,8 +19,9 @@ FROM (
     GROUP BY posts.song_id, posts.mixtape_id
 ) AS aggregated_posts
 WHERE
-    ${beforeTimestamp} IS NULL OR aggregated_posts.timestamp < ${beforeTimestamp}
-    AND ${afterTimestamp} IS NULL OR aggregated_posts.timestamp > ${afterTimestamp}
+    (${beforeTimestamp} IS NULL OR aggregated_posts.timestamp < ${beforeTimestamp})
+    AND
+    (${afterTimestamp} IS NULL OR aggregated_posts.timestamp > ${afterTimestamp})
 ORDER BY timestamp DESC
 LIMIT
     CASE

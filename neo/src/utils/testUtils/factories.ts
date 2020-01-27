@@ -8,6 +8,13 @@ const mapNumber = (val: unknown) => {
   }
 };
 
+const mapDate = (val: unknown) => {
+  if (!(val instanceof Date)) {
+    throw new Error('invalid date');
+  }
+  return val;
+};
+
 export function createUser(
   handle: Handle,
   { name, showInPublicFeed }: { name: string; showInPublicFeed: boolean }
@@ -37,7 +44,18 @@ export function createSongPost(
 ) {
   return handle
     .createQuery(
-      'insert into posts (user_id, song_id) values (${userId}, ${songId})'
+      'insert into posts (user_id, song_id) values (${userId}, ${songId}) returning created_at'
     )
-    .none({ userId, songId });
+    .one({ userId, songId }, (row) => mapDate(row.created_at));
+}
+
+export function followUser(
+  handle: Handle,
+  params: { userId: number; followingId: number }
+) {
+  return handle
+    .createQuery(
+      'insert into following (user_id, following_id) values (${userId}, ${followingId})'
+    )
+    .none(params);
 }

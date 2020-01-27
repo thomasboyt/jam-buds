@@ -10,8 +10,8 @@ SELECT
 FROM likes
 WHERE
     likes.user_id = ${userId}
-    AND ${beforeTimestamp} IS NULL OR likes.created_at < ${beforeTimestamp}
-    AND ${afterTimestamp} IS NULL OR likes.created_at > ${afterTimestamp}
+    AND (${beforeTimestamp} IS NULL OR likes.created_at < ${beforeTimestamp})
+    AND (${afterTimestamp} IS NULL OR likes.created_at > ${afterTimestamp})
 ORDER BY timestamp DESC
 LIMIT
     CASE

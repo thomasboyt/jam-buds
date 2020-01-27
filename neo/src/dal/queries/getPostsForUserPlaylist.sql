@@ -10,8 +10,9 @@ FROM posts
 JOIN users ON users.id = posts.user_id
 WHERE
     posts.user_id = ${userId}
-    AND ${beforeTimestamp} IS NULL OR posts.created_at < ${beforeTimestamp}
-    AND ${afterTimestamp} IS NULL OR posts.created_at > ${afterTimestamp}
+    AND (${beforeTimestamp} IS NULL OR posts.created_at < ${beforeTimestamp})
+    AND (${afterTimestamp} IS NULL OR posts.created_at > ${afterTimestamp})
+    AND (NOT ${onlyMixtapes} OR posts.mixtape_id IS NOT NULL)
 ORDER BY timestamp DESC
 LIMIT
     CASE

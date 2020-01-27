@@ -9,9 +9,13 @@ interface GetPostsForUser {
   limit: number;
 }
 
+interface MixtapesOption {
+  onlyMixtapes: boolean;
+}
+
 export async function getPostsForUser(
   handle: Handle,
-  params: GetPostsForUser
+  params: GetPostsForUser & MixtapesOption
 ): Promise<UserPost.Model[]> {
   const queryString = getQuery('getPostsForUserPlaylist');
 

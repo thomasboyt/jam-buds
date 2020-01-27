@@ -8,6 +8,7 @@ import {
   returns,
   parameter,
   HttpError,
+  string,
 } from 'restea';
 import { anyString } from '../utils/restea/anyString';
 
@@ -84,6 +85,9 @@ export function registerPlaylistRoutes(router: Router<{}, AppCtx>) {
       optionalAuthMiddleware(),
       description("Fetch a user's playlist and profile."),
       timestampPaginationMiddleware,
+      query('type', string('mixtapes'), {
+        description: 'Filter the specific type of item returned',
+      }),
       parameter('userName', anyString(), {
         description: 'The name of the user',
       }),
@@ -108,6 +112,7 @@ export function registerPlaylistRoutes(router: Router<{}, AppCtx>) {
         afterTimestamp: after || null,
         currentUserId: currentUser ? currentUser.id : null,
         limit: 20,
+        onlyMixtapes: params.type === 'mixtapes',
       });
 
       ctx.state.returns = {

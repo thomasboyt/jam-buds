@@ -166,16 +166,21 @@ export async function getUserFeed(
   };
 }
 
+interface MixtapesOption {
+  onlyMixtapes: boolean;
+}
+
 export async function getUserPlaylist(
   handle: Handle,
   userId: number,
-  params: PlaylistParams
+  params: PlaylistParams & MixtapesOption
 ): Promise<UserPlaylistResource.Interface> {
   const posts = await getPostsForUser(handle, {
     userId,
     afterTimestamp: params.afterTimestamp,
     beforeTimestamp: params.beforeTimestamp,
     limit: params.limit,
+    onlyMixtapes: params.onlyMixtapes,
   });
 
   const items = await getPlaylistItemsForPosts(

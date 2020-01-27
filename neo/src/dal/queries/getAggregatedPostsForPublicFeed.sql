@@ -13,8 +13,9 @@ WHERE
     users.show_in_public_feed = true
 GROUP BY posts.song_id, posts.mixtape_id
 HAVING
-     ${beforeTimestamp} IS NULL OR MIN(posts.created_at) < ${beforeTimestamp}
-    AND ${afterTimestamp} IS NULL OR MIN(posts.created_at) > ${afterTimestamp}
+    (${beforeTimestamp} IS NULL OR MIN(posts.created_at) < ${beforeTimestamp})
+    AND
+    (${afterTimestamp} IS NULL OR MIN(posts.created_at) > ${afterTimestamp})
 ORDER BY timestamp DESC
 LIMIT
     CASE
