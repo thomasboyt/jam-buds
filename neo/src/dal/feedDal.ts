@@ -16,5 +16,23 @@ export async function getAggregatedPostsForPublicFeed(
 
   return await handle
     .createQuery(queryString)
-    .many(params, mapDecode(AggregatedPost.codec));
+    .manyOrNone(params, mapDecode(AggregatedPost.codec));
+}
+
+interface GetAggregatedPostsForUserFeed {
+  beforeTimestamp: Date | null;
+  afterTimestamp: Date | null;
+  limit: number;
+  currentUserId: number;
+}
+
+export async function getAggregatedPostsForUserFeed(
+  handle: Handle,
+  params: GetAggregatedPostsForUserFeed
+): Promise<AggregatedPost.Model[]> {
+  const queryString = getQuery('getAggregatedPostsForUserFeed');
+
+  return await handle
+    .createQuery(queryString)
+    .manyOrNone(params, mapDecode(AggregatedPost.codec));
 }

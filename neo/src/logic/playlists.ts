@@ -1,16 +1,27 @@
 import { Handle } from '@tboyt/jareth';
-import { getAggregatedPostsForPublicFeed } from '../dal/feedDal';
+import {
+  getAggregatedPostsForPublicFeed,
+  getAggregatedPostsForUserFeed,
+} from '../dal/feedDal';
 import { getSongsByIds } from '../dal/songsDal';
 import { getMixtapePreviewsByIds } from '../dal/mixtapesDal';
-import { AggregatedPost, MixtapePreview, SongWithMeta } from '../dal/models';
-import { jareth } from '../db';
+import {
+  AggregatedPost,
+  MixtapePreview,
+  SongWithMeta,
+  UserPost,
+} from '../dal/models';
 import {
   SongResource,
-  PlaylistSongItemResource,
   MixtapePreviewResource,
-  PlaylistMixtapeItemResource,
-  PlaylistResource,
+  UserPlaylistSongItemResource,
+  UserPlaylistMixtapeItemResource,
+  UserPlaylistResource,
+  FeedSongItemResource,
+  FeedMixtapeItemResource,
+  FeedResource,
 } from '../resources';
+import { getPostsForUser, getLikedPostsForUser } from '../dal/playlistsDal';
 
 function serializeSongResource(
   song: SongWithMeta.Model
@@ -39,13 +50,31 @@ function isNotNull<T>(it: T): it is NonNullable<T> {
   return it != null;
 }
 
+type FeedItem =
+  | FeedSongItemResource.Interface
+  | FeedMixtapeItemResource.Interface;
+
+type PlaylistItem =
+  | UserPlaylistSongItemResource.Interface
+  | UserPlaylistMixtapeItemResource.Interface;
+
 async function getPlaylistItemsForPosts(
   handle: Handle,
   posts: AggregatedPost.Model[],
   currentUserId?: number | null
-): Promise<
-  (PlaylistSongItemResource.Interface | PlaylistMixtapeItemResource.Interface)[]
-> {
+): Promise<FeedItem[]>;
+
+async function getPlaylistItemsForPosts(
+  handle: Handle,
+  posts: UserPost.Model[],
+  currentUserId?: number | null
+): Promise<PlaylistItem[]>;
+
+async function getPlaylistItemsForPosts(
+  handle: Handle,
+  posts: AggregatedPost.Model[],
+  currentUserId?: number | null
+): Promise<PlaylistItem[]> {
   const songIds = posts.map((post) => post.songId).filter(isNotNull);
   const songs = await getSongsByIds(handle, {
     currentUserId: currentUserId || -1,
@@ -63,15 +92,26 @@ async function getPlaylistItemsForPosts(
 
   return posts.map((post) => {
     if (post.songId) {
-      const item: PlaylistSongItemResource.Interface = {
-        type: 'song',
-        song: serializeSongResource(songsById[post.songId]),
-        timestamp: post.timestamp.toISOString(),
-        userNames: post.userNames,
-      };
-      return item;
+      if (post.userNames) {
+        const item: FeedSongItemResource.Interface = {
+          type: 'song',
+          song: serializeSongResource(songsById[post.songId]),
+          timestamp: post.timestamp.toISOString(),
+          userNames: post.userNames,
+        };
+        return item;
+      } else {
+        const item: UserPlaylistSongItemResource.Interface = {
+          type: 'song',
+          song: serializeSongResource(songsById[post.songId]),
+          timestamp: post.timestamp.toISOString(),
+        };
+        return item;
+      }
     } else if (post.mixtapeId) {
-      const item: PlaylistMixtapeItemResource.Interface = {
+      // XXX: feed and user playlist resources are currently the same so this is
+      // fine
+      const item: UserPlaylistMixtapeItemResource.Interface = {
         mixtape: serializeMixtapePreview(mixtapesById[post.mixtapeId]),
         type: 'mixtape',
         timestamp: post.timestamp.toISOString(),
@@ -83,27 +123,93 @@ async function getPlaylistItemsForPosts(
   });
 }
 
-interface PublicFeedParams {
+interface PlaylistParams {
   limit: number;
   beforeTimestamp: Date | null;
   afterTimestamp: Date | null;
   currentUserId: number | null;
 }
-
 export async function getPublicFeed(
-  params: PublicFeedParams
-): Promise<PlaylistResource.Interface> {
-  return jareth!.withHandle(async (handle) => {
-    const posts = await getAggregatedPostsForPublicFeed(handle, params);
-    const items = await getPlaylistItemsForPosts(
-      handle,
-      posts,
-      params.currentUserId
-    );
+  handle: Handle,
+  params: PlaylistParams
+): Promise<FeedResource.Interface> {
+  const posts = await getAggregatedPostsForPublicFeed(handle, params);
+  const items = await getPlaylistItemsForPosts(
+    handle,
+    posts,
+    params.currentUserId
+  );
 
-    return {
-      items,
-      limit: params.limit,
-    };
+  return {
+    items,
+    limit: params.limit,
+  };
+}
+
+interface UserFeedParams extends PlaylistParams {
+  currentUserId: number;
+}
+export async function getUserFeed(
+  handle: Handle,
+  params: UserFeedParams
+): Promise<FeedResource.Interface> {
+  const posts = await getAggregatedPostsForUserFeed(handle, params);
+  const items = await getPlaylistItemsForPosts(
+    handle,
+    posts,
+    params.currentUserId
+  );
+
+  return {
+    items,
+    limit: params.limit,
+  };
+}
+
+export async function getUserPlaylist(
+  handle: Handle,
+  userId: number,
+  params: PlaylistParams
+): Promise<UserPlaylistResource.Interface> {
+  const posts = await getPostsForUser(handle, {
+    userId,
+    afterTimestamp: params.afterTimestamp,
+    beforeTimestamp: params.beforeTimestamp,
+    limit: params.limit,
   });
+
+  const items = await getPlaylistItemsForPosts(
+    handle,
+    posts,
+    params.currentUserId
+  );
+
+  return {
+    items,
+    limit: params.limit,
+  };
+}
+
+export async function getUserLikedPlaylist(
+  handle: Handle,
+  userId: number,
+  params: PlaylistParams
+): Promise<UserPlaylistResource.Interface> {
+  const posts = await getLikedPostsForUser(handle, {
+    userId,
+    afterTimestamp: params.afterTimestamp,
+    beforeTimestamp: params.beforeTimestamp,
+    limit: params.limit,
+  });
+
+  const items = await getPlaylistItemsForPosts(
+    handle,
+    posts,
+    params.currentUserId
+  );
+
+  return {
+    items,
+    limit: params.limit,
+  };
 }

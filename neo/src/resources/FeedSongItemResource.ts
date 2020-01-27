@@ -11,12 +11,18 @@ export interface Interface {
 
 export const schema: JsonSchema<Interface> = {
   type: 'object',
-  required: ['type', 'song', 'timestamp'],
+  required: ['type', 'song', 'userNames', 'timestamp'],
   properties: {
     type: {
       const: 'song',
     },
     song: SongResource.schema,
+    userNames: {
+      type: 'array',
+      items: {
+        type: 'string',
+      },
+    },
     timestamp: {
       type: 'string',
       format: 'date-time',
