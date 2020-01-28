@@ -1,19 +1,22 @@
 import { JsonSchema } from 'restea';
-import * as UserPlaylistResource from './UserPlaylistResource';
-import * as UserProfileResource from './UserProfileResource';
+import {
+  UserPlaylistResource,
+  userPlaylistSchema,
+} from './UserPlaylistResource';
+import { UserProfileResource, userProfileSchema } from './UserProfileResource';
 
-export interface Interface extends UserPlaylistResource.Interface {
-  userProfile: UserProfileResource.Interface;
+export interface Interface extends UserPlaylistResource {
+  userProfile: UserProfileResource;
 }
 
-export const schema: JsonSchema<Interface> = {
+export const userPlaylistWithProfileResourceSchema: JsonSchema<Interface> = {
   allOf: [
-    UserPlaylistResource.schema,
+    userPlaylistSchema,
     {
       type: 'object',
       required: ['userProfile'],
       properties: {
-        userProfile: UserProfileResource.schema,
+        userProfile: userProfileSchema,
       },
     },
   ],

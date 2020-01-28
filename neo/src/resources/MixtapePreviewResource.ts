@@ -1,6 +1,6 @@
 import { JsonSchema } from 'restea';
 
-export interface Interface {
+export interface MixtapePreviewResource {
   id: number;
   title: string;
   slug: string;
@@ -8,7 +8,9 @@ export interface Interface {
   numTracks: number;
 }
 
-export const schema: JsonSchema<Interface> = {
+export const mixtapePreviewResourceSchema: JsonSchema<
+  MixtapePreviewResource
+> = {
   type: 'object',
   required: ['id', 'title', 'slug', 'authorName', 'numTracks'],
   properties: {

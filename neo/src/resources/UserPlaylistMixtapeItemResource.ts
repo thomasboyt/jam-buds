@@ -1,21 +1,26 @@
 import { JsonSchema } from 'restea';
 
-import * as MixtapePreviewResource from './MixtapePreviewResource';
+import {
+  MixtapePreviewResource,
+  mixtapePreviewResourceSchema,
+} from './MixtapePreviewResource';
 
-export interface Interface {
+export interface UserPlaylistMixtapeItemResource {
   type: 'mixtape';
-  mixtape: MixtapePreviewResource.Interface;
+  mixtape: MixtapePreviewResource;
   timestamp: string;
 }
 
-export const schema: JsonSchema<Interface> = {
+export const userPlaylistMixtapeItemSchema: JsonSchema<
+  UserPlaylistMixtapeItemResource
+> = {
   type: 'object',
   required: ['type', 'mixtape', 'timestamp'],
   properties: {
     type: {
       const: 'mixtape',
     },
-    mixtape: MixtapePreviewResource.schema,
+    mixtape: mixtapePreviewResourceSchema,
     timestamp: {
       type: 'string',
       format: 'date-time',

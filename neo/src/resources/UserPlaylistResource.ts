@@ -1,27 +1,30 @@
 import { JsonSchema } from 'restea';
-import * as UserPlaylistMixtapeItemResource from './UserPlaylistMixtapeItemResource';
-import * as UserPlaylistSongItemResource from './UserPlaylistSongItemResource';
+import {
+  UserPlaylistMixtapeItemResource,
+  userPlaylistMixtapeItemSchema,
+} from './UserPlaylistMixtapeItemResource';
+import {
+  UserPlaylistSongItemResource,
+  userPlaylistSongItemSchema,
+} from './UserPlaylistSongItemResource';
 
 export type UserPlaylistItem =
-  | UserPlaylistSongItemResource.Interface
-  | UserPlaylistMixtapeItemResource.Interface;
+  | UserPlaylistSongItemResource
+  | UserPlaylistMixtapeItemResource;
 
-export interface Interface {
+export interface UserPlaylistResource {
   items: UserPlaylistItem[];
   limit: number;
 }
 
-export const schema: JsonSchema<Interface> = {
+export const userPlaylistSchema: JsonSchema<UserPlaylistResource> = {
   type: 'object',
   required: ['items', 'limit'],
   properties: {
     items: {
       type: 'array',
       items: {
-        oneOf: [
-          UserPlaylistSongItemResource.schema,
-          UserPlaylistMixtapeItemResource.schema,
-        ],
+        oneOf: [userPlaylistMixtapeItemSchema, userPlaylistSongItemSchema],
       },
     },
     limit: {

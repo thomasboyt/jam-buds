@@ -6,7 +6,7 @@ import { getColorSchemeByUserId } from '../dal/colorSchemesDal';
 export async function getUserProfileOrNull(
   handle: Handle,
   userName: string
-): Promise<UserProfileResource.Interface | null> {
+): Promise<UserProfileResource | null> {
   const user = await getUserByUserNameOrNull(handle, { userName });
 
   if (!user) {

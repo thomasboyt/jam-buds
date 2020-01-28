@@ -1,11 +1,11 @@
 import { JsonSchema } from 'restea';
 
-export interface Interface {
+export interface ColorSchemeResource {
   backgroundGradientName: string;
   textColor: string;
 }
 
-export const schema: JsonSchema<Interface> = {
+export const colorSchemeSchema: JsonSchema<ColorSchemeResource> = {
   type: 'object',
   required: ['backgroundGradientName', 'textColor'],
   properties: {

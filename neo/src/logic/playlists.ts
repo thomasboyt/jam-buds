@@ -5,6 +5,7 @@ import {
 } from '../dal/feedDal';
 import { getSongsByIds } from '../dal/songsDal';
 import { getMixtapePreviewsByIds } from '../dal/mixtapesDal';
+import { getPostsForUser, getLikedPostsForUser } from '../dal/playlistsDal';
 import {
   AggregatedPost,
   MixtapePreview,
@@ -21,11 +22,8 @@ import {
   FeedMixtapeItemResource,
   FeedResource,
 } from '../resources';
-import { getPostsForUser, getLikedPostsForUser } from '../dal/playlistsDal';
 
-function serializeSongResource(
-  song: SongWithMeta.Model
-): SongResource.Interface {
+function serializeSongResource(song: SongWithMeta.Model): SongResource {
   return {
     ...song,
     likeCount: parseInt(song.likeCount),
@@ -34,7 +32,7 @@ function serializeSongResource(
 
 function serializeMixtapePreview(
   mixtape: MixtapePreview.Model
-): MixtapePreviewResource.Interface {
+): MixtapePreviewResource {
   return {
     authorName: mixtape.authorName,
     id: mixtape.id,
@@ -50,13 +48,11 @@ function isNotNull<T>(it: T): it is NonNullable<T> {
   return it != null;
 }
 
-type FeedItem =
-  | FeedSongItemResource.Interface
-  | FeedMixtapeItemResource.Interface;
+type FeedItem = FeedSongItemResource | FeedMixtapeItemResource;
 
 type PlaylistItem =
-  | UserPlaylistSongItemResource.Interface
-  | UserPlaylistMixtapeItemResource.Interface;
+  | UserPlaylistSongItemResource
+  | UserPlaylistMixtapeItemResource;
 
 async function getPlaylistItemsForPosts(
   handle: Handle,
@@ -93,7 +89,7 @@ async function getPlaylistItemsForPosts(
   return posts.map((post) => {
     if (post.songId) {
       if (post.userNames) {
-        const item: FeedSongItemResource.Interface = {
+        const item: FeedSongItemResource = {
           type: 'song',
           song: serializeSongResource(songsById[post.songId]),
           timestamp: post.timestamp.toISOString(),
@@ -101,7 +97,7 @@ async function getPlaylistItemsForPosts(
         };
         return item;
       } else {
-        const item: UserPlaylistSongItemResource.Interface = {
+        const item: UserPlaylistSongItemResource = {
           type: 'song',
           song: serializeSongResource(songsById[post.songId]),
           timestamp: post.timestamp.toISOString(),
@@ -111,7 +107,7 @@ async function getPlaylistItemsForPosts(
     } else if (post.mixtapeId) {
       // XXX: feed and user playlist resources are currently the same so this is
       // fine
-      const item: UserPlaylistMixtapeItemResource.Interface = {
+      const item: UserPlaylistMixtapeItemResource = {
         mixtape: serializeMixtapePreview(mixtapesById[post.mixtapeId]),
         type: 'mixtape',
         timestamp: post.timestamp.toISOString(),
@@ -132,7 +128,7 @@ interface PlaylistParams {
 export async function getPublicFeed(
   handle: Handle,
   params: PlaylistParams
-): Promise<FeedResource.Interface> {
+): Promise<FeedResource> {
   const posts = await getAggregatedPostsForPublicFeed(handle, params);
   const items = await getPlaylistItemsForPosts(
     handle,
@@ -152,7 +148,7 @@ interface UserFeedParams extends PlaylistParams {
 export async function getUserFeed(
   handle: Handle,
   params: UserFeedParams
-): Promise<FeedResource.Interface> {
+): Promise<FeedResource> {
   const posts = await getAggregatedPostsForUserFeed(handle, params);
   const items = await getPlaylistItemsForPosts(
     handle,
@@ -174,7 +170,7 @@ export async function getUserPlaylist(
   handle: Handle,
   userId: number,
   params: PlaylistParams & MixtapesOption
-): Promise<UserPlaylistResource.Interface> {
+): Promise<UserPlaylistResource> {
   const posts = await getPostsForUser(handle, {
     userId,
     afterTimestamp: params.afterTimestamp,
@@ -199,7 +195,7 @@ export async function getUserLikedPlaylist(
   handle: Handle,
   userId: number,
   params: PlaylistParams
-): Promise<UserPlaylistResource.Interface> {
+): Promise<UserPlaylistResource> {
   const posts = await getLikedPostsForUser(handle, {
     userId,
     afterTimestamp: params.afterTimestamp,

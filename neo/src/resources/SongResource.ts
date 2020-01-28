@@ -1,6 +1,6 @@
 import { JsonSchema } from 'restea';
 
-export interface Interface {
+export interface SongResource {
   id: number;
   artists: string[];
   album: string | null;
@@ -13,7 +13,7 @@ export interface Interface {
   likeCount: number;
 }
 
-export const schema: JsonSchema<Interface> = {
+export const songResourceSchema: JsonSchema<SongResource> = {
   type: 'object',
   required: ['id', 'artists', 'album', 'title', 'isLiked', 'likeCount'],
   properties: {

@@ -1,13 +1,13 @@
 import { JsonSchema } from 'restea';
-import * as ColorSchemeResource from './ColorSchemeResource';
+import { ColorSchemeResource, colorSchemeSchema } from './ColorSchemeResource';
 
-export interface Interface {
+export interface UserProfileResource {
   id: number;
   name: string;
-  colorScheme: ColorSchemeResource.Interface | null;
+  colorScheme: ColorSchemeResource | null;
 }
 
-export const schema: JsonSchema<Interface> = {
+export const userProfileSchema: JsonSchema<UserProfileResource> = {
   type: 'object',
   required: ['id', 'name'],
   properties: {
@@ -18,7 +18,7 @@ export const schema: JsonSchema<Interface> = {
       type: 'string',
     },
     colorScheme: {
-      oneOf: [ColorSchemeResource.schema, { type: 'null' }],
+      oneOf: [colorSchemeSchema, { type: 'null' }],
     },
   },
 };

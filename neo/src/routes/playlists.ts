@@ -24,7 +24,10 @@ import {
 } from '../utils/authMiddleware';
 import { AppCtx } from '../createApp';
 import { getUserProfileOrNull } from '../logic/users';
-import { FeedResource, UserPlaylistWithProfileResource } from '../resources';
+import {
+  feedSchema,
+  userPlaylistWithProfileResourceSchema,
+} from '../resources';
 
 export function registerPlaylistRoutes(router: Router<{}, AppCtx>) {
   const timestampPaginationMiddleware = compose(
@@ -39,10 +42,12 @@ export function registerPlaylistRoutes(router: Router<{}, AppCtx>) {
   router.get(
     '/api/feed',
     compose(
+      // sets ctx.state.currentUser or throws if not logged in
       requireAuthMiddleware(),
+
       description('Get the feed for the current user.'),
       timestampPaginationMiddleware,
-      returns(Ok(FeedResource.schema))
+      returns(Ok(feedSchema))
     ),
     async (ctx) => {
       const { before, after } = ctx.state.params;
@@ -63,7 +68,7 @@ export function registerPlaylistRoutes(router: Router<{}, AppCtx>) {
       optionalAuthMiddleware(),
       description('Fetch the public feed.'),
       timestampPaginationMiddleware,
-      returns(Ok(FeedResource.schema))
+      returns(Ok(feedSchema))
     ),
     async (ctx /*, next*/) => {
       const { currentUser, params } = ctx.state;
@@ -91,7 +96,7 @@ export function registerPlaylistRoutes(router: Router<{}, AppCtx>) {
       parameter('userName', anyString(), {
         description: 'The name of the user',
       }),
-      returns(Ok(UserPlaylistWithProfileResource.schema))
+      returns(Ok(userPlaylistWithProfileResourceSchema))
     ),
     async (ctx) => {
       const { currentUser, params } = ctx.state;
@@ -131,7 +136,7 @@ export function registerPlaylistRoutes(router: Router<{}, AppCtx>) {
       parameter('userName', anyString(), {
         description: 'The name of the user',
       }),
-      returns(Ok(UserPlaylistWithProfileResource.schema))
+      returns(Ok(userPlaylistWithProfileResourceSchema))
     ),
     async (ctx) => {
       const { currentUser, params } = ctx.state;

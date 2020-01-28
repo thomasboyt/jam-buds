@@ -1,24 +1,28 @@
 import { JsonSchema } from 'restea';
-import * as FeedMixtapeItemResource from './FeedMixtapeItemResource';
-import * as FeedSongItemResource from './FeedSongItemResource';
+import {
+  FeedMixtapeItemResource,
+  feedMixtapeItemSchema,
+} from './FeedMixtapeItemResource';
+import {
+  FeedSongItemResource,
+  feedSongItemSchema,
+} from './FeedSongItemResource';
 
-export type FeedItem =
-  | FeedSongItemResource.Interface
-  | FeedMixtapeItemResource.Interface;
+export type FeedItem = FeedSongItemResource | FeedMixtapeItemResource;
 
-export interface Interface {
+export interface FeedResource {
   items: FeedItem[];
   limit: number;
 }
 
-export const schema: JsonSchema<Interface> = {
+export const feedSchema: JsonSchema<FeedResource> = {
   type: 'object',
   required: ['items', 'limit'],
   properties: {
     items: {
       type: 'array',
       items: {
-        oneOf: [FeedSongItemResource.schema, FeedMixtapeItemResource.schema],
+        oneOf: [feedMixtapeItemSchema, feedSongItemSchema],
       },
     },
     limit: {

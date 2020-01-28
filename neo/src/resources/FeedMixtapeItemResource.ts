@@ -1,4 +1,7 @@
-import * as UserPlaylistMixtapeItemResource from './UserPlaylistMixtapeItemResource';
+import {
+  UserPlaylistMixtapeItemResource,
+  userPlaylistMixtapeItemSchema,
+} from './UserPlaylistMixtapeItemResource';
 
-export type Interface = UserPlaylistMixtapeItemResource.Interface;
-export const schema = UserPlaylistMixtapeItemResource.schema;
+export type FeedMixtapeItemResource = UserPlaylistMixtapeItemResource;
+export const feedMixtapeItemSchema = userPlaylistMixtapeItemSchema;
