@@ -11,6 +11,7 @@ const configDef = {
 
   JB_APP_URL: getRequiredEnv('JB_APP_URL'),
   JB_API_PORT: getRequiredEnv('JB_API_PORT'),
+  JB_NEO_URL: getRequiredEnv('JB_NEO_URL'),
 
   NODE_ENV: getEnv('NODE_ENV') || 'development',
   TEST_ENV: getEnv('TEST_ENV'),
