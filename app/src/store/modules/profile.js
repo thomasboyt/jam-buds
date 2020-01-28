@@ -67,7 +67,7 @@ const profile = {
     async loadProfileMixtapes(context, userName) {
       const data = await context.dispatch('loadPlaylist', {
         key: `${userName}/mixtapes`,
-        url: `/users/${userName}/mixtapes`,
+        url: `/playlists/${userName}?type=mixtapes`,
       });
 
       context.commit('setViewedProfile', data.userProfile);
