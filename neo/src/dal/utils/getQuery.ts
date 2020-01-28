@@ -6,7 +6,7 @@ const queryCache: { [key: string]: string } = {};
 export default function getQuery(key: string): string {
   if (!queryCache[key] || process.env.NODE_ENV !== 'production') {
     queryCache[key] = readFileSync(
-      pathJoin(__dirname, `../queries/${key}.sql`),
+      pathJoin(process.cwd(), `queries/${key}.sql`),
       { encoding: 'utf8' }
     );
   }

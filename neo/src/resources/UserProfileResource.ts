@@ -17,6 +17,8 @@ export const schema: JsonSchema<Interface> = {
     name: {
       type: 'string',
     },
-    colorScheme: ColorSchemeResource.schema,
+    colorScheme: {
+      oneOf: [ColorSchemeResource.schema, { type: 'null' }],
+    },
   },
 };

@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/entry.ts",
     "dev-no-watch": "ts-node src/entry.ts",
-    "start": "node build/src/entry.js",
+    "start": "node build/entry.js",
     "build-prod": "tsc -p tsconfig.build.json",
     "test": "NODE_ENV=test jest",
     "lint": "eslint src/**/*.ts",
@@ -23,6 +23,7 @@
     "@types/node": "^12.12.14",
     "@typescript-eslint/eslint-plugin": "^2.9.0",
     "@typescript-eslint/parser": "^2.9.0",
+    "dotenv": "^8.2.0",
     "eslint": "^6.7.1",
     "eslint-config-prettier": "^6.7.0",
     "nodemon": "^2.0.1",
@@ -31,13 +32,15 @@
   },
   "dependencies": {
     "@koa/router": "^8.0.6",
-    "@tboyt/jareth": "^0.1.0",
+    "@sentry/integrations": "^5.11.1",
+    "@sentry/node": "^5.11.1",
+    "@tboyt/jareth": "^0.2.0",
     "@types/jest": "^24.9.1",
     "io-ts": "^2.0.6",
     "io-ts-types": "^0.5.5",
     "jest": "^25.1.0",
     "koa": "^2.11.0",
-    "restea": "0.0.0-0",
+    "restea": "git://github.com/thomasboyt/restea.git#jam-buds",
     "ts-jest": "^25.0.0"
   }
 }

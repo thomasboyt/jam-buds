@@ -1,3 +1,8 @@
+// required for sentry source map support:
+(global as any).__rootdir__ = __dirname || process.cwd();
+
+require('./utils/loadDotEnv');
+
 import { createApp } from './createApp';
 
 const app = createApp();

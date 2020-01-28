@@ -1,10 +1,10 @@
 import Jareth from '@tboyt/jareth';
+import config from './config';
 
 // TODO: stop using this in tests
 export let jareth: Jareth | undefined;
 
-// TODO: reimplement config system
-export const dbUrl = process.env.DATABASE_URL!;
+export const dbUrl = config.require('DATABASE_URL');
 
 export function configureDatabase() {
   if (jareth) {

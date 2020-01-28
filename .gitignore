@@ -1,6 +1,7 @@
 node_modules/
 tmp/
 api/build
+neo/build
 app/.nuxt/
 
 .env

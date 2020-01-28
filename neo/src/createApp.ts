@@ -1,13 +1,17 @@
 import Koa, { Middleware } from 'koa';
 import Router from '@koa/router';
 import { errorHandler } from 'restea';
+import * as Sentry from '@sentry/node';
+import { RewriteFrames } from '@sentry/integrations';
 
 import { configureDatabase } from './db';
 import { registerPlaylistRoutes } from './routes/playlists';
 import { jarethMiddleware, JarethCtx } from './utils/jarethMiddleware';
+import config from './config';
 
 export type AppCtx = JarethCtx;
 
+// Logs _all_ errors, including e.g. 400 or 404. Will probably need tweaking
 function logErrorHandler(): Middleware {
   return async (ctx, next) => {
     try {
@@ -31,6 +35,24 @@ export function createApp() {
   const router = new Router<{}, AppCtx>();
   registerPlaylistRoutes(router);
   server.use(router.routes());
+
+  Sentry.init({
+    dsn: config.get('SENTRY_DSN_NEO'),
+    integrations: [
+      new RewriteFrames({
+        root: (global as any).__rootdir__,
+      }),
+    ],
+  });
+
+  server.on('error', (err, ctx) => {
+    Sentry.withScope(function(scope) {
+      scope.addEventProcessor(function(event) {
+        return Sentry.Handlers.parseRequest(event, ctx.request);
+      });
+      Sentry.captureException(err);
+    });
+  });
 
   return server;
 }

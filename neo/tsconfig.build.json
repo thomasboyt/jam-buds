@@ -4,6 +4,8 @@
     "outDir": "build",
     "sourceMap": true,
     "inlineSources": true,
-    "sourceRoot": "/"
+    "sourceRoot": "/",
+    "noEmitHelpers": true,
+    "importHelpers": true
   }
 }
