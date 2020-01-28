@@ -7,9 +7,8 @@
     "node": "12.x"
   },
   "scripts": {
-    "dev": "nodemon --watch 'src/**/*.ts' --watch 'emails/**/*.*' --exec 'ts-node' src/entry.ts",
+    "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/entry.ts",
     "dev-no-watch": "ts-node src/entry.ts",
-    "resetdb": "ts-node --transpile-only ./scripts/resetdb.ts",
     "start": "node build/src/entry.js",
     "build-prod": "tsc -p tsconfig.build.json",
     "test": "NODE_ENV=test jest",
