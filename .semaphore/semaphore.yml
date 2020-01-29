@@ -110,8 +110,8 @@ blocks:
           - npm run build
           - npm start & wait-on -t 20000 http://localhost:8081
           - cd ../api
-          - npm run e2e & wait-on -t 20000 tcp:3001
+          - npm run e2e & wait-on -t 20000 tcp:3002
           - cd ../neo
-          - npm run e2e & wait-on -t 20000 tcp:3001
+          - npm run e2e & wait-on -t 20000 tcp:3003
           - cd ../spec
           - npm test -- --record
