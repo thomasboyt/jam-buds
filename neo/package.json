@@ -40,7 +40,7 @@
     "io-ts-types": "^0.5.5",
     "jest": "^25.1.0",
     "koa": "^2.11.0",
-    "restea": "git://github.com/thomasboyt/restea.git#jam-buds",
+    "restea": "git://github.com/thomasboyt/restea.git#cdc609e",
     "ts-jest": "^25.0.0"
   }
 }
