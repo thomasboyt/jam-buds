@@ -60,6 +60,11 @@ describe('feedDal', () => {
           const songId = await createSong(handle);
           await createSongPost(handle, { songId, userId });
           songIds.push(songId);
+          // this is really silly but prevents songs w/ same timestamp from
+          // being created which can break these tests due to sorting
+          // instability. probably long term need to figure out if this has any
+          // impact in practice
+          await new Promise((resolve) => setTimeout(resolve, 1));
         }
 
         songIds.reverse();
