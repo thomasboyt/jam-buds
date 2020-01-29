@@ -1,15 +1,17 @@
 FROM node:12-alpine
 
-RUN mkdir -p /home/node/app/node_modules && chown -R node:node /home/node/app
-WORKDIR /home/node/app
+# Required for restea git dependency
+RUN apk add --no-cache git
 
 # Install dependencies
+USER node
+RUN mkdir -p /home/node/app
+WORKDIR /home/node/app
 COPY package*.json ./
 RUN npm install
 
 # Add the rest of the app
 COPY --chown=node:node . .
-USER node
 
 # Build the app
 RUN npm run build-prod -b
