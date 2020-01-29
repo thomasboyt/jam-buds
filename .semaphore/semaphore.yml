@@ -51,7 +51,6 @@ blocks:
           - sem-version node 12
           - sem-service start postgres
           - sem-service start redis
-          - createdb -U postgres -h 0.0.0.0 jambuds_test
       jobs:
         - name: "API: Unit Tests"
           commands:
@@ -60,7 +59,12 @@ blocks:
             - npm test
         - name: "Neo: Unit Tests"
           commands:
-            - cd neo
+            - createdb -U postgres -h 0.0.0.0 jambuds_test
+            # TODO: Do not require Knex to migrate
+            - cd api
+            - cache restore node-modules-api-$SEMAPHORE_GIT_BRANCH-$(checksum package-lock.json)
+            - npx knex migrate:latest
+            - cd ../neo
             - cache restore node-modules-neo-$SEMAPHORE_GIT_BRANCH-$(checksum package-lock.json)
             - npm test
 
