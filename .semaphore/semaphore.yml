@@ -29,6 +29,12 @@ blocks:
           - cache restore node-modules-app-$SEMAPHORE_GIT_BRANCH-$(checksum package-lock.json),node-modules-app-$SEMAPHORE_GIT_BRANCH,node-modules-app-master
           - npm install
           - cache store node-modules-app-$SEMAPHORE_GIT_BRANCH-$(checksum package-lock.json) node_modules
+      - name: "Neo: npm install"
+        commands:
+          - cd neo
+          - cache restore node-modules-neo-$SEMAPHORE_GIT_BRANCH-$(checksum package-lock.json),node-modules-neo-$SEMAPHORE_GIT_BRANCH,node-modules-neo-master
+          - npm install
+          - cache store node-modules-neo-$SEMAPHORE_GIT_BRANCH-$(checksum package-lock.json) node_modules
 
   - name: "Unit Tests"
     task:
@@ -43,14 +49,19 @@ blocks:
         commands:
           - checkout
           - sem-version node 12
-          - cd api
-          - cache restore node-modules-api-$SEMAPHORE_GIT_BRANCH-$(checksum package-lock.json)
           - sem-service start postgres
           - sem-service start redis
       jobs:
-      - name: Unit Tests
-        commands:
-          - npm test
+        - name: "API: Unit Tests"
+          commands:
+            - cd api
+            - cache restore node-modules-api-$SEMAPHORE_GIT_BRANCH-$(checksum package-lock.json)
+            - npm test
+        - name: "Neo: Unit Tests"
+          commands:
+            - cd neo
+            - cache restore node-modules-neo-$SEMAPHORE_GIT_BRANCH-$(checksum package-lock.json)
+            - npm test
 
   - name: "Integration Tests"
     task:
@@ -75,6 +86,8 @@ blocks:
           - cache restore node-modules-api-$SEMAPHORE_GIT_BRANCH-$(checksum package-lock.json)
           - cd ../app
           - cache restore node-modules-app-$SEMAPHORE_GIT_BRANCH-$(checksum package-lock.json)
+          - cd ../neo
+          - cache restore node-modules-neo-$SEMAPHORE_GIT_BRANCH-$(checksum package-lock.json)
 
           - cd ../spec
           - cache restore cypress-$(checksum package-lock.json)
@@ -92,6 +105,8 @@ blocks:
           - npm run build
           - npm start & wait-on -t 20000 http://localhost:8081
           - cd ../api
+          - npm run e2e & wait-on -t 20000 tcp:3001
+          - cd ../neo
           - npm run e2e & wait-on -t 20000 tcp:3001
           - cd ../spec
           - npm test -- --record

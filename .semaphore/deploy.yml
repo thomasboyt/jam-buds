@@ -24,6 +24,11 @@ blocks:
             - cd api
             - docker build -t "gcr.io/${GCP_PROJECT_ID}/jambuds-api" .
             - docker push "gcr.io/${GCP_PROJECT_ID}/jambuds-api"
+        - name: Build Neo
+          commands:
+            - cd neo
+            - docker build -t "gcr.io/${GCP_PROJECT_ID}/jambuds-neo" .
+            - docker push "gcr.io/${GCP_PROJECT_ID}/jambuds-neo"
         - name: Build App
           commands:
             - cd app
