@@ -59,3 +59,14 @@ export function followUser(
     )
     .none(params);
 }
+
+export function likeSong(
+  handle: Handle,
+  params: { userId: number; songId: number }
+) {
+  return handle
+    .createQuery(
+      'insert into likes (user_id, song_id) values (${userId}, ${songId})'
+    )
+    .none(params);
+}
