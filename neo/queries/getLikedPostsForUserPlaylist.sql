@@ -6,6 +6,7 @@ SELECT
     likes.song_id,
     -- some day:
     -- likes.mixtape_id,
+    NULL as "mixtape_id",
     likes.created_at as "timestamp"
 FROM likes
 WHERE
