@@ -11,6 +11,6 @@
   "license": "Parity-6.0.0",
   "dependencies": {},
   "devDependencies": {
-    "cypress": "^3.8.1"
+    "cypress": "^3.8.3"
   }
 }
