@@ -214,6 +214,16 @@ const playback = {
       context,
       { playlistKey, songId, playbackSourceLabel, playbackSourcePath }
     ) {
+      if (
+        songId === context.state.currentSongId &&
+        playlistKey === context.state.playlistKey
+      ) {
+        // if the song's already the current song, a click means a play/pause
+        // request
+        context.dispatch('togglePlayback');
+        return;
+      }
+
       const playlist = context.rootState.playlists[playlistKey].items;
       const entry = playlist.find((entry) => entry.songId === songId);
       context.commit('setPlaybackSource', {
