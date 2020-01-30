@@ -20,43 +20,6 @@ export interface Song {
   likeCount: number;
 }
 
-export interface PlaylistMixtapeItem {
-  type: 'mixtape';
-  mixtape: MixtapePreview;
-  timestamp: string;
-}
-
-export interface PlaylistSongItem {
-  type: 'song';
-  song: Song;
-  /**
-   * Either the earliest time a song was posted by someone you follow, or the
-   * earliest time _you_ posted a song.
-   */
-  timestamp: string;
-
-  /**
-   * A list of names of users you follow who posted the song.
-   */
-  userNames: string[];
-}
-
-export type PlaylistItem = PlaylistSongItem | PlaylistMixtapeItem;
-
-export interface Playlist {
-  items: PlaylistItem[];
-  limit: number;
-}
-
-/**
- * The playlist for a specific user, used on the profile pages.
- */
-export interface UserPlaylist {
-  userProfile: UserProfile;
-  items: PlaylistItem[];
-  limit: number;
-}
-
 /*
  * --- mixtapes ---
  */

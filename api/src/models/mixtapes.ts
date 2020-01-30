@@ -6,13 +6,7 @@ import { db } from '../db';
 import { UserModel, getUserProfileForUser, getUserByUserId } from './user';
 import { serializeSong, selectSongs } from './song';
 import { Mixtape, Song, DraftMixtapeListItem } from '../resources';
-import {
-  tPropNames,
-  namespacedAliases,
-  findMany,
-  findOne,
-  findOneOrThrow,
-} from './utils';
+import { findMany, findOne, findOneOrThrow } from './utils';
 
 export const MixtapeModelV = t.type({
   id: t.number,
@@ -30,28 +24,6 @@ export const MixtapeSongEntryModelV = t.type({
   mixtapeId: t.number,
   rank: t.number,
 });
-
-export const MixtapePreviewModelV = t.intersection([
-  MixtapeModelV,
-  t.type({
-    songCount: t.string,
-    authorName: t.string,
-  }),
-]);
-
-export function selectMixtapePreviews() {
-  return [
-    db!.raw(
-      namespacedAliases('mixtapes', 'mixtape', tPropNames(MixtapeModelV))
-    ),
-    db!.raw(
-      '(SELECT users.name FROM users WHERE users.id=mixtapes.user_id) as "mixtape.author_name"'
-    ),
-    db!.raw(
-      '(SELECT COUNT (*) FROM mixtape_song_entries WHERE mixtape_id=mixtapes.id) as "mixtape.song_count"'
-    ),
-  ];
-}
 
 const slugifyTitle = (title: string): string =>
   slugify(title, { decamelize: false });

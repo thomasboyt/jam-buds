@@ -55,11 +55,3 @@ export async function postFactory(
 
   return post!;
 }
-
-export async function mixtapeFactory(user: UserModel) {
-  const mixtape = await createMixtapeForUser(user, {
-    title: 'test mixtape',
-  });
-
-  publishMixtape(mixtape.id);
-}

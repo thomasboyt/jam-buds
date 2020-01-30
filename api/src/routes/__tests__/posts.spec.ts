@@ -8,9 +8,9 @@ import {
 } from '../../__tests__/factories';
 import { postSong } from '../../models/post';
 import { createAuthTokenForUserId } from '../../models/authTokens';
-import { getPostsByUserId } from '../../models/playlists';
 
 import createApp from '../../createApp';
+import { db } from '../../db';
 
 const app = createApp();
 
@@ -50,9 +50,6 @@ describe('routes/posts', () => {
         userId: user.id,
       });
 
-      const beforePlaylist = await getPostsByUserId(user.id);
-      expect(beforePlaylist.length).toBe(1);
-
       const req = request(app)
         .delete(`/api/posts/${post.songId}`)
         .set('X-Auth-Token', await createAuthTokenForUserId(user.id));
@@ -61,8 +58,8 @@ describe('routes/posts', () => {
 
       expectStatus(res, 200);
 
-      const afterPlaylist = await getPostsByUserId(user.id);
-      expect(afterPlaylist.length).toBe(0);
+      const posts = await db!('posts').where({ id: post.id });
+      expect(posts.length).toBe(0);
     });
 
     it("does not allow you to delete another user's song", async () => {
