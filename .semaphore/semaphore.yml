@@ -114,4 +114,4 @@ blocks:
           - cd ../neo
           - npm run e2e & wait-on -t 20000 tcp:3003
           - cd ../spec
-          - npm test -- --record
+          - npm test
