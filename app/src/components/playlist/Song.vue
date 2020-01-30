@@ -147,16 +147,10 @@ export default {
 
       if (this.userHasStreamingService) {
         if (this.canPlay) {
-          this.handlePlay();
+          this.$emit('requestPlay', this.songId);
         }
       } else {
         this.$store.commit('showConnectStreamingBanner');
-      }
-    },
-
-    handlePlay() {
-      if (this.canPlay) {
-        this.$emit('requestPlay', this.songId);
       }
     },
   },
