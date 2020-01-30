@@ -94,4 +94,4 @@ blocks:
           - cd ../api
           - npm run e2e & wait-on -t 20000 tcp:3001
           - cd ../spec
-          - npm test -- --record
+          - npm test
