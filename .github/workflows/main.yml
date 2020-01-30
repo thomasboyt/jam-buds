@@ -3,7 +3,7 @@ name: Run Tests
 on: [push]
 
 jobs:
-  api-tests:
+  unit-tests:
     runs-on: ubuntu-latest
 
     services:
@@ -35,8 +35,19 @@ jobs:
       - run: npm ci
         working-directory: ./api
 
-      - run: npm test
+      - run: npm ci
+        working-directory: ./neo
+
+      - name: Run API tests
+        run: npm test
         working-directory: ./api
+        env:
+          DATABASE_URL: "postgres://postgres@localhost:${{ job.services.postgres.ports[5432] }}/jambuds_test"
+          REDIS_URL: "redis://localhost:${{ job.services.redis.ports[6379] }}"
+
+      - name: Run neo tests
+        run: npm test
+        working-directory: ./neo
         env:
           DATABASE_URL: "postgres://postgres@localhost:${{ job.services.postgres.ports[5432] }}/jambuds_test"
           REDIS_URL: "redis://localhost:${{ job.services.redis.ports[6379] }}"
@@ -86,8 +97,14 @@ jobs:
         name: Install app dependencies
 
       - run: npm ci
+        working-directory: ./neo
+        name: Install neo dependencies
+
+      - name: Install integration test dependencies
+        run: |
+          npm ci
+          npx cypress verify
         working-directory: ./spec
-        name: Install integration test dependencies
 
       - run: npm install -g wait-on
 
@@ -99,12 +116,18 @@ jobs:
         working-directory: ./app
         name: Start App server
       
-      - run: npm run e2e & wait-on -t 20000 tcp:3001
+      - run: npm run e2e & wait-on -t 20000 tcp:3002
         working-directory: ./api
         name: Start API server
         env:
           DATABASE_URL: "postgres://postgres@localhost:${{ job.services.postgres.ports[5432] }}/jambuds_test"
           REDIS_URL: "redis://localhost:${{ job.services.redis.ports[6379] }}"
+
+      - run: npm run e2e & wait-on -t 20000 tcp:3003
+        working-directory: ./neo
+        name: Start Neo server
+        env:
+          DATABASE_URL: "postgres://postgres@localhost:${{ job.services.postgres.ports[5432] }}/jambuds_test"
 
       - run: npm test
         working-directory: ./spec
