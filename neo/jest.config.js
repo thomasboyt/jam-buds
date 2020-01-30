@@ -7,4 +7,5 @@ module.exports = {
       tsConfig: 'tsconfig.json',
     },
   },
+  globalSetup: './src/utils/testUtils/initTests.ts',
 };
