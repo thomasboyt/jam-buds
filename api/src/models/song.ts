@@ -27,12 +27,6 @@ export const SongMetaV = t.type({
 
 export type SongModel = t.TypeOf<typeof SongModelV>;
 
-export async function getSongById(id: number): Promise<SongModel | null> {
-  const query = db!('songs').where({ id });
-  const song = await findOne(query, SongModelV);
-  return song;
-}
-
 export async function getSongBySpotifyId(
   spotifyId: string
 ): Promise<SongModel | null> {
