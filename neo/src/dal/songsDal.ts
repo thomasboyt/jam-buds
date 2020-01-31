@@ -21,3 +21,14 @@ export async function getSongsByIds(
     .createQuery(queryString)
     .many(params, mapDecode(SongWithMeta.codec));
 }
+
+export async function songIdExists(
+  handle: Handle,
+  params: { songId: number }
+): Promise<boolean> {
+  const resp = await handle
+    .createQuery('select * from songs where id=${songId}')
+    .oneOrNone(params, () => true);
+
+  return !!resp;
+}

@@ -5,9 +5,11 @@ import * as Sentry from '@sentry/node';
 import { RewriteFrames } from '@sentry/integrations';
 
 import { configureDatabase } from './db';
-import { registerPlaylistRoutes } from './routes/playlists';
 import { jarethMiddleware, JarethCtx } from './utils/jarethMiddleware';
 import config from './config';
+
+import { registerLikesRoutes } from './routes/likes';
+import { registerPlaylistRoutes } from './routes/playlists';
 
 export type AppCtx = JarethCtx;
 
@@ -33,7 +35,10 @@ export function createApp() {
   server.use(jarethMiddleware(jareth));
 
   const router = new Router<{}, AppCtx>();
+
+  registerLikesRoutes(router);
   registerPlaylistRoutes(router);
+
   server.use(router.routes());
 
   Sentry.init({
