@@ -13,7 +13,7 @@ export async function songLikeExists(
   return !!resp;
 }
 
-export function likeSong(
+export function createSongLike(
   handle: Handle,
   params: { userId: number; songId: number }
 ): Promise<void> {
@@ -24,7 +24,7 @@ export function likeSong(
     .none(params);
 }
 
-export function unlikeSong(
+export function deleteSongLike(
   handle: Handle,
   params: { userId: number; songId: number }
 ): Promise<void> {

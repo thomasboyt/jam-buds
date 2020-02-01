@@ -2,7 +2,7 @@ import { JsonSchema } from 'restea';
 
 import {
   MixtapePreviewResource,
-  mixtapePreviewResourceSchema,
+  mixtapePreviewSchema,
 } from './MixtapePreviewResource';
 
 export interface UserPlaylistMixtapeItemResource {
@@ -20,7 +20,7 @@ export const userPlaylistMixtapeItemSchema: JsonSchema<
     type: {
       const: 'mixtape',
     },
-    mixtape: mixtapePreviewResourceSchema,
+    mixtape: mixtapePreviewSchema,
     timestamp: {
       type: 'string',
       format: 'date-time',

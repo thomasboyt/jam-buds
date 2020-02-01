@@ -24,10 +24,7 @@ import {
 } from '../utils/authMiddleware';
 import { AppCtx } from '../createApp';
 import { getUserProfileOrNull } from '../logic/users';
-import {
-  feedSchema,
-  userPlaylistWithProfileResourceSchema,
-} from '../resources';
+import { feedSchema, userPlaylistWithProfileSchema } from '../resources';
 
 export function registerPlaylistRoutes(router: Router<{}, AppCtx>) {
   const timestampPaginationMiddleware = compose(
@@ -96,7 +93,7 @@ export function registerPlaylistRoutes(router: Router<{}, AppCtx>) {
       parameter('userName', anyString(), {
         description: 'The name of the user',
       }),
-      returns(Ok(userPlaylistWithProfileResourceSchema))
+      returns(Ok(userPlaylistWithProfileSchema))
     ),
     async (ctx) => {
       const { currentUser, params } = ctx.state;
@@ -136,7 +133,7 @@ export function registerPlaylistRoutes(router: Router<{}, AppCtx>) {
       parameter('userName', anyString(), {
         description: 'The name of the user',
       }),
-      returns(Ok(userPlaylistWithProfileResourceSchema))
+      returns(Ok(userPlaylistWithProfileSchema))
     ),
     async (ctx) => {
       const { currentUser, params } = ctx.state;

@@ -34,7 +34,7 @@ export async function likeSong(
     return;
   }
 
-  await likesDal.likeSong(handle, { songId, userId: currentUserId });
+  await likesDal.createSongLike(handle, { songId, userId: currentUserId });
 }
 
 export async function unlikeSong(
@@ -43,5 +43,5 @@ export async function unlikeSong(
 ) {
   await ensureSongExists(handle, songId);
 
-  await likesDal.unlikeSong(handle, { songId, userId: currentUserId });
+  await likesDal.deleteSongLike(handle, { songId, userId: currentUserId });
 }

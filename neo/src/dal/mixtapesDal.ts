@@ -2,13 +2,9 @@ import { mapDecode, Handle } from '@tboyt/jareth';
 import getQuery from './utils/getQuery';
 import { MixtapePreview } from './models';
 
-interface GetMixtapesByIdsParams {
-  mixtapeIds: number[];
-}
-
 export async function getMixtapePreviewsByIds(
   handle: Handle,
-  params: GetMixtapesByIdsParams
+  params: { mixtapeIds: number[] }
 ): Promise<MixtapePreview.Model[]> {
   if (params.mixtapeIds.length === 0) {
     return [];

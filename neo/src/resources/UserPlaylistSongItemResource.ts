@@ -1,6 +1,6 @@
 import { JsonSchema } from 'restea';
 
-import { SongResource, songResourceSchema } from './SongResource';
+import { SongResource, songSchema } from './SongResource';
 
 export interface UserPlaylistSongItemResource {
   type: 'song';
@@ -17,7 +17,7 @@ export const userPlaylistSongItemSchema: JsonSchema<
     type: {
       const: 'song',
     },
-    song: songResourceSchema,
+    song: songSchema,
     timestamp: {
       type: 'string',
       format: 'date-time',

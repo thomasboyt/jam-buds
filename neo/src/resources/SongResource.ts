@@ -13,7 +13,7 @@ export interface SongResource {
   likeCount: number;
 }
 
-export const songResourceSchema: JsonSchema<SongResource> = {
+export const songSchema: JsonSchema<SongResource> = {
   type: 'object',
   required: ['id', 'artists', 'album', 'title', 'isLiked', 'likeCount'],
   properties: {

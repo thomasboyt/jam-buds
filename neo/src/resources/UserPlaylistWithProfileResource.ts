@@ -5,11 +5,13 @@ import {
 } from './UserPlaylistResource';
 import { UserProfileResource, userProfileSchema } from './UserProfileResource';
 
-export interface Interface extends UserPlaylistResource {
+export interface UserPlaylistWithProfileResource extends UserPlaylistResource {
   userProfile: UserProfileResource;
 }
 
-export const userPlaylistWithProfileResourceSchema: JsonSchema<Interface> = {
+export const userPlaylistWithProfileSchema: JsonSchema<
+  UserPlaylistWithProfileResource
+> = {
   allOf: [
     userPlaylistSchema,
     {

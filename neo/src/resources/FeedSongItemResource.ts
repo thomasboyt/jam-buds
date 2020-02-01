@@ -1,6 +1,6 @@
 import { JsonSchema } from 'restea';
 
-import { SongResource, songResourceSchema } from './SongResource';
+import { SongResource, songSchema } from './SongResource';
 
 export interface FeedSongItemResource {
   type: 'song';
@@ -16,7 +16,7 @@ export const feedSongItemSchema: JsonSchema<FeedSongItemResource> = {
     type: {
       const: 'song',
     },
-    song: songResourceSchema,
+    song: songSchema,
     userNames: {
       type: 'array',
       items: {

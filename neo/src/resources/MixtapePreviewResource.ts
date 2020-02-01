@@ -8,9 +8,7 @@ export interface MixtapePreviewResource {
   numTracks: number;
 }
 
-export const mixtapePreviewResourceSchema: JsonSchema<
-  MixtapePreviewResource
-> = {
+export const mixtapePreviewSchema: JsonSchema<MixtapePreviewResource> = {
   type: 'object',
   required: ['id', 'title', 'slug', 'authorName', 'numTracks'],
   properties: {
