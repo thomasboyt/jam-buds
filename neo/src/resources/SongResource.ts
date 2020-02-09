@@ -24,6 +24,9 @@ export const songSchema: JsonSchema<SongResource> = {
       type: 'array',
       items: [{ type: 'string' }],
     },
+    album: {
+      type: ['string', 'null'],
+    },
     title: {
       type: 'string',
     },
