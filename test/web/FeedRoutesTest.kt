@@ -44,18 +44,5 @@ class FeedRoutesTest : BaseTest() {
             .asString()
         assertEquals(resp.status, 400)
     }
-//
-    @Test
-    fun `GET public-feed - returns 400 for invalid currentUserId`() = withTestApp {
-        var resp = Unirest.get("$appUrl/public-feed")
-            .queryString("currentUserId", "1")
-            .asString()
-        assertEquals(resp.status, 200)
-
-        resp = Unirest.get("$appUrl/public-feed")
-            .queryString("currentUserId", "foo")
-            .asString()
-        assertEquals(resp.status, 400)
-    }
 }
 
