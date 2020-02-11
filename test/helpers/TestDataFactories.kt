@@ -1,17 +1,18 @@
 package helpers
 
+import model.Post
 import org.jdbi.v3.core.Handle
 import java.time.Instant
 
 object TestDataFactories {
-    fun createSongPost(txn: Handle, userId: Int, songId: Int): Instant {
+    fun createSongPost(txn: Handle, userId: Int, songId: Int): Post {
         return txn.createUpdate("""
                 insert into posts (user_id, song_id) values (:userId, :songId)
                 """.trimIndent())
             .bind("userId", userId)
             .bind("songId", songId)
-            .executeAndReturnGeneratedKeys("created_at")
-            .mapTo(Instant::class.java)
+            .executeAndReturnGeneratedKeys()
+            .mapTo(Post::class.java)
             .one()
     }
 

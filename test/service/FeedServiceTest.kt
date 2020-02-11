@@ -2,11 +2,13 @@ package service
 
 import org.jdbi.v3.core.Handle
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.Disabled
 import kotlin.test.assertEquals
 import helpers.TestDataFactories.createLike
 import helpers.TestDataFactories.createSong
 import helpers.TestDataFactories.createSongPost
 import helpers.TestDataFactories.createUser
+import helpers.TestDataFactories.followUser
 import BaseTest
 
 class FeedServiceTest : BaseTest() {
@@ -114,7 +116,7 @@ class FeedServiceTest : BaseTest() {
         withTransaction { txn ->
             val songId = createSong(txn)
             val jeffId = createUser(txn, "jeff", true)
-            val firstTimestamp = createSongPost(txn, userId = jeffId, songId = songId)
+            val firstPost = createSongPost(txn, userId = jeffId, songId = songId)
             val vinnyId = createUser(txn, "vinny", true)
             createSongPost(txn, userId = vinnyId, songId = songId)
 
@@ -126,7 +128,7 @@ class FeedServiceTest : BaseTest() {
             )
             assertEquals(1, results.items.size)
             assertEquals(songId, results.items[0].song!!.id)
-            assertEquals(firstTimestamp, results.items[0].timestamp)
+            assertEquals(firstPost.createdAt, results.items[0].timestamp)
         }
     }
 
@@ -154,6 +156,130 @@ class FeedServiceTest : BaseTest() {
             )
             assertEquals(true, afterLikeResults.items[0].song!!.isLiked)
         }
+    }
+
+    @Test
+    fun `getUserFeed - only includes posts from users the current user follows and their own`() {
+        withTransaction { txn ->
+            val feedService = createFeedService(txn)
+
+            val jeffId = createUser(txn, "jeff", true)
+            val vinnyId = createUser(txn, "vinny", true)
+            val bradId = createUser(txn, "brad", true)
+            val benId = createUser(txn, "ben", true)
+
+            followUser(txn, jeffId, vinnyId)
+            followUser(txn, jeffId, bradId)
+
+            createSongPost(txn, userId = jeffId, songId = createSong(txn))
+            createSongPost(txn, userId = vinnyId, songId = createSong(txn))
+            createSongPost(txn, userId = bradId, songId = createSong(txn))
+            createSongPost(txn, userId = benId, songId = createSong(txn))
+
+            val aggregatedPosts = feedService.getUserFeed(
+                currentUserId = jeffId,
+                beforeTimestamp = null,
+                afterTimestamp = null,
+                limit = 10
+            )
+
+            assertEquals(3, aggregatedPosts.items.size)
+            assertEquals(listOf("brad", "vinny", "jeff"), aggregatedPosts.items.map { it.userNames[0] })
+        }
+    }
+
+    @Test
+    fun `getUserFeed - aggregates entries by song`() {
+        withTransaction { txn ->
+            val feedService = createFeedService(txn)
+
+            val jeffId = createUser(txn, "jeff", true)
+            val vinnyId = createUser(txn, "vinny", true)
+            val bradId = createUser(txn, "brad", true)
+
+            followUser(txn, jeffId, vinnyId)
+            followUser(txn, jeffId, bradId)
+
+            val sharedSongId = createSong(txn)
+            createSongPost(txn, userId = jeffId, songId = sharedSongId)
+            createSongPost(txn, userId = vinnyId, songId = sharedSongId)
+            createSongPost(txn, userId = bradId, songId = sharedSongId)
+            createSongPost(txn, userId = vinnyId, songId = createSong(txn))
+
+            val aggregatedPosts = feedService.getUserFeed(
+                currentUserId = jeffId,
+                beforeTimestamp = null,
+                afterTimestamp = null,
+                limit = 10
+            )
+
+            assertEquals(2, aggregatedPosts.items.size)
+            assertEquals(listOf("jeff", "vinny", "brad"), aggregatedPosts.items[1].userNames)
+        }
+    }
+
+    @Test
+    fun `getUserFeed - aggregated timestamp logic`() {
+        withTransaction { txn ->
+            val feedService = createFeedService(txn)
+
+            val jeffId = createUser(txn, "jeff", true)
+            val vinnyId = createUser(txn, "vinny", true)
+            val bradId = createUser(txn, "brad", true)
+            val benId = createUser(txn, "ben", true)
+
+            followUser(txn, jeffId, vinnyId)
+            followUser(txn, jeffId, bradId)
+            followUser(txn, jeffId, benId)
+
+            val sharedSongId = createSong(txn)
+
+            // with only posts from other users: the oldest time is used
+            val vinnyPost = createSongPost(txn, userId = vinnyId, songId = sharedSongId)
+            val bradPost = createSongPost(txn, userId = bradId, songId = sharedSongId)
+
+            var aggregatedPosts = feedService.getUserFeed(
+                currentUserId = jeffId,
+                beforeTimestamp = null,
+                afterTimestamp = null,
+                limit = 10
+            )
+
+            assertEquals(1, aggregatedPosts.items.size)
+            assertEquals(aggregatedPosts.items[0].timestamp, vinnyPost.createdAt)
+
+            // with newest post from current user: the current user's time is used
+            val jeffPost = createSongPost(txn, userId = jeffId, songId = sharedSongId)
+
+            aggregatedPosts = feedService.getUserFeed(
+                currentUserId = jeffId,
+                beforeTimestamp = null,
+                afterTimestamp = null,
+                limit = 10
+            )
+
+            assertEquals(1, aggregatedPosts.items.size)
+            assertEquals(aggregatedPosts.items[0].timestamp, jeffPost.createdAt)
+
+            // with newest post from another user, but with a post from current user: the current user's time is used
+            val benPost = createSongPost(txn, userId = benId, songId = sharedSongId)
+
+            aggregatedPosts = feedService.getUserFeed(
+                currentUserId = jeffId,
+                beforeTimestamp = null,
+                afterTimestamp = null,
+                limit = 10
+            )
+
+            assertEquals(1, aggregatedPosts.items.size)
+            assertEquals(aggregatedPosts.items[0].timestamp, jeffPost.createdAt)
+        }
+    }
+
+    @Test
+    @Disabled
+    fun `getUserFeed - pagination logic`() {
+        // TODO: Test: correctly paginates with cursors including current user aggregated timestamps
     }
 
     private fun createFeedService(txn: Handle): FeedService {
