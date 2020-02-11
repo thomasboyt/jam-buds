@@ -1,6 +1,3 @@
-import io.ktor.config.MapApplicationConfig
-import io.ktor.server.testing.TestApplicationEngine
-import io.ktor.server.testing.withTestApplication
 import org.flywaydb.core.Flyway
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.Handle
@@ -12,8 +9,12 @@ private fun getDatabaseUrl(): String {
     return System.getenv("JDBC_DATABASE_URL") ?: "jdbc:postgresql://localhost:5433/jambuds_kotlin_test?user=postgres"
 }
 
+// TODO: allow configuration?
+const val TEST_APP_PORT = 7001
+
 open class BaseTest {
     private lateinit var jdbi: Jdbi
+    val appUrl = "http://localhost:$TEST_APP_PORT"
 
     companion object {
         @BeforeAll
@@ -42,16 +43,13 @@ open class BaseTest {
         }
     }
 
-    internal fun withTestApp(cb: TestApplicationEngine.() -> Unit) {
-        // TODO: this should also provide a transaction I guess? or maybe all app-level tests should
-        // do a db reset? may need to come up with a second BaseTest or use some kind of mixins
-        // or whatever....
-        withTestApplication({
-            (environment.config as MapApplicationConfig).apply {
-                // TODO: Can put test-specific config here
-                put("jambuds.database_url", getDatabaseUrl())
-            }
-            mainModule()
-        }, cb)
+    internal fun withTestApp(cb: () -> Unit) {
+        val app = createApp(getDatabaseUrl())
+        app.start(TEST_APP_PORT)
+        try {
+            cb()
+        } finally {
+            app.stop()
+        }
     }
 }

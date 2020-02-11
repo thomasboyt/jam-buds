@@ -1,8 +1,8 @@
 SELECT *
 FROM (
     SELECT
-        song_id
-        mixtape_id,
+        posts.song_id,
+        posts.mixtape_id,
         COALESCE(
             (SELECT user_posts.created_at
                 FROM posts AS user_posts
@@ -19,12 +19,13 @@ FROM (
     GROUP BY posts.song_id, posts.mixtape_id
 ) AS aggregated_posts
 WHERE
-    (COALESCE(NULL, :beforeTimestamp) IS NULL OR aggregated_posts.timestamp < :beforeTimestamp)
-    AND (COALESCE(NULL, :afterTimestamp) IS NULL OR aggregated_posts.timestamp > :afterTimestamp)
+    (COALESCE(:beforeTimestamp, NULL) IS NULL OR aggregated_posts.timestamp < :beforeTimestamp)
+    AND
+    (COALESCE(:afterTimestamp, NULL) IS NULL OR aggregated_posts.timestamp > :afterTimestamp)
 ORDER BY timestamp DESC
 LIMIT
     CASE
-        WHEN COALESCE(NULL, :afterTimestamp) IS NULL
+        WHEN COALESCE(:afterTimestamp, NULL) IS NULL
         THEN :limit
         ELSE NULL
     END;

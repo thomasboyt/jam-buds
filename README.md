@@ -9,7 +9,7 @@ If you're reading this with no context, you may want to scroll down to the "Why"
 My plan for this experiment is to reimplement the parts of Jam Buds I feel the worst about first, to see if I like them more in Kotlin. So far, this means feed querying:
 
 * [x] Query the public feed
-* [ ] Query a specific user's feed
+* [x] Query a specific user's feed
 * [ ] Query a specific user's posts
 
 As part of this, I want to rewrite the unit tests. I will come up with specific scenarios in a separate list, but here's a rough outline of the plan:
@@ -24,22 +24,16 @@ I also want to figure out, uh, how the hell to deploy this thing. This will enta
 * [x] Building a self-contained app for distribution in Docker
 * [x] Creating a docker image
 * [x] Running the docker image locally to confirm it works
-* [ ] Deploying the image to my docker box against the production Jam Buds DB to see if it works well and how the performance is
+* [x] Deploying the image to my docker box against the production Jam Buds DB to see if it works well and how the performance is
 * [ ] Hook up Sentry for monitoring (can test locally)
-
-### Questions I have
-
-* [ ] What's a good way of creating test data inside an app that isn't using an ORM? Should I create factories, or rely on SQL scripts/seeds?
 
 ## Architecture
 
-This project is a Kotlin app that uses Jetbrains's [Ktor](https://ktor.io/) framework. The Ktor documentation fails to describe how to build anything with any kind of actual scale, so I more or less copied the current project structure from various sources.
-
-One notable difference with those sources: While usually I associate JVM apps with having folders nested about seven levels deep with a bunch of bullshit (and how excited I was to be able to have a path that started with `src/club/jambuds`), apparently in pure-Kotlin projects you're able to have everything in the top level, which is actually really neat. This may all break at some point in the future, considering I don't really know how classpath works when you bundle an app for deployment, but I hope it's okay!
+This project is a Kotlin app that uses [Javalin](https://javalin.io/), a small web framework for Java and Kotlin built on [Jetty](https://www.eclipse.org/jetty/). I originally started out using [Ktor](https://ktor.io/), but wasn't happy with its APIs and immaturity. Javalin seems to have the batteries I'm looking for, like parameter validation. Notably, it doesn't have coroutines, but does support [completable features](https://javalin.io/documentation#faq). In a world where most Java libraries aren't async, but generally _are_ thread-safe, this seems like an okay tradeoff.
 
 I've imported the Jam Buds schema and I've created an isolated database for tests using [Flyway](https://flywaydb.org/). It took me forever to get up and running (turns out there are very specific file naming rules for migrations, who knew?). It runs before every test, clearing the DB - theoretically I've figured out a way to wrap tests in transactions to not require this recreation, but I need to figure out how to run the migrations once before starting the tests before disabling that. 
 
-_(todo...)_
+I'm currently building things with fairly standard "route handlers/business logic/data access" layers. The data layer is just [JDBI](https://jdbi.org/) DAOs, while the logic and handler layers are plain classes that have their dependencies ~~injected~~ passed to them at app startup time, theoretically making it easy to build service tests. In fact, service tests can have DAOs passed to them that are attached to the same transaction, allowing for quick rollbacks instead of full database resets.
 
 ## Why?
 
