@@ -3,10 +3,11 @@ package web
 import io.javalin.http.Context
 import java.time.Instant
 import service.FeedService
+import web.extensions.*
 
 class FeedRoutes(private val feedService: FeedService) {
     fun getPublicFeed(ctx: Context) {
-        val currentUserId = ctx.queryParam<Int>("currentUserId").getOrNull()
+        val currentUserId = ctx.currentUser?.id
         val beforeTimestamp = ctx.queryParam<Instant>("beforeTimestamp").getOrNull()
         val afterTimestamp = ctx.queryParam<Instant>("afterTimestamp")
             .check(
@@ -24,7 +25,7 @@ class FeedRoutes(private val feedService: FeedService) {
     }
 
     fun getUserFeed(ctx: Context) {
-        val currentUserId = ctx.queryParam<Int>("currentUserId").get()
+        val currentUser = ctx.requireUser()
         val beforeTimestamp = ctx.queryParam<Instant>("beforeTimestamp").getOrNull()
         val afterTimestamp = ctx.queryParam<Instant>("afterTimestamp")
             .check(
@@ -34,7 +35,7 @@ class FeedRoutes(private val feedService: FeedService) {
             .getOrNull()
 
         val feedItems = feedService.getUserFeed(
-            currentUserId = currentUserId,
+            currentUserId = currentUser.id,
             beforeTimestamp = beforeTimestamp,
             afterTimestamp = afterTimestamp
         )
