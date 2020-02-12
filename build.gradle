@@ -45,8 +45,8 @@ dependencies {
     implementation "org.jdbi:jdbi3-sqlobject:$jdbi3_version"
     implementation "org.jdbi:jdbi3-kotlin:$jdbi3_version"
     implementation "org.jdbi:jdbi3-kotlin-sqlobject:$jdbi3_version"
-
     implementation "org.postgresql:postgresql:42.2.9"
+    implementation "com.zaxxer:HikariCP:3.4.2"
 
     testImplementation "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.0'

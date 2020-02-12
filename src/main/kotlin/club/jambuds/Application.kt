@@ -12,6 +12,7 @@ import club.jambuds.web.PlaylistRoutes
 import com.google.gson.GsonBuilder
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
+import com.zaxxer.hikari.HikariDataSource
 import io.javalin.Javalin
 import io.javalin.apibuilder.ApiBuilder.before
 import io.javalin.apibuilder.ApiBuilder.get
@@ -27,7 +28,11 @@ import org.jdbi.v3.sqlobject.kotlin.onDemand
 import java.time.Instant
 
 fun createJdbi(databaseUri: String): Jdbi {
-    val jdbi = Jdbi.create(databaseUri)
+    val ds = HikariDataSource()
+    ds.jdbcUrl = databaseUri
+    ds.maximumPoolSize = 3  // (core_size * 2) + disk_count
+
+    val jdbi = Jdbi.create(ds)
     jdbi.installPlugin(KotlinPlugin())
     jdbi.installPlugin(KotlinSqlObjectPlugin())
     jdbi.installPlugin(PostgresPlugin())
