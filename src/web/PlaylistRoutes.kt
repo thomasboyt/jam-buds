@@ -1,9 +1,10 @@
-package web
+package club.jambuds.web
 
+import club.jambuds.service.PlaylistService
+import club.jambuds.web.extensions.currentUser
+import club.jambuds.web.extensions.requireUser
 import io.javalin.http.Context
 import java.time.Instant
-import service.PlaylistService
-import web.extensions.*
 
 class PlaylistRoutes(private val playlistService: PlaylistService) {
     fun getPublicFeed(ctx: Context) {

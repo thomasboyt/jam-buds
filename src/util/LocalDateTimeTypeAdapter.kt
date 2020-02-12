@@ -1,10 +1,10 @@
-package util
+package club.jambuds.util
 
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import com.google.gson.TypeAdapter
 import com.google.gson.stream.JsonReader
 import com.google.gson.stream.JsonWriter
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class LocalDateTimeTypeAdapter : TypeAdapter<LocalDateTime>() {
     override fun write(out: JsonWriter, value: LocalDateTime) {

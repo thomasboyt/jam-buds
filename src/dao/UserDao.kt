@@ -1,9 +1,8 @@
-package dao
+package club.jambuds.dao
 
-import org.jdbi.v3.sqlobject.statement.SqlQuery
+import club.jambuds.model.User
 import org.jdbi.v3.sqlobject.locator.UseClasspathSqlLocator
-
-import model.User
+import org.jdbi.v3.sqlobject.statement.SqlQuery
 
 @UseClasspathSqlLocator
 interface UserDao {

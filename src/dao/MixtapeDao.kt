@@ -1,10 +1,9 @@
-package dao
+package club.jambuds.dao
 
-import org.jdbi.v3.sqlobject.statement.SqlQuery
-import org.jdbi.v3.sqlobject.locator.UseClasspathSqlLocator
+import club.jambuds.model.MixtapePreview
 import org.jdbi.v3.sqlobject.customizer.BindList
-
-import model.MixtapePreview
+import org.jdbi.v3.sqlobject.locator.UseClasspathSqlLocator
+import org.jdbi.v3.sqlobject.statement.SqlQuery
 
 @UseClasspathSqlLocator
 interface MixtapeDao {

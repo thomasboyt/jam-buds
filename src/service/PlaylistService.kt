@@ -1,11 +1,13 @@
-package service
+package club.jambuds.service
 
+import club.jambuds.dao.MixtapeDao
+import club.jambuds.dao.PostDao
+import club.jambuds.dao.SongDao
+import club.jambuds.model.AggregatedPost
+import club.jambuds.model.MixtapePreview
+import club.jambuds.model.SongWithMeta
 import com.google.gson.annotations.SerializedName
 import java.time.Instant
-
-import model.AggregatedPost
-import model.MixtapePreview
-import model.SongWithMeta
 
 enum class PlaylistEntryType {
     @SerializedName("song")
@@ -31,16 +33,16 @@ data class ListWithLimitResource<T>(
 private const val DEFAULT_PLAYLIST_LIMIT = 20
 
 class PlaylistService(
-    private val postDao: dao.PostDao,
-    private val songDao: dao.SongDao,
-    private val mixtapeDao: dao.MixtapeDao) {
-
+    private val postDao: PostDao,
+    private val songDao: SongDao,
+    private val mixtapeDao: MixtapeDao
+) {
     fun getUserFeed(
         currentUserId: Int,
         beforeTimestamp: Instant?,
         afterTimestamp: Instant?,
         limit: Int = DEFAULT_PLAYLIST_LIMIT
-    ) : ListWithLimitResource<PlaylistEntryResource> {
+    ): ListWithLimitResource<PlaylistEntryResource> {
         val posts = postDao.getAggregatedPostsByUserFeed(
             currentUserId = currentUserId,
             beforeTimestamp = beforeTimestamp,
@@ -57,7 +59,7 @@ class PlaylistService(
         afterTimestamp: Instant?,
         currentUserId: Int?,
         limit: Int = DEFAULT_PLAYLIST_LIMIT
-    ) : ListWithLimitResource<PlaylistEntryResource> {
+    ): ListWithLimitResource<PlaylistEntryResource> {
         val posts = postDao.getPublicAggregatedPosts(
             beforeTimestamp = beforeTimestamp,
             afterTimestamp = afterTimestamp,
@@ -71,7 +73,7 @@ class PlaylistService(
     private fun getPlaylistEntriesForPosts(
         posts: List<AggregatedPost>,
         currentUserId: Int?
-    ) : List<PlaylistEntryResource> {
+    ): List<PlaylistEntryResource> {
         val songIds = posts.mapNotNull { it.songId }
         val songsMap = if (songIds.isNotEmpty()) {
             val currentUserId = currentUserId ?: -1

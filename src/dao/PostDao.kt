@@ -1,10 +1,10 @@
-package dao
+package club.jambuds.dao
 
-import java.time.Instant
-import org.jdbi.v3.sqlobject.statement.SqlQuery
-import org.jdbi.v3.sqlobject.locator.UseClasspathSqlLocator
-import model.AggregatedPost
+import club.jambuds.model.AggregatedPost
 import org.jdbi.v3.sqlobject.customizer.Bind
+import org.jdbi.v3.sqlobject.locator.UseClasspathSqlLocator
+import org.jdbi.v3.sqlobject.statement.SqlQuery
+import java.time.Instant
 
 @UseClasspathSqlLocator
 interface PostDao {

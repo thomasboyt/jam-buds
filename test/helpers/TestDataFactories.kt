@@ -1,6 +1,6 @@
 package helpers
 
-import model.Post
+import club.jambuds.model.Post
 import org.jdbi.v3.core.Handle
 
 object TestDataFactories {

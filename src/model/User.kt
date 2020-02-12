@@ -1,6 +1,6 @@
-package model
+package club.jambuds.model
 
-data class User (
+data class User(
     val id: Int,
     val name: String
 )

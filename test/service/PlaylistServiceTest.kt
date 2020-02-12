@@ -1,15 +1,18 @@
-package service
+package club.jambuds.service
 
-import org.jdbi.v3.core.Handle
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.Disabled
-import kotlin.test.assertEquals
+import club.jambuds.BaseTest
+import club.jambuds.dao.MixtapeDao
+import club.jambuds.dao.PostDao
+import club.jambuds.dao.SongDao
 import helpers.TestDataFactories.createLike
 import helpers.TestDataFactories.createSong
 import helpers.TestDataFactories.createSongPost
 import helpers.TestDataFactories.createUser
 import helpers.TestDataFactories.followUser
-import BaseTest
+import org.jdbi.v3.core.Handle
+import org.junit.jupiter.api.Disabled
+import org.junit.jupiter.api.Test
+import kotlin.test.assertEquals
 
 class PlaylistServiceTest : BaseTest() {
     @Test
@@ -287,9 +290,9 @@ class PlaylistServiceTest : BaseTest() {
     }
 
     private fun createPlaylistService(txn: Handle): PlaylistService {
-        val postDao = txn.attach(dao.PostDao::class.java)
-        val songDao = txn.attach(dao.SongDao::class.java)
-        val mixtapeDao = txn.attach(dao.MixtapeDao::class.java)
+        val postDao = txn.attach(PostDao::class.java)
+        val songDao = txn.attach(SongDao::class.java)
+        val mixtapeDao = txn.attach(MixtapeDao::class.java)
         return PlaylistService(postDao, songDao, mixtapeDao)
     }
 }

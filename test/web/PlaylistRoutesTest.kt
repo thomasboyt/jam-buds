@@ -1,15 +1,14 @@
-package web
+package club.jambuds.web
 
-import kotlin.test.*
-import org.junit.jupiter.api.Test
-import kong.unirest.Unirest
+import club.jambuds.BaseTest
+import club.jambuds.service.ListWithLimitResource
+import club.jambuds.service.PlaylistEntryResource
 import io.javalin.plugin.json.JavalinJson
+import kong.unirest.Unirest
+import org.junit.jupiter.api.Test
 import java.time.Instant
 import java.time.format.DateTimeFormatter
-import BaseTest
-
-import service.PlaylistEntryResource
-import service.ListWithLimitResource
+import kotlin.test.assertEquals
 
 class PlaylistRoutesTest : BaseTest() {
     @Test
@@ -45,4 +44,3 @@ class PlaylistRoutesTest : BaseTest() {
         assertEquals(resp.status, 400)
     }
 }
-

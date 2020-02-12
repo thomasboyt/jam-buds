@@ -1,4 +1,4 @@
-package model
+package club.jambuds.model
 
 import java.time.Instant
 

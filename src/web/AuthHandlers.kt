@@ -1,9 +1,10 @@
-package web
+package club.jambuds.web
 
+import club.jambuds.dao.UserDao
 import io.javalin.http.Context
 import io.javalin.http.UnauthorizedResponse
 
-class AuthHandlers(private val userDao: dao.UserDao) {
+class AuthHandlers(private val userDao: UserDao) {
     fun setUserFromHeader(ctx: Context) {
         val token = ctx.header("X-Auth-Token")
         if (token != null) {

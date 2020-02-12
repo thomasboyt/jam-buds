@@ -1,9 +1,11 @@
+package club.jambuds
+
 import org.flywaydb.core.Flyway
-import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.Handle
+import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.kotlin.useTransactionUnchecked
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.BeforeEach
 
 // TODO: allow configuration?
 const val TEST_APP_PORT = 7001

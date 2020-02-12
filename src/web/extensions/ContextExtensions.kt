@@ -1,8 +1,8 @@
-package web.extensions
+package club.jambuds.web.extensions
 
+import club.jambuds.model.User
 import io.javalin.http.Context
 import io.javalin.http.UnauthorizedResponse
-import model.User
 
 val Context.currentUser: User?
     get() = this.attribute("currentUser") as? User
@@ -14,4 +14,3 @@ fun Context.requireUser(): User {
     }
     return user
 }
-

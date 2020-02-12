@@ -1,10 +1,20 @@
-import java.time.Instant
+package club.jambuds
 
+import club.jambuds.dao.MixtapeDao
+import club.jambuds.dao.PostDao
+import club.jambuds.dao.SongDao
+import club.jambuds.dao.UserDao
+import club.jambuds.service.PlaylistService
+import club.jambuds.util.InstantTypeAdapter
+import club.jambuds.util.LocalDateTimeTypeAdapter
+import club.jambuds.web.AuthHandlers
+import club.jambuds.web.PlaylistRoutes
 import com.google.gson.GsonBuilder
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
 import io.javalin.Javalin
-import io.javalin.apibuilder.ApiBuilder.*
+import io.javalin.apibuilder.ApiBuilder.before
+import io.javalin.apibuilder.ApiBuilder.get
 import io.javalin.core.validation.JavalinValidation
 import io.javalin.plugin.json.FromJsonMapper
 import io.javalin.plugin.json.JavalinJson
@@ -14,11 +24,7 @@ import org.jdbi.v3.core.kotlin.KotlinPlugin
 import org.jdbi.v3.postgres.PostgresPlugin
 import org.jdbi.v3.sqlobject.kotlin.KotlinSqlObjectPlugin
 import org.jdbi.v3.sqlobject.kotlin.onDemand
-import service.PlaylistService
-import util.InstantTypeAdapter
-import util.LocalDateTimeTypeAdapter
-import web.AuthHandlers
-import web.PlaylistRoutes
+import java.time.Instant
 
 fun createJdbi(databaseUri: String): Jdbi {
     val jdbi = Jdbi.create(databaseUri)
@@ -62,7 +68,7 @@ fun getConfig(): Config {
 fun createApp(config: Config): Javalin {
     val app = Javalin.create() { config ->
         config.defaultContentType = "application/json"
-        config.showJavalinBanner = false  // would be fun to turn this back on for not tests
+        config.showJavalinBanner = false // would be fun to turn this back on for not tests
     }
 
     configureJsonMapper()
@@ -73,10 +79,10 @@ fun createApp(config: Config): Javalin {
     val jdbi = createJdbi(config.getString("databaseUrl"))
 
     // TODO: could these be hooked up to a shared transaction in some kind of "test mode"?
-    val postDao = jdbi.onDemand<dao.PostDao>()
-    val songDao = jdbi.onDemand<dao.SongDao>()
-    val mixtapeDao = jdbi.onDemand<dao.MixtapeDao>()
-    val userDao = jdbi.onDemand<dao.UserDao>()
+    val postDao = jdbi.onDemand<PostDao>()
+    val songDao = jdbi.onDemand<SongDao>()
+    val mixtapeDao = jdbi.onDemand<MixtapeDao>()
+    val userDao = jdbi.onDemand<UserDao>()
 
     val authHandlers = AuthHandlers(userDao)
 
@@ -98,4 +104,3 @@ fun main() {
     val app = createApp(config)
     app.start(config.getInt("port"))
 }
-

@@ -1,4 +1,4 @@
-package model
+package club.jambuds.model
 
 import java.time.Instant
 
@@ -8,4 +8,3 @@ data class AggregatedPost(
     val timestamp: Instant,
     val userNames: List<String>
 )
-
