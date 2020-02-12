@@ -1,6 +1,8 @@
 import java.time.Instant
 
 import com.google.gson.GsonBuilder
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
 import io.javalin.Javalin
 import io.javalin.apibuilder.ApiBuilder.*
 import io.javalin.core.validation.JavalinValidation
@@ -47,7 +49,17 @@ private fun configureValidation() {
     JavalinValidation.register(Instant::class.java) { Instant.parse(it) }
 }
 
-fun createApp(jdbcUrl: String): Javalin {
+fun getConfig(): Config {
+    val env = System.getenv("JAMBUDS_ENV") ?: throw Error("No JAMBUDS_ENV set!")
+    val envConfig = ConfigFactory.parseResources("conf/$env.conf")
+    val envVarConfig = ConfigFactory.parseResources("conf/vars.conf")
+    return envVarConfig
+        .withFallback(envConfig)
+        .resolve()
+        .getConfig("rhiannon")
+}
+
+fun createApp(config: Config): Javalin {
     val app = Javalin.create() { config ->
         config.defaultContentType = "application/json"
         config.showJavalinBanner = false  // would be fun to turn this back on for not tests
@@ -58,7 +70,7 @@ fun createApp(jdbcUrl: String): Javalin {
 
     // Wire up dependencies
 
-    val jdbi = createJdbi(jdbcUrl)
+    val jdbi = createJdbi(config.getString("databaseUrl"))
 
     // TODO: could these be hooked up to a shared transaction in some kind of "test mode"?
     val postDao = jdbi.onDemand<dao.PostDao>()
@@ -82,7 +94,8 @@ fun createApp(jdbcUrl: String): Javalin {
 }
 
 fun main() {
-    val app = createApp("jdbc:postgresql://localhost:5433/jambuds?user=postgres")
-    app.start()
+    val config = getConfig()
+    val app = createApp(config)
+    app.start(config.getInt("port"))
 }
 

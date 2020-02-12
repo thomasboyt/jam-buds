@@ -41,12 +41,11 @@ repositories {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    testImplementation "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
-    implementation "ch.qos.logback:logback-classic:$logback_version"
 
     implementation 'io.javalin:javalin:3.7.0'
     implementation 'com.google.code.gson:gson:2.8.6'
-    testImplementation "com.konghq:unirest-java:3.4.03"
+    implementation "com.typesafe:config:1.4.0"
+    implementation "ch.qos.logback:logback-classic:$logback_version"
 
     implementation "org.jdbi:jdbi3-core:$jdbi3_version"
     implementation "org.jdbi:jdbi3-postgres:$jdbi3_version"
@@ -56,13 +55,15 @@ dependencies {
 
     implementation "org.postgresql:postgresql:42.2.9"
 
+    testImplementation "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.5.0'
-
+    testImplementation "com.konghq:unirest-java:3.4.03"
     testImplementation "org.flywaydb:flyway-core:6.1.4"
 }
 
 test {
+    environment "JAMBUDS_ENV", "test"
     useJUnitPlatform()
     testLogging.showStandardStreams = true
 }

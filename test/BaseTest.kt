@@ -5,10 +5,6 @@ import org.jdbi.v3.core.kotlin.useTransactionUnchecked
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.BeforeAll
 
-private fun getDatabaseUrl(): String {
-    return System.getenv("JDBC_DATABASE_URL") ?: "jdbc:postgresql://localhost:5433/jambuds_kotlin_test?user=postgres"
-}
-
 // TODO: allow configuration?
 const val TEST_APP_PORT = 7001
 
@@ -17,12 +13,14 @@ open class BaseTest {
     val appUrl = "http://localhost:$TEST_APP_PORT"
 
     companion object {
+        val config = getConfig()
+
         @BeforeAll
         @JvmStatic
         internal fun beforeAll() {
             val flyway = Flyway.configure()
                 // note: if the dbUrl has a ?user=bob&password=secret param, it *should* take priority here
-                .dataSource(getDatabaseUrl(), "postgres", "")
+                .dataSource(config.getString("databaseUrl"), "postgres", "")
                 .load()
             flyway.clean()
             flyway.migrate()
@@ -31,7 +29,7 @@ open class BaseTest {
 
     @BeforeEach
     fun beforeEach() {
-        jdbi = createJdbi(getDatabaseUrl())
+        jdbi = createJdbi(config.getString("databaseUrl"))
     }
 
     internal fun withTransaction(cb: (txn: Handle) -> Unit) {
@@ -44,7 +42,7 @@ open class BaseTest {
     }
 
     internal fun withTestApp(cb: () -> Unit) {
-        val app = createApp(getDatabaseUrl())
+        val app = createApp(config)
         app.start(TEST_APP_PORT)
         try {
             cb()
