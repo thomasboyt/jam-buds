@@ -8,4 +8,7 @@ import org.jdbi.v3.sqlobject.statement.SqlQuery
 interface UserDao {
     @SqlQuery
     fun getUserByAuthToken(authToken: String): User?
+
+    @SqlQuery
+    fun getUserByUserName(userName: String): User?
 }

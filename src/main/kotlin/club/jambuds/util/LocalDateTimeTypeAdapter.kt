@@ -10,5 +10,6 @@ class LocalDateTimeTypeAdapter : TypeAdapter<LocalDateTime>() {
     override fun write(out: JsonWriter, value: LocalDateTime) {
         out.value(DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(value))
     }
+
     override fun read(input: JsonReader): LocalDateTime = LocalDateTime.parse(input.nextString())
 }

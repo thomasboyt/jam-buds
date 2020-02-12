@@ -5,9 +5,11 @@ import org.jdbi.v3.core.Handle
 
 object TestDataFactories {
     fun createSongPost(txn: Handle, userId: Int, songId: Int): Post {
-        return txn.createUpdate("""
+        return txn.createUpdate(
+            """
                 insert into posts (user_id, song_id) values (:userId, :songId)
-                """.trimIndent())
+                """.trimIndent()
+        )
             .bind("userId", userId)
             .bind("songId", songId)
             .executeAndReturnGeneratedKeys()
@@ -16,9 +18,11 @@ object TestDataFactories {
     }
 
     fun createSong(txn: Handle): Int {
-        return txn.createUpdate("""
+        return txn.createUpdate(
+            """
                 insert into songs (title, artists) values (:title, :artist)
-                """.trimIndent())
+                """.trimIndent()
+        )
             .bind("title", "song")
             .bindArray("artist", String::class.java, listOf("song"))
             .executeAndReturnGeneratedKeys("id")
@@ -27,9 +31,11 @@ object TestDataFactories {
     }
 
     fun createUser(txn: Handle, name: String, showInFeed: Boolean): Int {
-        return txn.createUpdate("""
+        return txn.createUpdate(
+            """
                 insert into users (name, show_in_public_feed) values (:name, :show_in_public_feed)
-                """.trimIndent())
+                """.trimIndent()
+        )
             .bind("name", name)
             .bind("show_in_public_feed", showInFeed)
             .executeAndReturnGeneratedKeys("id")
@@ -38,18 +44,22 @@ object TestDataFactories {
     }
 
     fun followUser(txn: Handle, userId: Int, followingId: Int): Int {
-        return txn.createUpdate("""
+        return txn.createUpdate(
+            """
                 insert into following (user_id, following_id) values (:userId, :followingId)
-                """.trimIndent())
+                """.trimIndent()
+        )
             .bind("userId", userId)
             .bind("followingId", followingId)
             .execute()
     }
 
     fun createLike(txn: Handle, userId: Int, songId: Int): Int {
-        return txn.createUpdate("""
+        return txn.createUpdate(
+            """
                 insert into likes (user_id, song_id) values (:userId, :songId)
-                """.trimIndent())
+                """.trimIndent()
+        )
             .bind("userId", userId)
             .bind("songId", songId)
             .execute()

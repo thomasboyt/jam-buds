@@ -5,44 +5,33 @@ import club.jambuds.dao.PostDao
 import club.jambuds.dao.SongDao
 import club.jambuds.model.AggregatedPost
 import club.jambuds.model.MixtapePreview
+import club.jambuds.model.Post
+import club.jambuds.model.PostConnections
 import club.jambuds.model.SongWithMeta
-import com.google.gson.annotations.SerializedName
+import club.jambuds.responses.FeedPlaylistEntry
+import club.jambuds.responses.PlaylistEntry
+import club.jambuds.responses.PlaylistEntryType
+import club.jambuds.responses.UserPlaylistEntry
 import java.time.Instant
-
-enum class PlaylistEntryType {
-    @SerializedName("song")
-    SONG,
-    @SerializedName("mixtape")
-    MIXTAPE
-}
-
-// TODO: move somewhere else?
-data class PlaylistEntryResource(
-    val timestamp: Instant,
-    val userNames: List<String>,
-    val song: SongWithMeta? = null,
-    val mixtape: MixtapePreview? = null,
-    val type: PlaylistEntryType
-)
-
-data class ListWithLimitResource<T>(
-    val items: List<T>,
-    val limit: Int
-)
-
-private const val DEFAULT_PLAYLIST_LIMIT = 20
 
 class PlaylistService(
     private val postDao: PostDao,
     private val songDao: SongDao,
     private val mixtapeDao: MixtapeDao
 ) {
+    private val defaultPlaylistLimit = 20
+
+    data class Playlist<T : PlaylistEntry>(
+        val items: List<T>,
+        val limit: Int
+    )
+
     fun getUserFeed(
         currentUserId: Int,
         beforeTimestamp: Instant?,
         afterTimestamp: Instant?,
-        limit: Int = DEFAULT_PLAYLIST_LIMIT
-    ): ListWithLimitResource<PlaylistEntryResource> {
+        limit: Int = defaultPlaylistLimit
+    ): Playlist<FeedPlaylistEntry> {
         val posts = postDao.getAggregatedPostsByUserFeed(
             currentUserId = currentUserId,
             beforeTimestamp = beforeTimestamp,
@@ -50,62 +39,120 @@ class PlaylistService(
             limit = limit
         )
 
-        val items = getPlaylistEntriesForPosts(posts, currentUserId)
-        return ListWithLimitResource(items = items, limit = limit)
+        val items = getFeedEntriesForAggregatedPosts(posts, currentUserId)
+        return Playlist(items = items, limit = limit)
     }
 
     fun getPublicFeed(
         beforeTimestamp: Instant?,
         afterTimestamp: Instant?,
         currentUserId: Int?,
-        limit: Int = DEFAULT_PLAYLIST_LIMIT
-    ): ListWithLimitResource<PlaylistEntryResource> {
+        limit: Int = defaultPlaylistLimit
+    ): Playlist<FeedPlaylistEntry> {
         val posts = postDao.getPublicAggregatedPosts(
             beforeTimestamp = beforeTimestamp,
             afterTimestamp = afterTimestamp,
             limit = limit
         )
 
-        val items = getPlaylistEntriesForPosts(posts, currentUserId)
-        return ListWithLimitResource(items = items, limit = limit)
+        val items = getFeedEntriesForAggregatedPosts(posts, currentUserId)
+        return Playlist(items = items, limit = limit)
     }
 
-    private fun getPlaylistEntriesForPosts(
+    fun getUserPlaylist(
+        userId: Int,
+        currentUserId: Int?,
+        onlyMixtapes: Boolean,
+        beforeTimestamp: Instant?,
+        afterTimestamp: Instant?,
+        limit: Int = defaultPlaylistLimit
+    ): Playlist<UserPlaylistEntry> {
+        val posts = postDao.getPostsForUserPlaylist(
+            userId = userId,
+            beforeTimestamp = beforeTimestamp,
+            afterTimestamp = afterTimestamp,
+            onlyMixtapes = onlyMixtapes,
+            limit = limit
+        )
+
+        val items = getUserPlaylistEntriesForPosts(posts, currentUserId)
+        return Playlist(items = items, limit = limit)
+    }
+
+    // fun getUserLikes(
+    //     userId: Int,
+    //     currentUserId: Int,
+    //     beforeTimestamp: Instant?,
+    //     afterTimestamp: Instant?,
+    //     limit: Int = DEFAULT_PLAYLIST_LIMIT
+    // ) {
+    // }
+
+    // TODO: is there any way to collapse the two below? you can in TypeScript using overrides
+    // but not sure if there's a good way to do it in Kotlin where there's somewhat more
+    // type soundness
+
+    private fun getFeedEntriesForAggregatedPosts(
         posts: List<AggregatedPost>,
         currentUserId: Int?
-    ): List<PlaylistEntryResource> {
+    ): List<FeedPlaylistEntry> {
+        val songsMap = getSongsMap(posts, currentUserId)
+        val mixtapesMap = getMixtapesMap(posts)
+
+        return posts.map {
+            FeedPlaylistEntry(
+                timestamp = it.timestamp,
+                song = songsMap[it.songId],
+                mixtape = mixtapesMap[it.mixtapeId],
+                type = getPostType(it),
+                userNames = it.userNames
+            )
+        }
+    }
+
+    private fun getUserPlaylistEntriesForPosts(
+        posts: List<Post>,
+        currentUserId: Int?
+    ): List<UserPlaylistEntry> {
+        val songsMap = getSongsMap(posts, currentUserId)
+        val mixtapesMap = getMixtapesMap(posts)
+
+        return posts.map {
+            UserPlaylistEntry(
+                timestamp = it.createdAt,
+                song = songsMap[it.songId],
+                mixtape = mixtapesMap[it.mixtapeId],
+                type = getPostType(it)
+            )
+        }
+    }
+
+    private fun getSongsMap(posts: List<PostConnections>, currentUserId: Int?): Map<Int, SongWithMeta> {
         val songIds = posts.mapNotNull { it.songId }
-        val songsMap = if (songIds.isNotEmpty()) {
+        return if (songIds.isNotEmpty()) {
             val currentUserId = currentUserId ?: -1
             val songsList = songDao.getSongsByIds(songIds, currentUserId)
             songsList.map { it.id to it }.toMap()
         } else {
             emptyMap()
         }
+    }
 
+    private fun getMixtapesMap(posts: List<PostConnections>): Map<Int, MixtapePreview> {
         val mixtapeIds = posts.mapNotNull { it.mixtapeId }
-        val mixtapesMap = if (mixtapeIds.isNotEmpty()) {
+        return if (mixtapeIds.isNotEmpty()) {
             val mixtapesList = mixtapeDao.getMixtapesByIds(mixtapeIds)
             mixtapesList.map { it.id to it }.toMap()
         } else {
             emptyMap()
         }
+    }
 
-        return posts.map {
-            val song = songsMap[it.songId]
-            val mixtape = mixtapesMap[it.mixtapeId]
-            val type = when {
-                song != null -> PlaylistEntryType.SONG
-                mixtape != null -> PlaylistEntryType.MIXTAPE
-                else -> throw Error("Could not match post ID to mixtape or song ID")
-            }
-            PlaylistEntryResource(
-                timestamp = it.timestamp,
-                userNames = it.userNames,
-                song = songsMap[it.songId],
-                mixtape = mixtapesMap[it.mixtapeId],
-                type = type
-            )
+    private fun getPostType(post: PostConnections): PlaylistEntryType {
+        return when {
+            post.songId != null -> PlaylistEntryType.SONG
+            post.mixtapeId != null -> PlaylistEntryType.MIXTAPE
+            else -> throw Error("Could not match post ID to mixtape or song ID")
         }
     }
 }

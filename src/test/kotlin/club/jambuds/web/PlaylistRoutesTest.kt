@@ -1,8 +1,7 @@
 package club.jambuds.web
 
 import club.jambuds.BaseTest
-import club.jambuds.service.ListWithLimitResource
-import club.jambuds.service.PlaylistEntryResource
+import club.jambuds.responses.FeedPlaylistResponse
 import io.javalin.plugin.json.JavalinJson
 import kong.unirest.Unirest
 import org.junit.jupiter.api.Test
@@ -15,8 +14,8 @@ class PlaylistRoutesTest : BaseTest() {
     fun `GET public-feed - returns json response`() = withTestApp {
         val resp = Unirest.get("$appUrl/public-feed").asString()
         assertEquals(resp.status, 200)
-        val expected = ListWithLimitResource(
-            items = listOf<PlaylistEntryResource>(),
+        val expected = FeedPlaylistResponse(
+            items = emptyList(),
             limit = 20
         )
         assertEquals(JavalinJson.toJson(expected), resp.body)

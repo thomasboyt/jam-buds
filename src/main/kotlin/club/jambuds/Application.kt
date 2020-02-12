@@ -5,6 +5,7 @@ import club.jambuds.dao.PostDao
 import club.jambuds.dao.SongDao
 import club.jambuds.dao.UserDao
 import club.jambuds.service.PlaylistService
+import club.jambuds.service.UserService
 import club.jambuds.util.InstantTypeAdapter
 import club.jambuds.util.LocalDateTimeTypeAdapter
 import club.jambuds.web.AuthHandlers
@@ -43,7 +44,9 @@ private fun configureJsonMapper() {
     val gson = GsonBuilder()
         .setPrettyPrinting()
         .setDateFormat("yyyy-MM-dd'T'HH:mmX")
-        .registerTypeAdapter(Instant::class.java,
+        .excludeFieldsWithoutExposeAnnotation()
+        .registerTypeAdapter(
+            Instant::class.java,
             InstantTypeAdapter()
         )
         .registerTypeAdapter(
@@ -76,7 +79,7 @@ fun getConfig(): Config {
 }
 
 fun createApp(config: Config): Javalin {
-    val app = Javalin.create() { config ->
+    val app = Javalin.create { config ->
         config.defaultContentType = "application/json"
         config.showJavalinBanner = false // would be fun to turn this back on for not tests
     }
@@ -98,13 +101,15 @@ fun createApp(config: Config): Javalin {
 
     val playlistService =
         PlaylistService(postDao, songDao, mixtapeDao)
-    val playlistRoutes = PlaylistRoutes(playlistService)
+    val userService = UserService(userDao)
+    val playlistRoutes = PlaylistRoutes(playlistService, userService)
 
     app.routes {
         before(authHandlers::setUserFromHeader)
 
         get("/api/public-feed", playlistRoutes::getPublicFeed)
         get("/api/feed", playlistRoutes::getUserFeed)
+        get("/api/playlists/:userName", playlistRoutes::getUserPlaylist)
     }
 
     return app

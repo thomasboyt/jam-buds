@@ -1,16 +1,17 @@
 package club.jambuds.model
 
+import com.google.gson.annotations.Expose
 import java.time.Instant
 
 data class MixtapePreview(
     // TODO: Split into "Mixtape" resource
-    val id: Int,
+    @Expose val id: Int,
     val createdAt: Instant,
-    val title: String,
-    val slug: String,
+    @Expose val title: String,
+    @Expose val slug: String,
     val userId: Int,
-    val publishedAt: Instant?,
+    @Expose val publishedAt: Instant?,
 
-    val songCount: Int,
-    val authorName: String
+    @Expose val songCount: Int,
+    @Expose val authorName: String
 )
