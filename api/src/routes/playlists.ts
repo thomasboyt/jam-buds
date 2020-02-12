@@ -1,4 +1,5 @@
 import { Router, Request } from 'express';
+import proxy from 'http-proxy-middleware';
 
 import {
   UserModel,
@@ -18,7 +19,6 @@ import wrapAsyncRoute from '../util/wrapAsyncRoute';
 import { ENTRY_PAGE_LIMIT } from '../constants';
 import { UserPlaylist, Playlist } from '../resources';
 import { JamBudsHTTPError } from '../util/errors';
-import { getRhiannonClient } from '../util/rhiannon';
 import config from '../config';
 
 async function getUser(userName: string): Promise<UserModel> {
@@ -114,47 +114,44 @@ export default function registerPlaylistEndpoints(router: Router) {
     })
   );
 
-  router.get(
-    '/feed',
-    isAuthenticated,
-    wrapAsyncRoute(async (req, res) => {
-      const currentUser: UserModel = res.locals.user;
-      const queryOptions = await getPlaylistQueryOptions(req, currentUser);
+  if (config.get('ENABLE_RHIANNON')) {
+    const target = config.require('JB_RHIANNON_URL');
+    router.use(
+      '/feed',
+      proxy({
+        target,
+      })
+    );
+    router.use(
+      '/public-feed',
+      proxy({
+        target,
+      })
+    );
+  } else {
+    router.get(
+      '/feed',
+      isAuthenticated,
+      wrapAsyncRoute(async (req, res) => {
+        const currentUser: UserModel = res.locals.user;
+        const queryOptions = await getPlaylistQueryOptions(req, currentUser);
 
-      const items = await getFeedByUserId(currentUser.id, queryOptions);
+        const items = await getFeedByUserId(currentUser.id, queryOptions);
 
-      const feed: Playlist = {
-        items,
-        limit: ENTRY_PAGE_LIMIT,
-      };
+        const feed: Playlist = {
+          items,
+          limit: ENTRY_PAGE_LIMIT,
+        };
 
-      res.json(feed);
-    })
-  );
+        res.json(feed);
+      })
+    );
 
-  router.get(
-    '/public-feed',
-    wrapAsyncRoute(async (req, res) => {
-      const queryOptions = await getPlaylistQueryOptions(req);
+    router.get(
+      '/public-feed',
+      wrapAsyncRoute(async (req, res) => {
+        const queryOptions = await getPlaylistQueryOptions(req);
 
-      if (config.get('ENABLE_RHIANNON')) {
-        const client = getRhiannonClient();
-        try {
-          const resp = await client.get('/public-feed', {
-            params: queryOptions,
-          });
-          res.json(resp.data);
-        } catch (err) {
-          if (err.isAxiosError && err.response.status === 400) {
-            throw new JamBudsHTTPError({
-              message: err.response.data.message,
-              statusCode: 400,
-            });
-          } else {
-            throw err;
-          }
-        }
-      } else {
         const items = await getPublicFeed(queryOptions);
 
         const feed: Playlist = {
@@ -163,7 +160,7 @@ export default function registerPlaylistEndpoints(router: Router) {
         };
 
         res.json(feed);
-      }
-    })
-  );
+      })
+    );
+  }
 }
