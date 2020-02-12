@@ -38,8 +38,13 @@ private fun configureJsonMapper() {
     val gson = GsonBuilder()
         .setPrettyPrinting()
         .setDateFormat("yyyy-MM-dd'T'HH:mmX")
-        .registerTypeAdapter(Instant::class.java, InstantTypeAdapter())
-        .registerTypeAdapter(LocalDateTimeTypeAdapter::class.java, LocalDateTimeTypeAdapter())
+        .registerTypeAdapter(Instant::class.java,
+            InstantTypeAdapter()
+        )
+        .registerTypeAdapter(
+            LocalDateTimeTypeAdapter::class.java,
+            LocalDateTimeTypeAdapter()
+        )
         .create()
 
     JavalinJson.fromJsonMapper = object : FromJsonMapper {
@@ -86,14 +91,15 @@ fun createApp(config: Config): Javalin {
 
     val authHandlers = AuthHandlers(userDao)
 
-    val playlistService = PlaylistService(postDao, songDao, mixtapeDao)
+    val playlistService =
+        PlaylistService(postDao, songDao, mixtapeDao)
     val playlistRoutes = PlaylistRoutes(playlistService)
 
     app.routes {
         before(authHandlers::setUserFromHeader)
 
-        get("/public-feed", playlistRoutes::getPublicFeed)
-        get("/feed", playlistRoutes::getUserFeed)
+        get("/api/public-feed", playlistRoutes::getPublicFeed)
+        get("/api/feed", playlistRoutes::getUserFeed)
     }
 
     return app

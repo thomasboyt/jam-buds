@@ -12,7 +12,7 @@ const val TEST_APP_PORT = 7001
 
 open class BaseTest {
     private lateinit var jdbi: Jdbi
-    val appUrl = "http://localhost:$TEST_APP_PORT"
+    val appUrl = "http://localhost:$TEST_APP_PORT/api"
 
     companion object {
         val config = getConfig()

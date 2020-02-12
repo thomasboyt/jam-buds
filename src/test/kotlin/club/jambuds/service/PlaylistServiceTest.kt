@@ -4,11 +4,11 @@ import club.jambuds.BaseTest
 import club.jambuds.dao.MixtapeDao
 import club.jambuds.dao.PostDao
 import club.jambuds.dao.SongDao
-import helpers.TestDataFactories.createLike
-import helpers.TestDataFactories.createSong
-import helpers.TestDataFactories.createSongPost
-import helpers.TestDataFactories.createUser
-import helpers.TestDataFactories.followUser
+import club.jambuds.helpers.TestDataFactories.createLike
+import club.jambuds.helpers.TestDataFactories.createSong
+import club.jambuds.helpers.TestDataFactories.createSongPost
+import club.jambuds.helpers.TestDataFactories.createUser
+import club.jambuds.helpers.TestDataFactories.followUser
 import org.jdbi.v3.core.Handle
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test

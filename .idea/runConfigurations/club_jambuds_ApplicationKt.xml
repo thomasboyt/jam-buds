@@ -1,12 +1,12 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="ApplicationKt" type="JetRunConfigurationType" factoryName="Kotlin" nameIsGenerated="true">
+  <configuration default="false" name="club.jambuds.ApplicationKt" type="JetRunConfigurationType" factoryName="Kotlin" nameIsGenerated="true">
     <module name="jam-buds.main" />
     <option name="VM_PARAMETERS" value="" />
     <option name="PROGRAM_PARAMETERS" value="" />
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
     <option name="ALTERNATIVE_JRE_PATH" />
     <option name="PASS_PARENT_ENVS" value="true" />
-    <option name="MAIN_CLASS_NAME" value="ApplicationKt" />
+    <option name="MAIN_CLASS_NAME" value="club.jambuds.ApplicationKt" />
     <option name="WORKING_DIRECTORY" value="" />
     <envs>
       <env name="JAMBUDS_ENV" value="development" />

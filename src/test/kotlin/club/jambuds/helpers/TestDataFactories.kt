@@ -1,4 +1,4 @@
-package helpers
+package club.jambuds.helpers
 
 import club.jambuds.model.Post
 import org.jdbi.v3.core.Handle
