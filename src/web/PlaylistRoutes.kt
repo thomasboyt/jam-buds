@@ -2,10 +2,10 @@ package web
 
 import io.javalin.http.Context
 import java.time.Instant
-import service.FeedService
+import service.PlaylistService
 import web.extensions.*
 
-class FeedRoutes(private val feedService: FeedService) {
+class PlaylistRoutes(private val playlistService: PlaylistService) {
     fun getPublicFeed(ctx: Context) {
         val currentUserId = ctx.currentUser?.id
         val beforeTimestamp = ctx.queryParam<Instant>("beforeTimestamp").getOrNull()
@@ -16,7 +16,7 @@ class FeedRoutes(private val feedService: FeedService) {
             )
             .getOrNull()
 
-        val feedItems = feedService.getPublicFeed(
+        val feedItems = playlistService.getPublicFeed(
             currentUserId = currentUserId,
             beforeTimestamp = beforeTimestamp,
             afterTimestamp = afterTimestamp
@@ -34,7 +34,7 @@ class FeedRoutes(private val feedService: FeedService) {
             )
             .getOrNull()
 
-        val feedItems = feedService.getUserFeed(
+        val feedItems = playlistService.getUserFeed(
             currentUserId = currentUser.id,
             beforeTimestamp = beforeTimestamp,
             afterTimestamp = afterTimestamp

@@ -7,7 +7,7 @@ import model.AggregatedPost
 import model.MixtapePreview
 import model.SongWithMeta
 
-enum class FeedEntryType {
+enum class PlaylistEntryType {
     @SerializedName("song")
     SONG,
     @SerializedName("mixtape")
@@ -15,12 +15,12 @@ enum class FeedEntryType {
 }
 
 // TODO: move somewhere else?
-data class FeedEntryResource(
+data class PlaylistEntryResource(
     val timestamp: Instant,
     val userNames: List<String>,
     val song: SongWithMeta? = null,
     val mixtape: MixtapePreview? = null,
-    val type: FeedEntryType
+    val type: PlaylistEntryType
 )
 
 data class ListWithLimitResource<T>(
@@ -28,9 +28,9 @@ data class ListWithLimitResource<T>(
     val limit: Int
 )
 
-private const val DEFAULT_FEED_LIMIT = 20
+private const val DEFAULT_PLAYLIST_LIMIT = 20
 
-class FeedService(
+class PlaylistService(
     private val postDao: dao.PostDao,
     private val songDao: dao.SongDao,
     private val mixtapeDao: dao.MixtapeDao) {
@@ -39,8 +39,8 @@ class FeedService(
         currentUserId: Int,
         beforeTimestamp: Instant?,
         afterTimestamp: Instant?,
-        limit: Int = DEFAULT_FEED_LIMIT
-    ) : ListWithLimitResource<FeedEntryResource> {
+        limit: Int = DEFAULT_PLAYLIST_LIMIT
+    ) : ListWithLimitResource<PlaylistEntryResource> {
         val posts = postDao.getAggregatedPostsByUserFeed(
             currentUserId = currentUserId,
             beforeTimestamp = beforeTimestamp,
@@ -48,7 +48,7 @@ class FeedService(
             limit = limit
         )
 
-        val items = getFeedEntriesForPosts(posts, currentUserId)
+        val items = getPlaylistEntriesForPosts(posts, currentUserId)
         return ListWithLimitResource(items = items, limit = limit)
     }
 
@@ -56,22 +56,22 @@ class FeedService(
         beforeTimestamp: Instant?,
         afterTimestamp: Instant?,
         currentUserId: Int?,
-        limit: Int = DEFAULT_FEED_LIMIT
-    ) : ListWithLimitResource<FeedEntryResource> {
+        limit: Int = DEFAULT_PLAYLIST_LIMIT
+    ) : ListWithLimitResource<PlaylistEntryResource> {
         val posts = postDao.getPublicAggregatedPosts(
             beforeTimestamp = beforeTimestamp,
             afterTimestamp = afterTimestamp,
             limit = limit
         )
 
-        val items = getFeedEntriesForPosts(posts, currentUserId)
+        val items = getPlaylistEntriesForPosts(posts, currentUserId)
         return ListWithLimitResource(items = items, limit = limit)
     }
 
-    private fun getFeedEntriesForPosts(
+    private fun getPlaylistEntriesForPosts(
         posts: List<AggregatedPost>,
         currentUserId: Int?
-    ) : List<FeedEntryResource> {
+    ) : List<PlaylistEntryResource> {
         val songIds = posts.mapNotNull { it.songId }
         val songsMap = if (songIds.isNotEmpty()) {
             val currentUserId = currentUserId ?: -1
@@ -93,11 +93,11 @@ class FeedService(
             val song = songsMap[it.songId]
             val mixtape = mixtapesMap[it.mixtapeId]
             val type = when {
-                song != null -> FeedEntryType.SONG
-                mixtape != null -> FeedEntryType.MIXTAPE
+                song != null -> PlaylistEntryType.SONG
+                mixtape != null -> PlaylistEntryType.MIXTAPE
                 else -> throw Error("Could not match post ID to mixtape or song ID")
             }
-            FeedEntryResource(
+            PlaylistEntryResource(
                 timestamp = it.timestamp,
                 userNames = it.userNames,
                 song = songsMap[it.songId],

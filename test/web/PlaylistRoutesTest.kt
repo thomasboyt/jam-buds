@@ -8,16 +8,16 @@ import java.time.Instant
 import java.time.format.DateTimeFormatter
 import BaseTest
 
-import service.FeedEntryResource
+import service.PlaylistEntryResource
 import service.ListWithLimitResource
 
-class FeedRoutesTest : BaseTest() {
+class PlaylistRoutesTest : BaseTest() {
     @Test
     fun `GET public-feed - returns json response`() = withTestApp {
         val resp = Unirest.get("$appUrl/public-feed").asString()
         assertEquals(resp.status, 200)
         val expected = ListWithLimitResource(
-            items = listOf<FeedEntryResource>(),
+            items = listOf<PlaylistEntryResource>(),
             limit = 20
         )
         assertEquals(JavalinJson.toJson(expected), resp.body)

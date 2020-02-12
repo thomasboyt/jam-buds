@@ -1,7 +1,7 @@
 -- Notes:
 --
 -- * "After" queries purposefully do not have a limit applied. We may want to
---   do this logic as a check in FeedService instead of in the query.
+--   do this logic as a check in PlaylistService instead of in the query.
 --
 -- * The COALESCE(NULL, :timestamp) calls shouldn't be necessary, but I think
 --   are needed due to usage of Java 8's time.Instant.

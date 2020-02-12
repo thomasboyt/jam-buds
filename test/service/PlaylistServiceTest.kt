@@ -11,12 +11,12 @@ import helpers.TestDataFactories.createUser
 import helpers.TestDataFactories.followUser
 import BaseTest
 
-class FeedServiceTest : BaseTest() {
+class PlaylistServiceTest : BaseTest() {
     @Test
     fun `getPublicFeed - returns an empty list with no items`() {
         withTransaction { txn ->
-            val feedService = createFeedService(txn)
-            val results = feedService.getPublicFeed(
+            val playlistService = createPlaylistService(txn)
+            val results = playlistService.getPublicFeed(
                 beforeTimestamp = null,
                 afterTimestamp = null,
                 currentUserId = null
@@ -29,6 +29,8 @@ class FeedServiceTest : BaseTest() {
     @Test
     fun `getPublicFeed - returns only public feed entries`() {
         withTransaction { txn ->
+            val playlistService = createPlaylistService(txn)
+
             val jeffId = createUser(txn, "jeff", true)
             val publicSongId = createSong(txn)
             createSongPost(txn, userId = jeffId, songId = publicSongId)
@@ -37,8 +39,7 @@ class FeedServiceTest : BaseTest() {
             val privateSongId = createSong(txn)
             createSongPost(txn, userId = vinnyId, songId = privateSongId)
 
-            val feedService = createFeedService(txn)
-            val results = feedService.getPublicFeed(
+            val results = playlistService.getPublicFeed(
                 beforeTimestamp = null,
                 afterTimestamp = null,
                 currentUserId = null
@@ -51,15 +52,16 @@ class FeedServiceTest : BaseTest() {
     @Test
     fun `getPublicFeed - allows pagination using a before timestamp`() {
         withTransaction { txn ->
+            val playlistService = createPlaylistService(txn)
+
             val jeffId = createUser(txn, "jeff", true)
             val songIds = (1..100).map {
                 val songId = createSong(txn)
                 createSongPost(txn, userId = jeffId, songId = songId)
                 songId
             }
-            val feedService = createFeedService(txn)
 
-            val firstPage = feedService.getPublicFeed(
+            val firstPage = playlistService.getPublicFeed(
                 beforeTimestamp = null,
                 afterTimestamp = null,
                 currentUserId = null
@@ -68,7 +70,7 @@ class FeedServiceTest : BaseTest() {
             assertEquals(expectedFirstPageIds, firstPage.items.map { it.song!!.id })
 
             val timestampCursor = firstPage.items.last().timestamp
-            val secondPage = feedService.getPublicFeed(
+            val secondPage = playlistService.getPublicFeed(
                 beforeTimestamp = timestampCursor,
                 afterTimestamp = null,
                 currentUserId = null
@@ -82,6 +84,8 @@ class FeedServiceTest : BaseTest() {
     @Test
     fun `getPublicFeed - does not apply a limit when using an after timestamp`() {
         withTransaction { txn ->
+            val playlistService = createPlaylistService(txn)
+
             val jeffId = createUser(txn, "jeff", true)
             val songIds = (1..100).map {
                 val songId = createSong(txn)
@@ -89,9 +93,7 @@ class FeedServiceTest : BaseTest() {
                 songId
             }
 
-            val feedService = createFeedService(txn)
-
-            val allPosts = feedService.getPublicFeed(
+            val allPosts = playlistService.getPublicFeed(
                 beforeTimestamp = null,
                 afterTimestamp = null,
                 limit = 100,
@@ -99,7 +101,7 @@ class FeedServiceTest : BaseTest() {
             )
             val timestampCursor = allPosts.items.last().timestamp
 
-            val newPosts = feedService.getPublicFeed(
+            val newPosts = playlistService.getPublicFeed(
                 beforeTimestamp = null,
                 afterTimestamp = timestampCursor,
                 limit = 20,
@@ -114,14 +116,15 @@ class FeedServiceTest : BaseTest() {
     @Test
     fun `getPublicFeed - aggregates posts of the same song and sets timestamp to oldest post`() {
         withTransaction { txn ->
+            val playlistService = createPlaylistService(txn)
+
             val songId = createSong(txn)
             val jeffId = createUser(txn, "jeff", true)
             val firstPost = createSongPost(txn, userId = jeffId, songId = songId)
             val vinnyId = createUser(txn, "vinny", true)
             createSongPost(txn, userId = vinnyId, songId = songId)
 
-            val feedService = createFeedService(txn)
-            val results = feedService.getPublicFeed(
+            val results = playlistService.getPublicFeed(
                 beforeTimestamp = null,
                 afterTimestamp = null,
                 currentUserId = null
@@ -135,12 +138,13 @@ class FeedServiceTest : BaseTest() {
     @Test
     fun `getPublicFeed - sets isLiked to true for a user who has liked a song`() {
         withTransaction { txn ->
+            val playlistService = createPlaylistService(txn)
+
             val songId = createSong(txn)
             val jeffId = createUser(txn, "jeff", true)
             createSongPost(txn, userId = jeffId, songId = songId)
 
-            val feedService = createFeedService(txn)
-            val beforeLikeResults = feedService.getPublicFeed(
+            val beforeLikeResults = playlistService.getPublicFeed(
                 currentUserId = jeffId,
                 beforeTimestamp = null,
                 afterTimestamp = null
@@ -149,7 +153,7 @@ class FeedServiceTest : BaseTest() {
 
             createLike(txn, jeffId, songId)
 
-            val afterLikeResults = feedService.getPublicFeed(
+            val afterLikeResults = playlistService.getPublicFeed(
                 currentUserId = jeffId,
                 beforeTimestamp = null,
                 afterTimestamp = null
@@ -161,7 +165,7 @@ class FeedServiceTest : BaseTest() {
     @Test
     fun `getUserFeed - only includes posts from users the current user follows and their own`() {
         withTransaction { txn ->
-            val feedService = createFeedService(txn)
+            val playlistService = createPlaylistService(txn)
 
             val jeffId = createUser(txn, "jeff", true)
             val vinnyId = createUser(txn, "vinny", true)
@@ -176,7 +180,7 @@ class FeedServiceTest : BaseTest() {
             createSongPost(txn, userId = bradId, songId = createSong(txn))
             createSongPost(txn, userId = benId, songId = createSong(txn))
 
-            val aggregatedPosts = feedService.getUserFeed(
+            val aggregatedPosts = playlistService.getUserFeed(
                 currentUserId = jeffId,
                 beforeTimestamp = null,
                 afterTimestamp = null,
@@ -191,7 +195,7 @@ class FeedServiceTest : BaseTest() {
     @Test
     fun `getUserFeed - aggregates entries by song`() {
         withTransaction { txn ->
-            val feedService = createFeedService(txn)
+            val playlistService = createPlaylistService(txn)
 
             val jeffId = createUser(txn, "jeff", true)
             val vinnyId = createUser(txn, "vinny", true)
@@ -206,7 +210,7 @@ class FeedServiceTest : BaseTest() {
             createSongPost(txn, userId = bradId, songId = sharedSongId)
             createSongPost(txn, userId = vinnyId, songId = createSong(txn))
 
-            val aggregatedPosts = feedService.getUserFeed(
+            val aggregatedPosts = playlistService.getUserFeed(
                 currentUserId = jeffId,
                 beforeTimestamp = null,
                 afterTimestamp = null,
@@ -221,7 +225,7 @@ class FeedServiceTest : BaseTest() {
     @Test
     fun `getUserFeed - aggregated timestamp logic`() {
         withTransaction { txn ->
-            val feedService = createFeedService(txn)
+            val playlistService = createPlaylistService(txn)
 
             val jeffId = createUser(txn, "jeff", true)
             val vinnyId = createUser(txn, "vinny", true)
@@ -238,7 +242,7 @@ class FeedServiceTest : BaseTest() {
             val vinnyPost = createSongPost(txn, userId = vinnyId, songId = sharedSongId)
             val bradPost = createSongPost(txn, userId = bradId, songId = sharedSongId)
 
-            var aggregatedPosts = feedService.getUserFeed(
+            var aggregatedPosts = playlistService.getUserFeed(
                 currentUserId = jeffId,
                 beforeTimestamp = null,
                 afterTimestamp = null,
@@ -251,7 +255,7 @@ class FeedServiceTest : BaseTest() {
             // with newest post from current user: the current user's time is used
             val jeffPost = createSongPost(txn, userId = jeffId, songId = sharedSongId)
 
-            aggregatedPosts = feedService.getUserFeed(
+            aggregatedPosts = playlistService.getUserFeed(
                 currentUserId = jeffId,
                 beforeTimestamp = null,
                 afterTimestamp = null,
@@ -264,7 +268,7 @@ class FeedServiceTest : BaseTest() {
             // with newest post from another user, but with a post from current user: the current user's time is used
             val benPost = createSongPost(txn, userId = benId, songId = sharedSongId)
 
-            aggregatedPosts = feedService.getUserFeed(
+            aggregatedPosts = playlistService.getUserFeed(
                 currentUserId = jeffId,
                 beforeTimestamp = null,
                 afterTimestamp = null,
@@ -282,10 +286,10 @@ class FeedServiceTest : BaseTest() {
         // TODO: Test: correctly paginates with cursors including current user aggregated timestamps
     }
 
-    private fun createFeedService(txn: Handle): FeedService {
+    private fun createPlaylistService(txn: Handle): PlaylistService {
         val postDao = txn.attach(dao.PostDao::class.java)
         val songDao = txn.attach(dao.SongDao::class.java)
         val mixtapeDao = txn.attach(dao.MixtapeDao::class.java)
-        return FeedService(postDao, songDao, mixtapeDao)
+        return PlaylistService(postDao, songDao, mixtapeDao)
     }
 }

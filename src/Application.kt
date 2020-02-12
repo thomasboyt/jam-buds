@@ -14,11 +14,11 @@ import org.jdbi.v3.core.kotlin.KotlinPlugin
 import org.jdbi.v3.postgres.PostgresPlugin
 import org.jdbi.v3.sqlobject.kotlin.KotlinSqlObjectPlugin
 import org.jdbi.v3.sqlobject.kotlin.onDemand
-import service.FeedService
+import service.PlaylistService
 import util.InstantTypeAdapter
 import util.LocalDateTimeTypeAdapter
 import web.AuthHandlers
-import web.FeedRoutes
+import web.PlaylistRoutes
 
 fun createJdbi(databaseUri: String): Jdbi {
     val jdbi = Jdbi.create(databaseUri)
@@ -80,14 +80,14 @@ fun createApp(config: Config): Javalin {
 
     val authHandlers = AuthHandlers(userDao)
 
-    val feedService = FeedService(postDao, songDao, mixtapeDao)
-    val feedRoutes = FeedRoutes(feedService)
+    val playlistService = PlaylistService(postDao, songDao, mixtapeDao)
+    val playlistRoutes = PlaylistRoutes(playlistService)
 
     app.routes {
         before(authHandlers::setUserFromHeader)
 
-        get("/public-feed", feedRoutes::getPublicFeed)
-        get("/feed", feedRoutes::getUserFeed)
+        get("/public-feed", playlistRoutes::getPublicFeed)
+        get("/feed", playlistRoutes::getUserFeed)
     }
 
     return app
