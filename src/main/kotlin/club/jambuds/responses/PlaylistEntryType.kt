@@ -8,4 +8,3 @@ enum class PlaylistEntryType {
     @SerializedName("mixtape")
     MIXTAPE
 }
-

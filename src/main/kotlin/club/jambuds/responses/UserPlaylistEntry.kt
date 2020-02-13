@@ -11,4 +11,3 @@ data class UserPlaylistEntry(
     @Expose override val mixtape: MixtapePreview? = null,
     @Expose override val type: PlaylistEntryType
 ) : PlaylistEntry
-
