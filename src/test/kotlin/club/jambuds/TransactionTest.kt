@@ -7,12 +7,8 @@ import org.jdbi.v3.core.kotlin.useTransactionUnchecked
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 
-// TODO: allow configuration?
-const val TEST_APP_PORT = 7001
-
-open class BaseTest {
+open class TransactionTest {
     private lateinit var jdbi: Jdbi
-    val appUrl = "http://localhost:$TEST_APP_PORT/api"
 
     companion object {
         val config = getConfig()
@@ -40,16 +36,6 @@ open class BaseTest {
             // if the test errors out, it will automatically execute a rollback; we only need a
             // manual rollback if we made it this far
             it.rollback()
-        }
-    }
-
-    internal fun withTestApp(cb: () -> Unit) {
-        val app = createApp(config)
-        app.start(TEST_APP_PORT)
-        try {
-            cb()
-        } finally {
-            app.stop()
         }
     }
 }
