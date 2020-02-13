@@ -6,6 +6,7 @@ import club.jambuds.service.PlaylistService
 import club.jambuds.service.UserService
 import club.jambuds.web.extensions.currentUser
 import club.jambuds.web.extensions.requireUser
+import io.javalin.apibuilder.ApiBuilder.get
 import io.javalin.http.Context
 import io.javalin.http.NotFoundResponse
 import java.time.Instant
@@ -14,7 +15,13 @@ class PlaylistRoutes(
     private val playlistService: PlaylistService,
     private val userService: UserService
 ) {
-    fun getPublicFeed(ctx: Context) {
+    fun register() {
+        get("/api/public-feed", this::getPublicFeed)
+        get("/api/feed", this::getUserFeed)
+        get("/api/playlists/:userName", this::getUserPlaylist)
+    }
+
+    private fun getPublicFeed(ctx: Context) {
         val currentUserId = ctx.currentUser?.id
         val timestamps = getTimestamps(ctx)
 
@@ -30,7 +37,7 @@ class PlaylistRoutes(
         ctx.json(resp)
     }
 
-    fun getUserFeed(ctx: Context) {
+    private fun getUserFeed(ctx: Context) {
         val currentUserId = ctx.requireUser().id
         val timestamps = getTimestamps(ctx)
 
@@ -46,7 +53,7 @@ class PlaylistRoutes(
         ctx.json(resp)
     }
 
-    fun getUserPlaylist(ctx: Context) {
+    private fun getUserPlaylist(ctx: Context) {
         val currentUserId = ctx.currentUser?.id
         val timestamps = getTimestamps(ctx)
         val onlyMixtapes = ctx.queryParam<Boolean>("onlyMixtapes").getOrNull() ?: false

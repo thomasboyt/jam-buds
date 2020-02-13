@@ -5,13 +5,16 @@ import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.kotlin.useTransactionUnchecked
 import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.BeforeEach
 
+/**
+ * Transactional tests provide a `withTransaction()` function that passes
+ * a transaction that will be automatically rolled back to its callback.
+ * Because of this, they do not reset DB state between tests.
+ */
 open class TransactionTest {
-    private lateinit var jdbi: Jdbi
-
     companion object {
-        val config = getConfig()
+        private lateinit var jdbi: Jdbi
+        private val config = getConfig()
 
         @BeforeAll
         @JvmStatic
@@ -22,12 +25,8 @@ open class TransactionTest {
                 .load()
             flyway.clean()
             flyway.migrate()
+            jdbi = createJdbi(config.getString("databaseUrl"))
         }
-    }
-
-    @BeforeEach
-    fun beforeEach() {
-        jdbi = createJdbi(config.getString("databaseUrl"))
     }
 
     internal fun withTransaction(cb: (txn: Handle) -> Unit) {

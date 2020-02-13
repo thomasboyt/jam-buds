@@ -1,6 +1,7 @@
 package club.jambuds.web
 
-import club.jambuds.WebTest
+import club.jambuds.AppTest
+import club.jambuds.helpers.TestDataFactories
 import club.jambuds.responses.FeedPlaylistResponse
 import io.javalin.plugin.json.JavalinJson
 import kong.unirest.Unirest
@@ -9,9 +10,10 @@ import java.time.Instant
 import java.time.format.DateTimeFormatter
 import kotlin.test.assertEquals
 
-class PlaylistRoutesTest : WebTest() {
+class PlaylistRoutesTest : AppTest() {
     @Test
     fun `GET public-feed - returns json response`() {
+        TestDataFactories.createSong(txn)
         val resp = Unirest.get("$appUrl/public-feed").asString()
         assertEquals(resp.status, 200)
         val expected = FeedPlaylistResponse(

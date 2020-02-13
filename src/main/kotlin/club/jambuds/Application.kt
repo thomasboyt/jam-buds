@@ -15,8 +15,6 @@ import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
 import com.zaxxer.hikari.HikariDataSource
 import io.javalin.Javalin
-import io.javalin.apibuilder.ApiBuilder.before
-import io.javalin.apibuilder.ApiBuilder.get
 import io.javalin.core.validation.JavalinValidation
 import io.javalin.plugin.json.FromJsonMapper
 import io.javalin.plugin.json.JavalinJson
@@ -28,10 +26,10 @@ import org.jdbi.v3.sqlobject.kotlin.KotlinSqlObjectPlugin
 import org.jdbi.v3.sqlobject.kotlin.onDemand
 import java.time.Instant
 
-fun createJdbi(databaseUri: String): Jdbi {
+fun createJdbi(databaseUrl: String): Jdbi {
     val ds = HikariDataSource()
-    ds.jdbcUrl = databaseUri
-    ds.maximumPoolSize = 3  // (core_size * 2) + disk_count
+    ds.jdbcUrl = databaseUrl
+    ds.maximumPoolSize = 3 // (core_size * 2) + disk_count
 
     val jdbi = Jdbi.create(ds)
     jdbi.installPlugin(KotlinPlugin())
@@ -78,7 +76,7 @@ fun getConfig(): Config {
         .getConfig("rhiannon")
 }
 
-fun createApp(config: Config): Javalin {
+fun createJavalinApp(): Javalin {
     val app = Javalin.create { config ->
         config.defaultContentType = "application/json"
         config.showJavalinBanner = false // would be fun to turn this back on for not tests
@@ -87,36 +85,32 @@ fun createApp(config: Config): Javalin {
     configureJsonMapper()
     configureValidation()
 
-    // Wire up dependencies
+    return app
+}
 
-    val jdbi = createJdbi(config.getString("databaseUrl"))
-
-    // TODO: could these be hooked up to a shared transaction in some kind of "test mode"?
+private fun wire(app: Javalin, jdbi: Jdbi) {
     val postDao = jdbi.onDemand<PostDao>()
     val songDao = jdbi.onDemand<SongDao>()
     val mixtapeDao = jdbi.onDemand<MixtapeDao>()
     val userDao = jdbi.onDemand<UserDao>()
 
-    val authHandlers = AuthHandlers(userDao)
-
     val playlistService =
         PlaylistService(postDao, songDao, mixtapeDao)
     val userService = UserService(userDao)
+
+    val authHandlers = AuthHandlers(userDao)
     val playlistRoutes = PlaylistRoutes(playlistService, userService)
 
     app.routes {
-        before(authHandlers::setUserFromHeader)
-
-        get("/api/public-feed", playlistRoutes::getPublicFeed)
-        get("/api/feed", playlistRoutes::getUserFeed)
-        get("/api/playlists/:userName", playlistRoutes::getUserPlaylist)
+        authHandlers.register()
+        playlistRoutes.register()
     }
-
-    return app
 }
 
 fun main() {
     val config = getConfig()
-    val app = createApp(config)
+    val jdbi = createJdbi(config.getString("databaseUrl"))
+    val app = createJavalinApp()
+    wire(app, jdbi)
     app.start(config.getInt("port"))
 }
