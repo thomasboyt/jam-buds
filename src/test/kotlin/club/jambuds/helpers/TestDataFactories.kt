@@ -1,6 +1,7 @@
 package club.jambuds.helpers
 
 import club.jambuds.model.Post
+import club.jambuds.model.User
 import org.jdbi.v3.core.Handle
 
 object TestDataFactories {
@@ -30,7 +31,7 @@ object TestDataFactories {
             .one()
     }
 
-    fun createUser(txn: Handle, name: String, showInFeed: Boolean): Int {
+    fun createUser(txn: Handle, name: String, showInFeed: Boolean): User {
         return txn.createUpdate(
             """
                 insert into users (name, show_in_public_feed) values (:name, :show_in_public_feed)
@@ -38,8 +39,8 @@ object TestDataFactories {
         )
             .bind("name", name)
             .bind("show_in_public_feed", showInFeed)
-            .executeAndReturnGeneratedKeys("id")
-            .mapTo(Int::class.java)
+            .executeAndReturnGeneratedKeys()
+            .mapTo(User::class.java)
             .one()
     }
 

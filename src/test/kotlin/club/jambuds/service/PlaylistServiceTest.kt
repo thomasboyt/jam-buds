@@ -31,13 +31,13 @@ class PlaylistServiceTest : TransactionTest() {
     fun `getPublicFeed - returns only public feed entries`() = withTransaction { txn ->
         val playlistService = createPlaylistService(txn)
 
-        val jeffId = createUser(txn, "jeff", true)
+        val jeff = createUser(txn, "jeff", true)
         val publicSongId = createSong(txn)
-        createSongPost(txn, userId = jeffId, songId = publicSongId)
+        createSongPost(txn, userId = jeff.id, songId = publicSongId)
 
-        val vinnyId = createUser(txn, "vinny", false)
+        val vinny = createUser(txn, "vinny", false)
         val privateSongId = createSong(txn)
-        createSongPost(txn, userId = vinnyId, songId = privateSongId)
+        createSongPost(txn, userId = vinny.id, songId = privateSongId)
 
         val results = playlistService.getPublicFeed(
             beforeTimestamp = null,
@@ -52,10 +52,10 @@ class PlaylistServiceTest : TransactionTest() {
     fun `getPublicFeed - allows pagination using a before timestamp`() = withTransaction { txn ->
         val playlistService = createPlaylistService(txn)
 
-        val jeffId = createUser(txn, "jeff", true)
+        val jeff = createUser(txn, "jeff", true)
         val songIds = (1..100).map {
             val songId = createSong(txn)
-            createSongPost(txn, userId = jeffId, songId = songId)
+            createSongPost(txn, userId = jeff.id, songId = songId)
             songId
         }
 
@@ -82,10 +82,10 @@ class PlaylistServiceTest : TransactionTest() {
     fun `getPublicFeed - does not apply a limit when using an after timestamp`() = withTransaction { txn ->
         val playlistService = createPlaylistService(txn)
 
-        val jeffId = createUser(txn, "jeff", true)
+        val jeff = createUser(txn, "jeff", true)
         val songIds = (1..100).map {
             val songId = createSong(txn)
-            createSongPost(txn, userId = jeffId, songId = songId)
+            createSongPost(txn, userId = jeff.id, songId = songId)
             songId
         }
 
@@ -114,10 +114,10 @@ class PlaylistServiceTest : TransactionTest() {
             val playlistService = createPlaylistService(txn)
 
             val songId = createSong(txn)
-            val jeffId = createUser(txn, "jeff", true)
-            val firstPost = createSongPost(txn, userId = jeffId, songId = songId)
-            val vinnyId = createUser(txn, "vinny", true)
-            createSongPost(txn, userId = vinnyId, songId = songId)
+            val jeff = createUser(txn, "jeff", true)
+            val firstPost = createSongPost(txn, userId = jeff.id, songId = songId)
+            val vinny = createUser(txn, "vinny", true)
+            createSongPost(txn, userId = vinny.id, songId = songId)
 
             val results = playlistService.getPublicFeed(
                 beforeTimestamp = null,
@@ -134,20 +134,20 @@ class PlaylistServiceTest : TransactionTest() {
         val playlistService = createPlaylistService(txn)
 
         val songId = createSong(txn)
-        val jeffId = createUser(txn, "jeff", true)
-        createSongPost(txn, userId = jeffId, songId = songId)
+        val jeff = createUser(txn, "jeff", true)
+        createSongPost(txn, userId = jeff.id, songId = songId)
 
         val beforeLikeResults = playlistService.getPublicFeed(
-            currentUserId = jeffId,
+            currentUserId = jeff.id,
             beforeTimestamp = null,
             afterTimestamp = null
         )
         assertEquals(false, beforeLikeResults.items[0].song!!.isLiked)
 
-        createLike(txn, jeffId, songId)
+        createLike(txn, jeff.id, songId)
 
         val afterLikeResults = playlistService.getPublicFeed(
-            currentUserId = jeffId,
+            currentUserId = jeff.id,
             beforeTimestamp = null,
             afterTimestamp = null
         )
@@ -159,21 +159,21 @@ class PlaylistServiceTest : TransactionTest() {
         withTransaction { txn ->
             val playlistService = createPlaylistService(txn)
 
-            val jeffId = createUser(txn, "jeff", true)
-            val vinnyId = createUser(txn, "vinny", true)
-            val bradId = createUser(txn, "brad", true)
-            val benId = createUser(txn, "ben", true)
+            val jeff = createUser(txn, "jeff", true)
+            val vinny = createUser(txn, "vinny", true)
+            val brad = createUser(txn, "brad", true)
+            val ben = createUser(txn, "ben", true)
 
-            followUser(txn, jeffId, vinnyId)
-            followUser(txn, jeffId, bradId)
+            followUser(txn, jeff.id, vinny.id)
+            followUser(txn, jeff.id, brad.id)
 
-            createSongPost(txn, userId = jeffId, songId = createSong(txn))
-            createSongPost(txn, userId = vinnyId, songId = createSong(txn))
-            createSongPost(txn, userId = bradId, songId = createSong(txn))
-            createSongPost(txn, userId = benId, songId = createSong(txn))
+            createSongPost(txn, userId = jeff.id, songId = createSong(txn))
+            createSongPost(txn, userId = vinny.id, songId = createSong(txn))
+            createSongPost(txn, userId = brad.id, songId = createSong(txn))
+            createSongPost(txn, userId = ben.id, songId = createSong(txn))
 
             val aggregatedPosts = playlistService.getUserFeed(
-                currentUserId = jeffId,
+                currentUserId = jeff.id,
                 beforeTimestamp = null,
                 afterTimestamp = null,
                 limit = 10
@@ -187,21 +187,21 @@ class PlaylistServiceTest : TransactionTest() {
     fun `getUserFeed - aggregates entries by song`() = withTransaction { txn ->
         val playlistService = createPlaylistService(txn)
 
-        val jeffId = createUser(txn, "jeff", true)
-        val vinnyId = createUser(txn, "vinny", true)
-        val bradId = createUser(txn, "brad", true)
+        val jeff = createUser(txn, "jeff", true)
+        val vinny = createUser(txn, "vinny", true)
+        val brad = createUser(txn, "brad", true)
 
-        followUser(txn, jeffId, vinnyId)
-        followUser(txn, jeffId, bradId)
+        followUser(txn, jeff.id, vinny.id)
+        followUser(txn, jeff.id, brad.id)
 
         val sharedSongId = createSong(txn)
-        createSongPost(txn, userId = jeffId, songId = sharedSongId)
-        createSongPost(txn, userId = vinnyId, songId = sharedSongId)
-        createSongPost(txn, userId = bradId, songId = sharedSongId)
-        createSongPost(txn, userId = vinnyId, songId = createSong(txn))
+        createSongPost(txn, userId = jeff.id, songId = sharedSongId)
+        createSongPost(txn, userId = vinny.id, songId = sharedSongId)
+        createSongPost(txn, userId = brad.id, songId = sharedSongId)
+        createSongPost(txn, userId = vinny.id, songId = createSong(txn))
 
         val aggregatedPosts = playlistService.getUserFeed(
-            currentUserId = jeffId,
+            currentUserId = jeff.id,
             beforeTimestamp = null,
             afterTimestamp = null,
             limit = 10
@@ -215,23 +215,23 @@ class PlaylistServiceTest : TransactionTest() {
     fun `getUserFeed - aggregated timestamp logic`() = withTransaction { txn ->
         val playlistService = createPlaylistService(txn)
 
-        val jeffId = createUser(txn, "jeff", true)
-        val vinnyId = createUser(txn, "vinny", true)
-        val bradId = createUser(txn, "brad", true)
-        val benId = createUser(txn, "ben", true)
+        val jeff = createUser(txn, "jeff", true)
+        val vinny = createUser(txn, "vinny", true)
+        val brad = createUser(txn, "brad", true)
+        val ben = createUser(txn, "ben", true)
 
-        followUser(txn, jeffId, vinnyId)
-        followUser(txn, jeffId, bradId)
-        followUser(txn, jeffId, benId)
+        followUser(txn, jeff.id, vinny.id)
+        followUser(txn, jeff.id, brad.id)
+        followUser(txn, jeff.id, ben.id)
 
         val sharedSongId = createSong(txn)
 
         // with only posts from other users: the oldest time is used
-        val vinnyPost = createSongPost(txn, userId = vinnyId, songId = sharedSongId)
-        val bradPost = createSongPost(txn, userId = bradId, songId = sharedSongId)
+        val vinnyPost = createSongPost(txn, userId = vinny.id, songId = sharedSongId)
+        val bradPost = createSongPost(txn, userId = brad.id, songId = sharedSongId)
 
         var aggregatedPosts = playlistService.getUserFeed(
-            currentUserId = jeffId,
+            currentUserId = jeff.id,
             beforeTimestamp = null,
             afterTimestamp = null,
             limit = 10
@@ -241,10 +241,10 @@ class PlaylistServiceTest : TransactionTest() {
         assertEquals(aggregatedPosts.items[0].timestamp, vinnyPost.createdAt)
 
         // with newest post from current user: the current user's time is used
-        val jeffPost = createSongPost(txn, userId = jeffId, songId = sharedSongId)
+        val jeffPost = createSongPost(txn, userId = jeff.id, songId = sharedSongId)
 
         aggregatedPosts = playlistService.getUserFeed(
-            currentUserId = jeffId,
+            currentUserId = jeff.id,
             beforeTimestamp = null,
             afterTimestamp = null,
             limit = 10
@@ -254,10 +254,10 @@ class PlaylistServiceTest : TransactionTest() {
         assertEquals(aggregatedPosts.items[0].timestamp, jeffPost.createdAt)
 
         // with newest post from another user, but with a post from current user: the current user's time is used
-        val benPost = createSongPost(txn, userId = benId, songId = sharedSongId)
+        val benPost = createSongPost(txn, userId = ben.id, songId = sharedSongId)
 
         aggregatedPosts = playlistService.getUserFeed(
-            currentUserId = jeffId,
+            currentUserId = jeff.id,
             beforeTimestamp = null,
             afterTimestamp = null,
             limit = 10
