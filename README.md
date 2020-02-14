@@ -4,12 +4,13 @@
 
 ## Overview
 
-Jam Buds is split into two self-contained "apps," intended for separate deployment.
+Jam Buds is split into three services:
 
-* The *API app* is the API server that powers the backend.
-* The *App app* (I know, I know) is the frontend app powered by [Nuxt.js](https://nuxtjs.org/). The app is initially server-side rendered before being used as a SPA once laded.
+* The *API service* is the original Node API server that powers the backend.
+* The *App service* is the frontend app powered by [Nuxt.js](https://nuxtjs.org/). The app is initially server-side rendered before being used as a SPA once laded.
+* *Rhiannon* is a new API server intended to replace the API service, powered by Kotlin and the JVM. Much more information is available in its separate readme.
 
-In addition, this repo also contains some development-specific configuration and feature tests that interact with both the browser app and API.
+In addition, this repo also contains some development-specific configuration and feature tests that interact with both the browser app and APIs.
 
 ## Install
 
