@@ -1,6 +1,7 @@
 package club.jambuds
 
 import club.jambuds.dao.ColorSchemeDao
+import club.jambuds.dao.LikeDao
 import club.jambuds.dao.MixtapeDao
 import club.jambuds.dao.PostDao
 import club.jambuds.dao.SongDao
@@ -48,9 +49,10 @@ open class AppTest {
         val mixtapeDao = txn.attach(MixtapeDao::class.java)
         val userDao = txn.attach(UserDao::class.java)
         val colorSchemeDao = txn.attach(ColorSchemeDao::class.java)
+        val likeDao = txn.attach(LikeDao::class.java)
 
         val playlistService =
-            PlaylistService(postDao, songDao, mixtapeDao)
+            PlaylistService(postDao, songDao, mixtapeDao, likeDao)
         val userService = UserService(userDao, colorSchemeDao)
 
         val authHandlers = AuthHandlers(userDao)

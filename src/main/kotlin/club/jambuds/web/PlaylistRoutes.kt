@@ -19,6 +19,7 @@ class PlaylistRoutes(
         get("/api/public-feed", this::getPublicFeed)
         get("/api/feed", this::getUserFeed)
         get("/api/playlists/:userName", this::getUserPlaylist)
+        get("/api/playlists/:userName/likes", this::getUserLikesPlaylist)
     }
 
     private fun getPublicFeed(ctx: Context) {
@@ -68,6 +69,28 @@ class PlaylistRoutes(
             beforeTimestamp = timestamps.beforeTimestamp,
             afterTimestamp = timestamps.afterTimestamp,
             onlyMixtapes = onlyMixtapes
+        )
+        val resp = UserPlaylistResponse(
+            items = playlist.items,
+            limit = playlist.limit,
+            userProfile = userProfile
+        )
+        ctx.json(resp)
+    }
+
+    private fun getUserLikesPlaylist(ctx: Context) {
+        val currentUserId = ctx.currentUser?.id
+        val timestamps = getTimestamps(ctx)
+
+        val userName = ctx.pathParam<String>("userName").get()
+        val userProfile = userService.getUserProfileByName(userName)
+            ?: throw NotFoundResponse("User not found with name $userName")
+
+        val playlist = playlistService.getUserLikesPlaylist(
+            userId = userProfile.id,
+            currentUserId = currentUserId,
+            beforeTimestamp = timestamps.beforeTimestamp,
+            afterTimestamp = timestamps.afterTimestamp
         )
         val resp = UserPlaylistResponse(
             items = playlist.items,

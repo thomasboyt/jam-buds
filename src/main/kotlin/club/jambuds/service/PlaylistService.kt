@@ -1,12 +1,13 @@
 package club.jambuds.service
 
+import club.jambuds.dao.LikeDao
 import club.jambuds.dao.MixtapeDao
 import club.jambuds.dao.PostDao
 import club.jambuds.dao.SongDao
 import club.jambuds.model.AggregatedPost
 import club.jambuds.model.MixtapePreview
+import club.jambuds.model.PlaylistPost
 import club.jambuds.model.Post
-import club.jambuds.model.PostConnections
 import club.jambuds.model.SongWithMeta
 import club.jambuds.responses.FeedPlaylistEntry
 import club.jambuds.responses.PlaylistEntry
@@ -17,7 +18,8 @@ import java.time.Instant
 class PlaylistService(
     private val postDao: PostDao,
     private val songDao: SongDao,
-    private val mixtapeDao: MixtapeDao
+    private val mixtapeDao: MixtapeDao,
+    private val likeDao: LikeDao
 ) {
     private val defaultPlaylistLimit = 20
 
@@ -79,6 +81,24 @@ class PlaylistService(
         return Playlist(items = items, limit = limit)
     }
 
+    fun getUserLikesPlaylist(
+        userId: Int,
+        currentUserId: Int?,
+        beforeTimestamp: Instant?,
+        afterTimestamp: Instant?,
+        limit: Int = defaultPlaylistLimit
+    ): Playlist<UserPlaylistEntry> {
+        val likes = likeDao.getLikesForUser(
+            userId = userId,
+            beforeTimestamp = beforeTimestamp,
+            afterTimestamp = afterTimestamp,
+            limit = limit
+        )
+
+        val items = getUserPlaylistEntriesForPosts(likes, currentUserId)
+        return Playlist(items = items, limit = limit)
+    }
+
     // fun getUserLikes(
     //     userId: Int,
     //     currentUserId: Int,
@@ -111,7 +131,7 @@ class PlaylistService(
     }
 
     private fun getUserPlaylistEntriesForPosts(
-        posts: List<Post>,
+        posts: List<PlaylistPost>,
         currentUserId: Int?
     ): List<UserPlaylistEntry> {
         val songsMap = getSongsMap(posts, currentUserId)
@@ -119,7 +139,7 @@ class PlaylistService(
 
         return posts.map {
             UserPlaylistEntry(
-                timestamp = it.createdAt,
+                timestamp = it.timestamp,
                 song = songsMap[it.songId],
                 mixtape = mixtapesMap[it.mixtapeId],
                 type = getPostType(it)
@@ -127,7 +147,7 @@ class PlaylistService(
         }
     }
 
-    private fun getSongsMap(posts: List<PostConnections>, currentUserId: Int?): Map<Int, SongWithMeta> {
+    private fun getSongsMap(posts: List<PlaylistPost>, currentUserId: Int?): Map<Int, SongWithMeta> {
         val songIds = posts.mapNotNull { it.songId }
         return if (songIds.isNotEmpty()) {
             val currentUserId = currentUserId ?: -1
@@ -138,7 +158,7 @@ class PlaylistService(
         }
     }
 
-    private fun getMixtapesMap(posts: List<PostConnections>): Map<Int, MixtapePreview> {
+    private fun getMixtapesMap(posts: List<PlaylistPost>): Map<Int, MixtapePreview> {
         val mixtapeIds = posts.mapNotNull { it.mixtapeId }
         return if (mixtapeIds.isNotEmpty()) {
             val mixtapesList = mixtapeDao.getMixtapesByIds(mixtapeIds)
@@ -148,7 +168,7 @@ class PlaylistService(
         }
     }
 
-    private fun getPostType(post: PostConnections): PlaylistEntryType {
+    private fun getPostType(post: PlaylistPost): PlaylistEntryType {
         return when {
             post.songId != null -> PlaylistEntryType.SONG
             post.mixtapeId != null -> PlaylistEntryType.MIXTAPE

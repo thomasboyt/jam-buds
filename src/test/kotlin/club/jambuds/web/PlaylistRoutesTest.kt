@@ -16,11 +16,11 @@ import kotlin.test.assertEquals
 
 class PlaylistRoutesTest : AppTest() {
     private fun forEachPlaylist(user: User, cb: (url: String) -> Unit) {
-        val urls = listOf("feed", "public-feed", "playlists/${user.name}")
+        val urls = listOf("feed", "public-feed", "playlists/${user.name}", "playlists/${user.name}/likes")
         urls.forEach { url ->
             try {
                 cb(url)
-            } catch (err: AssertionError) {
+            } catch (err: Throwable) {
                 throw Error("forEachPlaylist(): Error in /$url (see original exception below)", err)
             }
         }
@@ -59,6 +59,10 @@ class PlaylistRoutesTest : AppTest() {
         }
 
         forEachPlaylist(jeff) { url ->
+            if (url == "playlists/jeff/likes") {
+                // song hasn't been liked yet, so this one is empty
+                return@forEachPlaylist
+            }
             val req = getUserRequest(jeff, url)
             assertLikes(req, 0, false)
         }
@@ -81,7 +85,7 @@ class PlaylistRoutesTest : AppTest() {
                 .queryString("beforeTimestamp", DateTimeFormatter.ISO_INSTANT.format(Instant.now()))
                 .queryString("afterTimestamp", DateTimeFormatter.ISO_INSTANT.format(Instant.now()))
                 .asJson()
-            assertEquals(resp.status, 400)
+            assertEquals(400, resp.status)
         }
     }
 
@@ -302,6 +306,25 @@ class PlaylistRoutesTest : AppTest() {
     }
 
     @Test
+    fun `GET playlists_(userName) - includes posts for user`() {
+        val jeff = TestDataFactories.createUser(txn, "jeff", true)
+        val jeffSongId = TestDataFactories.createSong(txn)
+        TestDataFactories.createSongPost(txn, userId = jeff.id, songId = jeffSongId)
+
+        val vinny = TestDataFactories.createUser(txn, "vinny", true)
+        val vinnySongId = TestDataFactories.createSong(txn)
+        TestDataFactories.createSongPost(txn, userId = vinny.id, songId = vinnySongId)
+
+        val resp = Unirest.get("$appUrl/playlists/jeff").asJson()
+
+        val items = resp.body.`object`
+            .getJSONArray("items")
+
+        assertEquals(1, items.length())
+        assertEquals(jeffSongId, items.getJSONObject(0).getJSONObject("song").getInt("id"))
+    }
+
+    @Test
     fun `GET playlists_(userName) - allows filtering to only mixtapes`() {
         val jeff = TestDataFactories.createUser(txn, "jeff", true)
 
@@ -319,5 +342,23 @@ class PlaylistRoutesTest : AppTest() {
 
         assertEquals(1, items.length())
         assertEquals("mixtape", items.getJSONObject(0).getString("type"))
+    }
+
+    @Test
+    fun `GET playlists_(userName)_likes - returns a user's likes`() {
+        val jeff = TestDataFactories.createUser(txn, "jeff", true)
+
+        val vinny = TestDataFactories.createUser(txn, "vinny", true)
+        val vinnySongId = TestDataFactories.createSong(txn)
+        TestDataFactories.createSongPost(txn, userId = vinny.id, songId = vinnySongId)
+        TestDataFactories.createLike(txn, userId = jeff.id, songId = vinnySongId)
+
+        val resp = Unirest.get("$appUrl/playlists/jeff/likes").asJson()
+
+        val items = resp.body.`object`
+            .getJSONArray("items")
+
+        assertEquals(1, items.length())
+        assertEquals(vinnySongId, items.getJSONObject(0).getJSONObject("song").getInt("id"))
     }
 }

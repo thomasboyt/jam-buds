@@ -10,7 +10,8 @@ My plan for this experiment is to reimplement the parts of Jam Buds I feel the w
 
 * [x] Query the public feed
 * [x] Query a specific user's feed
-* [ ] Query a specific user's posts
+* [x] Query a specific user's posts
+* [x] Query a specific user's likes
 
 As part of this, I want to rewrite the unit tests. I will come up with specific scenarios in a separate list, but here's a rough outline of the plan:
 

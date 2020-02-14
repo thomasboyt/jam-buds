@@ -2,9 +2,10 @@ package club.jambuds.model
 
 import java.time.Instant
 
-interface PostConnections {
+interface PlaylistPost {
     val songId: Int?
     val mixtapeId: Int?
+    val timestamp: Instant
 }
 
 data class Post(
@@ -13,11 +14,15 @@ data class Post(
     override val songId: Int?,
     override val mixtapeId: Int?,
     val userId: Int
-) : PostConnections
+) : PlaylistPost {
+    override val timestamp: Instant
+    get() = this.createdAt
+}
 
 data class AggregatedPost(
     override val songId: Int?,
     override val mixtapeId: Int?,
-    val timestamp: Instant,
+    override val timestamp: Instant,
     val userNames: List<String>
-) : PostConnections
+) : PlaylistPost
+
