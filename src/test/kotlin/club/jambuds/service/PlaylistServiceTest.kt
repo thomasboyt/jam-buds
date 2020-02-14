@@ -16,99 +16,6 @@ import kotlin.test.assertEquals
 
 class PlaylistServiceTest : TransactionTest() {
     @Test
-    fun `getPublicFeed - returns an empty list with no items`() = withTransaction { txn ->
-        val playlistService = createPlaylistService(txn)
-        val results = playlistService.getPublicFeed(
-            beforeTimestamp = null,
-            afterTimestamp = null,
-            currentUserId = null
-        )
-        assertEquals(0, results.items.size)
-        assertEquals(20, results.limit)
-    }
-
-    @Test
-    fun `getPublicFeed - returns only public feed entries`() = withTransaction { txn ->
-        val playlistService = createPlaylistService(txn)
-
-        val jeff = createUser(txn, "jeff", true)
-        val publicSongId = createSong(txn)
-        createSongPost(txn, userId = jeff.id, songId = publicSongId)
-
-        val vinny = createUser(txn, "vinny", false)
-        val privateSongId = createSong(txn)
-        createSongPost(txn, userId = vinny.id, songId = privateSongId)
-
-        val results = playlistService.getPublicFeed(
-            beforeTimestamp = null,
-            afterTimestamp = null,
-            currentUserId = null
-        )
-        assertEquals(1, results.items.size)
-        assertEquals(publicSongId, results.items[0].song!!.id)
-    }
-
-    @Test
-    fun `getPublicFeed - allows pagination using a before timestamp`() = withTransaction { txn ->
-        val playlistService = createPlaylistService(txn)
-
-        val jeff = createUser(txn, "jeff", true)
-        val songIds = (1..100).map {
-            val songId = createSong(txn)
-            createSongPost(txn, userId = jeff.id, songId = songId)
-            songId
-        }
-
-        val firstPage = playlistService.getPublicFeed(
-            beforeTimestamp = null,
-            afterTimestamp = null,
-            currentUserId = null
-        )
-        val expectedFirstPageIds = songIds.reversed().slice(0..19)
-        assertEquals(expectedFirstPageIds, firstPage.items.map { it.song!!.id })
-
-        val timestampCursor = firstPage.items.last().timestamp
-        val secondPage = playlistService.getPublicFeed(
-            beforeTimestamp = timestampCursor,
-            afterTimestamp = null,
-            currentUserId = null
-        )
-
-        val expectedSecondPageIds = songIds.reversed().slice(20..39)
-        assertEquals(expectedSecondPageIds, secondPage.items.map { it.song!!.id })
-    }
-
-    @Test
-    fun `getPublicFeed - does not apply a limit when using an after timestamp`() = withTransaction { txn ->
-        val playlistService = createPlaylistService(txn)
-
-        val jeff = createUser(txn, "jeff", true)
-        val songIds = (1..100).map {
-            val songId = createSong(txn)
-            createSongPost(txn, userId = jeff.id, songId = songId)
-            songId
-        }
-
-        val allPosts = playlistService.getPublicFeed(
-            beforeTimestamp = null,
-            afterTimestamp = null,
-            limit = 100,
-            currentUserId = null
-        )
-        val timestampCursor = allPosts.items.last().timestamp
-
-        val newPosts = playlistService.getPublicFeed(
-            beforeTimestamp = null,
-            afterTimestamp = timestampCursor,
-            limit = 20,
-            currentUserId = null
-        )
-
-        // remove the last item since it's the after cursor
-        assertEquals(songIds.reversed().slice(0..98), newPosts.items.map { it.song!!.id })
-    }
-
-    @Test
     fun `getPublicFeed - aggregates posts of the same song and sets timestamp to oldest post`() =
         withTransaction { txn ->
             val playlistService = createPlaylistService(txn)
@@ -128,31 +35,6 @@ class PlaylistServiceTest : TransactionTest() {
             assertEquals(songId, results.items[0].song!!.id)
             assertEquals(firstPost.createdAt, results.items[0].timestamp)
         }
-
-    @Test
-    fun `getPublicFeed - sets isLiked to true for a user who has liked a song`() = withTransaction { txn ->
-        val playlistService = createPlaylistService(txn)
-
-        val songId = createSong(txn)
-        val jeff = createUser(txn, "jeff", true)
-        createSongPost(txn, userId = jeff.id, songId = songId)
-
-        val beforeLikeResults = playlistService.getPublicFeed(
-            currentUserId = jeff.id,
-            beforeTimestamp = null,
-            afterTimestamp = null
-        )
-        assertEquals(false, beforeLikeResults.items[0].song!!.isLiked)
-
-        createLike(txn, jeff.id, songId)
-
-        val afterLikeResults = playlistService.getPublicFeed(
-            currentUserId = jeff.id,
-            beforeTimestamp = null,
-            afterTimestamp = null
-        )
-        assertEquals(true, afterLikeResults.items[0].song!!.isLiked)
-    }
 
     @Test
     fun `getUserFeed - only includes posts from users the current user follows and their own`() =

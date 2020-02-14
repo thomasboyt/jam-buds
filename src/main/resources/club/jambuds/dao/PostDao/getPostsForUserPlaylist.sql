@@ -9,7 +9,7 @@ JOIN users ON users.id = posts.user_id
 WHERE
     posts.user_id = :userId
     AND (COALESCE(:beforeTimestamp, NULL) IS NULL OR posts.created_at < :beforeTimestamp)
-    AND (COALESCE(:beforeTimestamp, NULL) IS NULL OR posts.created_at > :afterTimestamp)
+    AND (COALESCE(:afterTimestamp, NULL) IS NULL OR posts.created_at > :afterTimestamp)
     AND (NOT :onlyMixtapes OR posts.mixtape_id IS NOT NULL)
 ORDER BY created_at DESC
 LIMIT

@@ -65,4 +65,13 @@ object TestDataFactories {
             .bind("songId", songId)
             .execute()
     }
+
+    fun createAuthToken(txn: Handle, userId: Int): String {
+        val token = "testAuthToken"
+        txn.createUpdate("insert into auth_tokens (user_id, auth_token) values (:userId, :authToken)")
+            .bind("userId", userId)
+            .bind("authToken", token)
+            .execute()
+        return token
+    }
 }
