@@ -7,7 +7,6 @@ import club.jambuds.dao.SongDao
 import club.jambuds.model.AggregatedPost
 import club.jambuds.model.MixtapePreview
 import club.jambuds.model.PlaylistPost
-import club.jambuds.model.Post
 import club.jambuds.model.SongWithMeta
 import club.jambuds.responses.FeedPlaylistEntry
 import club.jambuds.responses.PlaylistEntry

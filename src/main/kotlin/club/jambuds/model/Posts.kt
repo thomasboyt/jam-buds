@@ -16,7 +16,7 @@ data class Post(
     val userId: Int
 ) : PlaylistPost {
     override val timestamp: Instant
-    get() = this.createdAt
+        get() = this.createdAt
 }
 
 data class AggregatedPost(

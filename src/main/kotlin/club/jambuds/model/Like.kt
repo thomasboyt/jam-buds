@@ -10,5 +10,5 @@ data class Like(
     val userId: Int
 ) : PlaylistPost {
     override val timestamp: Instant
-    get() = this.createdAt
+        get() = this.createdAt
 }
