@@ -10,8 +10,6 @@ import kong.unirest.GetRequest
 import kong.unirest.Unirest
 import kong.unirest.json.JSONObject
 import org.junit.jupiter.api.Test
-import java.lang.AssertionError
-import java.lang.Exception
 import java.time.Instant
 import java.time.format.DateTimeFormatter
 import kotlin.test.assertEquals
@@ -139,7 +137,7 @@ class PlaylistRoutesTest : AppTest() {
     }
 
     @Test
-    fun `getPublicFeed - does not apply a limit when using an after timestamp`() {
+    fun `all playlists - does not apply a limit when using an after timestamp`() {
         val jeff = TestDataFactories.createUser(txn, "jeff", true)
         val songIds = (1..50).map {
             val songId = TestDataFactories.createSong(txn)
@@ -194,6 +192,97 @@ class PlaylistRoutesTest : AppTest() {
 
         assertEquals(1, items.length())
         assertEquals(publicSongId, items.getJSONObject(0).getJSONObject("song").getInt("id"))
+    }
+
+    @Test
+    fun `getPublicFeed - aggregates posts of the same song and sets timestamp to oldest post`() {
+        val songId = TestDataFactories.createSong(txn)
+        val jeff = TestDataFactories.createUser(txn, "jeff", true)
+        val firstPost = TestDataFactories.createSongPost(txn, userId = jeff.id, songId = songId)
+        val vinny = TestDataFactories.createUser(txn, "vinny", true)
+        TestDataFactories.createSongPost(txn, userId = vinny.id, songId = songId)
+
+        val items = Unirest.get("$appUrl/public-feed").asJson().body.`object`
+            .getJSONArray("items")
+
+        assertEquals(1, items.length())
+        assertEquals(songId, items.getJSONObject(0).getJSONObject("song").getInt("id"))
+        assertEquals(
+            DateTimeFormatter.ISO_INSTANT.format(firstPost.createdAt),
+            items.getJSONObject(0).getString("timestamp")
+        )
+    }
+
+    @Test
+    fun `GET feed - only includes posts from users the current user follows and their own`() {
+        val jeff = TestDataFactories.createUser(txn, "jeff", true)
+        val vinny = TestDataFactories.createUser(txn, "vinny", true)
+        val brad = TestDataFactories.createUser(txn, "brad", true)
+        val ben = TestDataFactories.createUser(txn, "ben", true)
+
+        TestDataFactories.followUser(txn, jeff.id, vinny.id)
+        TestDataFactories.followUser(txn, jeff.id, brad.id)
+
+        TestDataFactories.createSongPost(txn, userId = jeff.id, songId = TestDataFactories.createSong(txn))
+        TestDataFactories.createSongPost(txn, userId = vinny.id, songId = TestDataFactories.createSong(txn))
+        TestDataFactories.createSongPost(txn, userId = brad.id, songId = TestDataFactories.createSong(txn))
+        TestDataFactories.createSongPost(txn, userId = ben.id, songId = TestDataFactories.createSong(txn))
+
+        val items = getUserRequest(jeff, "feed").asJson().body.`object`.getJSONArray("items")
+
+        assertEquals(3, items.length())
+        assertEquals(
+            listOf("brad", "vinny", "jeff"),
+            items.map { (it as JSONObject).getJSONArray("userNames").getString(0) }
+        )
+    }
+
+    @Test
+    fun `GET feed - correctly aggregates and sets timestamps`() {
+        val jeff = TestDataFactories.createUser(txn, "jeff", true)
+        val vinny = TestDataFactories.createUser(txn, "vinny", true)
+        val brad = TestDataFactories.createUser(txn, "brad", true)
+        val ben = TestDataFactories.createUser(txn, "ben", true)
+
+        TestDataFactories.followUser(txn, jeff.id, vinny.id)
+        TestDataFactories.followUser(txn, jeff.id, brad.id)
+        TestDataFactories.followUser(txn, jeff.id, ben.id)
+
+        val sharedSongId = TestDataFactories.createSong(txn)
+
+        // with only posts from other users: the oldest time is used
+        val vinnyPost = TestDataFactories.createSongPost(txn, userId = vinny.id, songId = sharedSongId)
+        TestDataFactories.createSongPost(txn, userId = brad.id, songId = sharedSongId)
+
+        var items = getUserRequest(jeff, "feed").asJson().body.`object`.getJSONArray("items")
+
+        assertEquals(1, items.length())
+        assertEquals(
+            DateTimeFormatter.ISO_INSTANT.format(vinnyPost.createdAt),
+            items.getJSONObject(0).getString("timestamp")
+        )
+
+        // with newest post from current user: the current user's time is used
+        val jeffPost = TestDataFactories.createSongPost(txn, userId = jeff.id, songId = sharedSongId)
+
+        items = getUserRequest(jeff, "feed").asJson().body.`object`.getJSONArray("items")
+
+        assertEquals(1, items.length())
+        assertEquals(
+            DateTimeFormatter.ISO_INSTANT.format(jeffPost.createdAt),
+            items.getJSONObject(0).getString("timestamp")
+        )
+
+        // with newest post from another user, but with a post from current user: the current user's time is used
+        TestDataFactories.createSongPost(txn, userId = ben.id, songId = sharedSongId)
+
+        items = getUserRequest(jeff, "feed").asJson().body.`object`.getJSONArray("items")
+
+        assertEquals(1, items.length())
+        assertEquals(
+            DateTimeFormatter.ISO_INSTANT.format(jeffPost.createdAt),
+            items.getJSONObject(0).getString("timestamp")
+        )
     }
 
     @Test
