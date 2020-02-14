@@ -1,0 +1,76 @@
+name: Build Pipeline
+
+on: [push]
+
+jobs:
+  build:
+    name: Build & Test
+
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:11.2-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: jambuds
+        ports:
+          - 5432:5432
+        # needed because the postgres container does not provide a healthcheck
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Set up JDK 1.8
+      uses: actions/setup-java@v1
+      with:
+        java-version: 1.8
+
+    - name: Build with Gradle
+      run: ./gradlew build
+      env:
+        JDBC_DATABASE_URL: "jdbc:postgresql://localhost:${{ job.services.postgres.ports[5432] }}/jambuds?user=postgres&password=postgres"
+
+    - name: Upload JAR files
+      if: github.ref == 'refs/heads/master'
+      uses: actions/upload-artifact@v1
+      with:
+        name: rhiannon-jars
+        path: build/libs
+
+  push:
+    name: Push to GCP
+    needs: build
+    if: github.ref == 'refs/heads/master'
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Download JAR files
+      uses: actions/download-artifact@v1
+      with:
+        name: rhiannon-jars
+        path: build/libs
+
+    - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+      with:
+        version: '275.0.0'
+        service_account_key: ${{ secrets.GCP_KEY }}
+
+    - run: gcloud auth configure-docker
+
+    - name: Build Docker image
+      env:
+        GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+      run: docker build -t "gcr.io/${GCP_PROJECT_ID}/rhiannon" .
+
+    - name: Push Docker image
+      env:
+        GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+      run: docker push "gcr.io/${GCP_PROJECT_ID}/rhiannon"
+
+
