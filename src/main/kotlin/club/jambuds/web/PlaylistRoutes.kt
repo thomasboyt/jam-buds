@@ -19,7 +19,7 @@ class PlaylistRoutes(
         get("/api/public-feed", this::getPublicFeed)
         get("/api/feed", this::getUserFeed)
         get("/api/playlists/:userName", this::getUserPlaylist)
-        get("/api/playlists/:userName/likes", this::getUserLikesPlaylist)
+        get("/api/playlists/:userName/liked", this::getUserLikesPlaylist)
     }
 
     private fun getPublicFeed(ctx: Context) {

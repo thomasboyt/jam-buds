@@ -16,7 +16,7 @@ import kotlin.test.assertEquals
 
 class PlaylistRoutesTest : AppTest() {
     private fun forEachPlaylist(user: User, cb: (url: String) -> Unit) {
-        val urls = listOf("feed", "public-feed", "playlists/${user.name}", "playlists/${user.name}/likes")
+        val urls = listOf("feed", "public-feed", "playlists/${user.name}", "playlists/${user.name}/liked")
         urls.forEach { url ->
             try {
                 cb(url)
@@ -59,7 +59,7 @@ class PlaylistRoutesTest : AppTest() {
         }
 
         forEachPlaylist(jeff) { url ->
-            if (url == "playlists/jeff/likes") {
+            if (url == "playlists/jeff/liked") {
                 // song hasn't been liked yet, so this one is empty
                 return@forEachPlaylist
             }
@@ -353,7 +353,7 @@ class PlaylistRoutesTest : AppTest() {
         TestDataFactories.createSongPost(txn, userId = vinny.id, songId = vinnySongId)
         TestDataFactories.createLike(txn, userId = jeff.id, songId = vinnySongId)
 
-        val resp = Unirest.get("$appUrl/playlists/jeff/likes").asJson()
+        val resp = Unirest.get("$appUrl/playlists/jeff/liked").asJson()
 
         val items = resp.body.`object`
             .getJSONArray("items")
