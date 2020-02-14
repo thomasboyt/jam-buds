@@ -1,5 +1,6 @@
 package club.jambuds
 
+import club.jambuds.dao.ColorSchemeDao
 import club.jambuds.dao.MixtapeDao
 import club.jambuds.dao.PostDao
 import club.jambuds.dao.SongDao
@@ -93,10 +94,11 @@ private fun wire(app: Javalin, jdbi: Jdbi) {
     val songDao = jdbi.onDemand<SongDao>()
     val mixtapeDao = jdbi.onDemand<MixtapeDao>()
     val userDao = jdbi.onDemand<UserDao>()
+    val colorSchemeDao = jdbi.onDemand<ColorSchemeDao>()
 
     val playlistService =
         PlaylistService(postDao, songDao, mixtapeDao)
-    val userService = UserService(userDao)
+    val userService = UserService(userDao, colorSchemeDao)
 
     val authHandlers = AuthHandlers(userDao)
     val playlistRoutes = PlaylistRoutes(playlistService, userService)

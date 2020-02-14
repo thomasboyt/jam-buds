@@ -287,14 +287,15 @@ class PlaylistRoutesTest : AppTest() {
 
     @Test
     fun `GET playlists_(userName) - includes user profile`() {
-        var user = TestDataFactories.createUser(txn, "jeff", true)
+        val jeff = TestDataFactories.createUser(txn, "jeff", true)
+        val colorScheme = TestDataFactories.createColorScheme(txn, jeff.id)
 
         val resp = Unirest.get("$appUrl/playlists/jeff").asString()
         assertEquals(200, resp.status)
         val expected = UserPlaylistResponse(
             items = emptyList(),
             limit = 20,
-            userProfile = UserProfile(id = user.id, name = user.name)
+            userProfile = UserProfile(id = jeff.id, name = jeff.name, colorScheme = colorScheme)
         )
         assertEquals(JavalinJson.toJson(expected), resp.body)
     }

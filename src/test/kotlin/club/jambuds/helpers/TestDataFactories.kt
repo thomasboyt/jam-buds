@@ -1,5 +1,6 @@
 package club.jambuds.helpers
 
+import club.jambuds.model.ColorScheme
 import club.jambuds.model.Post
 import club.jambuds.model.User
 import org.jdbi.v3.core.Handle
@@ -73,5 +74,18 @@ object TestDataFactories {
             .bind("authToken", token)
             .execute()
         return token
+    }
+
+    fun createColorScheme(txn: Handle, userId: Int): ColorScheme {
+        val query = """
+            insert into color_schemes (user_id, background_gradient_name, text_color)
+                         values       (:userId, 'gradient', 'black')
+         """.trimIndent()
+
+        return txn.createUpdate(query)
+            .bind("userId", userId)
+            .executeAndReturnGeneratedKeys()
+            .mapTo(ColorScheme::class.java)
+            .one()
     }
 }
