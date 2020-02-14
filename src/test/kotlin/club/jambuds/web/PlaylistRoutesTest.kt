@@ -106,6 +106,7 @@ class PlaylistRoutesTest : AppTest() {
     fun `all playlists - allows pagination using a before timestamp`() {
         val jeff = TestDataFactories.createUser(txn, "jeff", true)
         val songIds = (1..50).map {
+            Thread.sleep(1)  // prevent creating songs at the "same time"
             val songId = TestDataFactories.createSong(txn)
             TestDataFactories.createSongPost(txn, userId = jeff.id, songId = songId)
             TestDataFactories.createLike(txn, userId = jeff.id, songId = songId)
@@ -298,5 +299,25 @@ class PlaylistRoutesTest : AppTest() {
             userProfile = UserProfile(id = jeff.id, name = jeff.name, colorScheme = colorScheme)
         )
         assertEquals(JavalinJson.toJson(expected), resp.body)
+    }
+
+    @Test
+    fun `GET playlists_(userName) - allows filtering to only mixtapes`() {
+        val jeff = TestDataFactories.createUser(txn, "jeff", true)
+
+        val songId = TestDataFactories.createSong(txn)
+        TestDataFactories.createSongPost(txn, userId = jeff.id, songId = songId)
+
+        val mixtapeId = TestDataFactories.createMixtape(txn, userId = jeff.id, isPublished = true)
+        TestDataFactories.createMixtapePost(txn, userId = jeff.id, mixtapeId = mixtapeId)
+
+        val items = Unirest
+            .get("$appUrl/playlists/jeff")
+            .queryString("onlyMixtapes", "true")
+            .asJson()
+            .body.`object`.getJSONArray("items")
+
+        assertEquals(1, items.length())
+        assertEquals("mixtape", items.getJSONObject(0).getString("type"))
     }
 }

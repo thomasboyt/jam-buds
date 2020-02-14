@@ -4,6 +4,7 @@ import club.jambuds.model.ColorScheme
 import club.jambuds.model.Post
 import club.jambuds.model.User
 import org.jdbi.v3.core.Handle
+import java.time.Instant
 
 object TestDataFactories {
     fun createSongPost(txn: Handle, userId: Int, songId: Int): Post {
@@ -19,12 +20,25 @@ object TestDataFactories {
             .one()
     }
 
+    fun createMixtapePost(txn: Handle, userId: Int, mixtapeId: Int): Post {
+        val query = """
+            insert into posts (user_id, mixtape_id) values (:userId, :mixtapeId)
+        """.trimIndent()
+
+        return txn.createUpdate(query)
+            .bind("userId", userId)
+            .bind("mixtapeId", mixtapeId)
+            .executeAndReturnGeneratedKeys()
+            .mapTo(Post::class.java)
+            .one()
+    }
+
     fun createSong(txn: Handle): Int {
-        return txn.createUpdate(
-            """
-                insert into songs (title, artists) values (:title, :artist)
-                """.trimIndent()
-        )
+        val query = """
+            insert into songs (title, artists) values (:title, :artist)
+        """.trimIndent()
+
+        return txn.createUpdate(query)
             .bind("title", "song")
             .bindArray("artist", String::class.java, listOf("song"))
             .executeAndReturnGeneratedKeys("id")
@@ -86,6 +100,28 @@ object TestDataFactories {
             .bind("userId", userId)
             .executeAndReturnGeneratedKeys()
             .mapTo(ColorScheme::class.java)
+            .one()
+    }
+
+    fun createMixtape(txn: Handle, userId: Int, isPublished: Boolean): Int {
+        val query = """
+            insert into mixtapes (user_id, title,  slug,   published_at)
+                         values  (:userId, :title, :slug, :publishedAt)
+         """.trimIndent()
+
+        val publishedAt = if (isPublished) {
+            Instant.now()
+        } else {
+            null
+        }
+
+        return txn.createUpdate(query)
+            .bind("userId", userId)
+            .bind("title", "title")
+            .bind("slug", "title")
+            .bind("publishedAt", publishedAt)
+            .executeAndReturnGeneratedKeys("id")
+            .mapTo(Int::class.java)
             .one()
     }
 }
