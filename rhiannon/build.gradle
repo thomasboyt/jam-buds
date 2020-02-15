@@ -37,6 +37,8 @@ dependencies {
 
     implementation 'io.javalin:javalin:3.7.0'
     implementation 'com.google.code.gson:gson:2.8.6'
+    implementation "org.hibernate.validator:hibernate-validator:6.1.2.Final"
+    implementation "org.glassfish:javax.el:3.0.0"
     implementation "com.typesafe:config:1.4.0"
     implementation "ch.qos.logback:logback-classic:$logback_version"
 
@@ -58,7 +60,11 @@ dependencies {
 test {
     environment "JAMBUDS_ENV", "test"
     useJUnitPlatform()
-    testLogging.showStandardStreams = true
+    testLogging {
+        events "failed"
+        exceptionFormat "full"
+        showStandardStreams = true
+    }
 }
 
 flyway {

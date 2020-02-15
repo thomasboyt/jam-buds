@@ -124,4 +124,17 @@ object TestDataFactories {
             .mapTo(Int::class.java)
             .one()
     }
+
+    fun addSongToMixtape(txn: Handle, mixtapeId: Int, songId: Int, rank: Int) {
+        val query = """
+            insert into mixtape_song_entries (mixtape_id, song_id, rank)
+                        values               (:mixtapeId, :songId, :rank)
+        """.trimIndent()
+
+        txn.createUpdate(query)
+            .bind("mixtapeId", mixtapeId)
+            .bind("songId", songId)
+            .bind("rank", rank)
+            .execute()
+    }
 }

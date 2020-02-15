@@ -9,4 +9,7 @@ import org.jdbi.v3.sqlobject.statement.SqlQuery
 interface SongDao {
     @SqlQuery
     fun getSongsByIds(@BindList("songIds") songIds: List<Int>, currentUserId: Int = -1): List<SongWithMeta>
+
+    @SqlQuery
+    fun getSongsByMixtapeId(mixtapeId: Int, currentUserId: Int? = -1): List<SongWithMeta>
 }

@@ -11,4 +11,7 @@ interface UserDao {
 
     @SqlQuery
     fun getUserByUserName(userName: String): User?
+
+    @SqlQuery
+    fun getUserByUserId(userId: Int): User?
 }

@@ -1,11 +1,11 @@
 import { Router } from 'express';
+import proxy from 'http-proxy-middleware';
 import wrapAsyncRoute from '../util/wrapAsyncRoute';
 
 import { UserModel } from '../models/user';
 
-import { isAuthenticated, getUserFromRequest } from '../auth';
+import { isAuthenticated } from '../auth';
 import {
-  createMixtapeForUser,
   getMixtapeById,
   addSongToMixtape,
   removeSongFromMixtape,
@@ -18,6 +18,8 @@ import {
 import { getOrCreateSong, hydrateSongMeta } from '../models/song';
 import { Mixtape } from '../resources';
 import { JamBudsHTTPError } from '../util/errors';
+import config from '../config';
+import { IncomingMessage } from 'http';
 
 function validateMixtapeExists(mixtape: Mixtape | null): Mixtape {
   if (!mixtape) {
@@ -27,23 +29,6 @@ function validateMixtapeExists(mixtape: Mixtape | null): Mixtape {
     });
   }
   return mixtape;
-}
-
-function validateCanReadMixtape({
-  mixtape,
-  user,
-}: {
-  mixtape: Mixtape;
-  user: UserModel | null;
-}) {
-  if (!mixtape.isPublished) {
-    if (!(user && mixtape.author.id === user.id)) {
-      throw new JamBudsHTTPError({
-        statusCode: 401,
-        message: `You do not have access to this draft mixtape`,
-      });
-    }
-  }
 }
 
 function validateCanDeleteMixtape({
@@ -84,45 +69,33 @@ function validateCanUpdateMixtape({
 }
 
 export default function registerMixtapeEndpoints(router: Router) {
-  /**
-   * Create a mixtape with a given initial title.
-   */
-  router.post(
+  const target = config.require('JB_RHIANNON_URL');
+
+  function filter(pathname: string, req: IncomingMessage) {
+    return (
+      (!!pathname.match('^/api/mixtapes/\\d+$') && req.method === 'GET') ||
+      (!!pathname.match('^/api/mixtapes$') && req.method === 'POST')
+    );
+  }
+
+  // via https://github.com/chimurai/http-proxy-middleware/issues/40
+  // restream parsed body before proxying
+  const restream = function(proxyReq: any, req: any) {
+    if (req.body) {
+      const bodyData = JSON.stringify(req.body);
+      // incase if content-type is application/x-www-form-urlencoded -> we need to change to application/json
+      proxyReq.setHeader('Content-Type', 'application/json');
+      proxyReq.setHeader('Content-Length', Buffer.byteLength(bodyData));
+      // stream the content
+      proxyReq.write(bodyData);
+    }
+  };
+
+  router.use(
     '/mixtapes',
-    isAuthenticated,
-    wrapAsyncRoute(async (req, res) => {
-      const user = res.locals.user as UserModel;
-
-      // TODO: validate
-      const title = req.body.title;
-
-      const { id, slug } = await createMixtapeForUser(user, { title });
-
-      res.json({
-        mixtapeId: id,
-        slug,
-      });
-    })
-  );
-
-  /**
-   * Get a mixtape. Returns a 401 if it's a draft mixtape and you did not create
-   * it.
-   */
-  router.get(
-    '/mixtapes/:mixtapeId',
-    wrapAsyncRoute(async (req, res) => {
-      const mixtapeId = parseInt(req.params.mixtapeId, 10);
-      const currentUser = await getUserFromRequest(req);
-
-      let mixtape = await getMixtapeById(mixtapeId, {
-        currentUserId: currentUser ? currentUser.id : undefined,
-      });
-
-      mixtape = validateMixtapeExists(mixtape);
-      validateCanReadMixtape({ mixtape, user: currentUser });
-
-      res.json(mixtape);
+    proxy(filter, {
+      target,
+      onProxyReq: restream,
     })
   );
 
