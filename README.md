@@ -14,44 +14,32 @@ In addition, this repo also contains some development-specific configuration and
 
 ## Install
 
-Base requirements:
+In development, the services run on your local computer, while databases run via Docker containers.
+
+You'll want the following for the API and App services:
 
 - Node: 12.x
 - NPM: 6.x
-- Postgres: 11.x recommended
-- Redis: 5.x recommended
 
-Everything else is handled by NPM. Make sure your editor is configured to prefer local versions of dev depdendencies (TypeScript, ESLint, Prettier...).
+For Rhiannon, you're going to want [IntelliJ IDEA CE](https://www.jetbrains.com/idea/). If you import the `rhiannon/` folder into IntelliJ, it should help you configure the right JVM and Gradle and such.
 
-### Running Databases with Docker (optional)
+### Installing Node dependencies
 
-If you'd like to avoid using system-level installs of Postgres or Redis, you can instead use the `docker-compose-yml` configuration in this repo to run Postgres and Redis containers. When configuring your `.env` files (see below), use the following settings:
+You'll need various NPM depdencies:
 
 ```
-# .env
-DATABASE_URL=postgres://postgres@localhost:5433/jambuds
-REDIS_URL=redis://localhost:6380
-
-# .env.test
-DATABASE_URL=postgres://postgres@localhost:5433/jambuds_test
-REDIS_URL=redis://localhost:6380/1
-```
-
-### API Server
-
-```
+npm install
 cd api
 npm install
-```
-
-### App Server
-
-```
-cd app
+cd ../app
+npm install
+cd ../spec
 npm install
 ```
 
 ## Run in development
+
+**TODO: Update for Rhiannon**
 
 First, copy over `.env.defaults` to `.env` and fill it out. There's lots of API key provisioning and stuff to do there.
 
@@ -70,6 +58,8 @@ cd app && npm run dev
 ```
 
 ## Testing
+
+**TODO: Update for Rhiannon**
 
 First, copy over `.env.test.defaults` to `.env.test` and replace the values as you did for `.env`.
 
@@ -94,13 +84,9 @@ cd spec && npm test
 
 ## Deploy
 
-This repo contains two separate apps: the API server and the app (rendering) server & Vue client.
+The recommended way to deploy the Jam Buds is with Docker. All services have their own Dockerfiles, and can be run on a Docker host together.
 
-### Docker
-
-The recommended way to deploy the Jam Buds is with Docker. Both apps have their own Dockerfiles, and can be run on a Docker host together.
-
-When building for Docker, the Webpack builds are done totally locally before being copied into the Docker images, meaning certain production environment variables need to be set for the build. See the `_env.deploy` template for these variables, as well as variables used for SSH-based deploys.
+When building for Docker, the Webpack builds are done totally locally before being copied into the Docker images, meaning certain production environment variables need to be set for the build. See the `.env.build` template for these variables.
 
 ### Configure CDN
 
