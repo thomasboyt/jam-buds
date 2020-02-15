@@ -6,9 +6,11 @@ import club.jambuds.dao.MixtapeDao
 import club.jambuds.dao.PostDao
 import club.jambuds.dao.SongDao
 import club.jambuds.dao.UserDao
+import club.jambuds.service.MixtapeService
 import club.jambuds.service.PlaylistService
 import club.jambuds.service.UserService
 import club.jambuds.web.AuthHandlers
+import club.jambuds.web.MixtapeRoutes
 import club.jambuds.web.PlaylistRoutes
 import io.javalin.Javalin
 import org.flywaydb.core.Flyway
@@ -54,13 +56,12 @@ open class AppTest {
         val playlistService =
             PlaylistService(postDao, songDao, mixtapeDao, likeDao)
         val userService = UserService(userDao, colorSchemeDao)
-
-        val authHandlers = AuthHandlers(userDao)
-        val playlistRoutes = PlaylistRoutes(playlistService, userService)
+        val mixtapeService = MixtapeService(mixtapeDao, songDao, userService)
 
         app.routes {
-            authHandlers.register()
-            playlistRoutes.register()
+            AuthHandlers(userDao).register()
+            PlaylistRoutes(playlistService, userService).register()
+            MixtapeRoutes(mixtapeService).register()
         }
     }
 

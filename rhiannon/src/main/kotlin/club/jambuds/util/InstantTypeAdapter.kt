@@ -7,8 +7,12 @@ import java.time.Instant
 import java.time.format.DateTimeFormatter
 
 class InstantTypeAdapter : TypeAdapter<Instant>() {
-    override fun write(out: JsonWriter, value: Instant) {
-        out.value(DateTimeFormatter.ISO_INSTANT.format(value))
+    override fun write(out: JsonWriter, value: Instant?) {
+        if (value == null) {
+            out.nullValue()
+        } else {
+            out.value(DateTimeFormatter.ISO_INSTANT.format(value))
+        }
     }
 
     override fun read(input: JsonReader): Instant = Instant.parse(input.nextString())

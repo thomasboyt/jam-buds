@@ -6,12 +6,15 @@ import club.jambuds.dao.MixtapeDao
 import club.jambuds.dao.PostDao
 import club.jambuds.dao.SongDao
 import club.jambuds.dao.UserDao
+import club.jambuds.service.MixtapeService
 import club.jambuds.service.PlaylistService
 import club.jambuds.service.UserService
 import club.jambuds.util.InstantTypeAdapter
 import club.jambuds.util.LocalDateTimeTypeAdapter
 import club.jambuds.web.AuthHandlers
+import club.jambuds.web.MixtapeRoutes
 import club.jambuds.web.PlaylistRoutes
+import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
@@ -40,8 +43,8 @@ fun createJdbi(databaseUrl: String): Jdbi {
     return jdbi
 }
 
-private fun configureJsonMapper() {
-    val gson = GsonBuilder()
+fun getGson(): Gson {
+    return GsonBuilder()
         .setPrettyPrinting()
         .setDateFormat("yyyy-MM-dd'T'HH:mmX")
         .excludeFieldsWithoutExposeAnnotation()
@@ -54,6 +57,10 @@ private fun configureJsonMapper() {
             LocalDateTimeTypeAdapter()
         )
         .create()
+}
+
+private fun configureJsonMapper() {
+    val gson = getGson()
 
     JavalinJson.fromJsonMapper = object : FromJsonMapper {
         override fun <T> map(json: String, targetClass: Class<T>) = gson.fromJson(json, targetClass)
@@ -101,13 +108,12 @@ private fun wire(app: Javalin, jdbi: Jdbi) {
     val playlistService =
         PlaylistService(postDao, songDao, mixtapeDao, likeDao)
     val userService = UserService(userDao, colorSchemeDao)
-
-    val authHandlers = AuthHandlers(userDao)
-    val playlistRoutes = PlaylistRoutes(playlistService, userService)
+    val mixtapeService = MixtapeService(mixtapeDao, songDao, userService)
 
     app.routes {
-        authHandlers.register()
-        playlistRoutes.register()
+        AuthHandlers(userDao).register()
+        PlaylistRoutes(playlistService, userService).register()
+        MixtapeRoutes(mixtapeService).register()
     }
 }
 
