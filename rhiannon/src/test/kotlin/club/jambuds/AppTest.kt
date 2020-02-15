@@ -13,6 +13,7 @@ import club.jambuds.web.AuthHandlers
 import club.jambuds.web.MixtapeRoutes
 import club.jambuds.web.PlaylistRoutes
 import io.javalin.Javalin
+import kong.unirest.Unirest
 import org.flywaydb.core.Flyway
 import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.kotlin.useTransactionUnchecked
@@ -68,6 +69,7 @@ open class AppTest {
     @AfterEach
     internal fun afterEach() {
         app.stop()
+        Unirest.shutDown()
     }
 
     companion object {

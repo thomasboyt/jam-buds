@@ -60,7 +60,11 @@ dependencies {
 test {
     environment "JAMBUDS_ENV", "test"
     useJUnitPlatform()
-    testLogging.showStandardStreams = true
+    testLogging {
+        events "failed"
+        exceptionFormat "full"
+        showStandardStreams = true
+    }
 }
 
 flyway {
