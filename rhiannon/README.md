@@ -1,31 +1,20 @@
 # rhiannon
 
-This repo is an experiment in using Kotlin to build a new backend for [Jam Buds](https://github.com/thomasboyt/jam-buds).
+Rhiannon is the new backend for Jam Buds, built on Kotlin and the JVM. If you're reading this with no context, you may want to scroll down to the "Why" section first.
 
-If you're reading this with no context, you may want to scroll down to the "Why" section below before reading about what I'm building.
+## Current Status
 
-## Outline
+Route checklist, in vaguely priority order:
 
-My plan for this experiment is to reimplement the parts of Jam Buds I feel the worst about first, to see if I like them more in Kotlin. So far, this means feed querying:
+* [X] GET /public-feed
+* [X] GET /feed
+* [X] GET /playlists/:user
+* [X] GET /playlists/:user/liked
+* [X] GET /mixtapes/:id
+* [X] POST /mixtapes
 
-* [x] Query the public feed
-* [x] Query a specific user's feed
-* [x] Query a specific user's posts
-* [x] Query a specific user's likes
+Other major TODOs:
 
-As part of this, I want to rewrite the unit tests. I will come up with specific scenarios in a separate list, but here's a rough outline of the plan:
-
-* [x] Create new test database with schema copied from Jam Buds
-* [x] Create SQL database seeds with easy-to-use data (maybe do factories as a stretch goal, just to see what that looks like)
-* [x] Tests for pagination
-* [ ] Tests for pulling the correct mixtapes & songs
-
-I also want to figure out, uh, how the hell to deploy this thing. This will entail:
-
-* [x] Building a self-contained app for distribution in Docker
-* [x] Creating a docker image
-* [x] Running the docker image locally to confirm it works
-* [x] Deploying the image to my docker box against the production Jam Buds DB to see if it works well and how the performance is
 * [ ] Hook up Sentry for monitoring (can test locally)
 
 ## Architecture
