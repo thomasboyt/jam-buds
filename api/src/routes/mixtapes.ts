@@ -12,7 +12,6 @@ import {
   reorderMixtapeSongs,
   setMixtapeTitle,
   publishMixtape,
-  deleteMixtape,
   getDraftMixtapesByUserId,
 } from '../models/mixtapes';
 import { getOrCreateSong, hydrateSongMeta } from '../models/song';
@@ -29,21 +28,6 @@ function validateMixtapeExists(mixtape: Mixtape | null): Mixtape {
     });
   }
   return mixtape;
-}
-
-function validateCanDeleteMixtape({
-  mixtape,
-  user,
-}: {
-  mixtape: Mixtape;
-  user: UserModel;
-}) {
-  if (mixtape.author.id !== user.id) {
-    throw new JamBudsHTTPError({
-      statusCode: 401,
-      message: `You do not own this mixtape`,
-    });
-  }
 }
 
 function validateCanUpdateMixtape({
@@ -74,6 +58,7 @@ export default function registerMixtapeEndpoints(router: Router) {
   function filter(pathname: string, req: IncomingMessage) {
     return (
       (!!pathname.match('^/api/mixtapes/\\d+$') && req.method === 'GET') ||
+      (!!pathname.match('^/api/mixtapes/\\d+$') && req.method === 'DELETE') ||
       (!!pathname.match('^/api/mixtapes$') && req.method === 'POST')
     );
   }
@@ -96,25 +81,6 @@ export default function registerMixtapeEndpoints(router: Router) {
     proxy(filter, {
       target,
       onProxyReq: restream,
-    })
-  );
-
-  router.delete(
-    '/mixtapes/:mixtapeId',
-    isAuthenticated,
-    wrapAsyncRoute(async (req, res) => {
-      const user = res.locals.user as UserModel;
-      const mixtapeId = parseInt(req.params.mixtapeId, 10);
-      let mixtape = await getMixtapeById(mixtapeId, {
-        currentUserId: user.id,
-      });
-
-      mixtape = validateMixtapeExists(mixtape);
-      validateCanDeleteMixtape({ mixtape, user });
-
-      await deleteMixtape(mixtape.id);
-
-      res.json({ success: true });
     })
   );
 
