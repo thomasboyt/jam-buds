@@ -2,21 +2,6 @@
 
 Rhiannon is the new backend for Jam Buds, built on Kotlin and the JVM. If you're reading this with no context, you may want to scroll down to the "Why" section first.
 
-## Current Status
-
-Route checklist, in vaguely priority order:
-
-* [X] GET /public-feed
-* [X] GET /feed
-* [X] GET /playlists/:user
-* [X] GET /playlists/:user/liked
-* [X] GET /mixtapes/:id
-* [X] POST /mixtapes
-
-Other major TODOs:
-
-* [ ] Hook up Sentry for monitoring (can test locally)
-
 ## Architecture
 
 This project is a Kotlin app that uses [Javalin](https://javalin.io/), a small web framework for Java and Kotlin built on [Jetty](https://www.eclipse.org/jetty/). I originally started out using [Ktor](https://ktor.io/), but wasn't happy with its APIs and immaturity. Javalin seems to have the batteries I'm looking for, like parameter validation. Notably, it doesn't have coroutines, but does support [completable features](https://javalin.io/documentation#faq). In a world where most Java libraries aren't async, but generally _are_ thread-safe, this seems like an okay tradeoff.
