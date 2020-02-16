@@ -59,4 +59,45 @@ class MixtapeRoutesTest : AppTest() {
         assertEquals(false, body.isPublished)
         assertEquals(0, body.tracks.size)
     }
+
+    @Test
+    fun `DELETE mixtapes_(id) - works`() {
+        fun getPostCount(): Int {
+            return txn.select("select count(*) from posts").mapTo(Int::class.java).one()
+        }
+        fun getMixtapeCount(): Int {
+            return txn.select("select count(*) from mixtapes").mapTo(Int::class.java).one()
+        }
+
+        val jeff = TestDataFactories.createUser(txn, "jeff", true)
+        val mixtapeId = TestDataFactories.createMixtape(txn, jeff.id, true)
+        TestDataFactories.createMixtapePost(txn, mixtapeId = mixtapeId, userId = jeff.id)
+
+        assertEquals(1, getPostCount())
+        assertEquals(1, getMixtapeCount())
+
+        val authToken = TestDataFactories.createAuthToken(txn, jeff.id)
+        val resp = Unirest.delete("$appUrl/mixtapes/$mixtapeId")
+            .header("X-Auth-Token", authToken)
+            .asString()
+
+        assertEquals(204, resp.status)
+        assertEquals(0, getPostCount())
+        assertEquals(0, getMixtapeCount())
+    }
+
+    @Test
+    fun `DELETE mixtapes_(id) - prevents deleting another user's mixtape`() {
+        val jeff = TestDataFactories.createUser(txn, "jeff", true)
+        val mixtapeId = TestDataFactories.createMixtape(txn, jeff.id, true)
+        TestDataFactories.createMixtapePost(txn, mixtapeId = mixtapeId, userId = jeff.id)
+
+        val vinny = TestDataFactories.createUser(txn, "jeff", true)
+        val authToken = TestDataFactories.createAuthToken(txn, vinny.id)
+        val resp = Unirest.delete("$appUrl/mixtapes/$mixtapeId")
+            .header("X-Auth-Token", authToken)
+            .asString()
+
+        assertEquals(401, resp.status)
+    }
 }

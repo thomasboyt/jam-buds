@@ -8,11 +8,11 @@ import java.time.Instant
 
 object TestDataFactories {
     fun createSongPost(txn: Handle, userId: Int, songId: Int): Post {
-        return txn.createUpdate(
-            """
-                insert into posts (user_id, song_id) values (:userId, :songId)
-                """.trimIndent()
-        )
+        val query = """
+            insert into posts (user_id, song_id) values (:userId, :songId)
+        """.trimIndent()
+
+        return txn.createUpdate(query)
             .bind("userId", userId)
             .bind("songId", songId)
             .executeAndReturnGeneratedKeys()

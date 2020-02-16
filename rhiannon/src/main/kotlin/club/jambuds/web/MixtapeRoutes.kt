@@ -14,6 +14,7 @@ class MixtapeRoutes(private val mixtapeService: MixtapeService) {
     fun register() {
         ApiBuilder.post("/api/mixtapes", this::createMixtape)
         ApiBuilder.get("/api/mixtapes/:id", this::getMixtape)
+        ApiBuilder.delete("/api/mixtapes/:id", this::deleteMixtape)
     }
 
     data class CreateBody(
@@ -36,5 +37,14 @@ class MixtapeRoutes(private val mixtapeService: MixtapeService) {
             ?: throw NotFoundResponse("Could not find mixtape with id $id")
 
         ctx.json(mixtape)
+    }
+
+    private fun deleteMixtape(ctx: Context) {
+        val currentUser = ctx.requireUser()
+        val id = ctx.pathParam<Int>("id").get()
+
+        mixtapeService.deleteMixtapeById(id, currentUserId = currentUser.id)
+
+        ctx.status(204)
     }
 }

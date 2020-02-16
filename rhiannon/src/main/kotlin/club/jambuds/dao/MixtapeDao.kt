@@ -19,4 +19,7 @@ interface MixtapeDao {
     @SqlUpdate
     @GetGeneratedKeys
     fun createMixtape(userId: Int, title: String, slug: String): Mixtape
+
+    @SqlUpdate
+    fun deleteMixtapeById(id: Int)
 }

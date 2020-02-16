@@ -1,0 +1,1 @@
+DELETE FROM mixtapes WHERE id=:id;
