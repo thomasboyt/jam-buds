@@ -82,8 +82,8 @@ class PlaylistRoutesTest : AppTest() {
         forEachPlaylist(jeff) { url ->
             val req = getUserRequest(jeff, url)
             val resp = req
-                .queryString("beforeTimestamp", DateTimeFormatter.ISO_INSTANT.format(Instant.now()))
-                .queryString("afterTimestamp", DateTimeFormatter.ISO_INSTANT.format(Instant.now()))
+                .queryString("before", DateTimeFormatter.ISO_INSTANT.format(Instant.now()))
+                .queryString("after", DateTimeFormatter.ISO_INSTANT.format(Instant.now()))
                 .asJson()
             assertEquals(400, resp.status)
         }
@@ -95,12 +95,12 @@ class PlaylistRoutesTest : AppTest() {
 
         forEachPlaylist(jeff) { url ->
             var resp = getUserRequest(jeff, url)
-                .queryString("beforeTimestamp", "foo")
+                .queryString("before", "foo")
                 .asString()
             assertEquals(400, resp.status)
 
             resp = getUserRequest(jeff, url)
-                .queryString("afterTimestamp", "foo")
+                .queryString("after", "foo")
                 .asString()
             assertEquals(400, resp.status)
         }
@@ -130,7 +130,7 @@ class PlaylistRoutesTest : AppTest() {
 
             val timestampCursor = (items.last() as JSONObject).getString("timestamp")
             val secondPageItems = getUserRequest(jeff, url)
-                .queryString("beforeTimestamp", timestampCursor)
+                .queryString("before", timestampCursor)
                 .asJson()
                 .body.`object`
                 .getJSONArray("items")
@@ -159,14 +159,14 @@ class PlaylistRoutesTest : AppTest() {
             val firstPageCursor = (items.last() as JSONObject).getString("timestamp")
 
             val secondPageItems = getUserRequest(jeff, url)
-                .queryString("beforeTimestamp", firstPageCursor)
+                .queryString("before", firstPageCursor)
                 .asJson()
                 .body.`object`
                 .getJSONArray("items")
             val secondPageCursor = (secondPageItems.last() as JSONObject).getString("timestamp")
 
             val afterItems = getUserRequest(jeff, url)
-                .queryString("afterTimestamp", secondPageCursor)
+                .queryString("after", secondPageCursor)
                 .asJson()
                 .body.`object`
                 .getJSONArray("items")

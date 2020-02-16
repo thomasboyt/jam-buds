@@ -103,8 +103,8 @@ class PlaylistRoutes(
     private data class Timestamps(val beforeTimestamp: Instant?, val afterTimestamp: Instant?)
 
     private fun getTimestamps(ctx: Context): Timestamps {
-        val beforeTimestamp = ctx.queryParam<Instant>("beforeTimestamp").getOrNull()
-        val afterTimestamp = ctx.queryParam<Instant>("afterTimestamp")
+        val beforeTimestamp = ctx.queryParam<Instant>("before").getOrNull()
+        val afterTimestamp = ctx.queryParam<Instant>("after")
             .check(
                 { beforeTimestamp == null },
                 "cannot have both 'beforeTimestamp' and 'afterTimestamp'"
