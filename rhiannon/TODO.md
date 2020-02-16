@@ -9,7 +9,7 @@ Next on deck: Song search & post flows
   * [ ] GET /sign-in (sign-in link from email)
   * [ ] POST /registration (create new account)
   * [ ] POST /sign-out
-  k
+
 * [ ] Like routes
   * [ ] PUT /likes/:songId
   * [ ] DELETE /likes/:songId
@@ -17,6 +17,7 @@ Next on deck: Song search & post flows
 * [ ] Mixtape routes
   * [X] GET /mixtapes/:id
   * [X] POST /mixtapes
+  * [X] DELETE /mixtapes/:id
   * [ ] POST /mixtapes/:mixtapeId/songs
   * [ ] DELETE /mixtapes/:mixtapeId/songs/:songId
   * [ ] POST /mixtapes/:mixtapeId/order
@@ -39,7 +40,7 @@ Next on deck: Song search & post flows
   * [ ] DELETE /posts/:songId
 
 * [ ] Search routes
-  * [ ] GET /spotify-search
+  * [X] GET /spotify-search
   * [ ] GET /spotify-details/:spotifyId
 
 * [ ] Settings routes
@@ -68,6 +69,10 @@ Next on deck: Song search & post flows
   * [ ] GET /friend-suggestions
   * [ ] GET /users/:name/following
   * [ ] GET /users/:name/followers
+
+### Units of work
+
+* New post + adding song to mixtape + Spotify search migration needs to happen at once so that the search cache can be properly leveraged
 
 ### Other major tasks:
 

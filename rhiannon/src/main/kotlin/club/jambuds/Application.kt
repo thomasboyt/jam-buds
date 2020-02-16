@@ -8,16 +8,20 @@ import club.jambuds.dao.SongDao
 import club.jambuds.dao.UserDao
 import club.jambuds.service.MixtapeService
 import club.jambuds.service.PlaylistService
+import club.jambuds.service.SearchService
+import club.jambuds.service.SpotifyApiService
 import club.jambuds.service.UserService
 import club.jambuds.util.InstantTypeAdapter
 import club.jambuds.util.LocalDateTimeTypeAdapter
 import club.jambuds.web.AuthHandlers
 import club.jambuds.web.MixtapeRoutes
 import club.jambuds.web.PlaylistRoutes
+import club.jambuds.web.SearchRoutes
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
+import com.wrapper.spotify.SpotifyApi
 import com.zaxxer.hikari.HikariDataSource
 import io.javalin.Javalin
 import io.javalin.core.validation.JavalinValidation
@@ -78,8 +82,10 @@ private fun configureValidation() {
 fun getConfig(): Config {
     val env = System.getenv("JAMBUDS_ENV") ?: throw Error("No JAMBUDS_ENV set!")
     val envConfig = ConfigFactory.parseResources("conf/$env.conf")
+    val localConfig = ConfigFactory.parseResources("conf/local/$env.conf")
     val envVarConfig = ConfigFactory.parseResources("conf/vars.conf")
     return envVarConfig
+        .withFallback(localConfig)
         .withFallback(envConfig)
         .resolve()
         .getConfig("rhiannon")
@@ -97,7 +103,7 @@ fun createJavalinApp(): Javalin {
     return app
 }
 
-private fun wire(app: Javalin, jdbi: Jdbi) {
+private fun wire(app: Javalin, jdbi: Jdbi, config: Config) {
     val postDao = jdbi.onDemand<PostDao>()
     val songDao = jdbi.onDemand<SongDao>()
     val mixtapeDao = jdbi.onDemand<MixtapeDao>()
@@ -110,10 +116,18 @@ private fun wire(app: Javalin, jdbi: Jdbi) {
     val userService = UserService(userDao, colorSchemeDao)
     val mixtapeService = MixtapeService(mixtapeDao, songDao, userService)
 
+    val spotifyApiService = SpotifyApiService(
+        config.getString("spotifyClientId"),
+        config.getString("spotifyClientSecret")
+    )
+    spotifyApiService.startRefreshLoop()
+    val searchService = SearchService(spotifyApiService)
+
     app.routes {
         AuthHandlers(userDao).register()
         PlaylistRoutes(playlistService, userService).register()
         MixtapeRoutes(mixtapeService).register()
+        SearchRoutes(searchService).register()
     }
 }
 
@@ -121,6 +135,6 @@ fun main() {
     val config = getConfig()
     val jdbi = createJdbi(config.getString("databaseUrl"))
     val app = createJavalinApp()
-    wire(app, jdbi)
+    wire(app, jdbi, config)
     app.start(config.getInt("port"))
 }

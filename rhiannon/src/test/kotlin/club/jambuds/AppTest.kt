@@ -8,10 +8,14 @@ import club.jambuds.dao.SongDao
 import club.jambuds.dao.UserDao
 import club.jambuds.service.MixtapeService
 import club.jambuds.service.PlaylistService
+import club.jambuds.service.SearchService
+import club.jambuds.service.SpotifyApiService
 import club.jambuds.service.UserService
 import club.jambuds.web.AuthHandlers
 import club.jambuds.web.MixtapeRoutes
 import club.jambuds.web.PlaylistRoutes
+import club.jambuds.web.SearchRoutes
+import com.nhaarman.mockitokotlin2.mock
 import io.javalin.Javalin
 import kong.unirest.Unirest
 import org.flywaydb.core.Flyway
@@ -40,6 +44,7 @@ open class AppTest {
 
     lateinit var txn: Handle
     private lateinit var app: Javalin
+    lateinit var mockSpotifyApiService: SpotifyApiService
 
     fun wire(txn: Handle) {
         this.txn = txn
@@ -59,10 +64,14 @@ open class AppTest {
         val userService = UserService(userDao, colorSchemeDao)
         val mixtapeService = MixtapeService(mixtapeDao, songDao, userService)
 
+        mockSpotifyApiService = mock()
+        val searchService = SearchService(mockSpotifyApiService)
+
         app.routes {
             AuthHandlers(userDao).register()
             PlaylistRoutes(playlistService, userService).register()
             MixtapeRoutes(mixtapeService).register()
+            SearchRoutes(searchService).register()
         }
     }
 
