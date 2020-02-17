@@ -6,6 +6,8 @@ import club.jambuds.dao.MixtapeDao
 import club.jambuds.dao.PostDao
 import club.jambuds.dao.SongDao
 import club.jambuds.dao.UserDao
+import club.jambuds.dao.cache.SearchCacheDao
+import club.jambuds.service.AppleMusicService
 import club.jambuds.service.MixtapeService
 import club.jambuds.service.PlaylistService
 import club.jambuds.service.SearchService
@@ -21,13 +23,13 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
-import com.wrapper.spotify.SpotifyApi
 import com.zaxxer.hikari.HikariDataSource
 import io.javalin.Javalin
 import io.javalin.core.validation.JavalinValidation
 import io.javalin.plugin.json.FromJsonMapper
 import io.javalin.plugin.json.JavalinJson
 import io.javalin.plugin.json.ToJsonMapper
+import io.lettuce.core.RedisClient
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.kotlin.KotlinPlugin
 import org.jdbi.v3.postgres.PostgresPlugin
@@ -103,13 +105,17 @@ fun createJavalinApp(): Javalin {
     return app
 }
 
-private fun wire(app: Javalin, jdbi: Jdbi, config: Config) {
+private fun wire(app: Javalin, config: Config) {
+    val jdbi = createJdbi(config.getString("databaseUrl"))
+    val redis = RedisClient.create(config.getString("redisUrl")).connect()
+
     val postDao = jdbi.onDemand<PostDao>()
     val songDao = jdbi.onDemand<SongDao>()
     val mixtapeDao = jdbi.onDemand<MixtapeDao>()
     val userDao = jdbi.onDemand<UserDao>()
     val colorSchemeDao = jdbi.onDemand<ColorSchemeDao>()
     val likeDao = jdbi.onDemand<LikeDao>()
+    val searchCacheDao = SearchCacheDao(redis)
 
     val playlistService =
         PlaylistService(postDao, songDao, mixtapeDao, likeDao)
@@ -121,7 +127,14 @@ private fun wire(app: Javalin, jdbi: Jdbi, config: Config) {
         config.getString("spotifyClientSecret")
     )
     spotifyApiService.startRefreshLoop()
-    val searchService = SearchService(spotifyApiService)
+    val appleMusicService = AppleMusicService(
+        AppleMusicService.createAuthToken(
+            privateKeyPath = config.getString("musickitPrivateKeyPath"),
+            keyId = config.getString("musickitKeyId"),
+            teamId = config.getString("musickitTeamId")
+        )
+    )
+    val searchService = SearchService(spotifyApiService, appleMusicService, searchCacheDao)
 
     app.routes {
         AuthHandlers(userDao).register()
@@ -133,8 +146,7 @@ private fun wire(app: Javalin, jdbi: Jdbi, config: Config) {
 
 fun main() {
     val config = getConfig()
-    val jdbi = createJdbi(config.getString("databaseUrl"))
     val app = createJavalinApp()
-    wire(app, jdbi, config)
+    wire(app, config)
     app.start(config.getInt("port"))
 }

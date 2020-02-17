@@ -8,7 +8,7 @@ import io.javalin.http.Context
 class SearchRoutes(private val searchService: SearchService) {
     fun register() {
         ApiBuilder.get("/api/spotify-search", this::spotifySearch)
-        // ApiBuilder.get("/api/spotify-details/:spotifyId", this::getDetailsForSpotifyTrack)
+        ApiBuilder.get("/api/spotify-details/:spotifyId", this::spotifyDetails)
     }
 
     private fun spotifySearch(ctx: Context) {
@@ -16,5 +16,11 @@ class SearchRoutes(private val searchService: SearchService) {
         val results = searchService.search(query)
 
         ctx.json(SpotifySearchResponse(songs = results))
+    }
+
+    private fun spotifyDetails(ctx: Context) {
+        val spotifyId = ctx.pathParam<String>("spotifyId").get()
+        val details = searchService.getSearchDetails(spotifyId)
+        ctx.json(details)
     }
 }
