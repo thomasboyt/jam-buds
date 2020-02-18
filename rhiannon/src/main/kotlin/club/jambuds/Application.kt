@@ -13,6 +13,7 @@ import club.jambuds.service.PlaylistService
 import club.jambuds.service.PostService
 import club.jambuds.service.SearchService
 import club.jambuds.service.SpotifyApiService
+import club.jambuds.service.TwitterService
 import club.jambuds.service.UserService
 import club.jambuds.util.InstantTypeAdapter
 import club.jambuds.util.LocalDateTimeTypeAdapter
@@ -148,7 +149,11 @@ private fun wire(app: Javalin, config: Config) {
         disableAppleMusic = disableAppleMusic
     )
 
-    val postService = PostService(postDao, songDao, searchService)
+    val twitterService =
+        TwitterService(config.getString("twitterApiKey"), config.getString("twitterApiSecret"))
+
+    val postService =
+        PostService(postDao, songDao, searchService, twitterService, config.getString("appUrl"))
 
     app.routes {
         AuthHandlers(userDao).register()

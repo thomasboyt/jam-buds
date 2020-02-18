@@ -16,14 +16,18 @@ class PostRoutes(private val postService: PostService) {
 
     data class PostSongBody(
         @field:NotNull
-        @Expose val spotifyId: String
+        @Expose val spotifyId: String,
+        @Expose val tweet: String?
     )
 
     private fun postSong(ctx: Context) {
         val user = ctx.requireUser()
         val body = ctx.validateJsonBody(PostSongBody::class.java)
-        val song =
-            postService.createPostForSong(currentUserId = user.id, spotifyId = body.spotifyId)
+        val song = postService.createPostForSong(
+            user,
+            spotifyId = body.spotifyId,
+            tweetContent = body.tweet
+        )
         ctx.json(song)
     }
 }

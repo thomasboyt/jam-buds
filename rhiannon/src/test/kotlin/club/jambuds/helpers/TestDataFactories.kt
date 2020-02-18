@@ -51,14 +51,17 @@ object TestDataFactories {
             .one()
     }
 
-    fun createUser(txn: Handle, name: String, showInFeed: Boolean): User {
-        return txn.createUpdate(
-            """
-                insert into users (name, show_in_public_feed) values (:name, :show_in_public_feed)
-                """.trimIndent()
-        )
+    fun createUser(txn: Handle, name: String, showInFeed: Boolean, hasTwitter: Boolean = false): User {
+        val query = """
+            insert into users (name, show_in_public_feed, twitter_token, twitter_secret)
+                        values (:name, :showInPublicFeed, :twitterAuthToken, :twitterAuthSecret)
+        """.trimIndent()
+
+        return txn.createUpdate(query)
             .bind("name", name)
-            .bind("show_in_public_feed", showInFeed)
+            .bind("showInPublicFeed", showInFeed)
+            .bind("twitterAuthToken", if (hasTwitter) "token" else null)
+            .bind("twitterAuthSecret", if (hasTwitter) "secret" else null)
             .executeAndReturnGeneratedKeys()
             .mapTo(User::class.java)
             .one()

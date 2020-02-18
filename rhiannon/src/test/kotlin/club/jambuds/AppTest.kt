@@ -13,6 +13,7 @@ import club.jambuds.service.PlaylistService
 import club.jambuds.service.PostService
 import club.jambuds.service.SearchService
 import club.jambuds.service.SpotifyApiService
+import club.jambuds.service.TwitterService
 import club.jambuds.service.UserService
 import club.jambuds.web.AuthHandlers
 import club.jambuds.web.MixtapeRoutes
@@ -53,6 +54,7 @@ open class AppTest {
     lateinit var searchCacheDao: SearchCacheDao
     lateinit var mockSpotifyApiService: SpotifyApiService
     lateinit var mockAppleMusicService: AppleMusicService
+    lateinit var mockTwitterService: TwitterService
 
     fun wire(txn: Handle) {
         this.txn = txn
@@ -75,10 +77,17 @@ open class AppTest {
 
         mockSpotifyApiService = mock()
         mockAppleMusicService = mock()
+        mockTwitterService = mock()
         val searchService =
             SearchService(mockSpotifyApiService, mockAppleMusicService, searchCacheDao)
 
-        val postService = PostService(postDao, songDao, searchService)
+        val postService = PostService(
+            postDao,
+            songDao,
+            searchService,
+            mockTwitterService,
+            config.getString("appUrl")
+        )
 
         app.routes {
             AuthHandlers(userDao).register()
