@@ -19,6 +19,7 @@ import { Mixtape } from '../resources';
 import { JamBudsHTTPError } from '../util/errors';
 import config from '../config';
 import { IncomingMessage } from 'http';
+import { restream } from '../util/restream';
 
 function validateMixtapeExists(mixtape: Mixtape | null): Mixtape {
   if (!mixtape) {
@@ -62,19 +63,6 @@ export default function registerMixtapeEndpoints(router: Router) {
       (!!pathname.match('^/api/mixtapes$') && req.method === 'POST')
     );
   }
-
-  // via https://github.com/chimurai/http-proxy-middleware/issues/40
-  // restream parsed body before proxying
-  const restream = function(proxyReq: any, req: any) {
-    if (req.body) {
-      const bodyData = JSON.stringify(req.body);
-      // incase if content-type is application/x-www-form-urlencoded -> we need to change to application/json
-      proxyReq.setHeader('Content-Type', 'application/json');
-      proxyReq.setHeader('Content-Length', Buffer.byteLength(bodyData));
-      // stream the content
-      proxyReq.write(bodyData);
-    }
-  };
 
   router.use(
     '/mixtapes',
