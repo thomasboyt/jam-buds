@@ -56,6 +56,12 @@ jobs:
         # needed because the postgres container does not provide a healthcheck
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
+      redis:
+        image: redis:5.0.3-alpine
+        ports:
+          - 6379/tcp
+        options: --entrypoint redis-server
+
     steps:
       - uses: actions/checkout@v1
   
@@ -68,6 +74,7 @@ jobs:
         run: ./gradlew build
         working-directory: ./rhiannon
         env:
+          REDIS_URL: "redis://localhost:${{ job.services.redis.ports[6379] }}"
           JDBC_DATABASE_URL: "jdbc:postgresql://localhost:${{ job.services.postgres.ports[5432] }}/jambuds_test?user=postgres&password=postgres"
   
       - name: Upload JAR files
@@ -159,6 +166,7 @@ jobs:
         name: Start Rhiannon server
         env:
           JDBC_DATABASE_URL: "jdbc:postgresql://localhost:${{ job.services.postgres.ports[5432] }}/jambuds_test?user=postgres&password=postgres"
+          REDIS_URL: "redis://localhost:${{ job.services.redis.ports[6379] }}"
           JAMBUDS_ENV: "development"
 
       - run: npm test
