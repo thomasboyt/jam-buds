@@ -21,6 +21,10 @@ group 'club.jambuds'
 version '0.0.1-SNAPSHOT'
 mainClassName = "club.jambuds.ApplicationKt"
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+}
+
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
     kotlinOptions {
         jvmTarget = "1.8"
@@ -41,6 +45,13 @@ dependencies {
     implementation "org.glassfish:javax.el:3.0.0"
     implementation "com.typesafe:config:1.4.0"
     implementation "ch.qos.logback:logback-classic:$logback_version"
+    implementation 'se.michaelthelin.spotify:spotify-web-api-java:4.2.1'
+    implementation 'com.squareup.retrofit2:retrofit:2.7.1'
+    implementation 'com.squareup.retrofit2:converter-gson:2.7.1'
+    implementation "io.lettuce:lettuce-core:5.2.2.RELEASE"
+    implementation "com.auth0:java-jwt:3.10.0"
+    implementation group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.64'
+    implementation group: 'org.bouncycastle', name: 'bcpkix-jdk15on', version: '1.64'
 
     implementation "org.jdbi:jdbi3-core:$jdbi3_version"
     implementation "org.jdbi:jdbi3-postgres:$jdbi3_version"
@@ -55,6 +66,8 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.5.0'
     testImplementation "com.konghq:unirest-java:3.4.03"
     testImplementation "org.flywaydb:flyway-core:6.1.4"
+    testImplementation "org.mockito:mockito-core:3.2.4"
+    testImplementation group: 'com.nhaarman.mockitokotlin2', name: 'mockito-kotlin', version: '2.2.0'
 }
 
 test {

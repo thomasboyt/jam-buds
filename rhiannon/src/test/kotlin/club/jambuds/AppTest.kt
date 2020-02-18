@@ -6,13 +6,23 @@ import club.jambuds.dao.MixtapeDao
 import club.jambuds.dao.PostDao
 import club.jambuds.dao.SongDao
 import club.jambuds.dao.UserDao
+import club.jambuds.dao.cache.SearchCacheDao
+import club.jambuds.service.AppleMusicService
 import club.jambuds.service.MixtapeService
 import club.jambuds.service.PlaylistService
+import club.jambuds.service.PostService
+import club.jambuds.service.SearchService
+import club.jambuds.service.SpotifyApiService
+import club.jambuds.service.TwitterService
 import club.jambuds.service.UserService
 import club.jambuds.web.AuthHandlers
 import club.jambuds.web.MixtapeRoutes
 import club.jambuds.web.PlaylistRoutes
+import club.jambuds.web.PostRoutes
+import club.jambuds.web.SearchRoutes
+import com.nhaarman.mockitokotlin2.mock
 import io.javalin.Javalin
+import io.lettuce.core.RedisClient
 import kong.unirest.Unirest
 import org.flywaydb.core.Flyway
 import org.jdbi.v3.core.Handle
@@ -41,6 +51,11 @@ open class AppTest {
     lateinit var txn: Handle
     private lateinit var app: Javalin
 
+    lateinit var searchCacheDao: SearchCacheDao
+    lateinit var mockSpotifyApiService: SpotifyApiService
+    lateinit var mockAppleMusicService: AppleMusicService
+    lateinit var mockTwitterService: TwitterService
+
     fun wire(txn: Handle) {
         this.txn = txn
 
@@ -53,16 +68,33 @@ open class AppTest {
         val userDao = txn.attach(UserDao::class.java)
         val colorSchemeDao = txn.attach(ColorSchemeDao::class.java)
         val likeDao = txn.attach(LikeDao::class.java)
+        searchCacheDao = SearchCacheDao(redis)
 
         val playlistService =
             PlaylistService(postDao, songDao, mixtapeDao, likeDao)
         val userService = UserService(userDao, colorSchemeDao)
         val mixtapeService = MixtapeService(mixtapeDao, songDao, userService)
 
+        mockSpotifyApiService = mock()
+        mockAppleMusicService = mock()
+        mockTwitterService = mock()
+        val searchService =
+            SearchService(mockSpotifyApiService, mockAppleMusicService, searchCacheDao)
+
+        val postService = PostService(
+            postDao,
+            songDao,
+            searchService,
+            mockTwitterService,
+            config.getString("appUrl")
+        )
+
         app.routes {
             AuthHandlers(userDao).register()
             PlaylistRoutes(playlistService, userService).register()
             MixtapeRoutes(mixtapeService).register()
+            SearchRoutes(searchService).register()
+            PostRoutes(postService).register()
         }
     }
 
@@ -75,6 +107,7 @@ open class AppTest {
     companion object {
         val config = getConfig()
         val jdbi = createJdbi(config.getString("databaseUrl"))
+        val redis = RedisClient.create(config.getString("redisUrl")).connect()
 
         init {
             resetDatabase()
@@ -86,6 +119,8 @@ open class AppTest {
                 .load()
             flyway.clean()
             flyway.migrate()
+
+            redis.sync().flushdb()
         }
     }
 }

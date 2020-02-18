@@ -1,65 +1,17 @@
 import { Router } from 'express';
+import proxy from 'http-proxy-middleware';
+import config from '../config';
 
 import { UserModel } from '../models/user';
-import { getOrCreateSong } from '../models/song';
-import {
-  PostSongParams,
-  postSong,
-  getOwnPostForSongId,
-  deletePostById,
-} from '../models/post';
+import { getOwnPostForSongId, deletePostById } from '../models/post';
 
 import { isAuthenticated } from '../auth';
 import wrapAsyncRoute from '../util/wrapAsyncRoute';
-import { postSongTweet } from '../apis/twitter';
+import { restream } from '../util/restream';
 
 export default function registerPostEndpoints(router: Router) {
-  // post a new song
-  router.post(
-    '/posts',
-    isAuthenticated,
-    wrapAsyncRoute(async (req, res) => {
-      const user: UserModel = res.locals.user;
-
-      const spotifyId = req.body.spotifyId;
-
-      const song = await getOrCreateSong(spotifyId);
-
-      if (!song) {
-        return res
-          .status(400)
-          .json({ error: `No song found with Spotify ID ${spotifyId}` });
-      }
-
-      const existingPost = await getOwnPostForSongId({
-        songId: song.id,
-        userId: user.id,
-      });
-
-      if (existingPost) {
-        return res
-          .status(400)
-          .json({ error: 'You have already posted this song' });
-      }
-
-      const params: PostSongParams = {
-        userId: user.id,
-        songId: song.id,
-      };
-
-      const songResource = await postSong(params);
-
-      if (req.body.tweet) {
-        await postSongTweet({
-          text: req.body.tweet,
-          song,
-          user,
-        });
-      }
-
-      res.json(songResource);
-    })
-  );
+  const target = config.require('JB_RHIANNON_URL');
+  router.use(/\/posts$/, proxy({ target, onProxyReq: restream }));
 
   // delete a post
   router.delete(

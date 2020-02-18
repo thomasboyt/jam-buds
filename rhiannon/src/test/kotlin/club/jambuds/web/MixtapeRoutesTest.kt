@@ -65,6 +65,7 @@ class MixtapeRoutesTest : AppTest() {
         fun getPostCount(): Int {
             return txn.select("select count(*) from posts").mapTo(Int::class.java).one()
         }
+
         fun getMixtapeCount(): Int {
             return txn.select("select count(*) from mixtapes").mapTo(Int::class.java).one()
         }

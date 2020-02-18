@@ -16,7 +16,8 @@ import kotlin.test.assertEquals
 
 class PlaylistRoutesTest : AppTest() {
     private fun forEachPlaylist(user: User, cb: (url: String) -> Unit) {
-        val urls = listOf("feed", "public-feed", "playlists/${user.name}", "playlists/${user.name}/liked")
+        val urls =
+            listOf("feed", "public-feed", "playlists/${user.name}", "playlists/${user.name}/liked")
         urls.forEach { url ->
             try {
                 cb(url)
@@ -228,10 +229,26 @@ class PlaylistRoutesTest : AppTest() {
         TestDataFactories.followUser(txn, jeff.id, vinny.id)
         TestDataFactories.followUser(txn, jeff.id, brad.id)
 
-        TestDataFactories.createSongPost(txn, userId = jeff.id, songId = TestDataFactories.createSong(txn))
-        TestDataFactories.createSongPost(txn, userId = vinny.id, songId = TestDataFactories.createSong(txn))
-        TestDataFactories.createSongPost(txn, userId = brad.id, songId = TestDataFactories.createSong(txn))
-        TestDataFactories.createSongPost(txn, userId = ben.id, songId = TestDataFactories.createSong(txn))
+        TestDataFactories.createSongPost(
+            txn,
+            userId = jeff.id,
+            songId = TestDataFactories.createSong(txn)
+        )
+        TestDataFactories.createSongPost(
+            txn,
+            userId = vinny.id,
+            songId = TestDataFactories.createSong(txn)
+        )
+        TestDataFactories.createSongPost(
+            txn,
+            userId = brad.id,
+            songId = TestDataFactories.createSong(txn)
+        )
+        TestDataFactories.createSongPost(
+            txn,
+            userId = ben.id,
+            songId = TestDataFactories.createSong(txn)
+        )
 
         val items = getUserRequest(jeff, "feed").asJson().body.`object`.getJSONArray("items")
 
@@ -256,7 +273,8 @@ class PlaylistRoutesTest : AppTest() {
         val sharedSongId = TestDataFactories.createSong(txn)
 
         // with only posts from other users: the oldest time is used
-        val vinnyPost = TestDataFactories.createSongPost(txn, userId = vinny.id, songId = sharedSongId)
+        val vinnyPost =
+            TestDataFactories.createSongPost(txn, userId = vinny.id, songId = sharedSongId)
         TestDataFactories.createSongPost(txn, userId = brad.id, songId = sharedSongId)
 
         var items = getUserRequest(jeff, "feed").asJson().body.`object`.getJSONArray("items")
@@ -268,7 +286,8 @@ class PlaylistRoutesTest : AppTest() {
         )
 
         // with newest post from current user: the current user's time is used
-        val jeffPost = TestDataFactories.createSongPost(txn, userId = jeff.id, songId = sharedSongId)
+        val jeffPost =
+            TestDataFactories.createSongPost(txn, userId = jeff.id, songId = sharedSongId)
 
         items = getUserRequest(jeff, "feed").asJson().body.`object`.getJSONArray("items")
 

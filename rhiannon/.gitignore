@@ -41,3 +41,5 @@
 .idea/modules
 *.iml
 *.ipr
+
+src/*/resources/conf/local/*.conf

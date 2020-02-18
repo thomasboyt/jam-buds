@@ -1,12 +1,7 @@
 import expect from 'expect';
 import request from 'supertest';
 
-import {
-  userFactory,
-  postFactory,
-  songFactory,
-} from '../../__tests__/factories';
-import { postSong } from '../../models/post';
+import { userFactory, postFactory } from '../../__tests__/factories';
 import { createAuthTokenForUserId } from '../../models/authTokens';
 import { getPostsByUserId } from '../../models/playlists';
 
@@ -24,25 +19,6 @@ function expectStatus(res: request.Response, status: number) {
 }
 
 describe('routes/posts', () => {
-  describe('POST /posts', () => {
-    it('rejects a song that has already been posted by the current user', async () => {
-      const user = await userFactory();
-      const song = await songFactory();
-
-      await postSong({ userId: user.id, songId: song.id });
-
-      const req = request(app)
-        .post('/api/posts')
-        .set('X-Auth-Token', await createAuthTokenForUserId(user.id))
-        .send({
-          spotifyId: song.spotifyId,
-        });
-
-      const res = await req;
-      expectStatus(res, 400);
-    });
-  });
-
   describe('DELETE /posts/:id', () => {
     it('deletes a song', async () => {
       const user = await userFactory();
@@ -82,7 +58,7 @@ describe('routes/posts', () => {
       const user = await userFactory();
 
       const req = request(app)
-        .delete('/api/playlist/42069')
+        .delete('/api/posts/42069')
         .set('X-Auth-Token', await createAuthTokenForUserId(user.id));
 
       const res = await req;

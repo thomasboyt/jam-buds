@@ -5,7 +5,7 @@ indent_size=4
 insert_final_newline=true
 # possible values: number (e.g. 120) (package name, imports & comments are ignored), "off"
 # it's automatically set to 100 on `ktlint --android ...` (per Android Kotlin Style Guide)
-max_line_length=off
+max_line_length=100
 
 # Note that rules in any ruleset other than the standard ruleset will need to be prefixed
 # by the ruleset identifier.
