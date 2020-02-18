@@ -149,8 +149,11 @@ private fun wire(app: Javalin, config: Config) {
         disableAppleMusic = disableAppleMusic
     )
 
-    val twitterService =
+    val twitterService = if (config.getBoolean("disableTwitter")) {
+        TwitterService("placeholder key", "placeholder secret", disableTwitter = true)
+    } else {
         TwitterService(config.getString("twitterApiKey"), config.getString("twitterApiSecret"))
+    }
 
     val postService =
         PostService(postDao, songDao, searchService, twitterService, config.getString("appUrl"))
