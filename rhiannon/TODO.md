@@ -79,7 +79,7 @@ Next on deck: Song search & post flows
 * [ ] Hook up Sentry for monitoring (can test locally)
 * [X] Add Redis client for various caches
 * [X] Add Spotify API client
-* [ ] Add Twitter API client
+* [x] Add Twitter API client
 * [X] Add Apple Music API client
 * [ ] Begin using Flyway for production migrations
 
