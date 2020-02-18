@@ -10,6 +10,7 @@ import club.jambuds.dao.cache.SearchCacheDao
 import club.jambuds.service.AppleMusicService
 import club.jambuds.service.MixtapeService
 import club.jambuds.service.PlaylistService
+import club.jambuds.service.PostService
 import club.jambuds.service.SearchService
 import club.jambuds.service.SpotifyApiService
 import club.jambuds.service.UserService
@@ -18,6 +19,7 @@ import club.jambuds.util.LocalDateTimeTypeAdapter
 import club.jambuds.web.AuthHandlers
 import club.jambuds.web.MixtapeRoutes
 import club.jambuds.web.PlaylistRoutes
+import club.jambuds.web.PostRoutes
 import club.jambuds.web.SearchRoutes
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -136,11 +138,14 @@ private fun wire(app: Javalin, config: Config) {
     )
     val searchService = SearchService(spotifyApiService, appleMusicService, searchCacheDao)
 
+    val postService = PostService(postDao, songDao, searchService)
+
     app.routes {
         AuthHandlers(userDao).register()
         PlaylistRoutes(playlistService, userService).register()
         MixtapeRoutes(mixtapeService).register()
         SearchRoutes(searchService).register()
+        PostRoutes(postService).register()
     }
 }
 

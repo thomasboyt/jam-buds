@@ -55,6 +55,15 @@ class SearchService(
     }
 
     fun getSearchDetails(spotifyId: String): SearchDetailsResponse {
+        val cacheEntry = getOrHydrateSongCache(spotifyId)
+
+        return SearchDetailsResponse(
+            spotifyId = spotifyId,
+            appleMusicId = cacheEntry.appleMusicId
+        )
+    }
+
+    fun getOrHydrateSongCache(spotifyId: String): SearchCacheEntry {
         // TODO: if song is already in database, use that
         var cacheEntry = searchCacheDao.getSearchCacheEntry(spotifyId)
 
@@ -65,10 +74,7 @@ class SearchService(
         }
 
         if (cacheEntry.didHydrateExternalIds) {
-            return SearchDetailsResponse(
-                spotifyId = spotifyId,
-                appleMusicId = cacheEntry.appleMusicId
-            )
+            return cacheEntry
         }
 
         val isrc = cacheEntry.isrc
@@ -79,15 +85,10 @@ class SearchService(
             appleMusicService.getSongDetailsByIsrc(isrc)
         }
 
-        updateSearchCacheWithAppleId(
+        return updateSearchCacheWithAppleId(
             spotifyId,
             appleMusicDetails?.id,
             appleMusicDetails?.attributes?.url
-        )
-
-        return SearchDetailsResponse(
-            spotifyId = spotifyId,
-            appleMusicId = appleMusicDetails?.id
         )
     }
 

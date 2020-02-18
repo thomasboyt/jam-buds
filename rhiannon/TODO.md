@@ -36,12 +36,12 @@ Next on deck: Song search & post flows
   * [X] GET /playlists/:user/liked
 
 * [ ] Post routes
-  * [ ] POST /posts
+  * [X] POST /posts
   * [ ] DELETE /posts/:songId
 
 * [ ] Search routes
   * [X] GET /spotify-search
-  * [ ] GET /spotify-details/:spotifyId
+  * [X] GET /spotify-details/:spotifyId
 
 * [ ] Settings routes
   * [ ] GET /settings/email-subscription
@@ -77,9 +77,9 @@ Next on deck: Song search & post flows
 ### Other major tasks:
 
 * [ ] Hook up Sentry for monitoring (can test locally)
-* [ ] Add Redis client for various caches
-* [ ] Add Spotify API client
+* [X] Add Redis client for various caches
+* [X] Add Spotify API client
 * [ ] Add Twitter API client
-* [ ] Add Apple Music API client
+* [X] Add Apple Music API client
 * [ ] Begin using Flyway for production migrations
 

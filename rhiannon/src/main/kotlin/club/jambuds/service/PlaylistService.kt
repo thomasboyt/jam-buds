@@ -146,7 +146,10 @@ class PlaylistService(
         }
     }
 
-    private fun getSongsMap(posts: List<PlaylistPost>, currentUserId: Int?): Map<Int, SongWithMeta> {
+    private fun getSongsMap(
+        posts: List<PlaylistPost>,
+        currentUserId: Int?
+    ): Map<Int, SongWithMeta> {
         val songIds = posts.mapNotNull { it.songId }
         return if (songIds.isNotEmpty()) {
             val currentUserId = currentUserId ?: -1

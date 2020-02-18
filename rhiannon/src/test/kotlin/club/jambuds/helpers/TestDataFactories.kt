@@ -3,6 +3,11 @@ package club.jambuds.helpers
 import club.jambuds.model.ColorScheme
 import club.jambuds.model.Post
 import club.jambuds.model.User
+import com.wrapper.spotify.model_objects.specification.AlbumSimplified
+import com.wrapper.spotify.model_objects.specification.ArtistSimplified
+import com.wrapper.spotify.model_objects.specification.ExternalId
+import com.wrapper.spotify.model_objects.specification.Image
+import com.wrapper.spotify.model_objects.specification.Track
 import org.jdbi.v3.core.Handle
 import java.time.Instant
 
@@ -136,5 +141,25 @@ object TestDataFactories {
             .bind("songId", songId)
             .bind("rank", rank)
             .execute()
+    }
+
+    fun createSpotifyTrack(isrc: String? = "abcde"): Track {
+        return Track.Builder()
+            .setId("abcde")
+            .setName("Live Like We're Dancing")
+            .setArtists(
+                ArtistSimplified.Builder().setName("Mura Masa").build(),
+                ArtistSimplified.Builder().setName("Georgia").build()
+            )
+            .setAlbum(
+                AlbumSimplified.Builder()
+                    .setName("R.Y.C")
+                    .setImages(Image.Builder().setUrl("/some/image.jpg").build())
+                    .build()
+            )
+            .setExternalIds(
+                ExternalId.Builder().setExternalIds(mapOf("isrc" to isrc)).build()
+            )
+            .build()
     }
 }

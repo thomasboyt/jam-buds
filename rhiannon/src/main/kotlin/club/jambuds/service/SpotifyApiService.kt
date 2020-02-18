@@ -17,9 +17,9 @@ open class SpotifyApiService(clientId: String, clientSecret: String) {
     private val threadPool = Executors.newScheduledThreadPool(1)
 
     private val spotifyApi = SpotifyApi.Builder()
-            .setClientId(clientId)
-            .setClientSecret(clientSecret)
-            .build()
+        .setClientId(clientId)
+        .setClientSecret(clientSecret)
+        .build()
 
     fun startRefreshLoop() {
         threadPool.scheduleAtFixedRate(this::refresh, 0, 5, TimeUnit.MINUTES)
@@ -31,18 +31,18 @@ open class SpotifyApiService(clientId: String, clientSecret: String) {
             val resp = spotifyApi.clientCredentials().build().execute()
             spotifyApi.accessToken = resp.accessToken
             logger.info("Refreshed Spotify token")
-        } catch(e: Throwable) {
+        } catch (e: Throwable) {
             val sw = StringWriter()
             val pw = PrintWriter(sw)
             e.printStackTrace(pw)
-            logger.error("Exception refreshing Spotify token. StackTrace:\n$sw");
+            logger.error("Exception refreshing Spotify token. StackTrace:\n$sw")
         }
     }
 
     open fun getTrackById(id: String): Track? {
         return try {
             spotifyApi.getTrack(id).build().execute()
-        } catch(err: SpotifyWebApiException) {
+        } catch (err: SpotifyWebApiException) {
             if (err is NotFoundException) {
                 null
             } else {

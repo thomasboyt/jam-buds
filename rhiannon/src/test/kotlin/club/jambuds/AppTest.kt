@@ -10,12 +10,14 @@ import club.jambuds.dao.cache.SearchCacheDao
 import club.jambuds.service.AppleMusicService
 import club.jambuds.service.MixtapeService
 import club.jambuds.service.PlaylistService
+import club.jambuds.service.PostService
 import club.jambuds.service.SearchService
 import club.jambuds.service.SpotifyApiService
 import club.jambuds.service.UserService
 import club.jambuds.web.AuthHandlers
 import club.jambuds.web.MixtapeRoutes
 import club.jambuds.web.PlaylistRoutes
+import club.jambuds.web.PostRoutes
 import club.jambuds.web.SearchRoutes
 import com.nhaarman.mockitokotlin2.mock
 import io.javalin.Javalin
@@ -76,11 +78,14 @@ open class AppTest {
         val searchService =
             SearchService(mockSpotifyApiService, mockAppleMusicService, searchCacheDao)
 
+        val postService = PostService(postDao, songDao, searchService)
+
         app.routes {
             AuthHandlers(userDao).register()
             PlaylistRoutes(playlistService, userService).register()
             MixtapeRoutes(mixtapeService).register()
             SearchRoutes(searchService).register()
+            PostRoutes(postService).register()
         }
     }
 
