@@ -33,6 +33,7 @@ import io.javalin.plugin.json.FromJsonMapper
 import io.javalin.plugin.json.JavalinJson
 import io.javalin.plugin.json.ToJsonMapper
 import io.lettuce.core.RedisClient
+import io.sentry.Sentry
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.kotlin.KotlinPlugin
 import org.jdbi.v3.postgres.PostgresPlugin
@@ -168,6 +169,11 @@ private fun wire(app: Javalin, config: Config) {
 }
 
 fun main() {
+    val dsn = System.getenv("RHIANNON_SENTRY_DSN")
+    if (dsn != null) {
+        Sentry.init(dsn)
+    }
+
     val config = getConfig()
     val app = createJavalinApp()
     wire(app, config)

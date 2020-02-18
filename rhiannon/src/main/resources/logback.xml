@@ -5,7 +5,16 @@
         </encoder>
     </appender>
 
-    <root level="trace">
+    <appender name="Sentry" class="io.sentry.logback.SentryAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>WARN</level>
+        </filter>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="debug">
         <appender-ref ref="STDOUT"/>
     </root>
 
@@ -15,4 +24,5 @@
     <logger name="com.zaxxer.hikari" level="INFO"/>
     <logger name="org.hibernate.validator" level="INFO"/>
     <logger name="io.lettuce.core" level="INFO"/>
+    <logger name="io.sentry" level="INFO"/>
 </configuration>

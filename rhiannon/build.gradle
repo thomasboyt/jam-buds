@@ -52,6 +52,8 @@ dependencies {
     implementation "com.auth0:java-jwt:3.10.0"
     implementation group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.64'
     implementation group: 'org.bouncycastle', name: 'bcpkix-jdk15on', version: '1.64'
+    implementation 'io.sentry:sentry:1.7.30'
+    implementation 'io.sentry:sentry-logback:1.7.30'
 
     implementation "org.jdbi:jdbi3-core:$jdbi3_version"
     implementation "org.jdbi:jdbi3-postgres:$jdbi3_version"
