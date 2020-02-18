@@ -129,14 +129,24 @@ private fun wire(app: Javalin, config: Config) {
         config.getString("spotifyClientSecret")
     )
     spotifyApiService.startRefreshLoop()
-    val appleMusicService = AppleMusicService(
+
+    val disableAppleMusic = config.getBoolean("disableAppleMusic")
+    val appleMusicToken = if (disableAppleMusic) {
+        "apple music disabled"
+    } else {
         AppleMusicService.createAuthToken(
             privateKeyPath = config.getString("musickitPrivateKeyPath"),
             keyId = config.getString("musickitKeyId"),
             teamId = config.getString("musickitTeamId")
         )
+    }
+    val appleMusicService = AppleMusicService(appleMusicToken, disableAppleMusic)
+    val searchService = SearchService(
+        spotifyApiService,
+        appleMusicService,
+        searchCacheDao,
+        disableAppleMusic = disableAppleMusic
     )
-    val searchService = SearchService(spotifyApiService, appleMusicService, searchCacheDao)
 
     val postService = PostService(postDao, songDao, searchService)
 

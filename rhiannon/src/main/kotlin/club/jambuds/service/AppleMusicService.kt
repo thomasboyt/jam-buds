@@ -18,7 +18,7 @@ import java.time.Instant
 import java.time.temporal.ChronoUnit
 import java.util.Date
 
-open class AppleMusicService(musickitToken: String) {
+open class AppleMusicService(musickitToken: String, private val disabled: Boolean = false) {
     private val okHttpClient = OkHttpClient.Builder().addInterceptor { chain ->
         val req = chain.request()
         val newReq = req.newBuilder()
@@ -36,6 +36,10 @@ open class AppleMusicService(musickitToken: String) {
     private val client = retrofit.create(AppleMusicClient::class.java)
 
     open fun getSongDetailsByIsrc(isrc: String): AppleMusicSearchResult? {
+        if (disabled) {
+            throw Error("Attempted to use AppleMusicService even though it was configured as disabled")
+        }
+
         val resp = client.getSongsByISRC(isrc).execute()
 
         if (!resp.isSuccessful) {

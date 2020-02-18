@@ -168,6 +168,7 @@ jobs:
           JDBC_DATABASE_URL: "jdbc:postgresql://localhost:${{ job.services.postgres.ports[5432] }}/jambuds_test?user=postgres&password=postgres"
           REDIS_URL: "redis://localhost:${{ job.services.redis.ports[6379] }}"
           JAMBUDS_ENV: "development"
+          DISABLE_APPLE_MUSIC: "true"
 
       - run: npm test
         working-directory: ./spec

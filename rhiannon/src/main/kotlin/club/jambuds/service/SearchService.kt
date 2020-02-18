@@ -10,7 +10,8 @@ import io.javalin.http.NotFoundResponse
 class SearchService(
     private val spotifyApiService: SpotifyApiService,
     private val appleMusicService: AppleMusicService,
-    private val searchCacheDao: SearchCacheDao
+    private val searchCacheDao: SearchCacheDao,
+    private val disableAppleMusic: Boolean = false
 ) {
     fun search(query: String): List<SpotifySearchResult> {
         val results = spotifyApiService.search(query)
@@ -79,7 +80,7 @@ class SearchService(
 
         val isrc = cacheEntry.isrc
 
-        val appleMusicDetails = if (isrc == null) {
+        val appleMusicDetails = if (isrc == null || disableAppleMusic) {
             null
         } else {
             appleMusicService.getSongDetailsByIsrc(isrc)
