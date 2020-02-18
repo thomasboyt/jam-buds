@@ -169,6 +169,7 @@ jobs:
           REDIS_URL: "redis://localhost:${{ job.services.redis.ports[6379] }}"
           JAMBUDS_ENV: "development"
           DISABLE_APPLE_MUSIC: "true"
+          DISABLE_TWITTER: "true"
 
       - run: npm test
         working-directory: ./spec
