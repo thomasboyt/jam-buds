@@ -1,6 +1,8 @@
 package club.jambuds.dao
 
+import club.jambuds.model.Song
 import club.jambuds.model.SongWithMeta
+import club.jambuds.model.cache.SearchCacheEntry
 import org.jdbi.v3.sqlobject.customizer.BindList
 import org.jdbi.v3.sqlobject.locator.UseClasspathSqlLocator
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys
@@ -29,5 +31,18 @@ interface SongDao {
         isrcId: String?,
         appleMusicId: String?,
         appleMusicUrl: String?
-    ): SongWithMeta
+    ): Song
+
+    fun createSongFromCacheEntry(cacheEntry: SearchCacheEntry): Song {
+        return createSong(
+            spotifyId = cacheEntry.spotify.id,
+            title = cacheEntry.spotify.name,
+            artists = cacheEntry.spotify.artists.map { it.name },
+            album = cacheEntry.spotify.album.name,
+            albumArt = cacheEntry.spotify.album.images[0].url,
+            isrcId = cacheEntry.isrc,
+            appleMusicId = cacheEntry.appleMusicId,
+            appleMusicUrl = cacheEntry.appleMusicUrl
+        )
+    }
 }

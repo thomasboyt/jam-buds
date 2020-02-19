@@ -1,15 +1,20 @@
 package club.jambuds.service
 
+import club.jambuds.dao.SongDao
 import club.jambuds.dao.cache.SearchCacheDao
+import club.jambuds.model.SongWithMeta
+import club.jambuds.model.User
 import club.jambuds.model.cache.SearchCacheEntry
 import club.jambuds.responses.SearchDetailsResponse
 import club.jambuds.responses.SpotifySearchResult
 import com.wrapper.spotify.model_objects.specification.Track
+import io.javalin.http.BadRequestResponse
 import io.javalin.http.NotFoundResponse
 
 class SearchService(
     private val spotifyApiService: SpotifyApiService,
     private val appleMusicService: AppleMusicService,
+    private val songDao: SongDao,
     private val searchCacheDao: SearchCacheDao,
     private val disableAppleMusic: Boolean = false
 ) {
@@ -22,6 +27,37 @@ class SearchService(
         }
 
         return tracks.map { serializeSpotifySearchResult(it) }
+    }
+
+    fun getSearchDetails(spotifyId: String): SearchDetailsResponse {
+        val cacheEntry = getOrHydrateSongCache(spotifyId)
+            ?: throw NotFoundResponse("Could not find song with Spotify ID $spotifyId")
+
+        return SearchDetailsResponse(
+            spotifyId = spotifyId,
+            appleMusicId = cacheEntry.appleMusicId
+        )
+    }
+
+    // TODO: possibly move this to a new service
+    fun getOrCreateSong(spotifyId: String, currentUser: User): SongWithMeta {
+        val existingSong = songDao.getSongBySpotifyId(spotifyId, currentUser.id)
+
+        if (existingSong != null) {
+            return existingSong
+        }
+
+        val cacheEntry = getOrHydrateSongCache(spotifyId)
+            ?: throw BadRequestResponse("Could not find song with Spotify ID $spotifyId")
+
+        // TODO: theoretically I think delegation could help avoid this but I don't know how
+        //       it works :(
+        val s = songDao.createSongFromCacheEntry(cacheEntry)
+        return SongWithMeta(
+            s.id, s.createdAt, s.title, s.artists, s.album, s.albumArt,
+            s.spotifyId, s.isrcId, s.appleMusicId, s.appleMusicUrl,
+            likeCount = 0, isLiked = false
+        )
     }
 
     private fun createSearchCacheFromTrack(track: Track): SearchCacheEntry {
@@ -55,22 +91,13 @@ class SearchService(
         return updated
     }
 
-    fun getSearchDetails(spotifyId: String): SearchDetailsResponse {
-        val cacheEntry = getOrHydrateSongCache(spotifyId)
-
-        return SearchDetailsResponse(
-            spotifyId = spotifyId,
-            appleMusicId = cacheEntry.appleMusicId
-        )
-    }
-
-    fun getOrHydrateSongCache(spotifyId: String): SearchCacheEntry {
+    private fun getOrHydrateSongCache(spotifyId: String): SearchCacheEntry? {
         // TODO: if song is already in database, use that
         var cacheEntry = searchCacheDao.getSearchCacheEntry(spotifyId)
 
         if (cacheEntry == null) {
             val track = spotifyApiService.getTrackById(spotifyId)
-                ?: throw NotFoundResponse("Could not find spotify song with ID $spotifyId")
+                ?: return null
             cacheEntry = createSearchCacheFromTrack(track)
         }
 

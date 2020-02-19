@@ -51,7 +51,12 @@ object TestDataFactories {
             .one()
     }
 
-    fun createUser(txn: Handle, name: String, showInFeed: Boolean, hasTwitter: Boolean = false): User {
+    fun createUser(
+        txn: Handle,
+        name: String,
+        showInFeed: Boolean,
+        hasTwitter: Boolean = false
+    ): User {
         val query = """
             insert into users (name, show_in_public_feed, twitter_token, twitter_secret)
                         values (:name, :showInPublicFeed, :twitterAuthToken, :twitterAuthSecret)

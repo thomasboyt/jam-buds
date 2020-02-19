@@ -22,4 +22,7 @@ interface MixtapeDao {
 
     @SqlUpdate
     fun deleteMixtapeById(id: Int)
+
+    @SqlUpdate
+    fun addSongToMixtape(mixtapeId: Int, songId: Int)
 }

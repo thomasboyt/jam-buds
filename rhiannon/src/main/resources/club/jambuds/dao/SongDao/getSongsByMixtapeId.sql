@@ -9,3 +9,4 @@ SELECT
 FROM mixtape_song_entries
 JOIN songs ON mixtape_song_entries.song_id = songs.id
 WHERE mixtape_song_entries.mixtape_id = :mixtapeId
+ORDER BY mixtape_song_entries.rank

@@ -6,7 +6,6 @@ import club.jambuds.helpers.TestDataFactories
 import club.jambuds.model.SongWithMeta
 import club.jambuds.model.cache.SearchCacheEntry
 import club.jambuds.responses.UserPlaylistResponse
-import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
 import kong.unirest.Unirest
@@ -93,13 +92,18 @@ class PostRoutesTest : AppTest() {
 
         val resp = Unirest.post("$appUrl/posts")
             .header("X-Auth-Token", authToken)
-            .body(JSONObject(mapOf(
-                "spotifyId" to track.id,
-                "tweet" to "Hello world"
-            )))
+            .body(
+                JSONObject(
+                    mapOf(
+                        "spotifyId" to track.id,
+                        "tweet" to "Hello world"
+                    )
+                )
+            )
             .asString()
         assertEquals(200, resp.status)
         val song = gson.fromJson(resp.body, SongWithMeta::class.java)
+        println(song)
 
         val expectedTweet = "Hello world http://localhost:8080/users/jeff?song=${song.id}"
         verify(mockTwitterService, times(1)).postTweet(jeff, expectedTweet)

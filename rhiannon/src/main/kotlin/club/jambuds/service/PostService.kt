@@ -13,27 +13,17 @@ class PostService(
     private val twitterService: TwitterService,
     private val appUrl: String
 ) {
-    fun createPostForSong(currentUser: User, spotifyId: String, tweetContent: String?): SongWithMeta {
-        var song = songDao.getSongBySpotifyId(spotifyId, currentUser.id)
+    fun createPostForSong(
+        currentUser: User,
+        spotifyId: String,
+        tweetContent: String?
+    ): SongWithMeta {
+        val song = searchService.getOrCreateSong(spotifyId, currentUser)
 
-        if (song == null) {
-            val cacheEntry = searchService.getOrHydrateSongCache(spotifyId)
-            song = songDao.createSong(
-                spotifyId = spotifyId,
-                title = cacheEntry.spotify.name,
-                artists = cacheEntry.spotify.artists.map { it.name },
-                album = cacheEntry.spotify.album.name,
-                albumArt = cacheEntry.spotify.album.images[0].url,
-                isrcId = cacheEntry.isrc,
-                appleMusicId = cacheEntry.appleMusicId,
-                appleMusicUrl = cacheEntry.appleMusicUrl
-            )
-        } else {
-            val existingPost =
-                postDao.getUserPostForSongId(songId = song.id, userId = currentUser.id)
-            if (existingPost != null) {
-                throw BadRequestResponse("You have already posted this song")
-            }
+        val existingPost =
+            postDao.getUserPostForSongId(songId = song.id, userId = currentUser.id)
+        if (existingPost != null) {
+            throw BadRequestResponse("You have already posted this song")
         }
 
         postDao.createPost(userId = currentUser.id, songId = song.id)

@@ -3,6 +3,8 @@ package club.jambuds.web
 import club.jambuds.AppTest
 import club.jambuds.getGson
 import club.jambuds.helpers.TestDataFactories
+import club.jambuds.model.SongWithMeta
+import club.jambuds.model.cache.SearchCacheEntry
 import club.jambuds.responses.MixtapeWithSongsReponse
 import kong.unirest.Unirest
 import kong.unirest.json.JSONObject
@@ -100,5 +102,58 @@ class MixtapeRoutesTest : AppTest() {
             .asString()
 
         assertEquals(401, resp.status)
+    }
+
+    @Test
+    fun `POST mixtapes_(id)_songs - posts a song`() {
+        val jeff = TestDataFactories.createUser(txn, "jeff", true)
+        val authToken = TestDataFactories.createAuthToken(txn, jeff.id)
+        val mixtapeId = TestDataFactories.createMixtape(txn, jeff.id, false)
+        val songId = TestDataFactories.createSong(txn)
+        TestDataFactories.addSongToMixtape(txn, mixtapeId = mixtapeId, songId = songId, rank = 1)
+
+        val track = TestDataFactories.createSpotifyTrack()
+
+        val cacheEntry = SearchCacheEntry(
+            spotify = track,
+            isrc = "abcde",
+            didHydrateExternalIds = true,
+            appleMusicUrl = "12345",
+            appleMusicId = "12345"
+        )
+
+        searchCacheDao.setSearchCacheEntry(track.id, cacheEntry)
+        val resp = Unirest.post("$appUrl/mixtapes/$mixtapeId/songs")
+            .header("X-Auth-Token", authToken)
+            .body(JSONObject(mapOf("spotifyId" to track.id)))
+            .asString()
+        assertEquals(200, resp.status)
+
+        val body = gson.fromJson(resp.body, SongWithMeta::class.java)
+        assertEquals(track.id, body.spotifyId)
+
+        val mixtapeResp = Unirest.get("$appUrl/mixtapes/$mixtapeId")
+            .header("X-Auth-Token", authToken)
+            .asString()
+        assertEquals(200, mixtapeResp.status)
+        val mixtapeBody = gson.fromJson(mixtapeResp.body, MixtapeWithSongsReponse::class.java)
+
+        assertEquals(2, mixtapeBody.tracks.size)
+        assertEquals(track.id, mixtapeBody.tracks[1].spotifyId)
+    }
+
+    @Test
+    fun `POST mixtapes_(id)_songs - prevents posts to another user's mixtapes`() {
+        TODO()
+    }
+
+    @Test
+    fun `POST mixtapes_(id)_songs - prevents posts to an already-published mixtape`() {
+        TODO()
+    }
+
+    @Test
+    fun `POST mixtapes_(id)_songs - prevents adding the same song multiple times to a mixtape`() {
+        TODO()
     }
 }
