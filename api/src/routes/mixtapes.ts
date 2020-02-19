@@ -72,39 +72,11 @@ export default function registerMixtapeEndpoints(router: Router) {
     })
   );
 
-  router.post(
-    '/mixtapes/:mixtapeId/songs',
-    isAuthenticated,
-    wrapAsyncRoute(async (req, res) => {
-      const user = res.locals.user as UserModel;
-      const mixtapeId = parseInt(req.params.mixtapeId, 10);
-      let mixtape = await getMixtapeById(mixtapeId, {
-        currentUserId: user.id,
-      });
-
-      mixtape = validateMixtapeExists(mixtape);
-      validateCanUpdateMixtape({ mixtape, user });
-
-      const song = await getOrCreateSong(req.body.spotifyId);
-
-      if (!song) {
-        return res.status(400).json({
-          error: `No song found with Spotify ID ${req.body.spotifyId}`,
-        });
-      }
-
-      if (mixtape.tracks.find((mixtapeSong) => mixtapeSong.id === song.id)) {
-        return res.status(400).json({
-          error: 'Mixtape already contains this song',
-        });
-      }
-
-      await addSongToMixtape(mixtapeId, song.id);
-      const songResource = await hydrateSongMeta(song, {
-        currentUserId: user.id,
-      });
-
-      res.json(songResource);
+  router.use(
+    '/mixtapes/:mixtapeId/songs$',
+    proxy({
+      target,
+      onProxyReq: restream,
     })
   );
 
