@@ -1,4 +1,4 @@
-FROM openjdk:8-jre-alpine
+FROM azul/zulu-openjdk-alpine:11.0.6
 
 ENV APPLICATION_USER app
 RUN adduser -D -g "" $APPLICATION_USER
@@ -9,17 +9,8 @@ RUN chown -R $APPLICATION_USER /app
 USER $APPLICATION_USER
 
 COPY ./build/libs/jambuds-rhiannon.jar /app/jambuds-rhiannon.jar
+COPY ./bin /app/bin
 WORKDIR /app
 
 # TODO: figure out if this is all legit
-CMD [\
-    "java", "-server",\
-    "-XX:+UnlockExperimentalVMOptions",\
-    "-XX:+UseCGroupMemoryLimitForHeap",\
-    "-XX:InitialRAMFraction=2",\
-    "-XX:MinRAMFraction=2",\
-    "-XX:MaxRAMFraction=2",\
-    "-XX:+UseG1GC",\
-    "-XX:MaxGCPauseMillis=100",\
-    "-XX:+UseStringDeduplication",\
-    "-jar", "jambuds-rhiannon.jar"]
+CMD "./bin/docker_entrypoint.sh"
