@@ -38,14 +38,15 @@ object TestDataFactories {
             .one()
     }
 
-    fun createSong(txn: Handle): Int {
+    fun createSong(txn: Handle, spotifyId: String = "spotify_id"): Int {
         val query = """
-            insert into songs (title, artists) values (:title, :artist)
+            insert into songs (title, artists, spotify_id) values (:title, :artist, :spotifyId)
         """.trimIndent()
 
         return txn.createUpdate(query)
             .bind("title", "song")
             .bindArray("artist", String::class.java, listOf("song"))
+            .bind("spotifyId", spotifyId)
             .executeAndReturnGeneratedKeys("id")
             .mapTo(Int::class.java)
             .one()

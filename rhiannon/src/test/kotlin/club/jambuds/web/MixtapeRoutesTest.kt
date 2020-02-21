@@ -105,7 +105,7 @@ class MixtapeRoutesTest : AppTest() {
     }
 
     @Test
-    fun `POST mixtapes_(id)_songs - posts a song`() {
+    fun `POST mixtapes_(id)_songs - adds a song to the mixtape`() {
         val jeff = TestDataFactories.createUser(txn, "jeff", true)
         val authToken = TestDataFactories.createAuthToken(txn, jeff.id)
         val mixtapeId = TestDataFactories.createMixtape(txn, jeff.id, false)
@@ -144,16 +144,44 @@ class MixtapeRoutesTest : AppTest() {
 
     @Test
     fun `POST mixtapes_(id)_songs - prevents posts to another user's mixtapes`() {
-        TODO()
+        val jeff = TestDataFactories.createUser(txn, "jeff", true)
+        val mixtapeId = TestDataFactories.createMixtape(txn, jeff.id, false)
+
+        val vinny = TestDataFactories.createUser(txn, "vinny", true)
+        val authToken = TestDataFactories.createAuthToken(txn, vinny.id)
+
+        val resp = Unirest.post("$appUrl/mixtapes/$mixtapeId/songs")
+            .header("X-Auth-Token", authToken)
+            .body(JSONObject(mapOf("spotifyId" to "asdf")))
+            .asString()
+        assertEquals(401, resp.status)
     }
 
     @Test
     fun `POST mixtapes_(id)_songs - prevents posts to an already-published mixtape`() {
-        TODO()
+        val jeff = TestDataFactories.createUser(txn, "jeff", true)
+        val mixtapeId = TestDataFactories.createMixtape(txn, jeff.id, true)
+
+        val authToken = TestDataFactories.createAuthToken(txn, jeff.id)
+        val resp = Unirest.post("$appUrl/mixtapes/$mixtapeId/songs")
+            .header("X-Auth-Token", authToken)
+            .body(JSONObject(mapOf("spotifyId" to "asdf")))
+            .asString()
+        assertEquals(400, resp.status)
     }
 
     @Test
     fun `POST mixtapes_(id)_songs - prevents adding the same song multiple times to a mixtape`() {
-        TODO()
+        val jeff = TestDataFactories.createUser(txn, "jeff", true)
+        val mixtapeId = TestDataFactories.createMixtape(txn, jeff.id, false)
+        val songId = TestDataFactories.createSong(txn, spotifyId = "someSongId")
+        TestDataFactories.addSongToMixtape(txn, mixtapeId = mixtapeId, songId = songId, rank = 1)
+
+        val authToken = TestDataFactories.createAuthToken(txn, jeff.id)
+        val resp = Unirest.post("$appUrl/mixtapes/$mixtapeId/songs")
+            .header("X-Auth-Token", authToken)
+            .body(JSONObject(mapOf("spotifyId" to "someSongId")))
+            .asString()
+        assertEquals(400, resp.status)
     }
 }
