@@ -20,4 +20,4 @@ RUN mkdir -p public
 RUN cp -r .nuxt/dist/client/. src/static/. public
 
 EXPOSE 8080
-CMD [ "npm", "start" ]
+CMD [ "./node_modules/.bin/nuxt", "start" ]
