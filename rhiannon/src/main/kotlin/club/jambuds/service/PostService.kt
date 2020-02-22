@@ -39,8 +39,9 @@ class PostService(
     }
 
     fun deleteSongPost(currentUser: User, songId: Int) {
-        val post = postDao.getUserPostForSongId(songId = songId, userId = currentUser.id)
-            ?: throw NotFoundResponse("No post found for user id ${currentUser.id} and song id $songId")
+        if (postDao.getUserPostForSongId(songId = songId, userId = currentUser.id) == null) {
+            throw NotFoundResponse("No post found for user id ${currentUser.id} and song id $songId")
+        }
 
         postDao.deleteSongPost(userId = currentUser.id, songId = songId)
     }

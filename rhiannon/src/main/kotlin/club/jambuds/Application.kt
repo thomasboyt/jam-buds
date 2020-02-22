@@ -8,6 +8,7 @@ import club.jambuds.dao.SongDao
 import club.jambuds.dao.UserDao
 import club.jambuds.dao.cache.SearchCacheDao
 import club.jambuds.service.AppleMusicService
+import club.jambuds.service.LikeService
 import club.jambuds.service.MixtapeService
 import club.jambuds.service.PlaylistService
 import club.jambuds.service.PostService
@@ -18,6 +19,7 @@ import club.jambuds.service.UserService
 import club.jambuds.util.InstantTypeAdapter
 import club.jambuds.util.LocalDateTimeTypeAdapter
 import club.jambuds.web.AuthHandlers
+import club.jambuds.web.LikeRoutes
 import club.jambuds.web.MixtapeRoutes
 import club.jambuds.web.PlaylistRoutes
 import club.jambuds.web.PostRoutes
@@ -163,6 +165,7 @@ private fun wire(app: Javalin, config: Config) {
     val mixtapeService = MixtapeService(mixtapeDao, songDao, userService, searchService)
     val postService =
         PostService(postDao, songDao, searchService, twitterService, config.getString("appUrl"))
+    val likeService = LikeService(likeDao, songDao)
 
     // Routes
     app.routes {
@@ -171,6 +174,7 @@ private fun wire(app: Javalin, config: Config) {
         MixtapeRoutes(mixtapeService).register()
         SearchRoutes(searchService).register()
         PostRoutes(postService).register()
+        LikeRoutes(likeService).register()
     }
 }
 

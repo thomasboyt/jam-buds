@@ -45,4 +45,7 @@ interface SongDao {
             appleMusicUrl = cacheEntry.appleMusicUrl
         )
     }
+
+    @SqlQuery
+    fun getSongExistsById(songId: Int): Boolean
 }

@@ -8,6 +8,7 @@ import club.jambuds.dao.SongDao
 import club.jambuds.dao.UserDao
 import club.jambuds.dao.cache.SearchCacheDao
 import club.jambuds.service.AppleMusicService
+import club.jambuds.service.LikeService
 import club.jambuds.service.MixtapeService
 import club.jambuds.service.PlaylistService
 import club.jambuds.service.PostService
@@ -16,6 +17,7 @@ import club.jambuds.service.SpotifyApiService
 import club.jambuds.service.TwitterService
 import club.jambuds.service.UserService
 import club.jambuds.web.AuthHandlers
+import club.jambuds.web.LikeRoutes
 import club.jambuds.web.MixtapeRoutes
 import club.jambuds.web.PlaylistRoutes
 import club.jambuds.web.PostRoutes
@@ -88,6 +90,7 @@ open class AppTest {
             mockTwitterService,
             config.getString("appUrl")
         )
+        val likeService = LikeService(likeDao, songDao)
 
         app.routes {
             AuthHandlers(userDao).register()
@@ -95,6 +98,7 @@ open class AppTest {
             MixtapeRoutes(mixtapeService).register()
             SearchRoutes(searchService).register()
             PostRoutes(postService).register()
+            LikeRoutes(likeService).register()
         }
     }
 
