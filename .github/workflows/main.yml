@@ -77,11 +77,18 @@ jobs:
           REDIS_URL: "redis://localhost:${{ job.services.redis.ports[6379] }}"
           JDBC_DATABASE_URL: "jdbc:postgresql://localhost:${{ job.services.postgres.ports[5432] }}/jambuds_test?user=postgres&password=postgres"
   
-      - name: Upload JAR files
-        uses: actions/upload-artifact@v1
+      # - name: Upload JAR files
+      #   uses: actions/upload-artifact@v1
+      #   with:
+      #     name: rhiannon-jars
+      #     path: rhiannon/build/libs
+
+      - uses: actions/cache@v1
         with:
-          name: rhiannon-jars
-          path: rhiannon/build/libs
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
 
   integration-tests:
     name: "Integration Tests"
@@ -126,11 +133,12 @@ jobs:
         with:
           java-version: 11
 
-      - name: Download Rhiannon JAR
-        uses: actions/download-artifact@v1
+      - uses: actions/cache@v1
         with:
-          name: rhiannon-jars
-          path: rhiannon/build/libs
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
 
       - run: npm ci
         working-directory: ./api
