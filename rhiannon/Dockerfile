@@ -10,6 +10,7 @@ USER $APPLICATION_USER
 
 COPY ./build/libs/jambuds-rhiannon.jar /app/jambuds-rhiannon.jar
 COPY ./bin /app/bin
+COPY ./src/main/resources/db/migration /app/migrations
 WORKDIR /app
 
 # TODO: figure out if this is all legit
