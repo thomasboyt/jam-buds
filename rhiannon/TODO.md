@@ -8,9 +8,9 @@
   * [ ] POST /registration (create new account)
   * [ ] POST /sign-out
 
-* [ ] Like routes
-  * [ ] PUT /likes/:songId
-  * [ ] DELETE /likes/:songId
+* [X] Like routes
+  * [X] PUT /likes/:songId
+  * [X] DELETE /likes/:songId
 
 * [ ] Mixtape routes
   * [X] GET /mixtapes/:id
@@ -27,17 +27,17 @@
   * [ ] GET /notifications
   * [ ] POST /notifications/mark-all-read
 
-* Playlist routes
+* [x] Playlist routes
   * [X] GET /public-feed
   * [X] GET /feed
   * [X] GET /playlists/:user
   * [X] GET /playlists/:user/liked
 
-* [ ] Post routes
+* [x] Post routes
   * [X] POST /posts
-  * [ ] DELETE /posts/:songId
+  * [x] DELETE /posts/:songId
 
-* [ ] Search routes
+* [x] Search routes
   * [X] GET /spotify-search
   * [X] GET /spotify-details/:spotifyId
 
