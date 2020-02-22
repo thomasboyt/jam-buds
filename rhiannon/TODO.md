@@ -1,7 +1,5 @@
 # Rhiannon Status
 
-Next on deck: Song search & post flows
-
 ### Route migration
 
 * [ ] Authentication routes
@@ -18,7 +16,7 @@ Next on deck: Song search & post flows
   * [X] GET /mixtapes/:id
   * [X] POST /mixtapes
   * [X] DELETE /mixtapes/:id
-  * [ ] POST /mixtapes/:mixtapeId/songs
+  * [X] POST /mixtapes/:mixtapeId/songs
   * [ ] DELETE /mixtapes/:mixtapeId/songs/:songId
   * [ ] POST /mixtapes/:mixtapeId/order
   * [ ] POST /mixtapes/:mixtapeId/publish
@@ -70,13 +68,9 @@ Next on deck: Song search & post flows
   * [ ] GET /users/:name/following
   * [ ] GET /users/:name/followers
 
-### Units of work
-
-* New post + adding song to mixtape + Spotify search migration needs to happen at once so that the search cache can be properly leveraged
-
 ### Other major tasks:
 
-* [ ] Hook up Sentry for monitoring (can test locally)
+* [x] Hook up Sentry for monitoring (can test locally)
 * [X] Add Redis client for various caches
 * [X] Add Spotify API client
 * [x] Add Twitter API client

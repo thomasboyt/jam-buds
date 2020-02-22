@@ -15,6 +15,8 @@ class MixtapeRoutes(private val mixtapeService: MixtapeService) {
         ApiBuilder.post("/api/mixtapes", this::createMixtape)
         ApiBuilder.get("/api/mixtapes/:id", this::getMixtape)
         ApiBuilder.delete("/api/mixtapes/:id", this::deleteMixtape)
+
+        ApiBuilder.post("/api/mixtapes/:mixtapeId/songs", this::addSongToMixtape)
     }
 
     data class CreateBody(
@@ -46,5 +48,24 @@ class MixtapeRoutes(private val mixtapeService: MixtapeService) {
         mixtapeService.deleteMixtapeById(id, currentUserId = currentUser.id)
 
         ctx.status(204)
+    }
+
+    data class AddSongBody(
+        @field:NotNull
+        @Expose val spotifyId: String
+    )
+
+    private fun addSongToMixtape(ctx: Context) {
+        val currentUser = ctx.requireUser()
+        val mixtapeId = ctx.pathParam<Int>("mixtapeId").get()
+        val spotifyId = ctx.validateJsonBody(AddSongBody::class.java).spotifyId
+
+        val song = mixtapeService.addSongToMixtape(
+            mixtapeId = mixtapeId,
+            currentUser = currentUser,
+            spotifyId = spotifyId
+        )
+
+        ctx.json(song)
     }
 }

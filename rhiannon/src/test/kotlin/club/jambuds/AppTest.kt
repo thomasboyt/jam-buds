@@ -51,16 +51,21 @@ open class AppTest {
     lateinit var txn: Handle
     private lateinit var app: Javalin
 
-    lateinit var searchCacheDao: SearchCacheDao
     lateinit var mockSpotifyApiService: SpotifyApiService
     lateinit var mockAppleMusicService: AppleMusicService
     lateinit var mockTwitterService: TwitterService
+
+    lateinit var searchCacheDao: SearchCacheDao
 
     fun wire(txn: Handle) {
         this.txn = txn
 
         app = createJavalinApp()
         app.start(testAppPort)
+
+        mockSpotifyApiService = mock()
+        mockAppleMusicService = mock()
+        mockTwitterService = mock()
 
         val postDao = txn.attach(PostDao::class.java)
         val songDao = txn.attach(SongDao::class.java)
@@ -73,14 +78,9 @@ open class AppTest {
         val playlistService =
             PlaylistService(postDao, songDao, mixtapeDao, likeDao)
         val userService = UserService(userDao, colorSchemeDao)
-        val mixtapeService = MixtapeService(mixtapeDao, songDao, userService)
-
-        mockSpotifyApiService = mock()
-        mockAppleMusicService = mock()
-        mockTwitterService = mock()
         val searchService =
-            SearchService(mockSpotifyApiService, mockAppleMusicService, searchCacheDao)
-
+            SearchService(mockSpotifyApiService, mockAppleMusicService, songDao, searchCacheDao)
+        val mixtapeService = MixtapeService(mixtapeDao, songDao, userService, searchService)
         val postService = PostService(
             postDao,
             songDao,

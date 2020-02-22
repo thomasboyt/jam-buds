@@ -113,25 +113,14 @@ private fun wire(app: Javalin, config: Config) {
     val jdbi = createJdbi(config.getString("databaseUrl"))
     val redis = RedisClient.create(config.getString("redisUrl")).connect()
 
-    val postDao = jdbi.onDemand<PostDao>()
-    val songDao = jdbi.onDemand<SongDao>()
-    val mixtapeDao = jdbi.onDemand<MixtapeDao>()
-    val userDao = jdbi.onDemand<UserDao>()
-    val colorSchemeDao = jdbi.onDemand<ColorSchemeDao>()
-    val likeDao = jdbi.onDemand<LikeDao>()
-    val searchCacheDao = SearchCacheDao(redis)
-
-    val playlistService =
-        PlaylistService(postDao, songDao, mixtapeDao, likeDao)
-    val userService = UserService(userDao, colorSchemeDao)
-    val mixtapeService = MixtapeService(mixtapeDao, songDao, userService)
-
+    // Spotify
     val spotifyApiService = SpotifyApiService(
         config.getString("spotifyClientId"),
         config.getString("spotifyClientSecret")
     )
     spotifyApiService.startRefreshLoop()
 
+    // Apple Music
     val disableAppleMusic = config.getBoolean("disableAppleMusic")
     val appleMusicToken = if (disableAppleMusic) {
         "apple music disabled"
@@ -143,22 +132,39 @@ private fun wire(app: Javalin, config: Config) {
         )
     }
     val appleMusicService = AppleMusicService(appleMusicToken, disableAppleMusic)
-    val searchService = SearchService(
-        spotifyApiService,
-        appleMusicService,
-        searchCacheDao,
-        disableAppleMusic = disableAppleMusic
-    )
 
+    // Twitter
     val twitterService = if (config.getBoolean("disableTwitter")) {
         TwitterService("placeholder key", "placeholder secret", disableTwitter = true)
     } else {
         TwitterService(config.getString("twitterApiKey"), config.getString("twitterApiSecret"))
     }
 
+    // DAOs
+    val postDao = jdbi.onDemand<PostDao>()
+    val songDao = jdbi.onDemand<SongDao>()
+    val mixtapeDao = jdbi.onDemand<MixtapeDao>()
+    val userDao = jdbi.onDemand<UserDao>()
+    val colorSchemeDao = jdbi.onDemand<ColorSchemeDao>()
+    val likeDao = jdbi.onDemand<LikeDao>()
+    val searchCacheDao = SearchCacheDao(redis)
+
+    // Services
+    val playlistService =
+        PlaylistService(postDao, songDao, mixtapeDao, likeDao)
+    val userService = UserService(userDao, colorSchemeDao)
+    val searchService = SearchService(
+        spotifyApiService,
+        appleMusicService,
+        songDao,
+        searchCacheDao,
+        disableAppleMusic = disableAppleMusic
+    )
+    val mixtapeService = MixtapeService(mixtapeDao, songDao, userService, searchService)
     val postService =
         PostService(postDao, songDao, searchService, twitterService, config.getString("appUrl"))
 
+    // Routes
     app.routes {
         AuthHandlers(userDao).register()
         PlaylistRoutes(playlistService, userService).register()
