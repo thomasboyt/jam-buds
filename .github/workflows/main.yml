@@ -169,6 +169,10 @@ jobs:
           DATABASE_URL: "postgres://postgres@localhost:${{ job.services.postgres.ports[5432] }}/jambuds_test"
           REDIS_URL: "redis://localhost:${{ job.services.redis.ports[6379] }}"
 
+      - run: ./gradlew assemble
+        working-directory: ./rhiannon
+        name: Build Rhiannon server
+
       - run: ./gradlew run & wait-on -t 20000 tcp:7000
         working-directory: ./rhiannon
         name: Start Rhiannon server
