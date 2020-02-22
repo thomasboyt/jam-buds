@@ -41,4 +41,7 @@ interface PostDao {
 
     @SqlQuery
     fun getUserPostForSongId(userId: Int, songId: Int): Post?
+
+    @SqlUpdate
+    fun deleteSongPost(userId: Int, songId: Int)
 }

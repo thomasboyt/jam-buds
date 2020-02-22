@@ -11,6 +11,7 @@ import com.nhaarman.mockitokotlin2.verify
 import kong.unirest.Unirest
 import kong.unirest.json.JSONObject
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestTemplate
 import kotlin.test.assertEquals
 
 class PostRoutesTest : AppTest() {
@@ -107,5 +108,35 @@ class PostRoutesTest : AppTest() {
 
         val expectedTweet = "Hello world http://localhost:8080/users/jeff?song=${song.id}"
         verify(mockTwitterService, times(1)).postTweet(jeff, expectedTweet)
+    }
+
+    @Test
+    fun `DELETE posts_(postId) - deletes post`() {
+        val jeff = TestDataFactories.createUser(txn, "jeff", true)
+        val authToken = TestDataFactories.createAuthToken(txn, jeff.id)
+        val songId = TestDataFactories.createSong(txn, spotifyId = "someSongId")
+        TestDataFactories.createSongPost(txn, songId = songId, userId = jeff.id)
+
+        val resp = Unirest.delete("$appUrl/posts/$songId")
+            .header("X-Auth-Token", authToken)
+            .asString()
+        assertEquals(204, resp.status)
+
+        val playlistResp = Unirest.get("$appUrl/playlists/jeff")
+            .header("X-Auth-Token", authToken)
+            .asString()
+        val playlist = gson.fromJson(playlistResp.body, UserPlaylistResponse::class.java)
+        assertEquals(0, playlist.items.size)
+    }
+
+    @Test
+    fun `DELETE posts_(postId) - returns 404 when post does not exist`() {
+        val jeff = TestDataFactories.createUser(txn, "jeff", true)
+        val authToken = TestDataFactories.createAuthToken(txn, jeff.id)
+
+        val resp = Unirest.delete("$appUrl/posts/1234")
+            .header("X-Auth-Token", authToken)
+            .asString()
+        assertEquals(404, resp.status)
     }
 }

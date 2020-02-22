@@ -5,6 +5,7 @@ import club.jambuds.dao.SongDao
 import club.jambuds.model.SongWithMeta
 import club.jambuds.model.User
 import io.javalin.http.BadRequestResponse
+import io.javalin.http.NotFoundResponse
 
 class PostService(
     private val postDao: PostDao,
@@ -35,5 +36,12 @@ class PostService(
         }
 
         return song
+    }
+
+    fun deleteSongPost(currentUser: User, songId: Int) {
+        val post = postDao.getUserPostForSongId(songId = songId, userId = currentUser.id)
+            ?: throw NotFoundResponse("No post found for user id ${currentUser.id} and song id $songId")
+
+        postDao.deleteSongPost(userId = currentUser.id, songId = songId)
     }
 }
