@@ -40,21 +40,28 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 
     implementation 'io.javalin:javalin:3.7.0'
+    implementation "com.typesafe:config:1.4.0"
     implementation 'com.google.code.gson:gson:2.8.6'
+
+    // validation
     implementation "org.hibernate.validator:hibernate-validator:6.1.2.Final"
     implementation "org.glassfish:javax.el:3.0.0"
-    implementation "com.typesafe:config:1.4.0"
-    implementation "ch.qos.logback:logback-classic:$logback_version"
+
+    // third-party apis
     implementation 'se.michaelthelin.spotify:spotify-web-api-java:4.2.1'
     implementation 'com.squareup.retrofit2:retrofit:2.7.1'
     implementation 'com.squareup.retrofit2:converter-gson:2.7.1'
-    implementation "io.lettuce:lettuce-core:5.2.2.RELEASE"
+    // used for third party api auth (twitter, apple music)
     implementation "com.auth0:java-jwt:3.10.0"
     implementation group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.64'
     implementation group: 'org.bouncycastle', name: 'bcpkix-jdk15on', version: '1.64'
+
+    // logging & monitoring
+    implementation "ch.qos.logback:logback-classic:1.2.3"
     implementation 'io.sentry:sentry:1.7.30'
     implementation 'io.sentry:sentry-logback:1.7.30'
 
+    // database access
     implementation "org.jdbi:jdbi3-core:$jdbi3_version"
     implementation "org.jdbi:jdbi3-postgres:$jdbi3_version"
     implementation "org.jdbi:jdbi3-sqlobject:$jdbi3_version"
@@ -62,6 +69,7 @@ dependencies {
     implementation "org.jdbi:jdbi3-kotlin-sqlobject:$jdbi3_version"
     implementation "org.postgresql:postgresql:42.2.9"
     implementation "com.zaxxer:HikariCP:3.4.2"
+    implementation "io.lettuce:lettuce-core:5.2.2.RELEASE"
 
     testImplementation "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.0'
