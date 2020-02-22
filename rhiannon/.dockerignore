@@ -1,8 +1,0 @@
-.git/
-.idea/
-build
-gradle/
-src/
-!src/main/resources
-
-!build/libs/

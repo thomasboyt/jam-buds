@@ -11,6 +11,7 @@ buildscript {
 
 plugins {
     id "org.flywaydb.flyway" version "6.1.4"
+    id 'com.google.cloud.tools.jib' version '2.0.0'
 }
 
 apply plugin: 'kotlin'
@@ -94,6 +95,21 @@ flyway {
     url = "jdbc:postgresql://localhost:5433/jambuds"
     user = "postgres"
     password = ""
+}
+
+jib {
+    from {
+        image = "azul/zulu-openjdk-alpine:11.0.6"
+    }
+    container {
+        mainClass = "club.jambuds.ApplicationKt"
+        // TODO: use runtime env var for this?
+        jvmFlags = [
+            "-XX:+UseG1GC",
+            "-Xmx100m",
+            "-XX:+UseStringDeduplication"
+        ]
+    }
 }
 
 shadowJar {
