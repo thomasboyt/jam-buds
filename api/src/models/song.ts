@@ -99,20 +99,3 @@ export function serializeSong(row: any): Song {
     likeCount: parseInt(meta.likeCount),
   };
 }
-
-export async function hydrateSongMeta(
-  song: SongModel,
-  opts: SongsQueryOptions
-): Promise<Song> {
-  const query = db!('songs')
-    .select(getMetaQuery(opts))
-    .where({ 'songs.id': song.id });
-
-  const meta = await findOneOrThrow(query, SongMetaV);
-
-  return {
-    ...song,
-    likeCount: parseInt(meta.likeCount),
-    isLiked: meta.isLiked || false,
-  };
-}
