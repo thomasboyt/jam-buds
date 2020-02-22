@@ -7,14 +7,12 @@ import { UserModel } from '../models/user';
 import { isAuthenticated } from '../auth';
 import {
   getMixtapeById,
-  addSongToMixtape,
   removeSongFromMixtape,
   reorderMixtapeSongs,
   setMixtapeTitle,
   publishMixtape,
   getDraftMixtapesByUserId,
 } from '../models/mixtapes';
-import { getOrCreateSong, hydrateSongMeta } from '../models/song';
 import { Mixtape } from '../resources';
 import { JamBudsHTTPError } from '../util/errors';
 import config from '../config';
