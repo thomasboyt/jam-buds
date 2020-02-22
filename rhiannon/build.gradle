@@ -91,11 +91,9 @@ test {
 }
 
 flyway {
-    url = "jdbc:postgresql://localhost:5433/jambuds_kotlin_test"
+    url = "jdbc:postgresql://localhost:5433/jambuds"
     user = "postgres"
     password = ""
-    baselineOnMigrate=true
-    locations = ["filesystem:./resources/db/migration"]
 }
 
 shadowJar {
