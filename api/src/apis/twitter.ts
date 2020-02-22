@@ -5,13 +5,6 @@ import {
   getTwitterFollowingCache,
   setTwitterFollowingCache,
 } from '../models/cache/twitterFollowingCache';
-import { SongModel } from '../models/song';
-
-interface PostSongTweetParams {
-  text: string;
-  user: UserModel;
-  song: SongModel;
-}
 
 function getTwitterClient(user: UserModel): Twit {
   if (!user.twitterToken || !user.twitterSecret) {
@@ -23,16 +16,6 @@ function getTwitterClient(user: UserModel): Twit {
     consumer_secret: config.require('TWITTER_API_SECRET'),
     access_token: user.twitterToken,
     access_token_secret: user.twitterSecret,
-  });
-}
-
-export async function postSongTweet({ text, song, user }: PostSongTweetParams) {
-  const link = `${config.get('JB_APP_URL')}/users/${user.name}?song=${song.id}`;
-
-  const tweet = `${text} ${link}`;
-
-  await getTwitterClient(user).post('statuses/update', {
-    status: tweet,
   });
 }
 
