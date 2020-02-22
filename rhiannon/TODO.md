@@ -75,5 +75,6 @@
 * [X] Add Spotify API client
 * [x] Add Twitter API client
 * [X] Add Apple Music API client
-* [ ] Begin using Flyway for production migrations
-
+* [*] Begin using Flyway for production migrations
+* [ ] Port over dev & integration test seeds from API
+* [ ] Use Flyway + new seeds to reset integration test DB
