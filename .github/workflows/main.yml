@@ -70,8 +70,12 @@ jobs:
         with:
           java-version: 11
   
-      - name: Build with Gradle
-        run: ./gradlew build
+      - name: Build
+        run: ./gradlew assemble
+        working-directory: ./rhiannon
+
+      - name: Test
+        run: ./gradlew test
         working-directory: ./rhiannon
         env:
           REDIS_URL: "redis://localhost:${{ job.services.redis.ports[6379] }}"
