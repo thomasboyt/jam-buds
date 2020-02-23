@@ -35,16 +35,16 @@ jobs:
 
 
       - name: Cache API node modules
-          uses: actions/cache@v1
-          env:
-            cache-name: cache-api-node-modules
-          with:
-            path: ~/.npm # npm cache files are stored in `~/.npm` on Linux/macOS
-            key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('api/package-lock.json') }}
-            restore-keys: |
-              ${{ runner.os }}-build-${{ env.cache-name }}-
-              ${{ runner.os }}-build-
-              ${{ runner.os }}-
+        uses: actions/cache@v1
+        env:
+          cache-name: cache-api-node-modules
+        with:
+          path: ~/.npm # npm cache files are stored in `~/.npm` on Linux/macOS
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('api/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
 
       - run: npm ci
         working-directory: ./api
