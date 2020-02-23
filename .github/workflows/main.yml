@@ -33,8 +33,7 @@ jobs:
         with:
           node-version: 12.x
 
-
-      - name: Cache API node modules
+      - name: Restore/cache API node modules
         uses: actions/cache@v1
         env:
           cache-name: cache-api-node-modules
@@ -43,8 +42,6 @@ jobs:
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('api/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
 
       - run: npm ci
         working-directory: ./api
@@ -83,7 +80,8 @@ jobs:
         with:
           java-version: 11
   
-      - uses: actions/cache@v1
+      - name: Restore/cache Gradle dependencies
+        uses: actions/cache@v1
         with:
           path: ~/.gradle/caches
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
@@ -144,14 +142,15 @@ jobs:
         with:
           java-version: 11
 
-      - uses: actions/cache@v1
+      - name: Restore/cache Gradle dependencies
+        uses: actions/cache@v1
         with:
           path: ~/.gradle/caches
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: Cache API node modules
+      - name: Restore/cache API node modules
         uses: actions/cache@v1
         env:
           cache-name: cache-api-node-modules
@@ -160,14 +159,12 @@ jobs:
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('api/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
 
       - run: npm ci
         working-directory: ./api
         name: Install API dependencies
 
-      - name: Cache App node modules
+      - name: Restore/cache App node modules
         uses: actions/cache@v1
         env:
           cache-name: cache-app-node-modules
@@ -176,14 +173,12 @@ jobs:
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('app/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
 
       - run: npm ci
         working-directory: ./app
         name: Install app dependencies
 
-      - name: Cache integration test node modules
+      - name: Restore/cache integration test node modules
         uses: actions/cache@v1
         env:
           cache-name: cache-spec-node-modules
@@ -192,8 +187,6 @@ jobs:
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('spec/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
 
       - run: npm ci
         working-directory: ./spec
