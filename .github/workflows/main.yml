@@ -33,6 +33,16 @@ jobs:
         with:
           node-version: 12.x
 
+      # - name: Restore/cache API node modules
+      #   uses: actions/cache@v1
+      #   env:
+      #     cache-name: cache-api-node-modules
+      #   with:
+      #     path: ~/.npm # npm cache files are stored in `~/.npm` on Linux/macOS
+      #     key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('api/package-lock.json') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-build-${{ env.cache-name }}-
+
       - run: npm ci
         working-directory: ./api
 
@@ -70,19 +80,25 @@ jobs:
         with:
           java-version: 11
   
-      - name: Build with Gradle
-        run: ./gradlew build
+      # - name: Restore/cache Gradle dependencies
+      #   uses: actions/cache@v1
+      #   with:
+      #     path: ~/.gradle/caches
+      #     key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-gradle-
+
+      - name: Build
+        run: ./gradlew assemble
+        working-directory: ./rhiannon
+
+      - name: Test
+        run: ./gradlew test
         working-directory: ./rhiannon
         env:
           REDIS_URL: "redis://localhost:${{ job.services.redis.ports[6379] }}"
           JDBC_DATABASE_URL: "jdbc:postgresql://localhost:${{ job.services.postgres.ports[5432] }}/jambuds_test?user=postgres&password=postgres"
   
-      - name: Upload JAR files
-        uses: actions/upload-artifact@v1
-        with:
-          name: rhiannon-jars
-          path: rhiannon/build/libs
-
   integration-tests:
     name: "Integration Tests"
     runs-on: ubuntu-latest
@@ -126,11 +142,43 @@ jobs:
         with:
           java-version: 11
 
-      - name: Download Rhiannon JAR
-        uses: actions/download-artifact@v1
-        with:
-          name: rhiannon-jars
-          path: rhiannon/build/libs
+      # - name: Restore/cache Gradle dependencies
+      #   uses: actions/cache@v1
+      #   with:
+      #     path: ~/.gradle/caches
+      #     key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-gradle-
+
+      # - name: Restore/cache API node modules
+      #   uses: actions/cache@v1
+      #   env:
+      #     cache-name: cache-api-node-modules
+      #   with:
+      #     path: ~/.npm # npm cache files are stored in `~/.npm` on Linux/macOS
+      #     key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('api/package-lock.json') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-build-${{ env.cache-name }}-
+
+      # - name: Restore/cache App node modules
+      #   uses: actions/cache@v1
+      #   env:
+      #     cache-name: cache-app-node-modules
+      #   with:
+      #     path: ~/.npm # npm cache files are stored in `~/.npm` on Linux/macOS
+      #     key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('app/package-lock.json') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-build-${{ env.cache-name }}-
+
+      # - name: Restore/cache integration test node modules
+      #   uses: actions/cache@v1
+      #   env:
+      #     cache-name: cache-spec-node-modules
+      #   with:
+      #     path: ~/.npm # npm cache files are stored in `~/.npm` on Linux/macOS
+      #     key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('spec/package-lock.json') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-build-${{ env.cache-name }}-
 
       - run: npm ci
         working-directory: ./api
@@ -161,7 +209,11 @@ jobs:
           DATABASE_URL: "postgres://postgres@localhost:${{ job.services.postgres.ports[5432] }}/jambuds_test"
           REDIS_URL: "redis://localhost:${{ job.services.redis.ports[6379] }}"
 
-      - run: java -server -jar build/libs/jambuds-rhiannon.jar & wait-on -t 20000 tcp:7000
+      - run: ./gradlew assemble
+        working-directory: ./rhiannon
+        name: Build Rhiannon server
+
+      - run: ./gradlew run & wait-on -t 20000 tcp:7000
         working-directory: ./rhiannon
         name: Start Rhiannon server
         env:
