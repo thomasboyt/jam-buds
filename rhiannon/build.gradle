@@ -20,6 +20,14 @@ group 'club.jambuds'
 version '0.0.1-SNAPSHOT'
 mainClassName = "club.jambuds.ApplicationKt"
 
+distZip {
+    enabled = false
+}
+
+distTar {
+    enabled = false
+}
+
 java {
     sourceCompatibility = JavaVersion.VERSION_11
 }
