@@ -33,6 +33,19 @@ jobs:
         with:
           node-version: 12.x
 
+
+      - name: Cache API node modules
+          uses: actions/cache@v1
+          env:
+            cache-name: cache-api-node-modules
+          with:
+            path: ~/.npm # npm cache files are stored in `~/.npm` on Linux/macOS
+            key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('api/package-lock.json') }}
+            restore-keys: |
+              ${{ runner.os }}-build-${{ env.cache-name }}-
+              ${{ runner.os }}-build-
+              ${{ runner.os }}-
+
       - run: npm ci
         working-directory: ./api
 
@@ -70,6 +83,13 @@ jobs:
         with:
           java-version: 11
   
+      - uses: actions/cache@v1
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
       - name: Build
         run: ./gradlew assemble
         working-directory: ./rhiannon
@@ -81,19 +101,6 @@ jobs:
           REDIS_URL: "redis://localhost:${{ job.services.redis.ports[6379] }}"
           JDBC_DATABASE_URL: "jdbc:postgresql://localhost:${{ job.services.postgres.ports[5432] }}/jambuds_test?user=postgres&password=postgres"
   
-      # - name: Upload JAR files
-      #   uses: actions/upload-artifact@v1
-      #   with:
-      #     name: rhiannon-jars
-      #     path: rhiannon/build/libs
-
-      - uses: actions/cache@v1
-        with:
-          path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
-
   integration-tests:
     name: "Integration Tests"
     runs-on: ubuntu-latest
@@ -144,13 +151,49 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
+      - name: Cache API node modules
+        uses: actions/cache@v1
+        env:
+          cache-name: cache-api-node-modules
+        with:
+          path: ~/.npm # npm cache files are stored in `~/.npm` on Linux/macOS
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('api/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+
       - run: npm ci
         working-directory: ./api
         name: Install API dependencies
 
+      - name: Cache App node modules
+        uses: actions/cache@v1
+        env:
+          cache-name: cache-app-node-modules
+        with:
+          path: ~/.npm # npm cache files are stored in `~/.npm` on Linux/macOS
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('app/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+
       - run: npm ci
         working-directory: ./app
         name: Install app dependencies
+
+      - name: Cache integration test node modules
+        uses: actions/cache@v1
+        env:
+          cache-name: cache-spec-node-modules
+        with:
+          path: ~/.npm # npm cache files are stored in `~/.npm` on Linux/macOS
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('spec/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
 
       - run: npm ci
         working-directory: ./spec
