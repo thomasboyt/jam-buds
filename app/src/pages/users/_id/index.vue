@@ -10,6 +10,7 @@
       <template v-slot:item="{ item }">
         <post-item
           :item="item"
+          :user-name="name"
           @requestPlay="handleRequestPlay"
           verb="posted"
         />

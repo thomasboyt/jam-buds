@@ -165,7 +165,7 @@ export default {
   margin: 0 -10px 10px -10px;
 
   &:hover {
-    background: rgba(0, 0, 0, 0.1);
+    // background: rgba(0, 0, 0, 0.1);
 
     &.can-play {
       cursor: pointer;

@@ -2,15 +2,15 @@
   <div v-if="item.type === 'song'">
     <entry-posted-by
       :timestamp="item.timestamp"
-      :names="item.userNames"
+      :names="postedUserNames"
       :verb="verb"
     />
     <song
-      v-if="item.type === 'song'"
       :song-id="item.songId"
-      :posted-user-names="item.userNames"
+      :posted-user-names="postedUserNames"
       @requestPlay="handleRequestPlay"
     />
+    <notes v-if="notes.length > 0" :notes="notes" />
   </div>
   <mixtape-item
     v-else-if="item.type === 'mixtape'"
@@ -23,11 +23,39 @@
 import Song from './Song.vue';
 import EntryPostedBy from './EntryPostedBy.vue';
 import MixtapeItem from './MixtapeItem.vue';
+import Notes from './Notes.vue';
 
 export default {
-  components: { Song, EntryPostedBy, MixtapeItem },
+  components: { Song, EntryPostedBy, MixtapeItem, Notes },
 
-  props: ['item', 'verb'],
+  props: ['item', 'verb', 'userName'],
+
+  computed: {
+    postedUserNames() {
+      return this.item.posts && this.item.posts.map((post) => post.userName);
+    },
+
+    notes() {
+      if (this.item.posts) {
+        return this.item.posts
+          .filter((post) => post.noteText)
+          .map((post) => {
+            return {
+              authorName: post.userName,
+              text: post.noteText,
+            };
+          });
+      } else if (this.item.noteText) {
+        return [
+          {
+            authorName: this.userName,
+            text: this.item.noteText,
+          },
+        ];
+      }
+      return [];
+    },
+  },
 
   methods: {
     handleRequestPlay() {
