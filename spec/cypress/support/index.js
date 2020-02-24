@@ -16,5 +16,5 @@
 import './commands';
 
 beforeEach(() => {
-  cy.exec('cd ../api && NODE_ENV=test npm run resetdb');
+  cy.exec('./bin/resetdb.sh');
 });

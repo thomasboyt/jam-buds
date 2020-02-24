@@ -7,3 +7,6 @@ app/.nuxt/
 .env.test
 
 spec/cypress/videos
+spec/cypress/screenshots
+
+.DS_Store

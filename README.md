@@ -67,20 +67,28 @@ Then just run `cd api && npm test`.
 
 ### Feature Tests
 
-To run feature tests locally, you need to spin up the API and App servers:
+Feature tests use [Cypress](https://www.cypress.io/). Because Cypress runs as a separate process disconnected from the backend, a shell script is used to reset data between runs. To use this locally, you'll need to grab Postgres and Redis clients:
 
 ```
-# in two different sessions:
+brew install postgresql@11
+brew install redis
+```
+
+To run feature tests locally, you need to spin up all services:
+
+```
 cd api && npm run e2e
 cd app && npm run e2e
+cd rhiannon && JAMBUDS_ENV=feature ./gradlew run
 ```
 
-Once they're started, just run the tests via `npm test`:
+Once they're started:
 
 ```
-# in another:
 cd spec && npm test
 ```
+
+Feature tests use the default test DB (`jambuds_test`). To avoid lengthy flyway migration times, feature tests clean and run the migrations once, then use a saved copy of the test schema (in `tmp/schema.sql`). `npm test` will automatically regenerate this schema, but if you are running Cypress tests through any other mechanism, note that if you change the DB schema, you'll need to run `npm run setupDb` to see the changes.
 
 ## Deploy
 

@@ -5,7 +5,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "cypress run"
+    "test": "npm run setupDb && cypress run",
+    "setupDb": "./bin/create_schema.sh"
   },
   "author": "Thomas Boyt <me@thomasboyt.com>",
   "license": "Parity-6.0.0",

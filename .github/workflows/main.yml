@@ -142,6 +142,14 @@ jobs:
         with:
           java-version: 11
 
+      - name: Install psql@11
+        run: |
+          sudo apt-get install curl ca-certificates gnupg
+          curl https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+          sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+          sudo apt-get update
+          sudo apt install postgresql-client-11
+
       # - name: Restore/cache Gradle dependencies
       #   uses: actions/cache@v1
       #   with:
@@ -219,13 +227,12 @@ jobs:
         env:
           JDBC_DATABASE_URL: "jdbc:postgresql://localhost:${{ job.services.postgres.ports[5432] }}/jambuds_test?user=postgres&password=postgres"
           REDIS_URL: "redis://localhost:${{ job.services.redis.ports[6379] }}"
-          JAMBUDS_ENV: "development"
-          DISABLE_APPLE_MUSIC: "true"
-          DISABLE_TWITTER: "true"
+          JAMBUDS_ENV: "feature"
 
       - run: npm test
         working-directory: ./spec
         name: Run Cypress
         env:
+          JDBC_DATABASE_URL: "jdbc:postgresql://localhost:${{ job.services.postgres.ports[5432] }}/jambuds_test?user=postgres&password=postgres"
           DATABASE_URL: "postgres://postgres@localhost:${{ job.services.postgres.ports[5432] }}/jambuds_test"
           REDIS_URL: "redis://localhost:${{ job.services.redis.ports[6379] }}"
