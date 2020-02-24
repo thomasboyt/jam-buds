@@ -1,8 +1,10 @@
 package club.jambuds.web
 
 import club.jambuds.AppTest
+import club.jambuds.getGson
 import club.jambuds.helpers.TestDataFactories
 import club.jambuds.model.User
+import club.jambuds.responses.FeedPlaylistResponse
 import club.jambuds.responses.UserPlaylistResponse
 import club.jambuds.responses.UserProfile
 import io.javalin.plugin.json.JavalinJson
@@ -15,6 +17,8 @@ import java.time.format.DateTimeFormatter
 import kotlin.test.assertEquals
 
 class PlaylistRoutesTest : AppTest() {
+    private val gson = getGson()
+
     private fun forEachPlaylist(user: User, cb: (url: String) -> Unit) {
         val urls =
             listOf("feed", "public-feed", "playlists/${user.name}", "playlists/${user.name}/liked")
@@ -208,8 +212,9 @@ class PlaylistRoutesTest : AppTest() {
         val vinny = TestDataFactories.createUser(txn, "vinny", true)
         TestDataFactories.createSongPost(txn, userId = vinny.id, songId = songId)
 
-        val items = Unirest.get("$appUrl/public-feed").asJson().body.`object`
-            .getJSONArray("items")
+        val resp = Unirest.get("$appUrl/public-feed").asJson()
+        assertEquals(200, resp.status)
+        val items = resp.body.`object`.getJSONArray("items")
 
         assertEquals(1, items.length())
         assertEquals(songId, items.getJSONObject(0).getJSONObject("song").getInt("id"))
@@ -250,12 +255,13 @@ class PlaylistRoutesTest : AppTest() {
             songId = TestDataFactories.createSong(txn)
         )
 
-        val items = getUserRequest(jeff, "feed").asJson().body.`object`.getJSONArray("items")
+        val resp = getUserRequest(jeff, "feed").asString()
+        val body = gson.fromJson(resp.body, FeedPlaylistResponse::class.java)
 
-        assertEquals(3, items.length())
+        assertEquals(3, body.items.size)
         assertEquals(
             listOf("brad", "vinny", "jeff"),
-            items.map { (it as JSONObject).getJSONArray("userNames").getString(0) }
+            body.items.map { it.posts[0].userName }
         )
     }
 

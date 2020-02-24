@@ -7,8 +7,10 @@ import club.jambuds.dao.SongDao
 import club.jambuds.model.AggregatedPost
 import club.jambuds.model.MixtapePreview
 import club.jambuds.model.PlaylistPost
+import club.jambuds.model.Post
 import club.jambuds.model.SongWithMeta
 import club.jambuds.responses.FeedPlaylistEntry
+import club.jambuds.responses.FeedPlaylistPost
 import club.jambuds.responses.PlaylistEntry
 import club.jambuds.responses.PlaylistEntryType
 import club.jambuds.responses.UserPlaylistEntry
@@ -56,7 +58,7 @@ class PlaylistService(
             limit = limit
         )
 
-        val items = getFeedEntriesForAggregatedPosts(posts, currentUserId)
+        val items = getFeedEntriesForAggregatedPosts(posts, currentUserId, includeNotes = false)
         return Playlist(items = items, limit = limit)
     }
 
@@ -98,22 +100,14 @@ class PlaylistService(
         return Playlist(items = items, limit = limit)
     }
 
-    // fun getUserLikes(
-    //     userId: Int,
-    //     currentUserId: Int,
-    //     beforeTimestamp: Instant?,
-    //     afterTimestamp: Instant?,
-    //     limit: Int = DEFAULT_PLAYLIST_LIMIT
-    // ) {
-    // }
-
     // TODO: is there any way to collapse the two below? you can in TypeScript using overrides
     // but not sure if there's a good way to do it in Kotlin where there's somewhat more
     // type soundness
 
     private fun getFeedEntriesForAggregatedPosts(
         posts: List<AggregatedPost>,
-        currentUserId: Int?
+        currentUserId: Int?,
+        includeNotes: Boolean = true
     ): List<FeedPlaylistEntry> {
         val songsMap = getSongsMap(posts, currentUserId)
         val mixtapesMap = getMixtapesMap(posts)
@@ -124,7 +118,20 @@ class PlaylistService(
                 song = songsMap[it.songId],
                 mixtape = mixtapesMap[it.mixtapeId],
                 type = getPostType(it),
-                userNames = it.userNames
+                posts = getDeaggregatedPosts(it, includeNotes = includeNotes)
+            )
+        }
+    }
+
+    private fun getDeaggregatedPosts(
+        aggregatedPost: AggregatedPost,
+        includeNotes: Boolean
+    ): List<FeedPlaylistPost> {
+        return aggregatedPost.posts.map { post ->
+            FeedPlaylistPost(
+                userName = post.userName,
+                noteText = if (includeNotes) post.note else null,
+                timestamp = post.createdAt
             )
         }
     }
@@ -141,7 +148,8 @@ class PlaylistService(
                 timestamp = it.timestamp,
                 song = songsMap[it.songId],
                 mixtape = mixtapesMap[it.mixtapeId],
-                type = getPostType(it)
+                type = getPostType(it),
+                noteText = if (it is Post) it.note else null
             )
         }
     }

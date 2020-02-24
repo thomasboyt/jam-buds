@@ -9,5 +9,6 @@ data class UserPlaylistEntry(
     @Expose override val timestamp: Instant,
     @Expose override val song: SongWithMeta? = null,
     @Expose override val mixtape: MixtapePreview? = null,
-    @Expose override val type: PlaylistEntryType
+    @Expose override val type: PlaylistEntryType,
+    @Expose val noteText: String?
 ) : PlaylistEntry

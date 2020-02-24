@@ -13,16 +13,23 @@ data class Post(
     val createdAt: Instant,
     override val songId: Int?,
     override val mixtapeId: Int?,
-    val userId: Int
+    val userId: Int,
+    val note: String?
 ) : PlaylistPost {
     override val timestamp: Instant
         get() = this.createdAt
 }
 
+data class AggregatedPostItem(
+    val userName: String,
+    val note: String?,
+    val createdAt: Instant
+)
+
 data class AggregatedPost(
     override val songId: Int?,
     override val mixtapeId: Int?,
     override val timestamp: Instant,
-    val userNames: List<String>
+    val posts: List<AggregatedPostItem>
 ) : PlaylistPost
 

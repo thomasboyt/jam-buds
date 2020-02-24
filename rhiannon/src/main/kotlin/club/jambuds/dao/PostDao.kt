@@ -2,6 +2,8 @@ package club.jambuds.dao
 
 import club.jambuds.model.AggregatedPost
 import club.jambuds.model.Post
+import club.jambuds.model.mappers.AggregatedPostRowMapper
+import org.jdbi.v3.sqlobject.config.RegisterRowMapper
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.locator.UseClasspathSqlLocator
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys
@@ -12,6 +14,7 @@ import java.time.Instant
 @UseClasspathSqlLocator
 interface PostDao {
     @SqlQuery
+    @RegisterRowMapper(AggregatedPostRowMapper::class)
     fun getPublicAggregatedPosts(
         @Bind("limit") limit: Int,
         @Bind("beforeTimestamp") beforeTimestamp: Instant?,
@@ -19,6 +22,7 @@ interface PostDao {
     ): List<AggregatedPost>
 
     @SqlQuery
+    @RegisterRowMapper(AggregatedPostRowMapper::class)
     fun getAggregatedPostsByUserFeed(
         currentUserId: Int,
         limit: Int,
