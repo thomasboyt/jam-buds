@@ -2,7 +2,7 @@
   <div class="notes-container">
     <p v-for="note in notes" :key="note.postId" class="note">
       <span :style="{ fontWeight: 600 }">{{ note.authorName }}: </span>
-      {{ note.text }}
+      <span class="note-text">{{ note.text }}</span>
       <button class="report-button" @click="handleClickReport(note.postId)">
         (report)
       </button>
@@ -52,10 +52,15 @@ export default {
   padding: 10px;
 }
 
+.note-text {
+  white-space: pre-line;
+}
+
 .report-button {
   font-size: 12px;
   text-decoration: underline;
   padding: 0;
+  margin-left: 5px;
 
   &:hover {
     text-decoration: none;
