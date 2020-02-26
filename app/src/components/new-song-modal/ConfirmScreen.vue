@@ -3,25 +3,23 @@
     class="confirm-screen"
     :style="{ minHeight: '100%', display: 'flex', flexFlow: 'column' }"
   >
-    <div :style="{ marginBottom: '24px' }">
+    <div :style="{ marginBottom: '12px' }">
       <song-preview :song="selectedSong" />
     </div>
 
     <template v-if="loadedDetails">
-      <div>
-        <service-list :details="details" :song="selectedSong" />
+      <service-list :details="details" :song="selectedSong" />
 
-        <div v-if="hasTwitter">
-          <p>
-            <label>
-              <input type="checkbox" v-model="twitterPostEnabled" />
-              cross-post to twitter
-            </label>
-          </p>
-
-          <twitter-share-field v-if="twitterPostEnabled" v-model="tweetText" />
-        </div>
+      <div :style="{ margin: '36px 0' }">
+        <note-field v-model="noteText" />
       </div>
+
+      <p>
+        <label>
+          <input type="checkbox" v-model="twitterPostEnabled" />
+          cross-post to twitter
+        </label>
+      </p>
 
       <p v-if="error" class="error">
         {{ error }}
@@ -47,17 +45,12 @@ import _get from 'lodash/get';
 import { mapState } from 'vuex';
 
 import serializeSongLabel from '../../util/serializeSongLabel';
-import TwitterShareField from './TwitterShareField.vue';
+import NoteField, { MAX_POST_LENGTH } from './NoteField.vue';
 import ServiceList from './ServiceList.vue';
 import SongPreview from './SongPreview.vue';
-import {
-  getDefaultTweet,
-  getTweetLength,
-  TWEET_LENGTH,
-} from '../../util/songTweet';
 
 export default {
-  components: { TwitterShareField, ServiceList, SongPreview },
+  components: { NoteField, ServiceList, SongPreview },
 
   props: ['selectedSong'],
 
@@ -65,7 +58,7 @@ export default {
     return {
       loadedDetails: false,
       details: null,
-      tweetText: '',
+      noteText: '',
       twitterPostEnabled: false,
       songLabel: serializeSongLabel(this.selectedSong),
       error: null,
@@ -80,11 +73,6 @@ export default {
 
   mounted() {
     this.loadSongDetails();
-
-    this.tweetText = getDefaultTweet(
-      this.selectedSong.artists[0],
-      this.selectedSong.title
-    );
   },
 
   methods: {
@@ -108,22 +96,16 @@ export default {
     async handleSubmit(evt) {
       evt.preventDefault();
 
-      const params = {
-        source: 'spotify',
-        spotifyId: this.selectedSong.spotifyId,
-      };
-
-      if (this.twitterPostEnabled) {
-        if (getTweetLength(this.tweetText) > TWEET_LENGTH) {
-          this.$store.commit(
-            'showErrorModal',
-            'Yo your twitter message is too long'
-          );
-          return;
-        }
-
-        params.tweet = this.tweetText === '' ? null : this.tweetText;
+      if (this.noteText > MAX_POST_LENGTH) {
+        this.$store.commit('showErrorModal', 'Yo your note is too long');
+        return;
       }
+
+      const params = {
+        spotifyId: this.selectedSong.spotifyId,
+        postTweet: this.twitterPostEnabled,
+        noteText: this.noteText === '' ? null : this.noteText,
+      };
 
       let resp;
       try {
