@@ -11,6 +11,7 @@ FROM (
             MIN(posts.created_at)
         ) AS agg_timestamp,
         jsonb_agg(json_build_object(
+            'id', posts.id,
             'userName', users.name,
             'note', posts.note,
             'createdAt', posts.created_at

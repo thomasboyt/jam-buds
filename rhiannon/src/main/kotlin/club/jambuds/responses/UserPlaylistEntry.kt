@@ -10,5 +10,7 @@ data class UserPlaylistEntry(
     @Expose override val song: SongWithMeta? = null,
     @Expose override val mixtape: MixtapePreview? = null,
     @Expose override val type: PlaylistEntryType,
+    // only posts, not likes, have postId. maybe should redo this resource in the future :[
+    @Expose val postId: Int?,
     @Expose val noteText: String?
 ) : PlaylistEntry

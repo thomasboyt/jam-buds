@@ -11,10 +11,10 @@ import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.jdbi.v3.sqlobject.statement.SqlUpdate
 import java.time.Instant
 
-@UseClasspathSqlLocator
 interface PostDao {
     @SqlQuery
     @RegisterRowMapper(AggregatedPostRowMapper::class)
+    @UseClasspathSqlLocator
     fun getPublicAggregatedPosts(
         @Bind("limit") limit: Int,
         @Bind("beforeTimestamp") beforeTimestamp: Instant?,
@@ -23,6 +23,7 @@ interface PostDao {
 
     @SqlQuery
     @RegisterRowMapper(AggregatedPostRowMapper::class)
+    @UseClasspathSqlLocator
     fun getAggregatedPostsByUserFeed(
         currentUserId: Int,
         limit: Int,
@@ -31,6 +32,7 @@ interface PostDao {
     ): List<AggregatedPost>
 
     @SqlQuery
+    @UseClasspathSqlLocator
     fun getPostsForUserPlaylist(
         userId: Int,
         onlyMixtapes: Boolean,
@@ -41,11 +43,17 @@ interface PostDao {
 
     @SqlUpdate
     @GetGeneratedKeys
+    @UseClasspathSqlLocator
     fun createPost(userId: Int, songId: Int, note: String?): Post
 
     @SqlQuery
+    @UseClasspathSqlLocator
     fun getUserPostForSongId(userId: Int, songId: Int): Post?
 
     @SqlUpdate
+    @UseClasspathSqlLocator
     fun deleteSongPost(userId: Int, songId: Int)
+
+    @SqlQuery("SELECT EXISTS(SELECT * FROM posts WHERE id=:postId)")
+    fun getPostExistsById(postId: Int): Boolean
 }

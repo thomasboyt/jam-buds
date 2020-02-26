@@ -21,6 +21,7 @@ data class Post(
 }
 
 data class AggregatedPostItem(
+    val id: Int,
     val userName: String,
     val note: String?,
     val createdAt: Instant

@@ -129,6 +129,7 @@ class PlaylistService(
     ): List<FeedPlaylistPost> {
         return aggregatedPost.posts.map { post ->
             FeedPlaylistPost(
+                postId = post.id,
                 userName = post.userName,
                 noteText = if (includeNotes) post.note else null,
                 timestamp = post.createdAt
@@ -149,6 +150,7 @@ class PlaylistService(
                 song = songsMap[it.songId],
                 mixtape = mixtapesMap[it.mixtapeId],
                 type = getPostType(it),
+                postId = if (it is Post) it.id else null,
                 noteText = if (it is Post) it.note else null
             )
         }

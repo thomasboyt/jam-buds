@@ -10,6 +10,7 @@ SELECT
     posts.mixtape_id,
     MIN(posts.created_at) as "agg_timestamp",
     jsonb_agg(json_build_object(
+        'id', posts.id,
         'userName', users.name,
         'note', posts.note,
         'createdAt', posts.created_at
