@@ -9,8 +9,11 @@ describe('posting a new song', () => {
 
     cy.contains('[data-test="search-results"] a', 'TT').click();
 
+    cy.get('[data-test="note-field"]').type('some thoughts about this song');
+
     cy.get('[data-test="add-song-confirm"]').click();
 
     cy.contains('.playlist-song', 'TT').and('contain', 'TWICE');
+    cy.contains('.note', 'some thoughts about this song');
   });
 });
