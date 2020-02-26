@@ -12,14 +12,15 @@ import org.jdbi.v3.core.Handle
 import java.time.Instant
 
 object TestDataFactories {
-    fun createSongPost(txn: Handle, userId: Int, songId: Int): Post {
+    fun createSongPost(txn: Handle, userId: Int, songId: Int, note: String? = null): Post {
         val query = """
-            insert into posts (user_id, song_id) values (:userId, :songId)
+            insert into posts (user_id, song_id, note) values (:userId, :songId, :note)
         """.trimIndent()
 
         return txn.createUpdate(query)
             .bind("userId", userId)
             .bind("songId", songId)
+            .bind("note", note)
             .executeAndReturnGeneratedKeys()
             .mapTo(Post::class.java)
             .one()

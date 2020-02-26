@@ -213,12 +213,6 @@ $modal-height: 550px;
     height: auto;
   }
 
-  textarea {
-    width: 100%;
-    height: 120px;
-    padding: 20px;
-  }
-
   .confirm-screen {
     text-align: center;
     display: flex;
@@ -228,9 +222,5 @@ $modal-height: 550px;
     ul {
       padding-left: 15px;
     }
-  }
-
-  .tweet-box {
-    margin-bottom: 20px;
   }
 }

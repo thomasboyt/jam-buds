@@ -87,14 +87,14 @@ const playlists = {
           const items = state[key].items.slice();
 
           if (
-            !items[existingIdx].userNames ||
-            items[existingIdx].userNames.length === 1
+            !items[existingIdx].posts ||
+            items[existingIdx].posts.length === 1
           ) {
             // current user was the only poster, so remove
             items.splice(existingIdx, 1);
           } else {
-            items[existingIdx].userNames = items[existingIdx].userNames.filter(
-              (name) => name !== currentUserName
+            items[existingIdx].posts = items[existingIdx].posts.filter(
+              (post) => post.userName !== currentUserName
             );
           }
 

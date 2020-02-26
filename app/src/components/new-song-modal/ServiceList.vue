@@ -1,7 +1,5 @@
 <template>
   <div class="service-list">
-    <p>your pals will be able to stream this song on:</p>
-
     <ul>
       <li>
         <span v-if="details.spotifyId">✅</span><span v-else>❌</span> spotify
@@ -11,10 +9,10 @@
         music
       </li>
       <li>
-        ✅ youtube
-        <a :href="youtubeSearchUrl" target="_blank" rel="noopener noreferrer"
-          >(preview search)</a
-        >
+        ✅
+        <a :href="youtubeSearchUrl" target="_blank" rel="noopener noreferrer">
+          youtube
+        </a>
       </li>
     </ul>
   </div>
@@ -39,12 +37,22 @@ export default {
 
 .service-list {
   text-align: left;
-  margin-bottom: 1em;
 
   ul {
     margin: 0;
+    padding-left: 0px;
+
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+
     li {
-      line-height: 2em;
+      list-style-type: none;
+      margin-left: 20px;
+
+      &:first-child {
+        margin-left: 0px;
+      }
     }
   }
 

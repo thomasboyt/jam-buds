@@ -3,6 +3,7 @@ package club.jambuds.web
 import club.jambuds.AppTest
 import club.jambuds.getGson
 import club.jambuds.helpers.TestDataFactories
+import club.jambuds.model.PostReport
 import club.jambuds.model.SongWithMeta
 import club.jambuds.model.cache.SearchCacheEntry
 import club.jambuds.responses.UserPlaylistResponse
@@ -10,8 +11,8 @@ import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
 import kong.unirest.Unirest
 import kong.unirest.json.JSONObject
+import org.jdbi.v3.core.kotlin.withHandleUnchecked
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestTemplate
 import kotlin.test.assertEquals
 
 class PostRoutesTest : AppTest() {
@@ -34,7 +35,15 @@ class PostRoutesTest : AppTest() {
 
         val resp = Unirest.post("$appUrl/posts")
             .header("X-Auth-Token", authToken)
-            .body(JSONObject(mapOf("spotifyId" to track.id)))
+            .body(
+                JSONObject(
+                    mapOf(
+                        "spotifyId" to track.id,
+                        "noteText" to "Hello world",
+                        "postTweet" to false
+                    )
+                )
+            )
             .asString()
         assertEquals(200, resp.status)
         val song = gson.fromJson(resp.body, SongWithMeta::class.java)
@@ -45,6 +54,7 @@ class PostRoutesTest : AppTest() {
         assertEquals(200, playlistResp.status)
         val playlist = gson.fromJson(playlistResp.body, UserPlaylistResponse::class.java)
         assertEquals(1, playlist.items.size)
+        assertEquals("Hello world", playlist.items[0].noteText)
         assertEquals(song, playlist.items[0].song)
     }
 
@@ -65,13 +75,13 @@ class PostRoutesTest : AppTest() {
 
         val resp = Unirest.post("$appUrl/posts")
             .header("X-Auth-Token", authToken)
-            .body(JSONObject(mapOf("spotifyId" to track.id)))
+            .body(JSONObject(mapOf("spotifyId" to track.id, "postTweet" to false)))
             .asString()
         assertEquals(200, resp.status)
 
         val redoResp = Unirest.post("$appUrl/posts")
             .header("X-Auth-Token", authToken)
-            .body(JSONObject(mapOf("spotifyId" to track.id)))
+            .body(JSONObject(mapOf("spotifyId" to track.id, "postTweet" to false)))
             .asString()
         assertEquals(400, redoResp.status)
     }
@@ -97,14 +107,14 @@ class PostRoutesTest : AppTest() {
                 JSONObject(
                     mapOf(
                         "spotifyId" to track.id,
-                        "tweet" to "Hello world"
+                        "noteText" to "Hello world",
+                        "postTweet" to true
                     )
                 )
             )
             .asString()
         assertEquals(200, resp.status)
         val song = gson.fromJson(resp.body, SongWithMeta::class.java)
-        println(song)
 
         val expectedTweet = "Hello world http://localhost:8080/users/jeff?song=${song.id}"
         verify(mockTwitterService, times(1)).postTweet(jeff, expectedTweet)
@@ -135,6 +145,67 @@ class PostRoutesTest : AppTest() {
         val authToken = TestDataFactories.createAuthToken(txn, jeff.id)
 
         val resp = Unirest.delete("$appUrl/posts/1234")
+            .header("X-Auth-Token", authToken)
+            .asString()
+        assertEquals(404, resp.status)
+    }
+
+    @Test
+    fun `PUT posts_(postId)_report - creates a new report`() {
+        val vinny = TestDataFactories.createUser(txn, "vinny", true)
+        val songId = TestDataFactories.createSong(txn, spotifyId = "someSongId")
+        val post = TestDataFactories.createSongPost(txn, songId = songId, userId = vinny.id)
+        val postId = post.id
+
+        val jeff = TestDataFactories.createUser(txn, "jeff", true)
+        val authToken = TestDataFactories.createAuthToken(txn, jeff.id)
+        val resp = Unirest.put("$appUrl/posts/$postId/report")
+            .header("X-Auth-Token", authToken)
+            .asString()
+        assertEquals(204, resp.status)
+
+        jdbi.withHandleUnchecked { handle ->
+            val report = handle.select("select * from post_reports")
+                .mapTo(PostReport::class.java)
+                .one()
+            assertEquals(postId, report.postId)
+            assertEquals(jeff.id, report.reporterUserId)
+        }
+    }
+
+    @Test
+    fun `PUT posts_(postId)_report - only creates one report per reporter & post`() {
+        val vinny = TestDataFactories.createUser(txn, "vinny", true)
+        val songId = TestDataFactories.createSong(txn, spotifyId = "someSongId")
+        val post = TestDataFactories.createSongPost(txn, songId = songId, userId = vinny.id)
+        val postId = post.id
+
+        val jeff = TestDataFactories.createUser(txn, "jeff", true)
+        val authToken = TestDataFactories.createAuthToken(txn, jeff.id)
+        val resp = Unirest.put("$appUrl/posts/$postId/report")
+            .header("X-Auth-Token", authToken)
+            .asString()
+        assertEquals(204, resp.status)
+
+        val resp2 = Unirest.put("$appUrl/posts/$postId/report")
+            .header("X-Auth-Token", authToken)
+            .asString()
+        assertEquals(204, resp2.status)
+
+        jdbi.withHandleUnchecked { handle ->
+            val count = handle.select("select COUNT(*) from post_reports")
+                .mapTo(Int::class.java)
+                .one()
+            assertEquals(1, count)
+        }
+    }
+
+    @Test
+    fun `PUT posts_(postId)_report - returns 404 for nonexistent posts`() {
+        val jeff = TestDataFactories.createUser(txn, "jeff", true)
+        val authToken = TestDataFactories.createAuthToken(txn, jeff.id)
+
+        val resp = Unirest.put("$appUrl/posts/1234/report")
             .header("X-Auth-Token", authToken)
             .asString()
         assertEquals(404, resp.status)

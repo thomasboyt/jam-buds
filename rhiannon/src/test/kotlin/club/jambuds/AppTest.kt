@@ -4,6 +4,7 @@ import club.jambuds.dao.ColorSchemeDao
 import club.jambuds.dao.LikeDao
 import club.jambuds.dao.MixtapeDao
 import club.jambuds.dao.PostDao
+import club.jambuds.dao.ReportDao
 import club.jambuds.dao.SongDao
 import club.jambuds.dao.UserDao
 import club.jambuds.dao.cache.SearchCacheDao
@@ -12,6 +13,7 @@ import club.jambuds.service.LikeService
 import club.jambuds.service.MixtapeService
 import club.jambuds.service.PlaylistService
 import club.jambuds.service.PostService
+import club.jambuds.service.ReportService
 import club.jambuds.service.SearchService
 import club.jambuds.service.SpotifyApiService
 import club.jambuds.service.TwitterService
@@ -75,6 +77,7 @@ open class AppTest {
         val userDao = txn.attach(UserDao::class.java)
         val colorSchemeDao = txn.attach(ColorSchemeDao::class.java)
         val likeDao = txn.attach(LikeDao::class.java)
+        val reportDao = txn.attach(ReportDao::class.java)
         searchCacheDao = SearchCacheDao(redis)
 
         val playlistService =
@@ -85,19 +88,19 @@ open class AppTest {
         val mixtapeService = MixtapeService(mixtapeDao, songDao, userService, searchService)
         val postService = PostService(
             postDao,
-            songDao,
             searchService,
             mockTwitterService,
             config.getString("appUrl")
         )
         val likeService = LikeService(likeDao, songDao)
+        val reportService = ReportService(reportDao, postDao)
 
         app.routes {
             AuthHandlers(userDao).register()
             PlaylistRoutes(playlistService, userService).register()
             MixtapeRoutes(mixtapeService).register()
             SearchRoutes(searchService).register()
-            PostRoutes(postService).register()
+            PostRoutes(postService, reportService).register()
             LikeRoutes(likeService).register()
         }
     }

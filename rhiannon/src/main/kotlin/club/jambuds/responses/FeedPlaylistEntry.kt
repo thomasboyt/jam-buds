@@ -10,5 +10,5 @@ data class FeedPlaylistEntry(
     @Expose override val song: SongWithMeta? = null,
     @Expose override val mixtape: MixtapePreview? = null,
     @Expose override val type: PlaylistEntryType,
-    @Expose val userNames: List<String>
+    @Expose val posts: List<FeedPlaylistPost>
 ) : PlaylistEntry

@@ -4,6 +4,7 @@ import club.jambuds.dao.ColorSchemeDao
 import club.jambuds.dao.LikeDao
 import club.jambuds.dao.MixtapeDao
 import club.jambuds.dao.PostDao
+import club.jambuds.dao.ReportDao
 import club.jambuds.dao.SongDao
 import club.jambuds.dao.UserDao
 import club.jambuds.dao.cache.SearchCacheDao
@@ -12,6 +13,7 @@ import club.jambuds.service.LikeService
 import club.jambuds.service.MixtapeService
 import club.jambuds.service.PlaylistService
 import club.jambuds.service.PostService
+import club.jambuds.service.ReportService
 import club.jambuds.service.SearchService
 import club.jambuds.service.SpotifyApiService
 import club.jambuds.service.TwitterService
@@ -149,6 +151,7 @@ private fun wire(app: Javalin, config: Config) {
     val userDao = jdbi.onDemand<UserDao>()
     val colorSchemeDao = jdbi.onDemand<ColorSchemeDao>()
     val likeDao = jdbi.onDemand<LikeDao>()
+    val reportDao = jdbi.onDemand<ReportDao>()
     val searchCacheDao = SearchCacheDao(redis)
 
     // Services
@@ -164,8 +167,9 @@ private fun wire(app: Javalin, config: Config) {
     )
     val mixtapeService = MixtapeService(mixtapeDao, songDao, userService, searchService)
     val postService =
-        PostService(postDao, songDao, searchService, twitterService, config.getString("appUrl"))
+        PostService(postDao, searchService, twitterService, config.getString("appUrl"))
     val likeService = LikeService(likeDao, songDao)
+    val reportService = ReportService(reportDao, postDao)
 
     // Routes
     app.routes {
@@ -173,7 +177,7 @@ private fun wire(app: Javalin, config: Config) {
         PlaylistRoutes(playlistService, userService).register()
         MixtapeRoutes(mixtapeService).register()
         SearchRoutes(searchService).register()
-        PostRoutes(postService).register()
+        PostRoutes(postService, reportService).register()
         LikeRoutes(likeService).register()
     }
 }

@@ -1,8 +1,10 @@
 package club.jambuds.web
 
 import club.jambuds.AppTest
+import club.jambuds.getGson
 import club.jambuds.helpers.TestDataFactories
 import club.jambuds.model.User
+import club.jambuds.responses.FeedPlaylistResponse
 import club.jambuds.responses.UserPlaylistResponse
 import club.jambuds.responses.UserProfile
 import io.javalin.plugin.json.JavalinJson
@@ -15,6 +17,8 @@ import java.time.format.DateTimeFormatter
 import kotlin.test.assertEquals
 
 class PlaylistRoutesTest : AppTest() {
+    private val gson = getGson()
+
     private fun forEachPlaylist(user: User, cb: (url: String) -> Unit) {
         val urls =
             listOf("feed", "public-feed", "playlists/${user.name}", "playlists/${user.name}/liked")
@@ -204,19 +208,35 @@ class PlaylistRoutesTest : AppTest() {
     fun `getPublicFeed - aggregates posts of the same song and sets timestamp to oldest post`() {
         val songId = TestDataFactories.createSong(txn)
         val jeff = TestDataFactories.createUser(txn, "jeff", true)
-        val firstPost = TestDataFactories.createSongPost(txn, userId = jeff.id, songId = songId)
-        val vinny = TestDataFactories.createUser(txn, "vinny", true)
-        TestDataFactories.createSongPost(txn, userId = vinny.id, songId = songId)
-
-        val items = Unirest.get("$appUrl/public-feed").asJson().body.`object`
-            .getJSONArray("items")
-
-        assertEquals(1, items.length())
-        assertEquals(songId, items.getJSONObject(0).getJSONObject("song").getInt("id"))
-        assertEquals(
-            DateTimeFormatter.ISO_INSTANT.format(firstPost.createdAt),
-            items.getJSONObject(0).getString("timestamp")
+        val firstPost = TestDataFactories.createSongPost(
+            txn,
+            userId = jeff.id,
+            songId = songId,
+            note = "First post"
         )
+        val vinny = TestDataFactories.createUser(txn, "vinny", true)
+        TestDataFactories.createSongPost(
+            txn,
+            userId = vinny.id,
+            songId = songId,
+            note = "Second post"
+        )
+
+        val resp = Unirest.get("$appUrl/public-feed").asString()
+        assertEquals(200, resp.status)
+        val body = gson.fromJson(resp.body, FeedPlaylistResponse::class.java)
+
+        assertEquals(1, body.items.size)
+        val item = body.items[0]
+        assertEquals(songId, item.song!!.id)
+        assertEquals(firstPost.createdAt, item.timestamp)
+
+        // Public feed does not contain note text
+        assertEquals(2, item.posts.size)
+        assertEquals("jeff", item.posts[0].userName)
+        assertEquals(null, item.posts[0].noteText)
+        assertEquals("vinny", item.posts[1].userName)
+        assertEquals(null, item.posts[1].noteText)
     }
 
     @Test
@@ -250,12 +270,13 @@ class PlaylistRoutesTest : AppTest() {
             songId = TestDataFactories.createSong(txn)
         )
 
-        val items = getUserRequest(jeff, "feed").asJson().body.`object`.getJSONArray("items")
+        val resp = getUserRequest(jeff, "feed").asString()
+        val body = gson.fromJson(resp.body, FeedPlaylistResponse::class.java)
 
-        assertEquals(3, items.length())
+        assertEquals(3, body.items.size)
         assertEquals(
             listOf("brad", "vinny", "jeff"),
-            items.map { (it as JSONObject).getJSONArray("userNames").getString(0) }
+            body.items.map { it.posts[0].userName }
         )
     }
 
@@ -273,9 +294,18 @@ class PlaylistRoutesTest : AppTest() {
         val sharedSongId = TestDataFactories.createSong(txn)
 
         // with only posts from other users: the oldest time is used
-        val vinnyPost =
-            TestDataFactories.createSongPost(txn, userId = vinny.id, songId = sharedSongId)
-        TestDataFactories.createSongPost(txn, userId = brad.id, songId = sharedSongId)
+        val vinnyPost = TestDataFactories.createSongPost(
+            txn,
+            userId = vinny.id,
+            songId = sharedSongId,
+            note = "Vinny post"
+        )
+        TestDataFactories.createSongPost(
+            txn,
+            userId = brad.id,
+            songId = sharedSongId,
+            note = "Brad post"
+        )
 
         var items = getUserRequest(jeff, "feed").asJson().body.`object`.getJSONArray("items")
 
@@ -286,8 +316,12 @@ class PlaylistRoutesTest : AppTest() {
         )
 
         // with newest post from current user: the current user's time is used
-        val jeffPost =
-            TestDataFactories.createSongPost(txn, userId = jeff.id, songId = sharedSongId)
+        val jeffPost = TestDataFactories.createSongPost(
+            txn,
+            userId = jeff.id,
+            songId = sharedSongId,
+            note = "Jeff post"
+        )
 
         items = getUserRequest(jeff, "feed").asJson().body.`object`.getJSONArray("items")
 
@@ -297,15 +331,32 @@ class PlaylistRoutesTest : AppTest() {
             items.getJSONObject(0).getString("timestamp")
         )
 
-        // with newest post from another user, but with a post from current user: the current user's time is used
-        TestDataFactories.createSongPost(txn, userId = ben.id, songId = sharedSongId)
+        // with newest post from another user, but with a post from current user: the current user's
+        // time is used
+        TestDataFactories.createSongPost(
+            txn,
+            userId = ben.id,
+            songId = sharedSongId,
+            note = "Ben post"
+        )
 
-        items = getUserRequest(jeff, "feed").asJson().body.`object`.getJSONArray("items")
+        val resp = getUserRequest(jeff, "feed").asString()
+        assertEquals(200, resp.status)
+        val body = gson.fromJson(resp.body, FeedPlaylistResponse::class.java)
 
-        assertEquals(1, items.length())
+        assertEquals(1, body.items.size)
+        assertEquals(jeffPost.createdAt, body.items[0].timestamp)
+
+        // assert notes are correctly assembled
+        val expected = listOf(
+            mapOf("userName" to "vinny", "noteText" to "Vinny post"),
+            mapOf("userName" to "brad", "noteText" to "Brad post"),
+            mapOf("userName" to "jeff", "noteText" to "Jeff post"),
+            mapOf("userName" to "ben", "noteText" to "Ben post")
+        )
         assertEquals(
-            DateTimeFormatter.ISO_INSTANT.format(jeffPost.createdAt),
-            items.getJSONObject(0).getString("timestamp")
+            expected,
+            body.items[0].posts.map { mapOf("userName" to it.userName, "noteText" to it.noteText) }
         )
     }
 
@@ -328,7 +379,12 @@ class PlaylistRoutesTest : AppTest() {
     fun `GET playlists_(userName) - includes posts for user`() {
         val jeff = TestDataFactories.createUser(txn, "jeff", true)
         val jeffSongId = TestDataFactories.createSong(txn)
-        TestDataFactories.createSongPost(txn, userId = jeff.id, songId = jeffSongId)
+        TestDataFactories.createSongPost(
+            txn,
+            userId = jeff.id,
+            songId = jeffSongId,
+            note = "jeff post"
+        )
 
         val vinny = TestDataFactories.createUser(txn, "vinny", true)
         val vinnySongId = TestDataFactories.createSong(txn)
@@ -341,6 +397,7 @@ class PlaylistRoutesTest : AppTest() {
 
         assertEquals(1, items.length())
         assertEquals(jeffSongId, items.getJSONObject(0).getJSONObject("song").getInt("id"))
+        assertEquals("jeff post", items.getJSONObject(0).getString("noteText"))
     }
 
     @Test

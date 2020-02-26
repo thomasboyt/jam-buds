@@ -9,8 +9,13 @@ FROM (
                 WHERE user_id = :currentUserId
                 AND user_posts.song_id=posts.song_id),
             MIN(posts.created_at)
-        ) AS timestamp,
-        ARRAY_AGG(users.name) as user_names
+        ) AS agg_timestamp,
+        jsonb_agg(json_build_object(
+            'id', posts.id,
+            'userName', users.name,
+            'note', posts.note,
+            'createdAt', posts.created_at
+        )) as "agg_posts"
     FROM posts
     JOIN users ON users.id = posts.user_id
     WHERE
@@ -19,10 +24,10 @@ FROM (
     GROUP BY posts.song_id, posts.mixtape_id
 ) AS aggregated_posts
 WHERE
-    (COALESCE(:beforeTimestamp, NULL) IS NULL OR aggregated_posts.timestamp < :beforeTimestamp)
+    (COALESCE(:beforeTimestamp, NULL) IS NULL OR aggregated_posts.agg_timestamp < :beforeTimestamp)
     AND
-    (COALESCE(:afterTimestamp, NULL) IS NULL OR aggregated_posts.timestamp > :afterTimestamp)
-ORDER BY timestamp DESC
+    (COALESCE(:afterTimestamp, NULL) IS NULL OR aggregated_posts.agg_timestamp > :afterTimestamp)
+ORDER BY agg_timestamp DESC
 LIMIT
     CASE
         WHEN COALESCE(:afterTimestamp, NULL) IS NULL
