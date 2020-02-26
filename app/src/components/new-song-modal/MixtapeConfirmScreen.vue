@@ -8,7 +8,7 @@
     </div>
 
     <template v-if="loadedDetails">
-      <div>
+      <div :style="{ marginBottom: '36px' }">
         <service-list :details="details" :song="selectedSong" />
       </div>
 
