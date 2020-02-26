@@ -3,7 +3,7 @@
     <img v-if="albumArt" class="album-art" :src="albumArt" />
     <icon v-else class="album-art -placeholder" :glyph="albumPlaceholderIcon" />
 
-    <div v-if="isPlaying || isHovering" class="album-art-overlay">
+    <div v-if="isPlaying || (isHovering && canPlay)" class="album-art-overlay">
       <icon
         :class="['playing-icon', { 'is-playing': isPlaying }]"
         :glyph="playIcon"
@@ -20,7 +20,7 @@ const playIcon = require('~/assets/play-filled.svg');
 export default {
   components: { Icon },
 
-  props: ['albumArt', 'isPlaying', 'isHovering'],
+  props: ['albumArt', 'isPlaying', 'isHovering', 'canPlay'],
 
   data() {
     return {

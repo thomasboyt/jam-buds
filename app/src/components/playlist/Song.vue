@@ -10,6 +10,7 @@
     <div class="playlist-song--main" @click="handleClick">
       <album-art
         :album-art="song.albumArt"
+        :can-play="canRequestPlay"
         :is-playing="isPlaying"
         :is-hovering="isHovering"
       />
