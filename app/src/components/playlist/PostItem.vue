@@ -43,6 +43,7 @@ export default {
             return {
               authorName: post.userName,
               text: post.noteText,
+              postId: post.postId,
             };
           });
       } else if (this.item.noteText) {
@@ -50,6 +51,7 @@ export default {
           {
             authorName: this.userName,
             text: this.item.noteText,
+            postId: this.item.postId,
           },
         ];
       }

@@ -1,9 +1,11 @@
 <template>
   <div class="notes-container">
-    <p v-for="note in notes" :key="note.authorName" class="note">
+    <p v-for="note in notes" :key="note.postId" class="note">
       <span :style="{ fontWeight: 600 }">{{ note.authorName }}: </span>
       {{ note.text }}
-      <!-- <a href="#" :style="{ fontSize: '12px' }">(flag)</a> -->
+      <button class="report-button" @click="handleClickReport(note.postId)">
+        (report)
+      </button>
     </p>
   </div>
 </template>
@@ -11,6 +13,28 @@
 <script>
 export default {
   props: ['notes'],
+
+  methods: {
+    async handleClickReport(postId) {
+      const confirmed = window.confirm(
+        'Are you sure you want to report this post?'
+      );
+
+      if (!confirmed) {
+        return;
+      }
+
+      try {
+        await this.$axios({
+          url: `/posts/${postId}/report`,
+          method: 'PUT',
+        });
+      } catch (err) {
+        this.$logError(err);
+        this.$store.commit('showErrorModal');
+      }
+    },
+  },
 };
 </script>
 
@@ -26,5 +50,15 @@ export default {
   margin: 0;
   margin-bottom: 10px;
   padding: 10px;
+}
+
+.report-button {
+  font-size: 12px;
+  text-decoration: underline;
+  padding: 0;
+
+  &:hover {
+    text-decoration: none;
+  }
 }
 </style>
