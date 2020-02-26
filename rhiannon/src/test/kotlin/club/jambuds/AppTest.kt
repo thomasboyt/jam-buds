@@ -85,7 +85,6 @@ open class AppTest {
         val mixtapeService = MixtapeService(mixtapeDao, songDao, userService, searchService)
         val postService = PostService(
             postDao,
-            songDao,
             searchService,
             mockTwitterService,
             config.getString("appUrl")

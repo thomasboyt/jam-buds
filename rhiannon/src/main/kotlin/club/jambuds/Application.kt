@@ -164,7 +164,7 @@ private fun wire(app: Javalin, config: Config) {
     )
     val mixtapeService = MixtapeService(mixtapeDao, songDao, userService, searchService)
     val postService =
-        PostService(postDao, songDao, searchService, twitterService, config.getString("appUrl"))
+        PostService(postDao, searchService, twitterService, config.getString("appUrl"))
     val likeService = LikeService(likeDao, songDao)
 
     // Routes

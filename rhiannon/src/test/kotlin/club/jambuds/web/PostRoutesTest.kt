@@ -11,7 +11,6 @@ import com.nhaarman.mockitokotlin2.verify
 import kong.unirest.Unirest
 import kong.unirest.json.JSONObject
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestTemplate
 import kotlin.test.assertEquals
 
 class PostRoutesTest : AppTest() {
@@ -34,7 +33,15 @@ class PostRoutesTest : AppTest() {
 
         val resp = Unirest.post("$appUrl/posts")
             .header("X-Auth-Token", authToken)
-            .body(JSONObject(mapOf("spotifyId" to track.id)))
+            .body(
+                JSONObject(
+                    mapOf(
+                        "spotifyId" to track.id,
+                        "noteText" to "Hello world",
+                        "postTweet" to false
+                    )
+                )
+            )
             .asString()
         assertEquals(200, resp.status)
         val song = gson.fromJson(resp.body, SongWithMeta::class.java)
@@ -45,6 +52,7 @@ class PostRoutesTest : AppTest() {
         assertEquals(200, playlistResp.status)
         val playlist = gson.fromJson(playlistResp.body, UserPlaylistResponse::class.java)
         assertEquals(1, playlist.items.size)
+        assertEquals("Hello world", playlist.items[0].noteText)
         assertEquals(song, playlist.items[0].song)
     }
 
@@ -65,13 +73,13 @@ class PostRoutesTest : AppTest() {
 
         val resp = Unirest.post("$appUrl/posts")
             .header("X-Auth-Token", authToken)
-            .body(JSONObject(mapOf("spotifyId" to track.id)))
+            .body(JSONObject(mapOf("spotifyId" to track.id, "postTweet" to false)))
             .asString()
         assertEquals(200, resp.status)
 
         val redoResp = Unirest.post("$appUrl/posts")
             .header("X-Auth-Token", authToken)
-            .body(JSONObject(mapOf("spotifyId" to track.id)))
+            .body(JSONObject(mapOf("spotifyId" to track.id, "postTweet" to false)))
             .asString()
         assertEquals(400, redoResp.status)
     }
@@ -97,14 +105,14 @@ class PostRoutesTest : AppTest() {
                 JSONObject(
                     mapOf(
                         "spotifyId" to track.id,
-                        "tweet" to "Hello world"
+                        "noteText" to "Hello world",
+                        "postTweet" to true
                     )
                 )
             )
             .asString()
         assertEquals(200, resp.status)
         val song = gson.fromJson(resp.body, SongWithMeta::class.java)
-        println(song)
 
         val expectedTweet = "Hello world http://localhost:8080/users/jeff?song=${song.id}"
         verify(mockTwitterService, times(1)).postTweet(jeff, expectedTweet)

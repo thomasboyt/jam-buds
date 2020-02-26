@@ -41,7 +41,7 @@ interface PostDao {
 
     @SqlUpdate
     @GetGeneratedKeys
-    fun createPost(userId: Int, songId: Int): Post
+    fun createPost(userId: Int, songId: Int, note: String?): Post
 
     @SqlQuery
     fun getUserPostForSongId(userId: Int, songId: Int): Post?
