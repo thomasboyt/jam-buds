@@ -89,7 +89,7 @@ export default {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ['~/plugins/axios', '~/plugins/spriteExtract'],
+  plugins: ['~/plugins/axios', '~/plugins/spriteExtract', '~/plugins/logError'],
   /*
    ** Nuxt.js dev-modules
    */
