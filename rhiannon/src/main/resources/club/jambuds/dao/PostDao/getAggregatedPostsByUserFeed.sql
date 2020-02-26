@@ -14,7 +14,7 @@ FROM (
             'userName', users.name,
             'note', posts.note,
             'createdAt', posts.created_at
-        )) as "posts"
+        )) as "agg_posts"
     FROM posts
     JOIN users ON users.id = posts.user_id
     WHERE

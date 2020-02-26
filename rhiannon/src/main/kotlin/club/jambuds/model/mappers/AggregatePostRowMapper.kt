@@ -19,7 +19,7 @@ import java.time.ZonedDateTime
  */
 class AggregatedPostRowMapper : RowMapper<AggregatedPost> {
     override fun map(rs: ResultSet, ctx: StatementContext): AggregatedPost {
-        val postsJson = rs.getString("posts")
+        val postsJson = rs.getString("agg_posts")
 
         val gson = GsonBuilder()
             .registerTypeAdapter(Instant::class.java, ZonedTsToInstantTypeAdapter())
@@ -28,8 +28,9 @@ class AggregatedPostRowMapper : RowMapper<AggregatedPost> {
         val posts = gson.fromJson(postsJson, Array<AggregatedPostItem>::class.java).toList()
 
         return AggregatedPost(
-            songId = rs.getInt("song_id"),
-            mixtapeId = rs.getInt("mixtape_id"),
+            // lmao resultset is a terrible api
+            songId = rs.getObject("song_id") as Int?,
+            mixtapeId = rs.getObject("mixtape_id") as Int?,
             timestamp = rs.getTimestamp("agg_timestamp").toInstant(),
             posts = posts
         )
