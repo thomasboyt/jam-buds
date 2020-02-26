@@ -39,10 +39,18 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '~/assets/styles/mixins.scss';
+
 .notes-container {
-  margin-left: 84px;
+  font-size: 14px;
   margin-top: -10px;
   margin-bottom: 20px;
+  margin-left: 64px;
+
+  @media (min-width: $breakpoint-small) {
+    margin-left: 84px;
+    font-size: 16px;
+  }
 }
 
 .note {
