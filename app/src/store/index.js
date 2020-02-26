@@ -83,7 +83,7 @@ const root = {
       await context.dispatch('fetchCurrentUser');
     },
 
-    setFlashMessage(state, { message, clearMs }) {
+    setFlashMessage(state, { message, clearMs = 3000 }) {
       if (state.timeoutHandle) {
         clearTimeout(state.timeoutHandle);
       }

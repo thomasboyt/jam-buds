@@ -32,7 +32,12 @@ export default {
       } catch (err) {
         this.$logError(err);
         this.$store.commit('showErrorModal');
+        return;
       }
+
+      this.$store.dispatch('setFlashMessage', {
+        message: 'Thanks for reporting!',
+      });
     },
   },
 };
