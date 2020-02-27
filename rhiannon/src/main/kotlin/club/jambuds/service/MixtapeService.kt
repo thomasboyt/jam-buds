@@ -45,6 +45,9 @@ class MixtapeService(
         val nowhitespace = whitespaceRe.matcher(input).replaceAll("-")
         val normalized = Normalizer.normalize(nowhitespace, Normalizer.Form.NFD)
         val slug = nonLatinRe.matcher(normalized).replaceAll("")
+        if (slug == "") {
+            throw BadRequestResponse("Invalid slug: must have at least one alphanumeric character")
+        }
         return slug.toLowerCase(Locale.ENGLISH)
     }
 
@@ -107,6 +110,16 @@ class MixtapeService(
         val mixtape = getMixtapeOr404(mixtapeId)
         ensureCanUpdateDraft(mixtape, currentUser)
         mixtapeDao.reorderMixtapeSongs(mixtapeId = mixtapeId, songIds = songIds)
+    }
+
+    fun renameMixtape(mixtapeId: Int, title: String, currentUser: User): String {
+        val mixtape = getMixtapeOr404(mixtapeId)
+        ensureCanUpdateDraft(mixtape, currentUser)
+
+        val slug = toSlug(title)
+        mixtapeDao.renameMixtape(mixtapeId = mixtapeId, title = title, slug = slug)
+
+        return slug
     }
 
     private fun getMixtapeOr404(mixtapeId: Int): Mixtape {

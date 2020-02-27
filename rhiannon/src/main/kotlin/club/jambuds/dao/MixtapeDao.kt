@@ -53,4 +53,9 @@ interface MixtapeDao : SqlObject {
             }
         }
     }
+
+    @SqlUpdate(
+        "UPDATE mixtapes SET title=:title, slug=:slug WHERE id=:mixtapeId"
+    )
+    fun renameMixtape(mixtapeId: Int, title: String, slug: String)
 }
