@@ -207,6 +207,45 @@ class MixtapeRoutesTest : AppTest() {
         }
     }
 
+    @Test
+    fun `POST mixtapes_(id)_order - works`() {
+        val jeff = TestDataFactories.createUser(txn, "jeff", true)
+        val mixtapeId = TestDataFactories.createMixtape(txn, jeff.id, false)
+        val songId = TestDataFactories.createSong(txn, spotifyId = "someSongId")
+        TestDataFactories.addSongToMixtape(txn, mixtapeId = mixtapeId, songId = songId, rank = 1)
+        val songId2 = TestDataFactories.createSong(txn, spotifyId = "someSongId2")
+        TestDataFactories.addSongToMixtape(txn, mixtapeId = mixtapeId, songId = songId2, rank = 2)
+
+        val authToken = TestDataFactories.createAuthToken(txn, jeff.id)
+        val resp = Unirest.post("$appUrl/mixtapes/$mixtapeId/order")
+            .header("X-Auth-Token", authToken)
+            .body(JSONObject(mapOf("songOrder" to listOf(songId2, songId))))
+            .asString()
+        assertEquals(204, resp.status)
+
+        val mixtapeResp = Unirest.get("$appUrl/mixtapes/$mixtapeId")
+            .header("X-Auth-Token", authToken)
+            .asString()
+        assertEquals(200, mixtapeResp.status)
+        val mixtapeBody = gson.fromJson(mixtapeResp.body, MixtapeWithSongsReponse::class.java)
+        assertEquals(listOf(songId2, songId), mixtapeBody.tracks.map { it.id })
+    }
+
+    @Test
+    fun `POST mixtapes_(id)_order - does not allow reordering another user's mixtape`() {
+        assertUnauthorizedMixtapeAccess { mixtapeId ->
+            Unirest.post("$appUrl/mixtapes/$mixtapeId/order")
+                .body(JSONObject(mapOf("songOrder" to listOf<Int>())))
+        }
+    }
+
+    @Test
+    fun `POST mixtapes_(id)_order - cannot reorder a published tape`() {
+        assertCannotUpdatePublishedMixtape { mixtapeId ->
+            Unirest.post("$appUrl/mixtapes/$mixtapeId/order")
+                .body(JSONObject(mapOf("songOrder" to listOf<Int>())))
+        }
+    }
     private fun assertCannotUpdatePublishedMixtape(cb: (mixtapeId: Int) -> HttpRequest<*>) {
         val jeff = TestDataFactories.createUser(txn, "jeff", true)
         val authToken = TestDataFactories.createAuthToken(txn, jeff.id)

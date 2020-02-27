@@ -18,6 +18,7 @@ class MixtapeRoutes(private val mixtapeService: MixtapeService) {
 
         ApiBuilder.post("/api/mixtapes/:mixtapeId/songs", this::addSongToMixtape)
         ApiBuilder.delete("/api/mixtapes/:mixtapeId/songs/:songId", this::removeSongFromMixtape)
+        ApiBuilder.post("/api/mixtapes/:mixtapeId/order", this::reorderSongsInMixtape)
     }
 
     data class CreateBody(
@@ -78,6 +79,25 @@ class MixtapeRoutes(private val mixtapeService: MixtapeService) {
         mixtapeService.removeSongFromMixtape(
             mixtapeId = mixtapeId,
             songId = songId,
+            currentUser = currentUser
+        )
+
+        ctx.status(204)
+    }
+
+    data class ReorderSongsBody(
+        @field:NotNull
+        @Expose val songOrder: List<Int>
+    )
+
+    private fun reorderSongsInMixtape(ctx: Context) {
+        val currentUser = ctx.requireUser()
+        val mixtapeId = ctx.pathParam<Int>("mixtapeId").get()
+        val body = ctx.validateJsonBody(ReorderSongsBody::class.java)
+
+        mixtapeService.reorderSongsInMixtape(
+            mixtapeId = mixtapeId,
+            songIds = body.songOrder,
             currentUser = currentUser
         )
 

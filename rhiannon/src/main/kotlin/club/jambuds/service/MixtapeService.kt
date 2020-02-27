@@ -2,6 +2,7 @@ package club.jambuds.service
 
 import club.jambuds.dao.MixtapeDao
 import club.jambuds.dao.SongDao
+import club.jambuds.model.Mixtape
 import club.jambuds.model.SongWithMeta
 import club.jambuds.model.User
 import club.jambuds.responses.MixtapeWithSongsReponse
@@ -73,8 +74,7 @@ class MixtapeService(
     }
 
     fun deleteMixtapeById(mixtapeId: Int, currentUserId: Int) {
-        val mixtape = mixtapeDao.getMixtapeById(mixtapeId)
-            ?: throw NotFoundResponse("No mixtape found with ID $mixtapeId")
+        val mixtape = getMixtapeOr404(mixtapeId)
 
         if (currentUserId != mixtape.userId) {
             throw UnauthorizedResponse("You do not own this mixtape")
@@ -84,18 +84,10 @@ class MixtapeService(
     }
 
     fun addSongToMixtape(mixtapeId: Int, currentUser: User, spotifyId: String): SongWithMeta {
-        val mixtape = mixtapeDao.getMixtapeById(mixtapeId)
-            ?: throw NotFoundResponse("No mixtape found with ID $mixtapeId")
-
-        if (currentUser.id != mixtape.userId) {
-            throw UnauthorizedResponse("You do not own this mixtape")
-        }
-        if (mixtape.publishedAt != null) {
-            throw BadRequestResponse("Cannot add song to a published mixtape")
-        }
+        val mixtape = getMixtapeOr404(mixtapeId)
+        ensureCanUpdateDraft(mixtape, currentUser)
 
         val songs = songDao.getSongsByMixtapeId(mixtape.id, currentUser.id)
-
         if (songs.any { it.spotifyId == spotifyId }) {
             throw BadRequestResponse("Mixtape already contains this song")
         }
@@ -106,16 +98,28 @@ class MixtapeService(
     }
 
     fun removeSongFromMixtape(mixtapeId: Int, songId: Int, currentUser: User) {
-        val mixtape = mixtapeDao.getMixtapeById(mixtapeId)
-            ?: throw NotFoundResponse("No mixtape found with ID $mixtapeId")
+        val mixtape = getMixtapeOr404(mixtapeId)
+        ensureCanUpdateDraft(mixtape, currentUser)
+        mixtapeDao.removeSongFromMixtape(mixtapeId = mixtapeId, songId = songId)
+    }
 
+    fun reorderSongsInMixtape(mixtapeId: Int, songIds: List<Int>, currentUser: User) {
+        val mixtape = getMixtapeOr404(mixtapeId)
+        ensureCanUpdateDraft(mixtape, currentUser)
+        mixtapeDao.reorderMixtapeSongs(mixtapeId = mixtapeId, songIds = songIds)
+    }
+
+    private fun getMixtapeOr404(mixtapeId: Int): Mixtape {
+        return mixtapeDao.getMixtapeById(mixtapeId)
+            ?: throw NotFoundResponse("No mixtape found with ID $mixtapeId")
+    }
+
+    private fun ensureCanUpdateDraft(mixtape: Mixtape, currentUser: User) {
         if (currentUser.id != mixtape.userId) {
             throw UnauthorizedResponse("You do not own this mixtape")
         }
         if (mixtape.publishedAt != null) {
-            throw BadRequestResponse("Cannot remove song from a published mixtape")
+            throw BadRequestResponse("Cannot update already published mixtape")
         }
-
-        mixtapeDao.removeSongFromMixtape(mixtapeId = mixtapeId, songId = songId)
     }
 }
