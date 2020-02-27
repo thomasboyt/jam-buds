@@ -2,25 +2,30 @@ const addSong = {
   state() {
     return {
       showModal: false,
+      initialSearch: null,
     };
   },
 
   mutations: {
-    showModal(state) {
+    showAddSongModal(state, initialSearch) {
       state.showModal = true;
+      state.initialSearch = initialSearch;
     },
-    closeModal(state) {
+    closeAddSongModal(state) {
       state.showModal = false;
+    },
+    clearInitialSearch(state) {
+      state.initialSearch = null;
     },
   },
 
   actions: {
-    showAddSong(context) {
-      context.commit('showModal');
+    showAddSong(context, initialSearch) {
+      context.commit('showAddSongModal', initialSearch);
     },
 
     closeAddSong(context) {
-      context.commit('closeModal');
+      context.commit('closeAddSongModal');
     },
 
     didSubmitSong(context, { song, currentPath }) {
@@ -40,7 +45,7 @@ const addSong = {
         });
       }
 
-      context.commit('closeModal');
+      context.commit('closeAddSongModal');
     },
   },
 };

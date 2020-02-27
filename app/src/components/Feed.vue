@@ -3,7 +3,11 @@
     <div class="header-row">
       <page-header title="your feed" />
       <div class="header-row-button-container">
-        <add-song-button @click="handleAddSong">+ post a song!</add-song-button>
+        <add-song-form
+          @submit="handleAddSongSubmit"
+          desktop-cta="post song"
+          mobile-cta="+ post a song"
+        />
       </div>
     </div>
 
@@ -39,7 +43,7 @@
 import { mapState } from 'vuex';
 
 import Playlist from './playlist/Playlist.vue';
-import AddSongButton from './AddSongButton.vue';
+import AddSongForm from './AddSongForm.vue';
 import PostItem from './playlist/PostItem.vue';
 import PageHeader from './PageHeader.vue';
 import NotificationsFeedSection from './NotificationsFeedSection.vue';
@@ -47,7 +51,7 @@ import NotificationsFeedSection from './NotificationsFeedSection.vue';
 export default {
   components: {
     Playlist,
-    AddSongButton,
+    AddSongForm,
     PostItem,
     PageHeader,
     NotificationsFeedSection,
@@ -88,8 +92,8 @@ export default {
       }
     },
 
-    handleAddSong() {
-      this.$store.dispatch('showAddSong');
+    handleAddSongSubmit(initialSearch) {
+      this.$store.dispatch('showAddSong', initialSearch);
     },
 
     handleRequestPlay(songId) {

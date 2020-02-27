@@ -1,6 +1,6 @@
 <template>
   <div>
-    <form class="submit-box" @submit="handleSubmit">
+    <form class="submit-box" @submit="handleSubmitForm">
       <div class="input-container">
         <input
           type="text"
@@ -50,6 +50,14 @@ export default {
     },
   },
 
+  mounted() {
+    if (this.$store.state.addSong.initialSearch) {
+      this.songInput = this.$store.state.addSong.initialSearch;
+      this.$store.commit('clearInitialSearch');
+      this.handleSubmit();
+    }
+  },
+
   methods: {
     handleInput() {
       this.invalid = false;
@@ -59,9 +67,12 @@ export default {
       this.$emit('selectedSong', song);
     },
 
-    async handleSubmit(evt) {
-      evt.preventDefault();
+    handleSubmitForm(e) {
+      e.preventDefault();
+      this.handleSubmit();
+    },
 
+    async handleSubmit() {
       this.requestInFlight = true;
 
       let resp;

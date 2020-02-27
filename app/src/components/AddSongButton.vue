@@ -44,6 +44,13 @@ button.add-song {
   &:hover .label {
     color: rgba(255, 255, 255, 0.5);
   }
+
+  &.add-song-form-button {
+    @media (min-width: $breakpoint-small) {
+      border-top-left-radius: 0px;
+      border-bottom-left-radius: 0px;
+    }
+  }
 }
 
 @media (max-width: $breakpoint-small) {
