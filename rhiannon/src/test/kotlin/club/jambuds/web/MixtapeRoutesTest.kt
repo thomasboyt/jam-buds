@@ -5,11 +5,15 @@ import club.jambuds.getGson
 import club.jambuds.helpers.TestDataFactories
 import club.jambuds.model.SongWithMeta
 import club.jambuds.model.cache.SearchCacheEntry
+import club.jambuds.responses.FeedPlaylistResponse
 import club.jambuds.responses.MixtapeWithSongsReponse
+import club.jambuds.responses.RenameMixtapeResponse
+import kong.unirest.HttpRequest
 import kong.unirest.Unirest
 import kong.unirest.json.JSONObject
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 
 class MixtapeRoutesTest : AppTest() {
     val gson = getGson()
@@ -91,17 +95,9 @@ class MixtapeRoutesTest : AppTest() {
 
     @Test
     fun `DELETE mixtapes_(id) - prevents deleting another user's mixtape`() {
-        val jeff = TestDataFactories.createUser(txn, "jeff", true)
-        val mixtapeId = TestDataFactories.createMixtape(txn, jeff.id, true)
-        TestDataFactories.createMixtapePost(txn, mixtapeId = mixtapeId, userId = jeff.id)
-
-        val vinny = TestDataFactories.createUser(txn, "jeff", true)
-        val authToken = TestDataFactories.createAuthToken(txn, vinny.id)
-        val resp = Unirest.delete("$appUrl/mixtapes/$mixtapeId")
-            .header("X-Auth-Token", authToken)
-            .asString()
-
-        assertEquals(401, resp.status)
+        assertUnauthorizedMixtapeAccess { mixtapeId ->
+            Unirest.delete("$appUrl/mixtapes/$mixtapeId")
+        }
     }
 
     @Test
@@ -144,30 +140,18 @@ class MixtapeRoutesTest : AppTest() {
 
     @Test
     fun `POST mixtapes_(id)_songs - prevents posts to another user's mixtapes`() {
-        val jeff = TestDataFactories.createUser(txn, "jeff", true)
-        val mixtapeId = TestDataFactories.createMixtape(txn, jeff.id, false)
-
-        val vinny = TestDataFactories.createUser(txn, "vinny", true)
-        val authToken = TestDataFactories.createAuthToken(txn, vinny.id)
-
-        val resp = Unirest.post("$appUrl/mixtapes/$mixtapeId/songs")
-            .header("X-Auth-Token", authToken)
-            .body(JSONObject(mapOf("spotifyId" to "asdf")))
-            .asString()
-        assertEquals(401, resp.status)
+        assertUnauthorizedMixtapeAccess { mixtapeId ->
+            Unirest.post("$appUrl/mixtapes/$mixtapeId/songs")
+                .body(JSONObject(mapOf("spotifyId" to "asdf")))
+        }
     }
 
     @Test
     fun `POST mixtapes_(id)_songs - prevents posts to an already-published mixtape`() {
-        val jeff = TestDataFactories.createUser(txn, "jeff", true)
-        val mixtapeId = TestDataFactories.createMixtape(txn, jeff.id, true)
-
-        val authToken = TestDataFactories.createAuthToken(txn, jeff.id)
-        val resp = Unirest.post("$appUrl/mixtapes/$mixtapeId/songs")
-            .header("X-Auth-Token", authToken)
-            .body(JSONObject(mapOf("spotifyId" to "asdf")))
-            .asString()
-        assertEquals(400, resp.status)
+        assertCannotUpdatePublishedMixtape { mixtapeId ->
+            Unirest.post("$appUrl/mixtapes/$mixtapeId/songs")
+                .body(JSONObject(mapOf("spotifyId" to "asdf")))
+        }
     }
 
     @Test
@@ -183,5 +167,193 @@ class MixtapeRoutesTest : AppTest() {
             .body(JSONObject(mapOf("spotifyId" to "someSongId")))
             .asString()
         assertEquals(400, resp.status)
+    }
+
+    @Test
+    fun `DELETE mixtapes_(id)_songs_(id) - removes a song from a mixtape`() {
+        val jeff = TestDataFactories.createUser(txn, "jeff", true)
+        val mixtapeId = TestDataFactories.createMixtape(txn, jeff.id, false)
+        val songId = TestDataFactories.createSong(txn, spotifyId = "someSongId")
+        TestDataFactories.addSongToMixtape(txn, mixtapeId = mixtapeId, songId = songId, rank = 1)
+
+        val authToken = TestDataFactories.createAuthToken(txn, jeff.id)
+        val resp = Unirest.delete("$appUrl/mixtapes/$mixtapeId/songs/$songId")
+            .header("X-Auth-Token", authToken)
+            .asString()
+        assertEquals(204, resp.status)
+
+        val mixtapeResp = Unirest.get("$appUrl/mixtapes/$mixtapeId")
+            .header("X-Auth-Token", authToken)
+            .asString()
+        assertEquals(200, mixtapeResp.status)
+        val mixtapeBody = gson.fromJson(mixtapeResp.body, MixtapeWithSongsReponse::class.java)
+        assertEquals(0, mixtapeBody.tracks.size)
+    }
+
+    @Test
+    fun `DELETE mixtapes_(id)_songs_(id) - does not allow removing songs from another user's mixtape`() {
+        assertUnauthorizedMixtapeAccess { mixtapeId ->
+            val songId = TestDataFactories.createSong(txn, spotifyId = "someSongId")
+            TestDataFactories.addSongToMixtape(
+                txn,
+                mixtapeId = mixtapeId,
+                songId = songId,
+                rank = 1
+            )
+            Unirest.delete("$appUrl/mixtapes/$mixtapeId/songs/$songId")
+        }
+    }
+
+    @Test
+    fun `DELETE mixtapes_(id)_songs_(id) - does not allow removing songs from published tapes`() {
+        assertCannotUpdatePublishedMixtape { mixtapeId ->
+            val songId = TestDataFactories.createSong(txn, spotifyId = "someSongId")
+            TestDataFactories.addSongToMixtape(
+                txn,
+                mixtapeId = mixtapeId,
+                songId = songId,
+                rank = 1
+            )
+            Unirest.delete("$appUrl/mixtapes/$mixtapeId/songs/$songId")
+        }
+    }
+
+    @Test
+    fun `POST mixtapes_(id)_order - works`() {
+        val jeff = TestDataFactories.createUser(txn, "jeff", true)
+        val mixtapeId = TestDataFactories.createMixtape(txn, jeff.id, false)
+        val songId = TestDataFactories.createSong(txn, spotifyId = "someSongId")
+        TestDataFactories.addSongToMixtape(txn, mixtapeId = mixtapeId, songId = songId, rank = 1)
+        val songId2 = TestDataFactories.createSong(txn, spotifyId = "someSongId2")
+        TestDataFactories.addSongToMixtape(txn, mixtapeId = mixtapeId, songId = songId2, rank = 2)
+
+        val authToken = TestDataFactories.createAuthToken(txn, jeff.id)
+        val resp = Unirest.post("$appUrl/mixtapes/$mixtapeId/order")
+            .header("X-Auth-Token", authToken)
+            .body(JSONObject(mapOf("songOrder" to listOf(songId2, songId))))
+            .asString()
+        assertEquals(204, resp.status)
+
+        val mixtapeResp = Unirest.get("$appUrl/mixtapes/$mixtapeId")
+            .header("X-Auth-Token", authToken)
+            .asString()
+        assertEquals(200, mixtapeResp.status)
+        val mixtapeBody = gson.fromJson(mixtapeResp.body, MixtapeWithSongsReponse::class.java)
+        assertEquals(listOf(songId2, songId), mixtapeBody.tracks.map { it.id })
+    }
+
+    @Test
+    fun `POST mixtapes_(id)_order - does not allow reordering another user's mixtape`() {
+        assertUnauthorizedMixtapeAccess { mixtapeId ->
+            Unirest.post("$appUrl/mixtapes/$mixtapeId/order")
+                .body(JSONObject(mapOf("songOrder" to listOf<Int>())))
+        }
+    }
+
+    @Test
+    fun `POST mixtapes_(id)_order - cannot reorder a published tape`() {
+        assertCannotUpdatePublishedMixtape { mixtapeId ->
+            Unirest.post("$appUrl/mixtapes/$mixtapeId/order")
+                .body(JSONObject(mapOf("songOrder" to listOf<Int>())))
+        }
+    }
+
+    @Test
+    fun `POST mixtapes_(id)_title - works`() {
+        val jeff = TestDataFactories.createUser(txn, "jeff", true)
+        val mixtapeId = TestDataFactories.createMixtape(txn, jeff.id, false)
+
+        val authToken = TestDataFactories.createAuthToken(txn, jeff.id)
+        val resp = Unirest.post("$appUrl/mixtapes/$mixtapeId/title")
+            .header("X-Auth-Token", authToken)
+            .body(JSONObject(mapOf("title" to "A better mixtape title")))
+            .asString()
+        val body = gson.fromJson(resp.body, RenameMixtapeResponse::class.java)
+        assertEquals(200, resp.status)
+        assertEquals("a-better-mixtape-title", body.newSlug)
+
+        val mixtapeResp = Unirest.get("$appUrl/mixtapes/$mixtapeId")
+            .header("X-Auth-Token", authToken)
+            .asString()
+        assertEquals(200, mixtapeResp.status)
+        val mixtapeBody = gson.fromJson(mixtapeResp.body, MixtapeWithSongsReponse::class.java)
+        assertEquals("A better mixtape title", mixtapeBody.title)
+    }
+
+    @Test
+    fun `POST mixtapes_(id)_title - does not allow renaming another user's mixtape`() {
+        assertUnauthorizedMixtapeAccess { mixtapeId ->
+            Unirest.post("$appUrl/mixtapes/$mixtapeId/title")
+                .body(JSONObject(mapOf("title" to "A better mixtape title")))
+        }
+    }
+
+    @Test
+    fun `POST mixtapes_(id)_title - cannot rename a published tape`() {
+        assertCannotUpdatePublishedMixtape { mixtapeId ->
+            Unirest.post("$appUrl/mixtapes/$mixtapeId/title")
+                .body(JSONObject(mapOf("title" to "A better mixtape title")))
+        }
+    }
+
+    @Test
+    fun `POST mixtapes_(id)_publish - works`() {
+        val jeff = TestDataFactories.createUser(txn, "jeff", true)
+        val mixtapeId = TestDataFactories.createMixtape(txn, jeff.id, false)
+        val songId = TestDataFactories.createSong(txn, spotifyId = "someSongId")
+        TestDataFactories.addSongToMixtape(txn, mixtapeId = mixtapeId, songId = songId, rank = 1)
+
+        val authToken = TestDataFactories.createAuthToken(txn, jeff.id)
+        val resp = Unirest.post("$appUrl/mixtapes/$mixtapeId/publish")
+            .header("X-Auth-Token", authToken)
+            .asString()
+        assertEquals(204, resp.status)
+
+        val playlistResp = Unirest.get("$appUrl/feed")
+            .header("X-Auth-Token", authToken)
+            .asString()
+        assertEquals(200, playlistResp.status)
+        val playlistBody = gson.fromJson(playlistResp.body, FeedPlaylistResponse::class.java)
+
+        assertEquals("title", playlistBody.items[0].mixtape!!.title)
+        assertEquals(1, playlistBody.items[0].mixtape!!.songCount)
+        assertNotNull(playlistBody.items[0].mixtape!!.publishedAt)
+    }
+
+    @Test
+    fun `POST mixtapes_(id)_publish - does not allow publishing another user's mixtape`() {
+        assertUnauthorizedMixtapeAccess { mixtapeId ->
+            Unirest.post("$appUrl/mixtapes/$mixtapeId/publish")
+        }
+    }
+
+    @Test
+    fun `POST mixtapes_(id)_title - cannot publish an already published tape`() {
+        assertCannotUpdatePublishedMixtape { mixtapeId ->
+            Unirest.post("$appUrl/mixtapes/$mixtapeId/publish")
+        }
+    }
+
+    private fun assertCannotUpdatePublishedMixtape(cb: (mixtapeId: Int) -> HttpRequest<*>) {
+        val jeff = TestDataFactories.createUser(txn, "jeff", true)
+        val authToken = TestDataFactories.createAuthToken(txn, jeff.id)
+        val mixtapeId = TestDataFactories.createMixtape(txn, jeff.id, true)
+
+        val resp = cb(mixtapeId)
+            .header("X-Auth-Token", authToken)
+            .asString()
+        assertEquals(400, resp.status)
+    }
+
+    private fun assertUnauthorizedMixtapeAccess(cb: (mixtapeId: Int) -> HttpRequest<*>) {
+        val vinny = TestDataFactories.createUser(txn, "jeff", true)
+        val mixtapeId = TestDataFactories.createMixtape(txn, vinny.id, false)
+        val jeff = TestDataFactories.createUser(txn, "jeff", true)
+        val authToken = TestDataFactories.createAuthToken(txn, jeff.id)
+
+        val resp = cb(mixtapeId)
+            .header("X-Auth-Token", authToken)
+            .asString()
+        assertEquals(401, resp.status)
     }
 }
