@@ -17,7 +17,7 @@
   * [X] POST /mixtapes
   * [X] DELETE /mixtapes/:id
   * [X] POST /mixtapes/:mixtapeId/songs
-  * [ ] DELETE /mixtapes/:mixtapeId/songs/:songId
+  * [X] DELETE /mixtapes/:mixtapeId/songs/:songId
   * [ ] POST /mixtapes/:mixtapeId/order
   * [ ] POST /mixtapes/:mixtapeId/publish
   * [ ] POST /mixtapes/:mixtapeId/title

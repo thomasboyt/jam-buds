@@ -104,4 +104,18 @@ class MixtapeService(
         mixtapeDao.addSongToMixtape(mixtapeId = mixtapeId, songId = song.id)
         return song
     }
+
+    fun removeSongFromMixtape(mixtapeId: Int, songId: Int, currentUser: User) {
+        val mixtape = mixtapeDao.getMixtapeById(mixtapeId)
+            ?: throw NotFoundResponse("No mixtape found with ID $mixtapeId")
+
+        if (currentUser.id != mixtape.userId) {
+            throw UnauthorizedResponse("You do not own this mixtape")
+        }
+        if (mixtape.publishedAt != null) {
+            throw BadRequestResponse("Cannot remove song from a published mixtape")
+        }
+
+        mixtapeDao.removeSongFromMixtape(mixtapeId = mixtapeId, songId = songId)
+    }
 }
