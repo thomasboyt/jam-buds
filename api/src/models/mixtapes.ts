@@ -3,16 +3,9 @@ import { date as dateType } from 'io-ts-types/lib/date';
 import slugify from '@sindresorhus/slugify';
 
 import { db } from '../db';
-import { UserModel, getUserProfileForUser, getUserByUserId } from './user';
-import { serializeSong, selectSongs } from './song';
-import { Mixtape, Song, DraftMixtapeListItem } from '../resources';
-import {
-  tPropNames,
-  namespacedAliases,
-  findMany,
-  findOne,
-  findOneOrThrow,
-} from './utils';
+import { UserModel } from './user';
+import { DraftMixtapeListItem } from '../resources';
+import { findMany, findOneOrThrow } from './utils';
 
 export const MixtapeModelV = t.type({
   id: t.number,
@@ -24,34 +17,6 @@ export const MixtapeModelV = t.type({
 });
 
 type MixtapeModel = t.TypeOf<typeof MixtapeModelV>;
-
-export const MixtapeSongEntryModelV = t.type({
-  songId: t.number,
-  mixtapeId: t.number,
-  rank: t.number,
-});
-
-export const MixtapePreviewModelV = t.intersection([
-  MixtapeModelV,
-  t.type({
-    songCount: t.string,
-    authorName: t.string,
-  }),
-]);
-
-export function selectMixtapePreviews() {
-  return [
-    db!.raw(
-      namespacedAliases('mixtapes', 'mixtape', tPropNames(MixtapeModelV))
-    ),
-    db!.raw(
-      '(SELECT users.name FROM users WHERE users.id=mixtapes.user_id) as "mixtape.author_name"'
-    ),
-    db!.raw(
-      '(SELECT COUNT (*) FROM mixtape_song_entries WHERE mixtape_id=mixtapes.id) as "mixtape.song_count"'
-    ),
-  ];
-}
 
 const slugifyTitle = (title: string): string =>
   slugify(title, { decamelize: false });
@@ -85,27 +50,6 @@ export async function createMixtapeForUser(
 }
 
 /**
- * Set the title of a given mixtape.
- *
- * Returns the mixtape slug so the app can redirect to /mixtapes/:id/:slug.
- */
-export async function setMixtapeTitle({
-  mixtapeId,
-  title,
-}: {
-  mixtapeId: number;
-  title: string;
-}): Promise<string> {
-  const slug = slugifyTitle(title);
-
-  await db!('mixtapes')
-    .where({ id: mixtapeId })
-    .update({ title, slug });
-
-  return slug;
-}
-
-/**
  * Add a song to a mixtape.
  */
 export async function addSongToMixtape(
@@ -126,49 +70,6 @@ export async function addSongToMixtape(
 }
 
 /**
- * Remove a song from a mixtape. No-op if the song isn't present.
- */
-export async function removeSongFromMixtape({
-  mixtapeId,
-  songId,
-}: {
-  mixtapeId: number;
-  songId: number;
-}): Promise<void> {
-  await db!('mixtape_song_entries')
-    .where({
-      mixtapeId,
-      songId,
-    })
-    .delete();
-}
-
-/**
- * Re-order a mixtape, updating each entry's `rank` by its position in the
- * `songIds[]` array.
- *
- * TODO: Throws an error if a song ID isn't present in the mixtape.
- */
-export async function reorderMixtapeSongs({
-  mixtapeId,
-  songOrder,
-}: {
-  mixtapeId: number;
-  songOrder: number[];
-}): Promise<void> {
-  await db!.transaction((trx) => {
-    const updates = songOrder.map((songId, rank) => {
-      return trx!
-        .table('mixtape_song_entries')
-        .update({ rank })
-        .where({ mixtapeId, songId });
-    });
-
-    return Promise.all(updates);
-  });
-}
-
-/**
  * Publish a mixtape, which allows it to be included in the feed.
  */
 export async function publishMixtape(mixtapeId: number): Promise<void> {
@@ -180,57 +81,6 @@ export async function publishMixtape(mixtapeId: number): Promise<void> {
 
     await trx!('posts').insert({ userId: row.userId, mixtapeId });
   });
-}
-
-/**
- * Get a mixtape by ID.
- */
-export async function getMixtapeById(
-  mixtapeId: number,
-  songQueryOptions: { currentUserId?: number }
-): Promise<Mixtape | null> {
-  const mixtapeQuery = db!('mixtapes').where({ id: mixtapeId });
-  const mixtapeModel = await findOne(mixtapeQuery, MixtapeModelV);
-
-  if (!mixtapeModel) {
-    return null;
-  }
-
-  const tracks = await getSongsByMixtapeId(mixtapeId, songQueryOptions);
-  const authorUser = await getUserByUserId(mixtapeModel.userId);
-
-  if (!authorUser) {
-    throw new Error(`no user ${mixtapeModel.userId} for mixtape ${mixtapeId}`);
-  }
-
-  const author = await getUserProfileForUser(authorUser);
-  const publishedAt = mixtapeModel.publishedAt;
-  const serializedDate = publishedAt ? publishedAt.toISOString() : null;
-
-  return {
-    id: mixtapeModel.id,
-    slug: mixtapeModel.slug,
-    isPublished: !!mixtapeModel.publishedAt,
-    publishedAt: serializedDate,
-    title: mixtapeModel.title,
-    tracks,
-    author,
-  };
-}
-
-export async function getSongsByMixtapeId(
-  mixtapeId: number,
-  songQueryOptions: { currentUserId?: number }
-): Promise<Song[]> {
-  const query = db!('mixtape_song_entries')
-    .select(selectSongs(songQueryOptions))
-    .join('songs', { 'songs.id': 'mixtape_song_entries.song_id' })
-    .where({ mixtape_id: mixtapeId })
-    .orderBy('mixtape_song_entries.rank', 'asc');
-
-  const songRows = await query;
-
-  return songRows.map((row: any) => serializeSong(row));
 }
 
 export async function getDraftMixtapesByUserId(
