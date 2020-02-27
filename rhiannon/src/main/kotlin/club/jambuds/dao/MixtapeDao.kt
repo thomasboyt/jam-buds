@@ -8,6 +8,7 @@ import org.jdbi.v3.sqlobject.locator.UseClasspathSqlLocator
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.jdbi.v3.sqlobject.statement.SqlUpdate
+import java.time.Instant
 
 interface MixtapeDao : SqlObject {
     @SqlQuery
@@ -58,4 +59,29 @@ interface MixtapeDao : SqlObject {
         "UPDATE mixtapes SET title=:title, slug=:slug WHERE id=:mixtapeId"
     )
     fun renameMixtape(mixtapeId: Int, title: String, slug: String)
+
+    fun publishMixtape(mixtapeId: Int, currentUserId: Int) {
+        handle.useTransaction<Exception> { txn ->
+            val updatePublishQuery = """
+                UPDATE mixtapes
+                SET published_at=:publishedAt
+                WHERE id=:mixtapeId
+            """.trimIndent()
+
+            txn.createUpdate(updatePublishQuery)
+                .bind("publishedAt", Instant.now())
+                .bind("mixtapeId", mixtapeId)
+                .execute()
+
+            val postMixtapeQuery = """
+                INSERT INTO posts (user_id, mixtape_id)
+                VALUES            (:userId, :mixtapeId)
+            """.trimIndent()
+
+            txn.createUpdate(postMixtapeQuery)
+                .bind("userId", currentUserId)
+                .bind("mixtapeId", mixtapeId)
+                .execute()
+        }
+    }
 }

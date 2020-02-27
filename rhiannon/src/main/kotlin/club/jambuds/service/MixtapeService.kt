@@ -122,6 +122,12 @@ class MixtapeService(
         return slug
     }
 
+    fun publishMixtape(mixtapeId: Int, currentUser: User) {
+        val mixtape = getMixtapeOr404(mixtapeId)
+        ensureCanUpdateDraft(mixtape, currentUser)
+        mixtapeDao.publishMixtape(mixtapeId = mixtapeId, currentUserId = currentUser.id)
+    }
+
     private fun getMixtapeOr404(mixtapeId: Int): Mixtape {
         return mixtapeDao.getMixtapeById(mixtapeId)
             ?: throw NotFoundResponse("No mixtape found with ID $mixtapeId")

@@ -5,6 +5,7 @@ import club.jambuds.getGson
 import club.jambuds.helpers.TestDataFactories
 import club.jambuds.model.SongWithMeta
 import club.jambuds.model.cache.SearchCacheEntry
+import club.jambuds.responses.FeedPlaylistResponse
 import club.jambuds.responses.MixtapeWithSongsReponse
 import club.jambuds.responses.RenameMixtapeResponse
 import kong.unirest.HttpRequest
@@ -12,6 +13,7 @@ import kong.unirest.Unirest
 import kong.unirest.json.JSONObject
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 
 class MixtapeRoutesTest : AppTest() {
     val gson = getGson()
@@ -291,6 +293,44 @@ class MixtapeRoutesTest : AppTest() {
         assertCannotUpdatePublishedMixtape { mixtapeId ->
             Unirest.post("$appUrl/mixtapes/$mixtapeId/title")
                 .body(JSONObject(mapOf("title" to "A better mixtape title")))
+        }
+    }
+
+    @Test
+    fun `POST mixtapes_(id)_publish - works`() {
+        val jeff = TestDataFactories.createUser(txn, "jeff", true)
+        val mixtapeId = TestDataFactories.createMixtape(txn, jeff.id, false)
+        val songId = TestDataFactories.createSong(txn, spotifyId = "someSongId")
+        TestDataFactories.addSongToMixtape(txn, mixtapeId = mixtapeId, songId = songId, rank = 1)
+
+        val authToken = TestDataFactories.createAuthToken(txn, jeff.id)
+        val resp = Unirest.post("$appUrl/mixtapes/$mixtapeId/publish")
+            .header("X-Auth-Token", authToken)
+            .asString()
+        assertEquals(204, resp.status)
+
+        val playlistResp = Unirest.get("$appUrl/feed")
+            .header("X-Auth-Token", authToken)
+            .asString()
+        assertEquals(200, playlistResp.status)
+        val playlistBody = gson.fromJson(playlistResp.body, FeedPlaylistResponse::class.java)
+
+        assertEquals("title", playlistBody.items[0].mixtape!!.title)
+        assertEquals(1, playlistBody.items[0].mixtape!!.songCount)
+        assertNotNull(playlistBody.items[0].mixtape!!.publishedAt)
+    }
+
+    @Test
+    fun `POST mixtapes_(id)_publish - does not allow publishing another user's mixtape`() {
+        assertUnauthorizedMixtapeAccess { mixtapeId ->
+            Unirest.post("$appUrl/mixtapes/$mixtapeId/publish")
+        }
+    }
+
+    @Test
+    fun `POST mixtapes_(id)_title - cannot publish an already published tape`() {
+        assertCannotUpdatePublishedMixtape { mixtapeId ->
+            Unirest.post("$appUrl/mixtapes/$mixtapeId/publish")
         }
     }
 
