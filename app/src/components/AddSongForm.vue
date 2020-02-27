@@ -1,6 +1,10 @@
 <template>
   <div>
-    <form class="desktop-form" @submit="handleSubmitForm">
+    <form
+      class="desktop-form"
+      @submit="handleSubmitForm"
+      data-test="add-song-form"
+    >
       <input
         ref="input"
         v-model="search"
