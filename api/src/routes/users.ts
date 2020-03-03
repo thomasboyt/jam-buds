@@ -4,10 +4,8 @@ import {
   UserModel,
   getUserByName,
   serializePublicUser,
-  getUnfollowedUsersByTwitterIds,
   getUserProfileForUser,
   serializeCurrentUser,
-  serializePublicUserWithTwitterName,
 } from '../models/user';
 
 import {
@@ -18,10 +16,11 @@ import {
 } from '../models/following';
 
 import { getUserFromRequest, isAuthenticated } from '../auth';
-import { getTwitterFriendIds } from '../apis/twitter';
 
 import { Followers, Following } from '../resources';
 import wrapAsyncRoute from '../util/wrapAsyncRoute';
+import config from '../config';
+import proxy = require('http-proxy-middleware');
 
 export default function registerUserEndpoints(router: Router) {
   // get information about the current user
@@ -102,27 +101,8 @@ export default function registerUserEndpoints(router: Router) {
     })
   );
 
-  // get twitter friends who have signed up
-  router.get(
-    '/friend-suggestions',
-    isAuthenticated,
-    wrapAsyncRoute(async (req, res) => {
-      const ids = await getTwitterFriendIds(res.locals.user);
-
-      const users = await getUnfollowedUsersByTwitterIds(
-        res.locals.user.id,
-        ids
-      );
-
-      const publicUsers = users.map((row) =>
-        serializePublicUserWithTwitterName(row)
-      );
-
-      res.status(200).send({
-        users: publicUsers,
-      });
-    })
-  );
+  const target = config.require('JB_RHIANNON_URL');
+  router.use('/friend-suggestions', proxy({ target }));
 
   router.get(
     '/users/:userName/following',

@@ -1,16 +1,11 @@
 import * as t from 'io-ts';
 import { date as dateType } from 'io-ts-types/lib/date';
 import { db } from '../db';
-import {
-  PublicUser,
-  CurrentUser,
-  UserProfile,
-  PublicUserWithTwitter,
-} from '../resources';
+import { PublicUser, CurrentUser, UserProfile } from '../resources';
 import { getFollowingForUserId } from './following';
 import { getColorSchemeForUserId } from './colorSchemes';
 import { getNewNotificationsCount } from './notifications';
-import { findOneOrThrow, findOne, findMany } from './utils';
+import { findOneOrThrow, findOne } from './utils';
 
 export const UserModelV = t.type({
   id: t.number,
@@ -76,26 +71,6 @@ export async function getUserByEmail(email: string): Promise<UserModel | null> {
   return getUserWhere({ email });
 }
 
-// TODO: move to following.ts
-export async function getUnfollowedUsersByTwitterIds(
-  userId: number,
-  twitterIds: string[]
-): Promise<UserModel[]> {
-  const followQuery = db!
-    .select('followingId')
-    .from('following')
-    .where({ userId })
-    .join('users', { 'users.id': 'following.following_id' });
-
-  const query = db!
-    .select('*')
-    .from('users')
-    .whereIn('twitterId', twitterIds)
-    .where('id', 'not in', followQuery);
-
-  return findMany(query, UserModelV);
-}
-
 export async function getUserProfileForUser(
   user: UserModel
 ): Promise<UserProfile> {
@@ -116,15 +91,6 @@ export function serializePublicUser(user: UserModel): PublicUser {
   return {
     id: user.id,
     name: user.name,
-  };
-}
-
-export function serializePublicUserWithTwitterName(
-  user: UserModel
-): PublicUserWithTwitter {
-  return {
-    ...serializePublicUser(user),
-    twitterName: user.twitterName,
   };
 }
 
