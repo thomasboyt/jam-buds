@@ -1,24 +1,9 @@
-import { Router } from 'express';
+import { Router, Response } from 'express';
 import SpotifyWebApi from 'spotify-web-api-node';
 import axios from 'axios';
 
 import config from '../config';
 import wrapAsyncRoute from '../util/wrapAsyncRoute';
-import { UserModel } from '../models/user';
-import {
-  addSpotifyCredentialsToUser,
-  deleteSpotifyCredentialsFromUser,
-  updateRefreshedSpotifyCredentialsForUser,
-  createAnonymousSpotifyCredentials,
-  getAnonymousSpotifyCredentialsByToken,
-  updateAnonymousSpotifyCredentials,
-  deleteAnonymousSpotifyCredentials,
-} from '../models/spotifyCredentials';
-import {
-  isAuthenticated,
-  maybeGetUserFromCookie,
-  getUserFromRequest,
-} from '../auth';
 import {
   createOAuthState,
   getAndClearOAuthState,
@@ -30,8 +15,6 @@ import {
 } from '../apis/spotifyAuth';
 
 const redirectUri = `${config.get('JB_APP_URL')}/auth/spotify-connect/cb`;
-
-const ANON_SPOTIFY_AUTH_TOKEN_COOKIE = 'anonSpotifyAuthToken';
 
 export function registerSpotifyAuthEndpoints(router: Router) {
   router.get(
@@ -104,28 +87,7 @@ export function registerSpotifyAuthEndpoints(router: Router) {
         return;
       }
 
-      const user = await maybeGetUserFromCookie(req);
-
-      if (user) {
-        await addSpotifyCredentialsToUser(user, {
-          accessToken,
-          refreshToken,
-          expiresIn,
-        });
-      } else {
-        const token = await createAnonymousSpotifyCredentials({
-          accessToken,
-          refreshToken,
-          expiresIn,
-        });
-
-        res.cookie(ANON_SPOTIFY_AUTH_TOKEN_COOKIE, token, {
-          maxAge: 1000 * 60 * 60 * 24 * 365,
-          httpOnly: true,
-          sameSite: 'strict',
-        });
-      }
-
+      setSpotifyCookies(res, accessToken, refreshToken, expiresIn);
       res.redirect(`${rootUrl}${redirect}`);
     })
   );
@@ -135,91 +97,91 @@ export function registerSpotifyApiEndpoints(router: Router) {
   router.get(
     '/spotify-token',
     wrapAsyncRoute(async (req, res) => {
-      const user = await getUserFromRequest(req);
+      const spotifyRefreshToken = req.cookies['spotifyRefreshToken'];
+      const spotifyExpiresAtMs = parseInt(req.cookies['spotifyExpiresAtMs']);
 
-      if (user) {
-        const { spotifyExpiresAt } = user;
-
-        if (!spotifyExpiresAt) {
-          return res.json({ spotifyConnected: false });
-        }
-
-        // If token hasn't expired yet, don't bother refreshing
-        if (spotifyExpiresAt && spotifyExpiresAt.valueOf() > Date.now()) {
-          return res.json({ token: user.spotifyAccessToken });
-        }
-
-        let resp: RefreshResponse | undefined;
-        try {
-          resp = await getRefreshedAccessToken(user.spotifyRefreshToken!);
-        } catch (err) {
-          if (err instanceof SpotifyDisconnectedError) {
-            await deleteSpotifyCredentialsFromUser(user);
-            return res.json({ spotifyConnected: false });
-          }
-          throw err;
-        }
-
-        await updateRefreshedSpotifyCredentialsForUser(user, {
-          accessToken: resp.accessToken,
-          expiresIn: resp.expiresIn,
-        });
-
-        res.json({ token: resp.accessToken, expiresIn: resp.expiresIn });
-      } else {
-        const token = req.cookies[ANON_SPOTIFY_AUTH_TOKEN_COOKIE];
-
-        if (!token) {
-          return res.json({ spotifyConnected: false });
-        }
-
-        const spotifyCredentials = await getAnonymousSpotifyCredentialsByToken(
-          token
-        );
-
-        if (!spotifyCredentials) {
-          return res.json({ spotifyConnected: false });
-        }
-
-        // If token hasn't expired yet, don't bother refreshing
-        if (
-          spotifyCredentials.expiresAt &&
-          spotifyCredentials.expiresAt.valueOf() > Date.now()
-        ) {
-          return res.json({ token: spotifyCredentials.accessToken });
-        }
-
-        let resp: RefreshResponse | undefined;
-        try {
-          resp = await getRefreshedAccessToken(spotifyCredentials.refreshToken);
-        } catch (err) {
-          if (err instanceof SpotifyDisconnectedError) {
-            await deleteAnonymousSpotifyCredentials(token);
-            res.clearCookie(ANON_SPOTIFY_AUTH_TOKEN_COOKIE);
-            return res.json({ spotifyConnected: false });
-          }
-          throw err;
-        }
-
-        await updateAnonymousSpotifyCredentials(token, {
-          accessToken: resp.accessToken,
-          expiresIn: resp.expiresIn,
-        });
-
-        res.json({ token: resp.accessToken, expiresIn: resp.expiresIn });
+      if (!spotifyExpiresAtMs || isNaN(spotifyExpiresAtMs)) {
+        clearSpotifyCookies(res);
+        return res.json({ spotifyConnected: false });
       }
+
+      // If token hasn't expired yet, don't bother refreshing
+      if (spotifyExpiresAtMs && spotifyExpiresAtMs > Date.now()) {
+        return res.json({
+          spotifyConnected: true,
+          accessToken: req.cookies['spotifyAccessToken'],
+          expiresAtMs: spotifyExpiresAtMs,
+        });
+      }
+
+      let resp: RefreshResponse | undefined;
+      try {
+        resp = await getRefreshedAccessToken(spotifyRefreshToken!);
+      } catch (err) {
+        if (err instanceof SpotifyDisconnectedError) {
+          clearSpotifyCookies(res);
+          return res.json({ spotifyConnected: false });
+        }
+        throw err;
+      }
+
+      const expiresAtMs = setSpotifyCookies(
+        res,
+        resp.accessToken,
+        spotifyRefreshToken,
+        resp.expiresIn
+      );
+
+      return res.json({
+        spotifyConnected: true,
+        token: resp.accessToken,
+        expiresAtMs: expiresAtMs,
+      });
     })
   );
 
   router.delete(
     '/spotify-token',
-    isAuthenticated,
     wrapAsyncRoute(async (req, res) => {
-      const user: UserModel = res.locals.user;
-
-      await deleteSpotifyCredentialsFromUser(user);
-
+      clearSpotifyCookies(res);
       res.status(200).json({ success: true });
     })
   );
+}
+
+const toExpiresAtMs = (expiresInSec: number): number =>
+  Date.now() + expiresInSec * 1000;
+
+function setSpotifyCookies(
+  res: Response,
+  accessToken: string,
+  refreshToken: string,
+  expiresIn: number
+): number {
+  res.cookie('spotifyAccessToken', accessToken, {
+    httpOnly: true,
+    maxAge: 1000 * 60 * 60 * 24 * 365,
+    sameSite: 'strict',
+  });
+
+  const expiresAtMs = toExpiresAtMs(expiresIn);
+  res.cookie('spotifyExpiresAtMs', expiresAtMs, {
+    httpOnly: true,
+    maxAge: 1000 * 60 * 60 * 24 * 365,
+    sameSite: 'strict',
+  });
+
+  res.cookie('spotifyRefreshToken', refreshToken, {
+    httpOnly: true,
+    maxAge: 1000 * 60 * 60 * 24 * 365,
+    sameSite: 'strict',
+  });
+
+  return expiresAtMs;
+}
+
+function clearSpotifyCookies(res: Response) {
+  res.clearCookie('spotifyAccessToken');
+  res.clearCookie('spotifyRefreshToken');
+  res.clearCookie('spotifyExpiresAt');
 }
