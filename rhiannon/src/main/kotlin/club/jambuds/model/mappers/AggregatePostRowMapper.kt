@@ -43,6 +43,7 @@ class AggregatedPostRowMapper : RowMapper<AggregatedPost> {
         override fun read(input: JsonReader): Instant {
             return ZonedDateTime.parse(input.nextString()).toInstant()
         }
+
         override fun write(out: JsonWriter, value: Instant?) = throw NotImplementedError()
     }
 }

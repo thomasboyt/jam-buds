@@ -107,7 +107,7 @@ class MixtapeRoutes(private val mixtapeService: MixtapeService) {
         ctx.status(204)
     }
 
-   data class RenameMixtapeBody(
+    data class RenameMixtapeBody(
         @field:NotNull
         @Expose val title: String
     )
