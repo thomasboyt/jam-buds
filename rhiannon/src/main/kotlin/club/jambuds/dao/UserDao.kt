@@ -1,6 +1,7 @@
 package club.jambuds.dao
 
 import club.jambuds.model.User
+import org.jdbi.v3.sqlobject.customizer.BindList
 import org.jdbi.v3.sqlobject.locator.UseClasspathSqlLocator
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 
@@ -14,4 +15,10 @@ interface UserDao {
 
     @SqlQuery
     fun getUserByUserId(userId: Int): User?
+
+    @SqlQuery
+    fun getUnfollowedUsersByTwitterIds(
+        userId: Int,
+        @BindList("twitterIds") twitterIds: List<String>
+    ): List<User>
 }

@@ -9,6 +9,7 @@ import okio.ByteString
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Query
 import java.net.URLEncoder
@@ -21,9 +22,14 @@ import javax.crypto.spec.SecretKeySpec
 interface TwitterClient {
     @POST("/1.1/statuses/update.json")
     fun postStatus(@Query("status") query: String): Call<TwitterPostResponse>
+
+    @GET("/1.1/friends/ids.json")
+    fun getFriendIds(@Query("stringify_ids") stringifyIds: Boolean = true): Call<FriendIdsResponse>
 }
 
 data class TwitterPostResponse(private val id_str: String)
+
+data class FriendIdsResponse(val ids: List<String>)
 
 private fun encodeValue(value: String): String {
     return URLEncoder.encode(value, StandardCharsets.UTF_8.toString())
@@ -100,7 +106,7 @@ fun getAuthorizationHeader(
 
     val requestBody = request.body()
     val body = Buffer()
-    requestBody!!.writeTo(body)
+    requestBody?.writeTo(body)
 
     // parse body params
     while (!body.exhausted()) {

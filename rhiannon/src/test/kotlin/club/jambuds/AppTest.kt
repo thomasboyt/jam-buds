@@ -8,6 +8,7 @@ import club.jambuds.dao.ReportDao
 import club.jambuds.dao.SongDao
 import club.jambuds.dao.UserDao
 import club.jambuds.dao.cache.SearchCacheDao
+import club.jambuds.dao.cache.TwitterFollowingCacheDao
 import club.jambuds.service.AppleMusicService
 import club.jambuds.service.LikeService
 import club.jambuds.service.MixtapeService
@@ -24,6 +25,7 @@ import club.jambuds.web.MixtapeRoutes
 import club.jambuds.web.PlaylistRoutes
 import club.jambuds.web.PostRoutes
 import club.jambuds.web.SearchRoutes
+import club.jambuds.web.UserRoutes
 import com.nhaarman.mockitokotlin2.mock
 import io.javalin.Javalin
 import io.lettuce.core.RedisClient
@@ -79,10 +81,12 @@ open class AppTest {
         val likeDao = txn.attach(LikeDao::class.java)
         val reportDao = txn.attach(ReportDao::class.java)
         searchCacheDao = SearchCacheDao(redis)
+        val twitterFollowingCacheDao = TwitterFollowingCacheDao(redis)
 
         val playlistService =
             PlaylistService(postDao, songDao, mixtapeDao, likeDao)
-        val userService = UserService(userDao, colorSchemeDao)
+        val userService =
+            UserService(userDao, colorSchemeDao, mockTwitterService, twitterFollowingCacheDao)
         val searchService =
             SearchService(mockSpotifyApiService, mockAppleMusicService, songDao, searchCacheDao)
         val mixtapeService = MixtapeService(mixtapeDao, songDao, userService, searchService)
@@ -102,6 +106,7 @@ open class AppTest {
             SearchRoutes(searchService).register()
             PostRoutes(postService, reportService).register()
             LikeRoutes(likeService).register()
+            UserRoutes(userService).register()
         }
     }
 
