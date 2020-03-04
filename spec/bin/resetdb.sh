@@ -19,5 +19,6 @@ echo "Creating seed data"
 psql $database_url -f "./data/data.sql"
 wait
 
-echo "Flushing Redis"
-redis-cli -u $redis_url flushall
+# TODO
+# echo "Flushing Redis"
+# redis-cli -u $redis_url flushall
