@@ -7,6 +7,7 @@ import club.jambuds.dao.PostDao
 import club.jambuds.dao.ReportDao
 import club.jambuds.dao.SongDao
 import club.jambuds.dao.UserDao
+import club.jambuds.dao.cache.OAuthStateDao
 import club.jambuds.dao.cache.SearchCacheDao
 import club.jambuds.service.AppleMusicService
 import club.jambuds.service.LikeService
@@ -16,6 +17,7 @@ import club.jambuds.service.PostService
 import club.jambuds.service.ReportService
 import club.jambuds.service.SearchService
 import club.jambuds.service.SpotifyApiService
+import club.jambuds.service.SpotifyAuthService
 import club.jambuds.service.TwitterService
 import club.jambuds.service.UserService
 import club.jambuds.util.InstantTypeAdapter
@@ -26,6 +28,7 @@ import club.jambuds.web.MixtapeRoutes
 import club.jambuds.web.PlaylistRoutes
 import club.jambuds.web.PostRoutes
 import club.jambuds.web.SearchRoutes
+import club.jambuds.web.SpotifyAuthRoutes
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.typesafe.config.Config
@@ -153,6 +156,7 @@ private fun wire(app: Javalin, config: Config) {
     val likeDao = jdbi.onDemand<LikeDao>()
     val reportDao = jdbi.onDemand<ReportDao>()
     val searchCacheDao = SearchCacheDao(redis)
+    val oAuthStateDao = OAuthStateDao(redis)
 
     // Services
     val playlistService =
@@ -170,6 +174,12 @@ private fun wire(app: Javalin, config: Config) {
         PostService(postDao, searchService, twitterService, config.getString("appUrl"))
     val likeService = LikeService(likeDao, songDao)
     val reportService = ReportService(reportDao, postDao)
+    val spotifyAuthService = SpotifyAuthService(
+        config.getString("appUrl"),
+        oAuthStateDao,
+        config.getString("spotifyClientId"),
+        config.getString("spotifyClientSecret")
+    )
 
     // Routes
     app.routes {
@@ -179,6 +189,7 @@ private fun wire(app: Javalin, config: Config) {
         SearchRoutes(searchService).register()
         PostRoutes(postService, reportService).register()
         LikeRoutes(likeService).register()
+        SpotifyAuthRoutes(spotifyAuthService).register()
     }
 }
 
