@@ -1,11 +1,17 @@
 import '../util/loadDotEnv';
-import misterResetti from '../util/misterResetti';
 
-import { db } from '../db';
+import { execSync } from 'child_process';
+import * as path from 'path';
+import { db, configureDatabase } from '../db';
+import { configureRedis } from '../redis';
 
 before(async function() {
-  this.timeout(10000);
-  await misterResetti({});
+  this.timeout(15000);
+  execSync(path.resolve(__dirname, '../../../spec/bin/create_schema.sh'), {
+    stdio: 'inherit',
+  });
+  configureDatabase();
+  configureRedis();
 });
 
 beforeEach(async () => {
