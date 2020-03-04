@@ -70,7 +70,6 @@
     "oauth": "^0.9.14",
     "pg": "^7.14.0",
     "query-string": "^6.9.0",
-    "spotify-web-api-node": "^4.0.0",
     "stringcase": "^4.3.1",
     "twit": "^2.2.11"
   }

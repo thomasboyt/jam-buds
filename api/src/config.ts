@@ -16,9 +16,6 @@ const configDef = {
   TEST_ENV: getEnv('TEST_ENV'),
   CI: getBooleanEnv('CI'),
 
-  SPOTIFY_CLIENT_ID: getEnv('SPOTIFY_CLIENT_ID'),
-  SPOTIFY_CLIENT_SECRET: getEnv('SPOTIFY_CLIENT_SECRET'),
-
   TWITTER_API_KEY: getEnv('TWITTER_API_KEY'),
   TWITTER_API_SECRET: getEnv('TWITTER_API_SECRET'),
 
@@ -40,8 +37,6 @@ const config = createConfig(configDef);
 
 // production checks
 const requiredProductionKeys: Array<keyof typeof configDef> = [
-  'SPOTIFY_CLIENT_ID',
-  'SPOTIFY_CLIENT_SECRET',
   'TWITTER_API_KEY',
   'TWITTER_API_SECRET',
   'BUTTONDOWN_API_KEY',
