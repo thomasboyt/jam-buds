@@ -18,4 +18,7 @@ psql $database_url < tmp/schema.sql > /dev/null
 echo "Creating seed data"
 psql $database_url -f "./data/data.sql"
 wait
-# TODO: flush redis
+
+# TODO
+# echo "Flushing Redis"
+# redis-cli -u $redis_url flushall

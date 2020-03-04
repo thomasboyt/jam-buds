@@ -9,3 +9,5 @@ cd $SCRIPT_DIR/../rhiannon
 
 cd ../spec
 psql "postgres://postgres@localhost:5433/jambuds" -f "./data/data.sql"
+
+redis-cli -u redis://localhost:6380 flushall

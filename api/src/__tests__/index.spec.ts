@@ -1,11 +1,27 @@
 import '../util/loadDotEnv';
-import misterResetti from '../util/misterResetti';
 
-import { db } from '../db';
+import { execSync } from 'child_process';
+import * as path from 'path';
+import { db, configureDatabase } from '../db';
+import { redis, configureRedis } from '../redis';
 
 before(async function() {
-  this.timeout(10000);
-  await misterResetti({});
+  this.timeout(30000);
+
+  const dbUrl =
+    process.env.JDBC_DATABASE_URL ||
+    'jdbc:postgresql://localhost:5433/jambuds_test?user=postgres&password=';
+
+  const cmd = `./gradlew flywayClean flywayMigrate -Dflyway.url="${dbUrl}" --console=plain`;
+
+  execSync(cmd, {
+    stdio: 'inherit',
+    cwd: path.resolve(__dirname, '../../../rhiannon'),
+  });
+
+  configureDatabase();
+  configureRedis();
+  await redis!!.flushdb();
 });
 
 beforeEach(async () => {
