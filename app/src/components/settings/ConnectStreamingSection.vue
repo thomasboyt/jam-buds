@@ -65,7 +65,7 @@ export default {
 
     async handleDisconnectAppleMusic() {
       await MusicKit.getInstance().unauthorize();
-      this.$store.commit('unauthorizedAppleMusic');
+      this.$store.commit('removeAppleMusic');
     },
 
     async handleDisconnectSpotify() {
@@ -81,7 +81,7 @@ export default {
         throw err;
       }
 
-      this.$store.commit('disconnectedSpotify');
+      this.$store.commit('removeSpotify');
       this.isDisconnecting = false;
     },
   },
