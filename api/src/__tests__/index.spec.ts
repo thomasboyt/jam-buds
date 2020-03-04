@@ -3,22 +3,25 @@ import '../util/loadDotEnv';
 import { execSync } from 'child_process';
 import * as path from 'path';
 import { db, configureDatabase } from '../db';
-import { configureRedis } from '../redis';
+import { redis, configureRedis } from '../redis';
 
 before(async function() {
-  this.timeout(15000);
+  this.timeout(30000);
 
-  execSync(path.resolve(__dirname, '../../../spec/bin/create_schema.sh'), {
+  const dbUrl =
+    process.env.JDBC_DATABASE_URL ||
+    'jdbc:postgresql://localhost:5433/jambuds_test?user=postgres&password=';
+
+  const cmd = `./gradlew flywayClean flywayMigrate -Dflyway.url="${dbUrl}" --console=plain`;
+
+  execSync(cmd, {
     stdio: 'inherit',
-    env: {
-      DATABASE_URL: process.env.DATABASE_URL,
-      JDBC_DATABASE_URL: process.env.JDBC_DATABASE_URL,
-      REDIS_URL: process.env.REDIS_URL,
-    },
+    cwd: path.resolve(__dirname, '../../../rhiannon'),
   });
 
   configureDatabase();
   configureRedis();
+  await redis!!.flushdb();
 });
 
 beforeEach(async () => {
