@@ -1,8 +1,8 @@
 package club.jambuds.dao
 
+import club.jambuds.dao.mappers.AggregatedPostRowMapper
 import club.jambuds.model.AggregatedPost
 import club.jambuds.model.Post
-import club.jambuds.model.mappers.AggregatedPostRowMapper
 import org.jdbi.v3.sqlobject.config.RegisterRowMapper
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.locator.UseClasspathSqlLocator

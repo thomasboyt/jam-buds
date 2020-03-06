@@ -1,4 +1,4 @@
-package club.jambuds.model.mappers
+package club.jambuds.dao.mappers
 
 import club.jambuds.model.AggregatedPost
 import club.jambuds.model.AggregatedPostItem
