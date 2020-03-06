@@ -31,7 +31,7 @@ const streaming = {
         url: '/spotify-token',
         method: 'GET',
       });
-      context.commit('loadedSpotify', !!resp.data.token);
+      context.commit('loadedSpotify', resp.data.spotifyConnected);
     },
   },
 

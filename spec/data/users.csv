@@ -1,6 +1,6 @@
-"id","created_at","twitter_name","twitter_id","twitter_token","twitter_secret","name","email","spotify_access_token","spotify_refresh_token","spotify_expires_at","show_in_public_feed"
-2,"2020-02-24 02:16:51.740629+00",,,,,"dan","dan@jambuds.club",,,,
-1,"2020-02-24 02:16:51.647751+00","danryckert","36311369","token","secret","jeff","jeff@jambuds.club",,,,
-3,"2020-02-24 02:16:51.762343+00",,,,,"brad","brad@jambuds.club",,,,
-4,"2020-02-24 02:16:51.77743+00",,,,,"vinny","vinny@jambuds.club",,,,
-5,"2020-02-24 02:16:51.792059+00",,,,,"abe","abe@jambuds.club",,,,
+id,created_at,twitter_name,twitter_id,twitter_token,twitter_secret,name,email,show_in_public_feed
+2,2020-02-24 02:16:51.740629+00,,,,,dan,dan@jambuds.club,
+1,2020-02-24 02:16:51.647751+00,danryckert,36311369,token,secret,jeff,jeff@jambuds.club,
+3,2020-02-24 02:16:51.762343+00,,,,,brad,brad@jambuds.club,
+4,2020-02-24 02:16:51.77743+00,,,,,vinny,vinny@jambuds.club,
+5,2020-02-24 02:16:51.792059+00,,,,,abe,abe@jambuds.club,

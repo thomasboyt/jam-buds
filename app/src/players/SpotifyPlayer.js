@@ -133,7 +133,7 @@ export default class SpotifyPlayer {
 
   async _getOAuthToken() {
     if (this._token) {
-      if (this._tokenExpiresAtMs < Date.now()) {
+      if (this._tokenExpiresAtMs > Date.now()) {
         return this._token;
       }
     }
@@ -145,8 +145,14 @@ export default class SpotifyPlayer {
       withCredentials: true,
     });
 
-    this._token = resp.data.token;
-    this._tokenExpiresAtMs = Date.now() + resp.data.expiresIn * 1000;
+    if (!resp.data.spotifyConnected) {
+      // TODO: handle this better
+      alert('Lost connection to Spotify!');
+      throw Error('Lost connection to Spotify');
+    }
+
+    this._token = resp.data.accessToken;
+    this._tokenExpiresAtMs = resp.data.expiresAtMs;
     return this._token;
   }
 

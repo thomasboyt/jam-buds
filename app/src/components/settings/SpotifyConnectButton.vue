@@ -19,15 +19,22 @@ export default {
   },
 
   mounted() {
-    const failed = 'failed-spotify-connect' in this.$route.query;
-    if (failed) {
-      // remove "failed-spotify-connect" from path to prevent re-triggering
+    const error = this.$route.query.spotifyAuthError;
+    if (error) {
+      // remove error from path to prevent re-triggering
       this.$router.replace(this.$route.path);
 
-      this.$store.commit(
-        'showErrorModal',
-        "Error connecting Spotify: You must have a premium (paid) Spotify account to stream to it from Jam Buds.\n\nSorry, I don't make the rules :("
-      );
+      if (error === 'nonPremium') {
+        this.$store.commit(
+          'showErrorModal',
+          "Error connecting Spotify: You must have a premium (paid) Spotify account to stream to it from Jam Buds.\n\nSorry, I don't make the rules :("
+        );
+      } else {
+        this.$store.commit(
+          'showErrorModal',
+          `Unknown error connecting Spotify: ${error}`
+        );
+      }
     }
   },
 };

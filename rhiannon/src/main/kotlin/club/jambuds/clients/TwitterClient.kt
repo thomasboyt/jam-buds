@@ -1,5 +1,6 @@
 package club.jambuds.clients
 
+import club.jambuds.util.generateRandomString
 import com.google.gson.Gson
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -36,7 +37,7 @@ fun createTwitterClient(
 ): TwitterClient {
     val okHttpClient = OkHttpClient.Builder()
         .addInterceptor { chain ->
-            val oauthNonce = randomString(32)
+            val oauthNonce = generateRandomString(32)
             val authHeader = getAuthorizationHeader(
                 consumerKey,
                 consumerSecret,
@@ -150,15 +151,3 @@ fun getAuthorizationHeader(
 
     return "OAuth " + headerStrings.joinToString(", ")
 }
-
-// via https://stackoverflow.com/a/157202
-private fun randomString(len: Int): String {
-    val ab = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
-    val rnd = SecureRandom()
-    val sb = StringBuilder(len)
-    for (i in 0 until len) {
-        sb.append(ab[rnd.nextInt(ab.length)])
-    }
-    return sb.toString()
-}
-

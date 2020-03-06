@@ -49,11 +49,11 @@
   * [ ] POST /settings/go-public
   * [ ] POST /settings/go-private
 
-* [ ] Spotify auth
-  * [ ] GET /spotify-connect
-  * [ ] GET /spotify-connect/cb
-  * [ ] GET /spotify-token
-  * [ ] DELETE /spotify-token
+* [x] Spotify auth
+  * [x] GET /spotify-connect
+  * [x] GET /spotify-connect/cb
+  * [x] GET /spotify-token
+  * [x] DELETE /spotify-token
 
 * [ ] Twitter auth
   * [ ] GET /twitter-connect

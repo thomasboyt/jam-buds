@@ -20,9 +20,6 @@ export const UserModelV = t.type({
   twitterId: t.union([t.string, t.null]),
   twitterToken: t.union([t.string, t.null]),
   twitterSecret: t.union([t.string, t.null]),
-  spotifyAccessToken: t.union([t.string, t.null]),
-  spotifyRefreshToken: t.union([t.string, t.null]),
-  spotifyExpiresAt: t.union([dateType, t.null]),
   showInPublicFeed: t.union([t.boolean, t.null]),
 });
 
