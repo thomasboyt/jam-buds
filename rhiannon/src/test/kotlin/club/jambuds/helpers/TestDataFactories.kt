@@ -3,6 +3,7 @@ package club.jambuds.helpers
 import club.jambuds.model.ColorScheme
 import club.jambuds.model.Post
 import club.jambuds.model.User
+import club.jambuds.util.generateRandomString
 import com.wrapper.spotify.model_objects.specification.AlbumSimplified
 import com.wrapper.spotify.model_objects.specification.ArtistSimplified
 import com.wrapper.spotify.model_objects.specification.ExternalId
@@ -60,13 +61,15 @@ object TestDataFactories {
         hasTwitter: Boolean = false
     ): User {
         val query = """
-            insert into users (name, show_in_public_feed, twitter_token, twitter_secret)
-                        values (:name, :showInPublicFeed, :twitterAuthToken, :twitterAuthSecret)
+            insert into users (name, show_in_public_feed, twitter_id, twitter_name, twitter_token, twitter_secret)
+                        values (:name, :showInPublicFeed, :twitterId, :twitterName, :twitterAuthToken, :twitterAuthSecret)
         """.trimIndent()
 
         return txn.createUpdate(query)
             .bind("name", name)
             .bind("showInPublicFeed", showInFeed)
+            .bind("twitterId", if (hasTwitter) generateRandomString(16) else null)
+            .bind("twitterName", if (hasTwitter) generateRandomString(16) else null)
             .bind("twitterAuthToken", if (hasTwitter) "token" else null)
             .bind("twitterAuthSecret", if (hasTwitter) "secret" else null)
             .executeAndReturnGeneratedKeys()
