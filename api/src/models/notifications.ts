@@ -33,18 +33,6 @@ export async function deleteNotification(
     .delete();
 }
 
-export async function getNewNotificationsCount(
-  userId: number
-): Promise<number> {
-  const [countObj] = await db!('notifications')
-    .where({ targetUserId: userId, read: false })
-    .count();
-
-  const count = parseInt(countObj.count);
-
-  return count;
-}
-
 export async function getNewNotifications(
   userId: number
 ): Promise<Notification[]> {

@@ -5,7 +5,6 @@ import {
   getUserByName,
   serializePublicUser,
   getUserProfileForUser,
-  serializeCurrentUser,
 } from '../models/user';
 
 import {
@@ -15,7 +14,7 @@ import {
   getFollowersForUserId,
 } from '../models/following';
 
-import { getUserFromRequest, isAuthenticated } from '../auth';
+import { isAuthenticated } from '../auth';
 
 import { Followers, Following } from '../resources';
 import wrapAsyncRoute from '../util/wrapAsyncRoute';
@@ -23,23 +22,8 @@ import config from '../config';
 import proxy = require('http-proxy-middleware');
 
 export default function registerUserEndpoints(router: Router) {
-  // get information about the current user
-  router.get(
-    '/me',
-    wrapAsyncRoute(async (req, res) => {
-      const userModel = await getUserFromRequest(req);
-
-      if (!userModel) {
-        return res.json({
-          user: null,
-        });
-      }
-
-      res.json({
-        user: await serializeCurrentUser(userModel),
-      });
-    })
-  );
+  const target = config.require('JB_RHIANNON_URL');
+  router.use('/me', proxy({ target }));
 
   // follow a user
   router.post(
@@ -101,7 +85,6 @@ export default function registerUserEndpoints(router: Router) {
     })
   );
 
-  const target = config.require('JB_RHIANNON_URL');
   router.use('/friend-suggestions', proxy({ target }));
 
   router.get(

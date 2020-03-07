@@ -61,10 +61,10 @@
   * [ ] DELETE /twitter-token
 
 * [ ] Users routes
-  * [ ] GET /me
+  * [x] GET /me
   * [ ] POST /following
   * [ ] DELETE /following/:name
-  * [ ] GET /friend-suggestions
+  * [x] GET /friend-suggestions
   * [ ] GET /users/:name/following
   * [ ] GET /users/:name/followers
 

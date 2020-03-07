@@ -45,17 +45,6 @@ export interface Notification {
   message?: string;
 }
 
-export interface CurrentUser {
-  id: number;
-  name: string;
-  following: PublicUser[];
-  colorScheme: ColorScheme | null;
-  twitterName: string | null;
-  showInPublicFeed: boolean;
-  email: string;
-  unreadNotificationCount: number;
-}
-
 export interface Followers {
   userProfile: UserProfile;
   users: PublicUser[];

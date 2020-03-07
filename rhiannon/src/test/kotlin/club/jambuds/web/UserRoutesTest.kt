@@ -3,6 +3,9 @@ package club.jambuds.web
 import club.jambuds.AppTest
 import club.jambuds.getGson
 import club.jambuds.helpers.TestDataFactories
+import club.jambuds.responses.CurrentUser
+import club.jambuds.responses.GetCurrentUserResponse
+import club.jambuds.responses.PublicUser
 import club.jambuds.responses.TwitterFriendSuggestionsResponse
 import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
@@ -13,6 +16,45 @@ import kotlin.test.assertEquals
 
 class UserRoutesTest : AppTest() {
     private val gson = getGson()
+
+    @Test
+    fun `GET me - returns null when logged out`() {
+        val resp = Unirest.get("$appUrl/me")
+            .asString()
+        assertEquals(200, resp.status)
+
+        val body = gson.fromJson(resp.body, GetCurrentUserResponse::class.java)
+        assertEquals(null, body.user)
+    }
+
+    @Test
+    fun `GET me - returns user when logged in`() {
+        val jeff = TestDataFactories.createUser(txn, "jeff", true, hasTwitter = true)
+        val authToken = TestDataFactories.createAuthToken(txn, jeff.id)
+
+        val vinny = TestDataFactories.createUser(txn, "vinny", true, hasTwitter = true)
+        TestDataFactories.createUser(txn, "brad", true, hasTwitter = true)
+        TestDataFactories.followUser(txn, jeff.id, vinny.id)
+
+        val resp = Unirest.get("$appUrl/me")
+            .header("X-Auth-Token", authToken)
+            .asString()
+        assertEquals(200, resp.status)
+
+        val body = gson.fromJson(resp.body, GetCurrentUserResponse::class.java)
+        val expectedUser = CurrentUser(
+            id = jeff.id,
+            name = "jeff",
+            showInPublicFeed = true,
+            email = jeff.email,
+            twitterName = jeff.twitterName,
+            following = listOf(PublicUser(id = vinny.id, name = vinny.name)),
+            // TODO: test these
+            unreadNotificationCount = 0,
+            colorScheme = null
+        )
+        assertEquals(expectedUser, body.user)
+    }
 
     @Test
     fun `GET friend-suggestions - returns twitter-followed users who are not already jam buds friends`() {

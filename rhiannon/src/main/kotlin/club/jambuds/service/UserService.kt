@@ -1,9 +1,12 @@
 package club.jambuds.service
 
 import club.jambuds.dao.ColorSchemeDao
+import club.jambuds.dao.NotificationsDao
 import club.jambuds.dao.UserDao
 import club.jambuds.dao.cache.TwitterFollowingCacheDao
 import club.jambuds.model.User
+import club.jambuds.responses.CurrentUser
+import club.jambuds.responses.PublicUser
 import club.jambuds.responses.PublicUserWithTwitterName
 import club.jambuds.responses.UserProfile
 import io.javalin.http.BadRequestResponse
@@ -11,6 +14,7 @@ import io.javalin.http.BadRequestResponse
 class UserService(
     private val userDao: UserDao,
     private val colorSchemeDao: ColorSchemeDao,
+    private val notificationsDao: NotificationsDao,
     private val twitterService: TwitterService,
     private val twitterFollowingCacheDao: TwitterFollowingCacheDao
 ) {
@@ -58,5 +62,23 @@ class UserService(
                 twitterName = it.twitterName!!
             )
         }
+    }
+
+    fun serializeCurrentUser(currentUser: User): CurrentUser {
+        val colorScheme = colorSchemeDao.getColorSchemeByUserId(currentUser.id)
+        val following = userDao.getFollowingForUserId(currentUser.id)
+        val notificationsCount = notificationsDao.getNewNotificationsCount(currentUser.id)
+        println(following)
+
+        return CurrentUser(
+            id = currentUser.id,
+            name = currentUser.name,
+            email = currentUser.email,
+            showInPublicFeed = currentUser.showInPublicFeed,
+            twitterName = currentUser.twitterName,
+            colorScheme = colorScheme,
+            following = following.map { PublicUser(id = it.id, name = it.name ) },
+            unreadNotificationCount = notificationsCount
+        )
     }
 }
