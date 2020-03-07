@@ -68,7 +68,6 @@ class UserService(
         val colorScheme = colorSchemeDao.getColorSchemeByUserId(currentUser.id)
         val following = userDao.getFollowingForUserId(currentUser.id)
         val notificationsCount = notificationsDao.getNewNotificationsCount(currentUser.id)
-        println(following)
 
         return CurrentUser(
             id = currentUser.id,
