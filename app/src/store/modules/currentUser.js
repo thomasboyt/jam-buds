@@ -69,7 +69,7 @@ const currentUser = {
         method: 'GET',
       });
 
-      context.commit('setDraftMixtapes', resp.data);
+      context.commit('setDraftMixtapes', resp.data.mixtapes);
     },
   },
 
