@@ -1,11 +1,5 @@
 import { Router } from 'express';
 import proxy from 'http-proxy-middleware';
-import wrapAsyncRoute from '../util/wrapAsyncRoute';
-
-import { UserModel } from '../models/user';
-
-import { isAuthenticated } from '../auth';
-import { getDraftMixtapesByUserId } from '../models/mixtapes';
 import config from '../config';
 import { restream } from '../util/restream';
 
@@ -20,16 +14,11 @@ export default function registerMixtapeEndpoints(router: Router) {
     })
   );
 
-  // Get draft mixtapes for the current user
-  router.get(
+  router.use(
     '/draft-mixtapes',
-    isAuthenticated,
-    wrapAsyncRoute(async (req, res) => {
-      const user = res.locals.user as UserModel;
-
-      const mixtapesList = await getDraftMixtapesByUserId(user.id);
-
-      res.json(mixtapesList);
+    proxy({
+      target,
+      onProxyReq: restream,
     })
   );
 }

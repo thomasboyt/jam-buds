@@ -12,12 +12,6 @@ export interface Song {
   likeCount: number;
 }
 
-export interface DraftMixtapeListItem {
-  id: number;
-  title: string;
-  slug: string;
-}
-
 /*
  * --- users ---
  */
