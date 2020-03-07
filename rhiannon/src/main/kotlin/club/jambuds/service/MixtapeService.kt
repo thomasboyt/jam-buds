@@ -141,4 +141,8 @@ class MixtapeService(
             throw BadRequestResponse("Cannot update already published mixtape")
         }
     }
+
+    fun getDraftMixtapesByUser(currentUser: User): List<Mixtape> {
+        return mixtapeDao.getDraftMixtapesByUserId(currentUser.id)
+    }
 }

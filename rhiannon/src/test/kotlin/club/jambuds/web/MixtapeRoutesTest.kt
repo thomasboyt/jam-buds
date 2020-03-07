@@ -6,6 +6,7 @@ import club.jambuds.helpers.TestDataFactories
 import club.jambuds.model.SongWithMeta
 import club.jambuds.model.cache.SearchCacheEntry
 import club.jambuds.responses.FeedPlaylistResponse
+import club.jambuds.responses.GetDraftMixtapesResponse
 import club.jambuds.responses.MixtapeWithSongsReponse
 import club.jambuds.responses.RenameMixtapeResponse
 import kong.unirest.HttpRequest
@@ -355,5 +356,24 @@ class MixtapeRoutesTest : AppTest() {
             .header("X-Auth-Token", authToken)
             .asString()
         assertEquals(401, resp.status)
+    }
+
+    @Test
+    fun `GET draft-mixtapes - returns draft mixtapes for current user`() {
+        val jeff = TestDataFactories.createUser(txn, "jeff", true)
+        val vinny = TestDataFactories.createUser(txn, "vinny", true)
+
+        val draftId = TestDataFactories.createMixtape(txn, jeff.id, false)
+        TestDataFactories.createMixtape(txn, jeff.id, true)
+        TestDataFactories.createMixtape(txn, vinny.id, false)
+
+        val authToken = TestDataFactories.createAuthToken(txn, jeff.id)
+        val resp = Unirest.get("$appUrl/draft-mixtapes")
+            .header("X-Auth-Token", authToken)
+            .asString()
+        assertEquals(200, resp.status)
+        val body = gson.fromJson(resp.body, GetDraftMixtapesResponse::class.java)
+        assertEquals(1, body.mixtapes.size)
+        assertEquals(draftId, body.mixtapes[0].id)
     }
 }

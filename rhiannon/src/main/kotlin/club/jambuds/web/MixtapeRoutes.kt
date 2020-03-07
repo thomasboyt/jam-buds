@@ -1,5 +1,6 @@
 package club.jambuds.web
 
+import club.jambuds.responses.GetDraftMixtapesResponse
 import club.jambuds.responses.RenameMixtapeResponse
 import club.jambuds.service.MixtapeService
 import club.jambuds.web.extensions.currentUser
@@ -22,6 +23,8 @@ class MixtapeRoutes(private val mixtapeService: MixtapeService) {
         ApiBuilder.post("/api/mixtapes/:mixtapeId/order", this::reorderSongsInMixtape)
         ApiBuilder.post("/api/mixtapes/:mixtapeId/title", this::renameMixtape)
         ApiBuilder.post("/api/mixtapes/:mixtapeId/publish", this::publishMixtape)
+
+        ApiBuilder.get("/api/draft-mixtapes", this::getDraftMixtapes)
     }
 
     data class CreateBody(
@@ -133,5 +136,11 @@ class MixtapeRoutes(private val mixtapeService: MixtapeService) {
         mixtapeService.publishMixtape(mixtapeId = mixtapeId, currentUser = currentUser)
 
         ctx.status(204)
+    }
+
+    private fun getDraftMixtapes(ctx: Context) {
+        val currentUser = ctx.requireUser()
+        val mixtapes = mixtapeService.getDraftMixtapesByUser(currentUser)
+        ctx.json(GetDraftMixtapesResponse(mixtapes))
     }
 }

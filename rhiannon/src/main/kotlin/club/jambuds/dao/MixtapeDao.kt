@@ -84,4 +84,9 @@ interface MixtapeDao : SqlObject {
                 .execute()
         }
     }
+
+    @SqlQuery(
+        "SELECT * FROM mixtapes WHERE user_id = :userId AND published_at IS NULL"
+    )
+    fun getDraftMixtapesByUserId(userId: Int): List<Mixtape>
 }

@@ -12,7 +12,7 @@
   * [X] PUT /likes/:songId
   * [X] DELETE /likes/:songId
 
-* [ ] Mixtape routes
+* [x] Mixtape routes
   * [X] GET /mixtapes/:id
   * [X] POST /mixtapes
   * [X] DELETE /mixtapes/:id
@@ -21,7 +21,7 @@
   * [X] POST /mixtapes/:mixtapeId/order
   * [X] POST /mixtapes/:mixtapeId/publish
   * [X] POST /mixtapes/:mixtapeId/title
-  * [ ] GET /draft-mixtapes
+  * [x] GET /draft-mixtapes
 
 * [ ] Notifications routes
   * [ ] GET /notifications
