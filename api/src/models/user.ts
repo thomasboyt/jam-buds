@@ -1,10 +1,7 @@
 import * as t from 'io-ts';
-import { date as dateType } from 'io-ts-types/lib/date';
 import { db } from '../db';
-import { PublicUser, CurrentUser, UserProfile } from '../resources';
-import { getFollowingForUserId } from './following';
+import { PublicUser, UserProfile } from '../resources';
 import { getColorSchemeForUserId } from './colorSchemes';
-import { getNewNotificationsCount } from './notifications';
 import { findOneOrThrow, findOne } from './utils';
 
 export const UserModelV = t.type({
@@ -91,26 +88,6 @@ export function serializePublicUser(user: UserModel): PublicUser {
   return {
     id: user.id,
     name: user.name,
-  };
-}
-
-export async function serializeCurrentUser(
-  user: UserModel
-): Promise<CurrentUser> {
-  const colorScheme = await getColorSchemeForUserId(user.id);
-  const followingUsers = await getFollowingForUserId(user.id);
-  const serializedUsers: PublicUser[] = followingUsers.map(serializePublicUser);
-  const unreadNotificationCount = await getNewNotificationsCount(user.id);
-
-  return {
-    id: user.id,
-    name: user.name,
-    following: serializedUsers,
-    colorScheme,
-    twitterName: user.twitterName,
-    showInPublicFeed: !!user.showInPublicFeed,
-    email: user.email,
-    unreadNotificationCount,
   };
 }
 
