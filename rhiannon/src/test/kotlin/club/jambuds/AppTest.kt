@@ -3,6 +3,7 @@ package club.jambuds
 import club.jambuds.dao.ColorSchemeDao
 import club.jambuds.dao.LikeDao
 import club.jambuds.dao.MixtapeDao
+import club.jambuds.dao.NotificationsDao
 import club.jambuds.dao.PostDao
 import club.jambuds.dao.ReportDao
 import club.jambuds.dao.SongDao
@@ -80,13 +81,20 @@ open class AppTest {
         val colorSchemeDao = txn.attach(ColorSchemeDao::class.java)
         val likeDao = txn.attach(LikeDao::class.java)
         val reportDao = txn.attach(ReportDao::class.java)
+        val notificationsDao = txn.attach(NotificationsDao::class.java)
         searchCacheDao = SearchCacheDao(redis)
         val twitterFollowingCacheDao = TwitterFollowingCacheDao(redis)
 
         val playlistService =
             PlaylistService(postDao, songDao, mixtapeDao, likeDao)
         val userService =
-            UserService(userDao, colorSchemeDao, mockTwitterService, twitterFollowingCacheDao)
+            UserService(
+                userDao,
+                colorSchemeDao,
+                notificationsDao,
+                mockTwitterService,
+                twitterFollowingCacheDao
+            )
         val searchService =
             SearchService(mockSpotifyApiService, mockAppleMusicService, songDao, searchCacheDao)
         val mixtapeService = MixtapeService(mixtapeDao, songDao, userService, searchService)

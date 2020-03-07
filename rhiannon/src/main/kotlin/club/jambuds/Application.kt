@@ -3,6 +3,7 @@ package club.jambuds
 import club.jambuds.dao.ColorSchemeDao
 import club.jambuds.dao.LikeDao
 import club.jambuds.dao.MixtapeDao
+import club.jambuds.dao.NotificationsDao
 import club.jambuds.dao.PostDao
 import club.jambuds.dao.ReportDao
 import club.jambuds.dao.SongDao
@@ -157,6 +158,7 @@ private fun wire(app: Javalin, config: Config) {
     val colorSchemeDao = jdbi.onDemand<ColorSchemeDao>()
     val likeDao = jdbi.onDemand<LikeDao>()
     val reportDao = jdbi.onDemand<ReportDao>()
+    val notificationsDao = jdbi.onDemand<NotificationsDao>()
     val searchCacheDao = SearchCacheDao(redis)
     val oAuthStateDao = OAuthStateDao(redis)
     val twitterFollowingCacheDao = TwitterFollowingCacheDao(redis)
@@ -164,7 +166,13 @@ private fun wire(app: Javalin, config: Config) {
     // Services
     val playlistService =
         PlaylistService(postDao, songDao, mixtapeDao, likeDao)
-    val userService = UserService(userDao, colorSchemeDao, twitterService, twitterFollowingCacheDao)
+    val userService = UserService(
+        userDao,
+        colorSchemeDao,
+        notificationsDao,
+        twitterService,
+        twitterFollowingCacheDao
+    )
     val searchService = SearchService(
         spotifyApiService,
         appleMusicService,
