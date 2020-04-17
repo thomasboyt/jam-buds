@@ -48,18 +48,8 @@ export async function getUserByAuthToken(
   return findOne(query, UserModelV);
 }
 
-export async function getUserByTwitterId(
-  twitterId: string
-): Promise<UserModel | null> {
-  return getUserWhere({ twitterId });
-}
-
 export async function getUserByName(name: string): Promise<UserModel | null> {
   return getUserWhere({ name });
-}
-
-export async function getUserByUserId(id: number): Promise<UserModel | null> {
-  return getUserWhere({ id });
 }
 
 export async function getUserByEmail(email: string): Promise<UserModel | null> {
