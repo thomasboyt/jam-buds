@@ -1,6 +1,6 @@
 import { db } from '../db';
 import { UserModel, UserModelV } from './user';
-import { createNotification, deleteNotification } from './notifications';
+import { createNotification } from './notifications';
 import { findMany } from './utils';
 
 export async function followUser(userId: number, followingId: number) {
@@ -14,23 +14,6 @@ export async function followUser(userId: number, followingId: number) {
   await query;
 
   await createNotification({
-    type: 'follow',
-    targetUserId: followingId,
-    notificationUserId: userId,
-  });
-}
-
-export async function unfollowUser(userId: number, followingId: number) {
-  const query = db!('following')
-    .where({
-      user_id: userId,
-      following_id: followingId,
-    })
-    .delete();
-
-  await query;
-
-  await deleteNotification({
     type: 'follow',
     targetUserId: followingId,
     notificationUserId: userId,
