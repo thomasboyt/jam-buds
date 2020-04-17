@@ -23,9 +23,9 @@
   * [X] POST /mixtapes/:mixtapeId/title
   * [x] GET /draft-mixtapes
 
-* [ ] Notifications routes
-  * [ ] GET /notifications
-  * [ ] POST /notifications/mark-all-read
+* [X] Notifications routes
+  * [X] GET /notifications
+  * [X] POST /notifications/mark-all-read
 
 * [x] Playlist routes
   * [X] GET /public-feed
@@ -62,8 +62,8 @@
 
 * [ ] Users routes
   * [x] GET /me
-  * [ ] POST /following
-  * [ ] DELETE /following/:name
+  * [X] POST /following
+  * [X] DELETE /following/:name
   * [x] GET /friend-suggestions
   * [ ] GET /users/:name/following
   * [ ] GET /users/:name/followers
