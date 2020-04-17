@@ -78,11 +78,3 @@ export async function findOneOrThrow<T extends t.TypeC<any>>(
 
   return row;
 }
-
-export async function findMany<T extends t.TypeC<any>>(
-  query: Knex.QueryBuilder,
-  model: T
-): Promise<t.TypeOf<T>[]> {
-  const rows = await query;
-  return rows.map((row: any) => validateOrThrow(model, row));
-}
