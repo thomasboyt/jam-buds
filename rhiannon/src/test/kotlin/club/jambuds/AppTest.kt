@@ -1,6 +1,7 @@
 package club.jambuds
 
 import club.jambuds.dao.ColorSchemeDao
+import club.jambuds.dao.FollowingDao
 import club.jambuds.dao.LikeDao
 import club.jambuds.dao.MixtapeDao
 import club.jambuds.dao.NotificationsDao
@@ -11,8 +12,10 @@ import club.jambuds.dao.UserDao
 import club.jambuds.dao.cache.SearchCacheDao
 import club.jambuds.dao.cache.TwitterFollowingCacheDao
 import club.jambuds.service.AppleMusicService
+import club.jambuds.service.FollowingService
 import club.jambuds.service.LikeService
 import club.jambuds.service.MixtapeService
+import club.jambuds.service.NotificationService
 import club.jambuds.service.PlaylistService
 import club.jambuds.service.PostService
 import club.jambuds.service.ReportService
@@ -21,8 +24,10 @@ import club.jambuds.service.SpotifyApiService
 import club.jambuds.service.TwitterService
 import club.jambuds.service.UserService
 import club.jambuds.web.AuthHandlers
+import club.jambuds.web.FollowingRoutes
 import club.jambuds.web.LikeRoutes
 import club.jambuds.web.MixtapeRoutes
+import club.jambuds.web.NotificationRoutes
 import club.jambuds.web.PlaylistRoutes
 import club.jambuds.web.PostRoutes
 import club.jambuds.web.SearchRoutes
@@ -63,6 +68,7 @@ open class AppTest {
     lateinit var mockTwitterService: TwitterService
 
     lateinit var searchCacheDao: SearchCacheDao
+    lateinit var followingService: FollowingService
 
     fun wire(txn: Handle) {
         this.txn = txn
@@ -82,6 +88,8 @@ open class AppTest {
         val likeDao = txn.attach(LikeDao::class.java)
         val reportDao = txn.attach(ReportDao::class.java)
         val notificationsDao = txn.attach(NotificationsDao::class.java)
+        val followingDao = txn.attach(FollowingDao::class.java)
+
         searchCacheDao = SearchCacheDao(redis)
         val twitterFollowingCacheDao = TwitterFollowingCacheDao(redis)
 
@@ -106,6 +114,8 @@ open class AppTest {
         )
         val likeService = LikeService(likeDao, songDao)
         val reportService = ReportService(reportDao, postDao)
+        val notificationService = NotificationService(notificationsDao, userDao)
+        followingService = FollowingService(followingDao, userDao, notificationsDao)
 
         app.routes {
             AuthHandlers(userDao).register()
@@ -115,6 +125,8 @@ open class AppTest {
             PostRoutes(postService, reportService).register()
             LikeRoutes(likeService).register()
             UserRoutes(userService).register()
+            NotificationRoutes(notificationService).register()
+            FollowingRoutes(followingService).register()
         }
     }
 

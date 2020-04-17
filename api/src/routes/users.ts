@@ -1,87 +1,31 @@
 import { Router } from 'express';
+import proxy from 'http-proxy-middleware';
 
 import {
-  UserModel,
   getUserByName,
   serializePublicUser,
   getUserProfileForUser,
 } from '../models/user';
 
 import {
-  followUser,
-  unfollowUser,
   getFollowingForUserId,
   getFollowersForUserId,
 } from '../models/following';
 
-import { isAuthenticated } from '../auth';
-
 import { Followers, Following } from '../resources';
 import wrapAsyncRoute from '../util/wrapAsyncRoute';
 import config from '../config';
-import proxy = require('http-proxy-middleware');
+import { restream } from '../util/restream';
 
 export default function registerUserEndpoints(router: Router) {
   const target = config.require('JB_RHIANNON_URL');
   router.use('/me', proxy({ target }));
 
-  // follow a user
-  router.post(
+  router.use(
     '/following',
-    isAuthenticated,
-    wrapAsyncRoute(async (req, res) => {
-      const user: UserModel = res.locals.user;
-      const followingName: string = req.body.userName;
-
-      if (!followingName) {
-        res.status(400).json({
-          error: 'Missing userName parameter in body',
-        });
-
-        return;
-      }
-
-      const followingUser = await getUserByName(followingName);
-
-      if (!followingUser) {
-        res.status(400).json({
-          error: `Could not find user with name ${followingName}`,
-        });
-
-        return;
-      }
-
-      await followUser(user.id, followingUser.id);
-
-      res.json({
-        user: serializePublicUser(followingUser),
-      });
-    })
-  );
-
-  // unfollow a user
-  router.delete(
-    '/following/:followingName',
-    isAuthenticated,
-    wrapAsyncRoute(async (req, res) => {
-      const user: UserModel = res.locals.user;
-      const followingName: string = req.params.followingName;
-
-      const followingUser = await getUserByName(followingName);
-
-      if (!followingUser) {
-        res.status(400).json({
-          error: `Could not find user with name ${followingName}`,
-        });
-
-        return;
-      }
-
-      await unfollowUser(user.id, followingUser.id);
-
-      res.json({
-        success: true,
-      });
+    proxy({
+      target,
+      onProxyReq: restream,
     })
   );
 

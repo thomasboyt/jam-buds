@@ -1,41 +1,6 @@
 import Knex from 'knex';
-import { snakecase } from 'stringcase';
 import * as t from 'io-ts';
-import { db } from '../db';
 import validateOrThrow from '../util/validateOrThrow';
-
-/**
- * Utility function that creates dot-separated select aliases for fields:
- *
- * ```
- * namespacedAliases('books', 'book', ['title', 'author'])
- * ```
- *
- * becomes
- *
- * ```
- * "books"."title" AS "book.title", "books"."author" AS "book.author"
- * ```
- */
-export function namespacedAliases(
-  tableName: string,
-  keyName: string,
-  fields: string[]
-): string {
-  return fields
-    .map(
-      (fieldName) =>
-        `"${tableName}"."${snakecase(fieldName)}" AS "${keyName}.${fieldName}"`
-    )
-    .join(', ');
-}
-
-/**
- * Returns the list of property names of an io-ts Type.
- */
-export function tPropNames(ioType: t.TypeC<any>): string[] {
-  return Object.keys(ioType.props);
-}
 
 /**
  * Turns
@@ -83,14 +48,6 @@ export function splitByDot(obj: Record<string, any>): Record<string, any> {
 
     return acc;
   }, {});
-}
-
-export function selectNamespacedModel(
-  model: t.TypeC<any>,
-  tableName: string,
-  keyName: string
-) {
-  return db!.raw(namespacedAliases(tableName, keyName, tPropNames(model)));
 }
 
 export async function findOne<T extends t.TypeC<any>>(

@@ -31,14 +31,6 @@ export interface UserProfile {
   colorScheme: ColorScheme | null;
 }
 
-export interface Notification {
-  id: number;
-  type: 'like' | 'follow' | 'joined' | 'system';
-  user?: PublicUser | PublicUserWithTwitter;
-  song?: Song;
-  message?: string;
-}
-
 export interface Followers {
   userProfile: UserProfile;
   users: PublicUser[];
