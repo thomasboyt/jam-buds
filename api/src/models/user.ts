@@ -1,7 +1,5 @@
 import * as t from 'io-ts';
 import { db } from '../db';
-import { PublicUser, UserProfile } from '../resources';
-import { getColorSchemeForUserId } from './colorSchemes';
 import { findOneOrThrow, findOne } from './utils';
 
 export const UserModelV = t.type({
@@ -50,45 +48,12 @@ export async function getUserByAuthToken(
   return findOne(query, UserModelV);
 }
 
-export async function getUserByTwitterId(
-  twitterId: string
-): Promise<UserModel | null> {
-  return getUserWhere({ twitterId });
-}
-
 export async function getUserByName(name: string): Promise<UserModel | null> {
   return getUserWhere({ name });
 }
 
-export async function getUserByUserId(id: number): Promise<UserModel | null> {
-  return getUserWhere({ id });
-}
-
 export async function getUserByEmail(email: string): Promise<UserModel | null> {
   return getUserWhere({ email });
-}
-
-export async function getUserProfileForUser(
-  user: UserModel
-): Promise<UserProfile> {
-  const colorScheme = await getColorSchemeForUserId(user.id);
-
-  return {
-    id: user.id,
-    name: user.name,
-    colorScheme,
-  };
-}
-
-//
-// Serialization methods
-//
-
-export function serializePublicUser(user: UserModel): PublicUser {
-  return {
-    id: user.id,
-    name: user.name,
-  };
 }
 
 //

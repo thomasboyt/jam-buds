@@ -76,8 +76,18 @@ class UserService(
             showInPublicFeed = currentUser.showInPublicFeed,
             twitterName = currentUser.twitterName,
             colorScheme = colorScheme,
-            following = following.map { PublicUser(id = it.id, name = it.name ) },
+            following = following.map { PublicUser(id = it.id, name = it.name) },
             unreadNotificationCount = notificationsCount
         )
+    }
+
+    fun getFollowingByUserId(userId: Int): List<PublicUser> {
+        val users = userDao.getFollowingForUserId(userId)
+        return users.map { PublicUser( id = it.id, name = it.name )}
+    }
+
+    fun getFollowersByUserId(userId: Int): List<PublicUser> {
+        val users = userDao.getFollowersForUserId(userId)
+        return users.map { PublicUser( id = it.id, name = it.name )}
     }
 }

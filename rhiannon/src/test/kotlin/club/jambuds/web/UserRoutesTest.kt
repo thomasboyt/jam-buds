@@ -7,12 +7,14 @@ import club.jambuds.responses.CurrentUser
 import club.jambuds.responses.GetCurrentUserResponse
 import club.jambuds.responses.PublicUser
 import club.jambuds.responses.TwitterFriendSuggestionsResponse
+import club.jambuds.responses.UserFollowingResponse
 import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import kong.unirest.Unirest
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class UserRoutesTest : AppTest() {
     private val gson = getGson()
@@ -62,10 +64,10 @@ class UserRoutesTest : AppTest() {
         val authToken = TestDataFactories.createAuthToken(txn, jeff.id)
 
         val vinny = TestDataFactories.createUser(txn, "vinny", true, hasTwitter = true)
-        val brad = TestDataFactories.createUser(txn, "vinny", true, hasTwitter = true)
-        val dan = TestDataFactories.createUser(txn, "vinny", true, hasTwitter = true)
-        val alex = TestDataFactories.createUser(txn, "vinny", true, hasTwitter = false)
-        val abby = TestDataFactories.createUser(txn, "vinny", true, hasTwitter = false)
+        val brad = TestDataFactories.createUser(txn, "brad", true, hasTwitter = true)
+        TestDataFactories.createUser(txn, "dan", true, hasTwitter = true)
+        val alex = TestDataFactories.createUser(txn, "alex", true, hasTwitter = false)
+        TestDataFactories.createUser(txn, "abby", true, hasTwitter = false)
 
         TestDataFactories.followUser(txn, jeff.id, brad.id)
         TestDataFactories.followUser(txn, jeff.id, alex.id)
@@ -91,5 +93,48 @@ class UserRoutesTest : AppTest() {
 
         // ensure cached friends list was used
         verify(mockTwitterService, times(1)).getTwitterFriendIds(jeff)
+    }
+
+    @Test
+    fun `GET users_(userName)_followers - returns followers for user`() {
+        val jeff = TestDataFactories.createUser(txn, "jeff", true)
+
+        TestDataFactories.createUser(txn, "vinny", true)
+        val brad = TestDataFactories.createUser(txn, "brad", true)
+        TestDataFactories.createUser(txn, "dan", true)
+        val alex = TestDataFactories.createUser(txn, "alex", true)
+        TestDataFactories.createUser(txn, "abby", true)
+
+        TestDataFactories.followUser(txn, brad.id, jeff.id)
+        TestDataFactories.followUser(txn, alex.id, jeff.id)
+
+        val resp = Unirest.get("$appUrl/users/jeff/followers").asString()
+        assertEquals(200, resp.status)
+        var body = gson.fromJson(resp.body, UserFollowingResponse::class.java)
+        assertEquals(2, body.users.size)
+        println(body.users)
+        assertTrue(body.users.map { it.id }.contains(brad.id))
+        assertTrue(body.users.map { it.id }.contains(alex.id))
+    }
+
+    @Test
+    fun `GET users_(userName)_following - returns following for user`() {
+        val jeff = TestDataFactories.createUser(txn, "jeff", true)
+
+        TestDataFactories.createUser(txn, "vinny", true)
+        val brad = TestDataFactories.createUser(txn, "brad", true)
+        TestDataFactories.createUser(txn, "dan", true)
+        val alex = TestDataFactories.createUser(txn, "alex", true)
+        TestDataFactories.createUser(txn, "abby", true)
+
+        TestDataFactories.followUser(txn, jeff.id, brad.id)
+        TestDataFactories.followUser(txn, jeff.id, alex.id)
+
+        val resp = Unirest.get("$appUrl/users/jeff/following").asString()
+        assertEquals(200, resp.status)
+        var body = gson.fromJson(resp.body, UserFollowingResponse::class.java)
+        assertEquals(2, body.users.size)
+        assertTrue(body.users.map { it.id }.contains(brad.id))
+        assertTrue(body.users.map { it.id }.contains(alex.id))
     }
 }

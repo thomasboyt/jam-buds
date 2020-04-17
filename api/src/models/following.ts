@@ -1,7 +1,5 @@
 import { db } from '../db';
-import { UserModel, UserModelV } from './user';
 import { createNotification } from './notifications';
-import { findMany } from './utils';
 
 export async function followUser(userId: number, followingId: number) {
   const query = db!
@@ -18,24 +16,4 @@ export async function followUser(userId: number, followingId: number) {
     targetUserId: followingId,
     notificationUserId: userId,
   });
-}
-
-export async function getFollowingForUserId(
-  userId: number
-): Promise<UserModel[]> {
-  const query = db!('following')
-    .where({ user_id: userId })
-    .join('users', { 'users.id': 'following.following_id' });
-
-  return findMany(query, UserModelV);
-}
-
-export async function getFollowersForUserId(
-  userId: number
-): Promise<UserModel[]> {
-  const query = db!('following')
-    .where({ following_id: userId })
-    .join('users', { 'users.id': 'following.user_id' });
-
-  return findMany(query, UserModelV);
 }
