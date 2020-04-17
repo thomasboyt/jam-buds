@@ -24,4 +24,7 @@ interface UserDao {
 
     @SqlQuery
     fun getFollowingForUserId(userId: Int): List<User>
+
+    @SqlQuery
+    fun getUsersByIds(@BindList("userIds") userIds: List<Int>): List<User>
 }

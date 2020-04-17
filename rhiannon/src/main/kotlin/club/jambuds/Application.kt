@@ -1,6 +1,7 @@
 package club.jambuds
 
 import club.jambuds.dao.ColorSchemeDao
+import club.jambuds.dao.FollowingDao
 import club.jambuds.dao.LikeDao
 import club.jambuds.dao.MixtapeDao
 import club.jambuds.dao.NotificationsDao
@@ -12,8 +13,10 @@ import club.jambuds.dao.cache.OAuthStateDao
 import club.jambuds.dao.cache.SearchCacheDao
 import club.jambuds.dao.cache.TwitterFollowingCacheDao
 import club.jambuds.service.AppleMusicService
+import club.jambuds.service.FollowingService
 import club.jambuds.service.LikeService
 import club.jambuds.service.MixtapeService
+import club.jambuds.service.NotificationService
 import club.jambuds.service.PlaylistService
 import club.jambuds.service.PostService
 import club.jambuds.service.ReportService
@@ -25,8 +28,10 @@ import club.jambuds.service.UserService
 import club.jambuds.util.InstantTypeAdapter
 import club.jambuds.util.LocalDateTimeTypeAdapter
 import club.jambuds.web.AuthHandlers
+import club.jambuds.web.FollowingRoutes
 import club.jambuds.web.LikeRoutes
 import club.jambuds.web.MixtapeRoutes
+import club.jambuds.web.NotificationRoutes
 import club.jambuds.web.PlaylistRoutes
 import club.jambuds.web.PostRoutes
 import club.jambuds.web.SearchRoutes
@@ -159,6 +164,8 @@ private fun wire(app: Javalin, config: Config) {
     val likeDao = jdbi.onDemand<LikeDao>()
     val reportDao = jdbi.onDemand<ReportDao>()
     val notificationsDao = jdbi.onDemand<NotificationsDao>()
+    val followingDao = jdbi.onDemand<FollowingDao>()
+
     val searchCacheDao = SearchCacheDao(redis)
     val oAuthStateDao = OAuthStateDao(redis)
     val twitterFollowingCacheDao = TwitterFollowingCacheDao(redis)
@@ -191,6 +198,8 @@ private fun wire(app: Javalin, config: Config) {
         config.getString("spotifyClientId"),
         config.getString("spotifyClientSecret")
     )
+    val followingService = FollowingService(followingDao, userDao, notificationsDao)
+    val notificationService = NotificationService(notificationsDao, userDao)
 
     // Routes
     app.routes {
@@ -202,6 +211,8 @@ private fun wire(app: Javalin, config: Config) {
         LikeRoutes(likeService).register()
         SpotifyAuthRoutes(spotifyAuthService).register()
         UserRoutes(userService).register()
+        FollowingRoutes(followingService).register()
+        NotificationRoutes(notificationService).register()
     }
 }
 

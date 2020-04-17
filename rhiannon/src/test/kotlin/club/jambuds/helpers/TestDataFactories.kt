@@ -101,7 +101,7 @@ object TestDataFactories {
     }
 
     fun createAuthToken(txn: Handle, userId: Int): String {
-        val token = "testAuthToken"
+        val token = generateRandomString(16)
         txn.createUpdate("insert into auth_tokens (user_id, auth_token) values (:userId, :authToken)")
             .bind("userId", userId)
             .bind("authToken", token)
