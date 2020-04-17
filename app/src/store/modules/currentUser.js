@@ -36,8 +36,8 @@ const currentUser = {
   actions: {
     async followUser(context, name) {
       const resp = await this.$axios({
-        url: '/following',
-        method: 'POST',
+        url: `/following/${name}`,
+        method: 'PUT',
         data: {
           userName: name,
         },
