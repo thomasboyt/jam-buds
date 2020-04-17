@@ -8,6 +8,19 @@
   * [ ] POST /registration (create new account)
   * [ ] POST /sign-out
 
+* [ ] Settings routes
+  * [ ] GET /settings/email-subscription
+  * [ ] POST /settings/email-subscription
+  * [ ] DELETE /settings/email-subscription
+  * [ ] POST /settings/color-scheme
+  * [ ] POST /settings/go-public
+  * [ ] POST /settings/go-private
+
+* [ ] Twitter auth
+  * [ ] GET /twitter-connect
+  * [ ] GET /twitter-connect/cb
+  * [ ] DELETE /twitter-token
+
 * [X] Like routes
   * [X] PUT /likes/:songId
   * [X] DELETE /likes/:songId
@@ -41,32 +54,19 @@
   * [X] GET /spotify-search
   * [X] GET /spotify-details/:spotifyId
 
-* [ ] Settings routes
-  * [ ] GET /settings/email-subscription
-  * [ ] POST /settings/email-subscription
-  * [ ] DELETE /settings/email-subscription
-  * [ ] POST /settings/color-scheme
-  * [ ] POST /settings/go-public
-  * [ ] POST /settings/go-private
-
 * [x] Spotify auth
   * [x] GET /spotify-connect
   * [x] GET /spotify-connect/cb
   * [x] GET /spotify-token
   * [x] DELETE /spotify-token
 
-* [ ] Twitter auth
-  * [ ] GET /twitter-connect
-  * [ ] GET /twitter-connect/cb
-  * [ ] DELETE /twitter-token
-
 * [ ] Users routes
   * [x] GET /me
   * [X] POST /following
   * [X] DELETE /following/:name
   * [x] GET /friend-suggestions
-  * [ ] GET /users/:name/following
-  * [ ] GET /users/:name/followers
+  * [x] GET /users/:name/following
+  * [x] GET /users/:name/followers
 
 ### Other major tasks:
 
