@@ -15,4 +15,4 @@ USER node
 RUN npm run build-prod -b
 
 EXPOSE 3000
-CMD [ "node", "build/src/entry.js" ]
+CMD [ "node", "build/entry.js" ]
