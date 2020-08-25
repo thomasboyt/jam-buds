@@ -7,7 +7,7 @@ import * as Sentry from '@sentry/node';
 import config from './config';
 import { errorHandlerMiddleware } from './util/errors';
 
-import registerAuthEndpoints from './routes/auth';
+import { registerAuthApiEndpoints, registerAuthEndpoints } from './routes/auth';
 import registerUserEndpoints from './routes/users';
 import registerSearchEndpoints from './routes/search';
 import registerPlaylistEndpoints from './routes/playlists';
@@ -48,6 +48,7 @@ export default function createApp() {
 
   const apiRouter = express.Router();
 
+  registerAuthApiEndpoints(apiRouter);
   registerUserEndpoints(apiRouter);
   registerSearchEndpoints(apiRouter);
   registerPlaylistEndpoints(apiRouter);

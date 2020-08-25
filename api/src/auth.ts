@@ -42,24 +42,6 @@ export async function getUserFromCookie(req: Request): Promise<UserModel> {
   return user;
 }
 
-export async function maybeGetUserFromCookie(
-  req: Request
-): Promise<UserModel | null> {
-  const token = req.cookies[AUTH_TOKEN_COOKIE];
-
-  if (!token) {
-    return null;
-  }
-
-  const user = await getUserByAuthToken(token);
-
-  if (!user) {
-    return null;
-  }
-
-  return user;
-}
-
 /**
  * Middleware that prevents a user from accessing a resource if they're not authenticated.
  */
