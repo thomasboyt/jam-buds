@@ -1,6 +1,7 @@
 package club.jambuds.web.extensions
 
 import club.jambuds.model.User
+import club.jambuds.util.FormValidationErrorResponse
 import io.javalin.Javalin
 import io.javalin.http.BadRequestResponse
 import io.javalin.http.Context
@@ -38,9 +39,8 @@ fun <T> Context.validateJsonBody(clazz: Class<T>): T {
     val validator = factory.validator
     val violations = validator.validate(jsonBody)
     if (violations.size > 0) {
-        val first = violations.first()
-        val path = first.propertyPath.joinToString(".")
-        throw BadRequestResponse("Error validating response body: $path: ${first.message}")
+        val errors = violations.map { it.propertyPath.joinToString(".") to it.message }
+        throw FormValidationErrorResponse(errors)
     }
 
     return jsonBody

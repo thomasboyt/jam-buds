@@ -1,13 +1,14 @@
 package club.jambuds.service
 
 import club.jambuds.dao.NotificationsDao
+import club.jambuds.dao.UserDao
 import club.jambuds.model.NotificationType
 import club.jambuds.responses.NotificationItem
 import club.jambuds.responses.PublicUser
 
 class NotificationService(
     private val notificationsDao: NotificationsDao,
-    private val userDao: club.jambuds.dao.UserDao
+    private val userDao: UserDao
 ) {
     fun getUnreadNotificationsByUserId(userId: Int): List<NotificationItem> {
         val notifications = notificationsDao.getNewNotificationsByUserId(userId)

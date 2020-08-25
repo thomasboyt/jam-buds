@@ -25,4 +25,5 @@
     <logger name="org.hibernate.validator" level="INFO"/>
     <logger name="io.lettuce.core" level="INFO"/>
     <logger name="io.sentry" level="INFO"/>
+    <logger name="com.mitchellbosecke.pebble" level="INFO"/>
 </configuration>

@@ -3,7 +3,9 @@ package club.jambuds.dao
 import club.jambuds.model.User
 import org.jdbi.v3.sqlobject.customizer.BindList
 import org.jdbi.v3.sqlobject.locator.UseClasspathSqlLocator
+import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys
 import org.jdbi.v3.sqlobject.statement.SqlQuery
+import org.jdbi.v3.sqlobject.statement.SqlUpdate
 
 @UseClasspathSqlLocator
 interface UserDao {
@@ -15,6 +17,9 @@ interface UserDao {
 
     @SqlQuery
     fun getUserByUserId(userId: Int): User?
+
+    @SqlQuery
+    fun getUserByEmail(email: String): User?
 
     @SqlQuery
     fun getUnfollowedUsersByTwitterIds(
@@ -30,4 +35,8 @@ interface UserDao {
 
     @SqlQuery
     fun getUsersByIds(@BindList("userIds") userIds: List<Int>): List<User>
+
+    @SqlUpdate
+    @GetGeneratedKeys
+    fun createUser(email: String, name: String, showInPublicFeed: Boolean): User
 }

@@ -1,5 +1,6 @@
 package club.jambuds
 
+import club.jambuds.dao.AuthTokenDao
 import club.jambuds.dao.ColorSchemeDao
 import club.jambuds.dao.FollowingDao
 import club.jambuds.dao.LikeDao
@@ -7,12 +8,15 @@ import club.jambuds.dao.MixtapeDao
 import club.jambuds.dao.NotificationsDao
 import club.jambuds.dao.PostDao
 import club.jambuds.dao.ReportDao
+import club.jambuds.dao.SignInTokenDao
 import club.jambuds.dao.SongDao
 import club.jambuds.dao.UserDao
 import club.jambuds.dao.cache.OAuthStateDao
 import club.jambuds.dao.cache.SearchCacheDao
 import club.jambuds.dao.cache.TwitterFollowingCacheDao
 import club.jambuds.service.AppleMusicService
+import club.jambuds.service.AuthService
+import club.jambuds.service.EmailService
 import club.jambuds.service.FollowingService
 import club.jambuds.service.LikeService
 import club.jambuds.service.MixtapeService
@@ -28,6 +32,7 @@ import club.jambuds.service.UserService
 import club.jambuds.util.InstantTypeAdapter
 import club.jambuds.util.LocalDateTimeTypeAdapter
 import club.jambuds.web.AuthHandlers
+import club.jambuds.web.AuthRoutes
 import club.jambuds.web.FollowingRoutes
 import club.jambuds.web.LikeRoutes
 import club.jambuds.web.MixtapeRoutes
@@ -165,6 +170,8 @@ private fun wire(app: Javalin, config: Config) {
     val reportDao = jdbi.onDemand<ReportDao>()
     val notificationsDao = jdbi.onDemand<NotificationsDao>()
     val followingDao = jdbi.onDemand<FollowingDao>()
+    val signInTokenDao = jdbi.onDemand<SignInTokenDao>()
+    val authTokenDao = jdbi.onDemand<AuthTokenDao>()
 
     val searchCacheDao = SearchCacheDao(redis)
     val oAuthStateDao = OAuthStateDao(redis)
@@ -201,6 +208,25 @@ private fun wire(app: Javalin, config: Config) {
     val followingService = FollowingService(followingDao, userDao, notificationsDao)
     val notificationService = NotificationService(notificationsDao, userDao)
 
+    val disableEmail = config.getBoolean("disableEmail")
+    val sgApiKey = if (disableEmail) {
+        "placeholder key"
+    } else {
+        config.getString("sendgridApiKey")
+    }
+    val emailService = EmailService(disableEmail, sgApiKey)
+
+    val authService =
+        AuthService(
+            userDao,
+            signInTokenDao,
+            authTokenDao,
+            followingService,
+            emailService,
+            appUrl = config.getString("appUrl"),
+            skipAuth = config.getBoolean("dangerSkipAuth")
+        )
+
     // Routes
     app.routes {
         AuthHandlers(userDao).register()
@@ -213,6 +239,7 @@ private fun wire(app: Javalin, config: Config) {
         UserRoutes(userService).register()
         FollowingRoutes(followingService).register()
         NotificationRoutes(notificationService).register()
+        AuthRoutes(authService, config.getString("appUrl")).register()
     }
 }
 
