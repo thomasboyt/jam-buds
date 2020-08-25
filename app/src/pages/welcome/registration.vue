@@ -31,8 +31,6 @@
 </template>
 
 <script>
-import axios from 'axios';
-
 import FieldErrorDisplay from '../../components/FieldErrorDisplay.vue';
 import RegistrationNameUrlField from '../../components/RegistrationNameUrlField.vue';
 import SettingsButton from '../../components/settings/SettingsButton.vue';
@@ -65,18 +63,17 @@ export default {
       this.didError = false;
       this.requestInFlight = true;
 
-      let resp;
       try {
-        resp = await axios.post('/auth/registration', {
+        await this.$axios.post('registration', {
           token: this.$route.query.t,
-
           name: this.name,
           showInPublicFeed: this.showInPublicFeed,
           subscribeToNewsletter: this.subscribeToNewsletter,
+          referral: this.$route.query.referral,
         });
       } catch (err) {
-        if (err.response && err.response.data && err.response.data.errors) {
-          this.errors = err.response.data.errors;
+        if (err.response && err.response.data && err.response.data.details) {
+          this.errors = err.response.data.details[0];
         } else {
           this.$store.commit('showErrorModal');
           throw err;
@@ -86,9 +83,7 @@ export default {
         return;
       }
 
-      if (resp.status === 200) {
-        document.location = '/welcome/connect';
-      }
+      document.location = '/welcome/connect';
     },
   },
 };

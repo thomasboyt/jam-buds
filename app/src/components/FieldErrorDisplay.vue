@@ -1,6 +1,6 @@
 <template>
-  <div class="error-display" v-if="fieldErrors">
-    {{ fieldErrors[0].text }}
+  <div class="error-display" v-if="fieldError">
+    {{ fieldError }}
   </div>
 </template>
 
@@ -9,11 +9,8 @@ export default {
   props: ['errors', 'name'],
 
   computed: {
-    fieldErrors() {
-      return (
-        this.errors &&
-        this.errors.filter((errors) => errors.fieldName === this.name)
-      );
+    fieldError() {
+      return this.errors && this.errors[this.name];
     },
   },
 };

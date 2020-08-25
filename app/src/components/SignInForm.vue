@@ -14,8 +14,6 @@
 </template>
 
 <script>
-import axios from 'axios';
-
 export default {
   data() {
     return {
@@ -34,7 +32,7 @@ export default {
       try {
         this.requestInFlight = true;
 
-        resp = await axios.post('/auth/sign-in-token', {
+        resp = await this.$axios.post('sign-in-token', {
           email,
           signupReferral: this.$route.query['signup-ref'],
         });

@@ -6,10 +6,7 @@
 
     <p>
       what up,
-      <nuxt-link
-        :to="`/users/${currentUserName}`"
-        @click.native="handleClick"
-      >
+      <nuxt-link :to="`/users/${currentUserName}`" @click.native="handleClick">
         {{ currentUserName }}
       </nuxt-link>
     </p>
@@ -100,7 +97,7 @@ export default {
       try {
         await this.$axios({
           baseURL: null,
-          url: '/auth/sign-out',
+          url: '/api/sign-out',
           method: 'POST',
         });
       } catch (err) {
