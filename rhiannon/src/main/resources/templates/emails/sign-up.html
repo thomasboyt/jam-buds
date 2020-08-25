@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% from "cta.html" import cta %}
+
+{% block preheader %}
+Click here to sign up.
+{% endblock %}
+
+{% block header %}
+<h1>Hi there!</h1>
+{% endblock %}
+
+{% block main %}
+<p>Welcome to Jam Buds! Just click the link below to get started:</p>
+{{ cta(ctaUrl=registrationLink, ctaText='Sign up now!') }}
+{% endblock %}

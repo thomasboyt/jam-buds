@@ -1,0 +1,5 @@
+Hey {{name}}!
+
+Welcome back to Jam Buds! Just click this link to sign back in:
+
+{{signInLink}}

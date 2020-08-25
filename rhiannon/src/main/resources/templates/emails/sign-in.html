@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% import "cta.html" %}
+
+{% block preheader %}
+Click here to sign in.
+{% endblock %}
+
+{% block header %}
+<h1>Hey {{name}}!</h1>
+{% endblock %}
+
+{% block main %}
+<p>Welcome back! Just click the link below to sign back in:</p>
+{{ cta(ctaUrl=signInLink, ctaText='Log in!') }}
+{% endblock %}
