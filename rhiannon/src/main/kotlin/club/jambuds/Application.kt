@@ -1,5 +1,7 @@
 package club.jambuds
 
+import club.jambuds.clients.DevEmailClient
+import club.jambuds.clients.SendgridClient
 import club.jambuds.dao.AuthTokenDao
 import club.jambuds.dao.ColorSchemeDao
 import club.jambuds.dao.FollowingDao
@@ -209,12 +211,12 @@ private fun wire(app: Javalin, config: Config) {
     val notificationService = NotificationService(notificationsDao, userDao)
 
     val disableEmail = config.getBoolean("disableEmail")
-    val sgApiKey = if (disableEmail) {
-        "placeholder key"
+    val emailClient = if (disableEmail) {
+        DevEmailClient()
     } else {
-        config.getString("sendgridApiKey")
+        SendgridClient(config.getString("sendgridApiKey"))
     }
-    val emailService = EmailService(disableEmail, sgApiKey)
+    val emailService = EmailService(emailClient)
 
     val authService =
         AuthService(

@@ -1,5 +1,7 @@
 package club.jambuds
 
+import club.jambuds.clients.EmailClient
+import club.jambuds.dao.AuthTokenDao
 import club.jambuds.dao.ColorSchemeDao
 import club.jambuds.dao.FollowingDao
 import club.jambuds.dao.LikeDao
@@ -7,11 +9,14 @@ import club.jambuds.dao.MixtapeDao
 import club.jambuds.dao.NotificationsDao
 import club.jambuds.dao.PostDao
 import club.jambuds.dao.ReportDao
+import club.jambuds.dao.SignInTokenDao
 import club.jambuds.dao.SongDao
 import club.jambuds.dao.UserDao
 import club.jambuds.dao.cache.SearchCacheDao
 import club.jambuds.dao.cache.TwitterFollowingCacheDao
 import club.jambuds.service.AppleMusicService
+import club.jambuds.service.AuthService
+import club.jambuds.service.EmailService
 import club.jambuds.service.FollowingService
 import club.jambuds.service.LikeService
 import club.jambuds.service.MixtapeService
@@ -24,6 +29,7 @@ import club.jambuds.service.SpotifyApiService
 import club.jambuds.service.TwitterService
 import club.jambuds.service.UserService
 import club.jambuds.web.AuthHandlers
+import club.jambuds.web.AuthRoutes
 import club.jambuds.web.FollowingRoutes
 import club.jambuds.web.LikeRoutes
 import club.jambuds.web.MixtapeRoutes
@@ -58,7 +64,8 @@ import java.lang.reflect.Method
 )
 open class AppTest {
     private val testAppPort = 7001 // TODO: allow configuration?
-    val appUrl = "http://localhost:$testAppPort/api"
+    val appUrl = "http://localhost:$testAppPort/api" // TODO: rename to apiUrl
+    val authUrl = "http://localhost:$testAppPort/auth"
 
     lateinit var txn: Handle
     private lateinit var app: Javalin
@@ -66,6 +73,7 @@ open class AppTest {
     lateinit var mockSpotifyApiService: SpotifyApiService
     lateinit var mockAppleMusicService: AppleMusicService
     lateinit var mockTwitterService: TwitterService
+    lateinit var mockEmailClient: EmailClient
 
     lateinit var searchCacheDao: SearchCacheDao
     lateinit var followingService: FollowingService
@@ -79,6 +87,7 @@ open class AppTest {
         mockSpotifyApiService = mock()
         mockAppleMusicService = mock()
         mockTwitterService = mock()
+        mockEmailClient = mock()
 
         val postDao = txn.attach(PostDao::class.java)
         val songDao = txn.attach(SongDao::class.java)
@@ -89,6 +98,8 @@ open class AppTest {
         val reportDao = txn.attach(ReportDao::class.java)
         val notificationsDao = txn.attach(NotificationsDao::class.java)
         val followingDao = txn.attach(FollowingDao::class.java)
+        val signInTokenDao = txn.attach(SignInTokenDao::class.java)
+        val authTokenDao = txn.attach(AuthTokenDao::class.java)
 
         searchCacheDao = SearchCacheDao(redis)
         val twitterFollowingCacheDao = TwitterFollowingCacheDao(redis)
@@ -116,6 +127,16 @@ open class AppTest {
         val reportService = ReportService(reportDao, postDao)
         val notificationService = NotificationService(notificationsDao, userDao)
         followingService = FollowingService(followingDao, userDao, notificationsDao)
+        val emailService = EmailService(mockEmailClient)
+        val authService = AuthService(
+            userDao,
+            signInTokenDao,
+            authTokenDao,
+            followingService,
+            emailService,
+            appUrl = config.getString("appUrl"),
+            skipAuth = false
+        )
 
         app.routes {
             AuthHandlers(userDao).register()
@@ -127,6 +148,7 @@ open class AppTest {
             UserRoutes(userService).register()
             NotificationRoutes(notificationService).register()
             FollowingRoutes(followingService).register()
+            AuthRoutes(authService, appUrl = config.getString("appUrl")).register()
         }
     }
 

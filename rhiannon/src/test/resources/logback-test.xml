@@ -15,6 +15,7 @@
     <logger name="com.zaxxer.hikari" level="INFO"/>
     <logger name="org.hibernate.validator" level="INFO"/>
     <logger name="io.lettuce.core" level="INFO"/>
+    <logger name="com.mitchellbosecke.pebble" level="INFO"/>
 
     <logger name="org.flywaydb.core" level="INFO"/>
 </configuration>
