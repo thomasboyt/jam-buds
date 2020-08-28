@@ -20,7 +20,7 @@ const currentUser = {
       Vue.set(state, 'friendSuggestions', suggestions);
     },
     updateColorScheme(state, scheme) {
-      state.colorScheme = scheme;
+      Vue.set(state, 'colorScheme', scheme);
     },
     disconnectedTwitter(state) {
       state.twitterName = null;
