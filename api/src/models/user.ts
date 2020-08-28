@@ -59,15 +59,3 @@ export async function deleteTwitterCredentialsFromUser(
     .where({ id: user.id })
     .update(updateParams);
 }
-
-export async function setUserFeedToPublic(user: UserModel): Promise<void> {
-  return db!('users')
-    .where({ id: user.id })
-    .update({ showInPublicFeed: true });
-}
-
-export async function setUserFeedToPrivate(user: UserModel): Promise<void> {
-  return db!('users')
-    .where({ id: user.id })
-    .update({ showInPublicFeed: false });
-}
