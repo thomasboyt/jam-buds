@@ -46,6 +46,7 @@ import org.flywaydb.core.Flyway
 import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.kotlin.useTransactionUnchecked
 import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.api.extension.ExtensionContext
 import org.junit.jupiter.api.extension.Extensions
@@ -75,6 +76,7 @@ open class AppTest {
     lateinit var mockTwitterService: TwitterService
     lateinit var mockEmailClient: EmailClient
 
+    lateinit var userDao: UserDao
     lateinit var searchCacheDao: SearchCacheDao
     lateinit var followingService: FollowingService
 
@@ -92,7 +94,7 @@ open class AppTest {
         val postDao = txn.attach(PostDao::class.java)
         val songDao = txn.attach(SongDao::class.java)
         val mixtapeDao = txn.attach(MixtapeDao::class.java)
-        val userDao = txn.attach(UserDao::class.java)
+        userDao = txn.attach(UserDao::class.java)
         val colorSchemeDao = txn.attach(ColorSchemeDao::class.java)
         val likeDao = txn.attach(LikeDao::class.java)
         val reportDao = txn.attach(ReportDao::class.java)
@@ -150,6 +152,11 @@ open class AppTest {
             FollowingRoutes(followingService).register()
             AuthRoutes(authService, appUrl = config.getString("appUrl")).register()
         }
+    }
+
+    @BeforeEach
+    internal fun beforeEach() {
+        Unirest.config().followRedirects(false)
     }
 
     @AfterEach
