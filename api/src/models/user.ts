@@ -1,6 +1,6 @@
 import * as t from 'io-ts';
 import { db } from '../db';
-import { findOneOrThrow, findOne } from './utils';
+import { findOne } from './utils';
 
 export const UserModelV = t.type({
   id: t.number,
@@ -15,29 +15,6 @@ export const UserModelV = t.type({
 
 export type UserModel = t.TypeOf<typeof UserModelV>;
 
-interface CreateUserOptions {
-  name: string;
-  email: string;
-  showInPublicFeed?: boolean;
-}
-
-export async function createUser(opts: CreateUserOptions): Promise<UserModel> {
-  const query = db!
-    .insert(opts)
-    .returning('*')
-    .into('users');
-
-  return findOneOrThrow(query, UserModelV);
-}
-
-async function getUserWhere(
-  params: Partial<UserModel>
-): Promise<UserModel | null> {
-  const query = db!('users').where(params);
-
-  return findOne(query, UserModelV);
-}
-
 export async function getUserByAuthToken(
   authToken: string
 ): Promise<UserModel | null> {
@@ -46,14 +23,6 @@ export async function getUserByAuthToken(
     .where({ authToken });
 
   return findOne(query, UserModelV);
-}
-
-export async function getUserByName(name: string): Promise<UserModel | null> {
-  return getUserWhere({ name });
-}
-
-export async function getUserByEmail(email: string): Promise<UserModel | null> {
-  return getUserWhere({ email });
 }
 
 //
