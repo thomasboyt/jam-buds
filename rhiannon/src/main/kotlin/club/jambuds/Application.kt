@@ -2,6 +2,7 @@ package club.jambuds
 
 import club.jambuds.clients.DevEmailClient
 import club.jambuds.clients.SendgridClient
+import club.jambuds.clients.createButtondownClient
 import club.jambuds.dao.AuthTokenDao
 import club.jambuds.dao.ColorSchemeDao
 import club.jambuds.dao.FollowingDao
@@ -18,6 +19,7 @@ import club.jambuds.dao.cache.SearchCacheDao
 import club.jambuds.dao.cache.TwitterFollowingCacheDao
 import club.jambuds.service.AppleMusicService
 import club.jambuds.service.AuthService
+import club.jambuds.service.ButtondownService
 import club.jambuds.service.EmailService
 import club.jambuds.service.FollowingService
 import club.jambuds.service.LikeService
@@ -218,6 +220,13 @@ private fun wire(app: Javalin, config: Config) {
     }
     val emailService = EmailService(emailClient)
 
+    val buttondownService = if (config.getBoolean("disableButtondown")) {
+        ButtondownService(null)
+    } else {
+        val buttondownClient = createButtondownClient(config.getString("buttondownApiKey"))
+        ButtondownService(buttondownClient)
+    }
+
     val authService =
         AuthService(
             userDao,
@@ -225,6 +234,7 @@ private fun wire(app: Javalin, config: Config) {
             authTokenDao,
             followingService,
             emailService,
+            buttondownService,
             appUrl = config.getString("appUrl"),
             skipAuth = config.getBoolean("dangerSkipAuth")
         )

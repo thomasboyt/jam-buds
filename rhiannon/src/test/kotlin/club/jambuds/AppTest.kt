@@ -16,6 +16,7 @@ import club.jambuds.dao.cache.SearchCacheDao
 import club.jambuds.dao.cache.TwitterFollowingCacheDao
 import club.jambuds.service.AppleMusicService
 import club.jambuds.service.AuthService
+import club.jambuds.service.ButtondownService
 import club.jambuds.service.EmailService
 import club.jambuds.service.FollowingService
 import club.jambuds.service.LikeService
@@ -75,6 +76,7 @@ open class AppTest {
     lateinit var mockAppleMusicService: AppleMusicService
     lateinit var mockTwitterService: TwitterService
     lateinit var mockEmailClient: EmailClient
+    lateinit var mockButtondownService: ButtondownService
 
     lateinit var userDao: UserDao
     lateinit var searchCacheDao: SearchCacheDao
@@ -90,6 +92,7 @@ open class AppTest {
         mockAppleMusicService = mock()
         mockTwitterService = mock()
         mockEmailClient = mock()
+        mockButtondownService = mock()
 
         val postDao = txn.attach(PostDao::class.java)
         val songDao = txn.attach(SongDao::class.java)
@@ -136,6 +139,7 @@ open class AppTest {
             authTokenDao,
             followingService,
             emailService,
+            mockButtondownService,
             appUrl = config.getString("appUrl"),
             skipAuth = false
         )

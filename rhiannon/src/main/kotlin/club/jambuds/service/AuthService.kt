@@ -7,7 +7,9 @@ import club.jambuds.responses.SendSignInTokenSkipAuthResponse
 import club.jambuds.util.FormValidationErrorResponse
 import club.jambuds.util.generateRandomString
 import io.javalin.http.BadRequestResponse
+import io.sentry.Sentry
 import org.slf4j.LoggerFactory
+import java.lang.Exception
 
 class AuthService(
     private val userDao: UserDao,
@@ -15,6 +17,7 @@ class AuthService(
     private val authTokenDao: AuthTokenDao,
     private val followingService: FollowingService,
     private val emailService: EmailService,
+    private val buttondownService: ButtondownService,
     private val appUrl: String,
     private val skipAuth: Boolean
 ) {
@@ -101,7 +104,12 @@ class AuthService(
         signInTokenDao.deleteSignInToken(token)
 
         if (subscribeToNewsletter) {
-            // TODO: Implement Buttondown newsletter subscription
+            try {
+                buttondownService.subscribe(email)
+            } catch (err: Exception) {
+                logger.error(err.message)
+                Sentry.capture(err)
+            }
         }
 
         if (referral != null) {

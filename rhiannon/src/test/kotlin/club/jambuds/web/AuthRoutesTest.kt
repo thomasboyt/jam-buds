@@ -187,6 +187,8 @@ class AuthRoutesTest : AppTest() {
 
         assertTrue(user.showInPublicFeed, "User should be shown in public feed")
 
+        verify(mockButtondownService, times(1)).subscribe("jeff@jambuds.club")
+
         val meResp = Unirest.get("$appUrl/me")
             .header("X-Auth-Token", authToken)
             .asString()
