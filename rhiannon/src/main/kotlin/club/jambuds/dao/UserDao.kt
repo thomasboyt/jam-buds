@@ -39,4 +39,7 @@ interface UserDao {
     @SqlUpdate
     @GetGeneratedKeys
     fun createUser(email: String, name: String, showInPublicFeed: Boolean): User
+
+    @SqlUpdate
+    fun updatePublicFeedVisibility(userId: Int, showInPublicFeed: Boolean)
 }

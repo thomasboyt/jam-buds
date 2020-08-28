@@ -7,9 +7,9 @@ import io.javalin.http.InternalServerErrorResponse
 // It would be nice if this had a separate "dev buttondown service" instead of the nullable client,
 // but this will scale okay for now. Tests use a mock service, of course.
 open class ButtondownService(private val client: ButtondownClient?) {
-    fun isSubscribed(email: String): Boolean {
+    fun getButtondownSubscriptionId(email: String): String? {
         if (client == null) {
-            return false
+            return null
         }
 
         val resp = client.getSubscribers(email = email, type = "regular").execute()
@@ -19,7 +19,14 @@ open class ButtondownService(private val client: ButtondownClient?) {
                     " ${resp.errorBody()!!.string()}"
             )
         }
-        return resp.body()!!.results.isNotEmpty()
+
+        val results = resp.body()!!.results
+
+        if (results.isEmpty()) {
+            return null
+        }
+
+        return results[0].id
     }
 
     fun subscribe(email: String) {

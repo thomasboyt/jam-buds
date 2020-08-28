@@ -1,0 +1,1 @@
+ALTER TABLE color_schemes ADD UNIQUE ("user_id")

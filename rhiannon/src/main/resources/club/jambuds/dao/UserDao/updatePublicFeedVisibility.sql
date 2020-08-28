@@ -1,0 +1,1 @@
+UPDATE users SET show_in_public_feed = :showInPublicFeed WHERE id=:userId

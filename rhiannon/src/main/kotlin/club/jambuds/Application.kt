@@ -44,6 +44,7 @@ import club.jambuds.web.NotificationRoutes
 import club.jambuds.web.PlaylistRoutes
 import club.jambuds.web.PostRoutes
 import club.jambuds.web.SearchRoutes
+import club.jambuds.web.SettingsRoutes
 import club.jambuds.web.SpotifyAuthRoutes
 import club.jambuds.web.UserRoutes
 import com.google.gson.Gson
@@ -252,6 +253,7 @@ private fun wire(app: Javalin, config: Config) {
         FollowingRoutes(followingService).register()
         NotificationRoutes(notificationService).register()
         AuthRoutes(authService, config.getString("appUrl")).register()
+        SettingsRoutes(buttondownService, userDao, colorSchemeDao).register()
     }
 }
 

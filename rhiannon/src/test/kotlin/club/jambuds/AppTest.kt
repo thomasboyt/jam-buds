@@ -38,6 +38,7 @@ import club.jambuds.web.NotificationRoutes
 import club.jambuds.web.PlaylistRoutes
 import club.jambuds.web.PostRoutes
 import club.jambuds.web.SearchRoutes
+import club.jambuds.web.SettingsRoutes
 import club.jambuds.web.UserRoutes
 import com.nhaarman.mockitokotlin2.mock
 import io.javalin.Javalin
@@ -155,6 +156,7 @@ open class AppTest {
             NotificationRoutes(notificationService).register()
             FollowingRoutes(followingService).register()
             AuthRoutes(authService, appUrl = config.getString("appUrl")).register()
+            SettingsRoutes(mockButtondownService, userDao, colorSchemeDao).register()
         }
     }
 
