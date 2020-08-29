@@ -100,7 +100,7 @@ export default {
     line-height: 20px;
   }
 
-  .actions /deep/ .action-button {
+  .actions ::v-deep .action-button {
     margin-left: 5px;
 
     .icon {

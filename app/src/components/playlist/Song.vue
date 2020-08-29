@@ -214,7 +214,7 @@ export default {
   }
 }
 
-/deep/ .action-button {
+::v-deep .action-button {
   border-radius: 500px;
   padding: 8px;
 
@@ -255,7 +255,7 @@ export default {
     margin-left: 10px;
   }
 
-  /deep/ .action-button {
+  ::v-deep .action-button {
     padding: 0;
 
     &:hover {

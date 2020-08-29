@@ -94,7 +94,7 @@ export default {
   flex-wrap: wrap;
   margin: -10px -10px 1em -10px;
 
-  /deep/ .settings-button {
+  ::v-deep .settings-button {
     flex: 0 0 auto;
     margin: 10px;
   }

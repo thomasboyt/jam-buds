@@ -29,7 +29,7 @@ export default {
     margin-right: -15px;
   }
 
-  /deep/ p:last-child {
+  ::v-deep p:last-child {
     margin-bottom: 0px;
   }
 }
