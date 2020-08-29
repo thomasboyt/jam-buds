@@ -9,30 +9,73 @@ import okio.ByteString
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.scalars.ScalarsConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Query
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
-import java.security.SecureRandom
 import java.time.Instant
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 
 interface TwitterClient {
-    @POST("/1.1/statuses/update.json")
+    @POST("statuses/update.json")
     fun postStatus(@Query("status") query: String): Call<TwitterPostResponse>
 
-    @GET("/1.1/friends/ids.json")
+    @GET("friends/ids.json")
     fun getFriendIds(@Query("stringify_ids") stringifyIds: Boolean = true): Call<FriendIdsResponse>
+
+    @GET("account/verify_credentials.json")
+    fun verifyCredentials(): Call<VerifyCredentialsResponse>
+}
+
+interface TwitterOauthClient {
+    @POST("request_token")
+    fun createRequestToken(): Call<String>
+
+    @POST("access_token")
+    fun createAccessToken(
+        @Query("oauth_verifier") oauthVerifier: String
+    ): Call<String>
 }
 
 data class TwitterPostResponse(private val id_str: String)
 
 data class FriendIdsResponse(val ids: List<String>)
 
+data class VerifyCredentialsResponse(val id_str: String, val screen_name: String)
+
 private fun encodeValue(value: String): String {
     return URLEncoder.encode(value, StandardCharsets.UTF_8.toString())
+}
+
+fun createSignedHttpClient(
+    consumerKey: String,
+    consumerSecret: String,
+    accessToken: String?,
+    accessSecret: String?,
+    customHeaders: Map<String, String>?
+): OkHttpClient {
+    return OkHttpClient.Builder().addInterceptor { chain ->
+        val oauthNonce = generateRandomString(32)
+        val authHeader = getAuthorizationHeader(
+            consumerKey,
+            consumerSecret,
+            accessToken,
+            accessSecret,
+            oauthNonce,
+            Instant.now().epochSecond,
+            chain.request(),
+            customHeaders
+        )
+
+        val signedRequest = chain.request().newBuilder()
+            .addHeader("Authorization", authHeader)
+            .build()
+
+        chain.proceed(signedRequest)
+    }.build()
 }
 
 fun createTwitterClient(
@@ -41,29 +84,16 @@ fun createTwitterClient(
     accessToken: String,
     accessSecret: String
 ): TwitterClient {
-    val okHttpClient = OkHttpClient.Builder()
-        .addInterceptor { chain ->
-            val oauthNonce = generateRandomString(32)
-            val authHeader = getAuthorizationHeader(
-                consumerKey,
-                consumerSecret,
-                accessToken,
-                accessSecret,
-                oauthNonce,
-                Instant.now().epochSecond,
-                chain.request()
-            )
-
-            val signedRequest = chain.request().newBuilder()
-                .addHeader("Authorization", authHeader)
-                .build()
-
-            chain.proceed(signedRequest)
-        }
-        .build()
+    val okHttpClient = createSignedHttpClient(
+        consumerKey,
+        consumerSecret,
+        accessToken,
+        accessSecret,
+        null
+    )
 
     val retrofit = Retrofit.Builder()
-        .baseUrl("https://api.twitter.com")
+        .baseUrl("https://api.twitter.com/1.1/")
         .client(okHttpClient)
         .addConverterFactory(GsonConverterFactory.create(Gson()))
         .build()
@@ -71,15 +101,38 @@ fun createTwitterClient(
     return retrofit.create(TwitterClient::class.java)
 }
 
+fun createTwitterOauthClient(
+    consumerKey: String,
+    consumerSecret: String,
+    customHeaders: Map<String, String>
+): TwitterOauthClient {
+    val okHttpClient = createSignedHttpClient(
+        consumerKey,
+        consumerSecret,
+        null,
+        null,
+        customHeaders
+    )
+
+    val retrofit = Retrofit.Builder()
+        .baseUrl("https://api.twitter.com/oauth/")
+        .client(okHttpClient)
+        .addConverterFactory(ScalarsConverterFactory.create())
+        .build()
+
+    return retrofit.create(TwitterOauthClient::class.java)
+}
+
 // adapted from https://gist.github.com/JakeWharton/f26f19732f0c5907e1ab
 fun getAuthorizationHeader(
     consumerKey: String,
     consumerSecret: String,
-    accessToken: String,
-    accessSecret: String,
+    accessToken: String?,
+    accessSecret: String?,
     oauthNonce: String,
     timestamp: Number,
-    request: Request
+    request: Request,
+    customHeaders: Map<String, String>?
 ): String {
     // Map of headers, minus oauth signature, since that is added later
     val headers = mutableMapOf(
@@ -87,14 +140,23 @@ fun getAuthorizationHeader(
         "oauth_nonce" to oauthNonce,
         "oauth_signature_method" to "HMAC-SHA1",
         "oauth_timestamp" to timestamp.toString(),
-        "oauth_token" to accessToken,
         "oauth_version" to "1.0"
     )
+
+    if (accessToken != null) {
+        headers["oauth_token"] = accessToken
+    }
+
+    if (customHeaders != null) {
+        headers.putAll(customHeaders)
+    }
 
     // signature creation:
     // https://developer.twitter.com/en/docs/basics/authentication/oauth-1-0a/creating-a-signature
 
-    val parameters = headers.toMutableMap()
+    val parameters = headers.mapValues {
+        encodeValue(it.value)
+    }.toMutableMap()
 
     // parse url params
     val url = request.url()
@@ -139,7 +201,10 @@ fun getAuthorizationHeader(
 
     paramString.writeUtf8(encodeValue(joinedParams))
 
-    val signingKey = encodeValue(consumerSecret) + "&" + encodeValue(accessSecret)
+    var signingKey = encodeValue(consumerSecret) + "&"
+    if (accessSecret != null) {
+        signingKey += encodeValue(accessSecret)
+    }
 
     val keySpec = SecretKeySpec(signingKey.toByteArray(), "HmacSHA1")
     val mac = Mac.getInstance("HmacSHA1")

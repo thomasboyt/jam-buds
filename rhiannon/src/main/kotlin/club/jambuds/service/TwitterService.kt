@@ -1,6 +1,7 @@
 package club.jambuds.service
 
 import club.jambuds.clients.createTwitterClient
+import club.jambuds.clients.createTwitterOauthClient
 import club.jambuds.model.User
 import io.javalin.http.InternalServerErrorResponse
 import org.slf4j.LoggerFactory
@@ -18,13 +19,21 @@ open class TwitterService(
             "cannot post tweet for user with no attached twitter"
         }
 
-        val twitterClient =
-            createTwitterClient(consumerKey, consumerSecret, user.twitterToken, user.twitterSecret)
+        val twitterClient = createTwitterClient(
+            consumerKey,
+            consumerSecret,
+            user.twitterToken,
+            user.twitterSecret
+        )
 
         val resp = twitterClient.postStatus(tweetContent).execute()
 
         if (!resp.isSuccessful) {
-            logger.error("Failed to send tweet: status ${resp.code()} \n ${resp.errorBody()!!.string()}")
+            logger.error(
+                "Failed to send tweet: status ${resp.code()} \n ${
+                    resp.errorBody()!!.string()
+                }"
+            )
         }
     }
 
@@ -38,8 +47,12 @@ open class TwitterService(
         }
 
         // TODO: make this possible to stub
-        val twitterClient =
-            createTwitterClient(consumerKey, consumerSecret, user.twitterToken, user.twitterSecret)
+        val twitterClient = createTwitterClient(
+            consumerKey,
+            consumerSecret,
+            user.twitterToken,
+            user.twitterSecret
+        )
 
         val resp = twitterClient.getFriendIds().execute()
 
@@ -51,4 +64,5 @@ open class TwitterService(
 
         return resp.body()!!.ids
     }
+
 }

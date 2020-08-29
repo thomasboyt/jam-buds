@@ -14,11 +14,7 @@ class AuthHandlers(private val userDao: UserDao) {
         val token = ctx.header("X-Auth-Token")
         if (token != null) {
             val user = userDao.getUserByAuthToken(token)
-            if (user == null) {
-                throw UnauthorizedResponse("Invalid auth token")
-            } else {
-                ctx.attribute("currentUser", user)
-            }
+            ctx.attribute("currentUser", user)
         }
     }
 }

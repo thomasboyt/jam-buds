@@ -31,6 +31,7 @@ import club.jambuds.service.ReportService
 import club.jambuds.service.SearchService
 import club.jambuds.service.SpotifyApiService
 import club.jambuds.service.SpotifyAuthService
+import club.jambuds.service.TwitterAuthService
 import club.jambuds.service.TwitterService
 import club.jambuds.service.UserService
 import club.jambuds.util.InstantTypeAdapter
@@ -46,6 +47,7 @@ import club.jambuds.web.PostRoutes
 import club.jambuds.web.SearchRoutes
 import club.jambuds.web.SettingsRoutes
 import club.jambuds.web.SpotifyAuthRoutes
+import club.jambuds.web.TwitterAuthRoutes
 import club.jambuds.web.UserRoutes
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -159,11 +161,18 @@ private fun wire(app: Javalin, config: Config) {
     val appleMusicService = AppleMusicService(appleMusicToken, disableAppleMusic)
 
     // Twitter
-    val twitterService = if (config.getBoolean("disableTwitter")) {
-        TwitterService("placeholder key", "placeholder secret", disableTwitter = true)
+    val disableTwitter = config.getBoolean("disableTwitter")
+    val twitterApiKey = if (disableTwitter) {
+        "placeholder key"
     } else {
-        TwitterService(config.getString("twitterApiKey"), config.getString("twitterApiSecret"))
+        config.getString("twitterApiKey")
     }
+    val twitterApiSecret = if (disableTwitter) {
+        "placeholder secret"
+    } else {
+        config.getString("twitterApiSecret")
+    }
+    val twitterService = TwitterService(twitterApiKey, twitterApiSecret, disableTwitter)
 
     // DAOs
     val postDao = jdbi.onDemand<PostDao>()
@@ -240,6 +249,8 @@ private fun wire(app: Javalin, config: Config) {
             skipAuth = config.getBoolean("dangerSkipAuth")
         )
 
+    val twitterAuthService = TwitterAuthService(userDao, twitterApiKey, twitterApiSecret)
+
     // Routes
     app.routes {
         AuthHandlers(userDao).register()
@@ -254,6 +265,12 @@ private fun wire(app: Javalin, config: Config) {
         NotificationRoutes(notificationService).register()
         AuthRoutes(authService, config.getString("appUrl")).register()
         SettingsRoutes(buttondownService, userDao, colorSchemeDao).register()
+        TwitterAuthRoutes(
+            twitterAuthService,
+            userDao,
+            oAuthStateDao,
+            config.getString("appUrl")
+        ).register()
     }
 }
 

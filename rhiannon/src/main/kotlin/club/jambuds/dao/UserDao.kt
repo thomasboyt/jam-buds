@@ -22,6 +22,9 @@ interface UserDao {
     fun getUserByEmail(email: String): User?
 
     @SqlQuery
+    fun getUserByTwitterId(twitterId: String): User?
+
+    @SqlQuery
     fun getUnfollowedUsersByTwitterIds(
         userId: Int,
         @BindList("twitterIds") twitterIds: List<String>
@@ -42,4 +45,16 @@ interface UserDao {
 
     @SqlUpdate
     fun updatePublicFeedVisibility(userId: Int, showInPublicFeed: Boolean)
+
+    @SqlUpdate
+    fun updateTwitterCredentials(
+        userId: Int,
+        twitterId: String,
+        twitterName: String,
+        twitterToken: String,
+        twitterSecret: String
+    )
+
+    @SqlUpdate
+    fun deleteTwitterCredentials(userId: Int)
 }
