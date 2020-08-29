@@ -50,20 +50,8 @@ jobs:
         run: ./gradlew assemble
         working-directory: ./rhiannon
 
-      - name: Install API dependencies
-        run: npm ci
-        working-directory: ./api
-
       - name: "-- UNIT TESTS --"
         run: exit 0
-
-      - name: Run API unit tests
-        run: npm test
-        working-directory: ./api
-        env:
-          DATABASE_URL: "postgres://postgres@localhost:${{ job.services.postgres.ports[5432] }}/jambuds_test"
-          JDBC_DATABASE_URL: "jdbc:postgresql://localhost:${{ job.services.postgres.ports[5432] }}/jambuds_test?user=postgres&password=postgres"
-          REDIS_URL: "redis://localhost:${{ job.services.redis.ports[6379] }}"
 
       - name: Run Rhiannon unit tests
         run: ./gradlew test
@@ -103,13 +91,6 @@ jobs:
           NODE_ENV: test
           CI: "1"
       
-      - name: Start API server
-        run: npm run e2e & wait-on -t 20000 tcp:3001
-        working-directory: ./api
-        env:
-          DATABASE_URL: "postgres://postgres@localhost:${{ job.services.postgres.ports[5432] }}/jambuds_test"
-          REDIS_URL: "redis://localhost:${{ job.services.redis.ports[6379] }}"
-
       - name: Start Rhiannon server
         run: ./gradlew run & wait-on -t 20000 tcp:7000
         working-directory: ./rhiannon
