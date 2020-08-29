@@ -7,20 +7,20 @@ if (process.env.NODE_ENV !== 'production') {
   if (process.env.NODE_ENV === 'test') {
     if (!process.env.CI) {
       dotenv.config({
-        path: '../.env.test',
+        path: './.env.test',
       });
     }
     dotenv.config({
-      path: '../.env.test.defaults',
+      path: './.env.test.defaults',
     });
   }
 
   if (!process.env.CI) {
     dotenv.config({
-      path: '../.env',
+      path: './.env',
     });
   }
   dotenv.config({
-    path: '../.env.defaults',
+    path: './.env.defaults',
   });
 }

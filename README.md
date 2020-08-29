@@ -4,11 +4,10 @@
 
 ## Overview
 
-Jam Buds is split into three services:
+Jam Buds is split into two services:
 
-* The *API service* is the original Node API server that powers the backend.
 * The *App service* is the frontend app powered by [Nuxt.js](https://nuxtjs.org/). The app is initially server-side rendered before being used as a SPA once laded.
-* *Rhiannon* is a new API server intended to replace the API service, powered by Kotlin and the JVM. Much more information is available in its separate readme.
+* *Rhiannon* is a the backend server for Jam Buds. It has a codename because it replaced the more generically-named "API server," written in Node.
 
 In addition, this repo also contains some development-specific configuration and feature tests that interact with both the browser app and APIs.
 
@@ -16,7 +15,7 @@ In addition, this repo also contains some development-specific configuration and
 
 In development, the services run on your local computer, while databases run via Docker containers.
 
-You'll want the following for the API and App services:
+You'll want the following for the frontend:
 
 - Node: 12.x
 - NPM: 6.x
@@ -29,8 +28,6 @@ You'll need various NPM depdencies:
 
 ```
 npm install
-cd api
-npm install
 cd ../app
 npm install
 cd ../spec
@@ -39,31 +36,74 @@ npm install
 
 ## Run in development
 
-**TODO: Update for Rhiannon**
+### Databases
 
-First, copy over `.env.defaults` to `.env` and fill it out. There's lots of API key provisioning and stuff to do there.
-
-Make sure your `.env` has your username replaced for the DB connection, then set up your database:
+Easiest way to run DBs is through the docker-compose file in the root directory:
 
 ```
-cd api
-npm run resetdb
+docker-compose up -d
 ```
 
-To start the app, in two separate sessions, run:
+The default app config for development and tests is preconfigured to point to the Postgres and Redis Docker images.
+
+### Configuration
+
+Dev configuration lives in two places:
+
+* For the app service, a `.env` file with local environment variables
+* For Rhiannon, `src/main/resources/conf/local/<env>.conf` override files
+
+This is kind of confusing, and there's a bit of overlap, and I may replace Rhiannon's config system with something dotenv-inspired.
+
+#### App config
+
+`app/.env.defaults` shows the different environment variables you can set, mostly self-documenting. Copy properties you want to override to `app/.env`.
+
+#### Rhiannon config
+
+Rhiannon's config for each environment is located in `src/main/resources/conf/<env>.conf`, and can be overridden per environment in `src/main/resources/conf/local/<env>.conf`.
+
+You'll need, at minimum, to add Spotify credentials for local development. In _both_ `local/development.conf` and `local/feature.conf`:
 
 ```
-cd api && npm run dev
-cd app && npm run dev
+rhiannon {
+    spotifyClientId = "FOO"
+    spotifyClientSecret = "BAR"
+}
 ```
+
+### Dev data & migrations
+
+To set up the DB with dev data:
+
+```
+./bin/resetdb.sh
+```
+
+Further migrations are handled through Flyway. Run like so:
+
+```
+./gradlew flywayMigrate
+```
+
+### Launching
+
+In your terminal:
+
+```
+cd app
+npm run dev
+```
+
+In IntelliJ, run the `club.jambuds.ApplicationKt` target that should be preconfigured.
+
+You should be able to visit [localhost:8080](http://localhost:8080) and see the application running successfully.
 
 ## Testing
 
-**TODO: Update for Rhiannon**
+### Unit Tests
 
-First, copy over `.env.test.defaults` to `.env.test` and replace the values as you did for `.env`.
-
-Then just run `cd api && npm test`.
+Running unit tests for Rhiannon is easy out of the box with normal IntellIJ/JUnit tools.
 
 ### Feature Tests
 
@@ -77,7 +117,6 @@ brew install redis
 To run feature tests locally, you need to spin up all services:
 
 ```
-cd api && npm run e2e
 cd app && npm run e2e
 cd rhiannon && JAMBUDS_ENV=feature ./gradlew run
 ```
@@ -91,6 +130,8 @@ cd spec && npm test
 Feature tests use the default test DB (`jambuds_test`). To avoid lengthy flyway migration times, feature tests clean and run the migrations once, then use a saved copy of the test schema (in `tmp/schema.sql`). `npm test` will automatically regenerate this schema, but if you are running Cypress tests through any other mechanism, note that if you change the DB schema, you'll need to run `npm run setupDb` to see the changes.
 
 ## Deploy
+
+**Todo: Update for Rhiannon**
 
 The recommended way to deploy the Jam Buds is with Docker. All services have their own Dockerfiles, and can be run on a Docker host together.
 
