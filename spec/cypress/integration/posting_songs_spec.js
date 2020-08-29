@@ -11,9 +11,7 @@ describe('posting a new song', () => {
     cy.get('[data-test="song-url-field"]').should('have.value', 'Rhiannon');
     cy.contains('[data-test="search-results"] a', 'Rhiannon');
 
-    cy.get('[data-test="song-url-field"]')
-      .clear()
-      .type('Twice');
+    cy.get('[data-test="song-url-field"]').clear().type('Twice');
     cy.get('button[type="submit"]').click();
 
     cy.contains('[data-test="search-results"] a', 'TT').click();

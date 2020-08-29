@@ -3,9 +3,7 @@ describe('creating mixtapes', () => {
     cy.login('jeff@jambuds.club');
     cy.visit('/users/jeff/mixtapes');
 
-    cy.get('button')
-      .contains('+ new mixtape')
-      .click();
+    cy.get('button').contains('+ new mixtape').click();
 
     cy.url().should('match', /\/mixtapes\/(.*)\/new-mixtape$/);
   });
@@ -16,9 +14,7 @@ describe('editing mixtapes', () => {
     cy.login('jeff@jambuds.club');
     cy.visit('/users/jeff/mixtapes');
 
-    cy.get('button')
-      .contains('+ new mixtape')
-      .click();
+    cy.get('button').contains('+ new mixtape').click();
 
     cy.url()
       .should('match', /\/mixtapes\/(.*)\/new-mixtape$/)
@@ -29,12 +25,10 @@ describe('editing mixtapes', () => {
       .as('mixtapeId');
   });
 
-  it('updates the mixtape title', function() {
+  it('updates the mixtape title', function () {
     cy.get('button.enter-button').click();
 
-    cy.get('.title-input')
-      .clear()
-      .type('Updated Title');
+    cy.get('.title-input').clear().type('Updated Title');
 
     cy.get('button.save-button').click();
 

@@ -5,9 +5,7 @@ describe('deleting songs', () => {
       .find('.menu-container .action-button')
       .click();
 
-    cy.get('@post')
-      .find('button[data-test="delete-song"]')
-      .click();
+    cy.get('@post').find('button[data-test="delete-song"]').click();
   }
 
   it('removes a song from feed when song was only posted by you', () => {
