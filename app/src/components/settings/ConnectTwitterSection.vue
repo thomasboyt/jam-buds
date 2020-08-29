@@ -47,7 +47,7 @@ export default {
       try {
         await this.$axios({
           baseURL: null,
-          url: '/auth/twitter-connect',
+          url: '/api/twitter-connect',
           method: 'DELETE',
         });
       } catch (err) {
