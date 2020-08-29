@@ -3,14 +3,10 @@
     <div class="form-row">
       <input type="text" v-model="username" placeholder="e.g. thomas" />
 
-      <button class="button" type="submit">
-        find
-      </button>
+      <button class="button" type="submit">find</button>
     </div>
 
-    <div v-if="noUserError">
-      No user found!
-    </div>
+    <div v-if="noUserError">No user found!</div>
   </form>
 </template>
 
@@ -72,4 +68,3 @@ button {
   margin-left: 20px;
 }
 </style>
-

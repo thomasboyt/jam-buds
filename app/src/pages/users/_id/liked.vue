@@ -12,9 +12,7 @@
       </template>
 
       <template v-slot:placeholder>
-        <p>
-          This user has not liked any songs yet :(
-        </p>
+        <p>This user has not liked any songs yet :(</p>
       </template>
     </playlist>
   </div>

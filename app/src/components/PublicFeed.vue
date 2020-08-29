@@ -31,9 +31,7 @@
       </template>
 
       <template v-slot:placeholder>
-        <p>
-          This feed is empty :(
-        </p>
+        <p>This feed is empty :(</p>
       </template>
     </playlist>
   </div>

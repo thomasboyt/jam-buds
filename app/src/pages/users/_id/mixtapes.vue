@@ -28,9 +28,7 @@
       </template>
 
       <template #placeholder>
-        <p>
-          This user does not have any mixtapes yet :(
-        </p>
+        <p>This user does not have any mixtapes yet :(</p>
       </template>
     </playlist>
   </div>

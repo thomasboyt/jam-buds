@@ -11,13 +11,9 @@
     </ul>
 
     <div v-if="!itemsExhausted">
-      <div v-if="loadingNextPage">
-        Loading...
-      </div>
+      <div v-if="loadingNextPage">Loading...</div>
 
-      <a v-else href="#" @click="handleRequestNextPage">
-        Load next page
-      </a>
+      <a v-else href="#" @click="handleRequestNextPage"> Load next page </a>
     </div>
 
     <connect-streaming-banner />

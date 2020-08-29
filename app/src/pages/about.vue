@@ -71,9 +71,7 @@
         like.
       </p>
 
-      <p>
-        in addition, this site uses the following assets:
-      </p>
+      <p>in addition, this site uses the following assets:</p>
 
       <h4>images</h4>
 

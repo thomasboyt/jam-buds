@@ -1,6 +1,6 @@
 import genMusicKitToken from '@tboyt/music-kit-jwt';
 
-export default function() {
+export default function () {
   if (!process.env.DISABLE_APPLE_MUSIC) {
     const musicKitAuthToken = genMusicKitToken({
       pathToPrivateKey: process.env.MUSICKIT_PRIVATE_KEY_PATH,

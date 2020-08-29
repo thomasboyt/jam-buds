@@ -1,22 +1,19 @@
 <template>
   <div>
-    <p>
-      set a background gradient for your profile!
-    </p>
+    <p>set a background gradient for your profile!</p>
 
     <form @submit="handleSubmit">
       <label>
-        <div class="field-label">
-          background gradient
-        </div>
+        <div class="field-label">background gradient</div>
         <div class="field-control">
           <select v-model="colorScheme.backgroundGradientName">
             <option
               v-for="gradientName of gradients"
               :key="gradientName"
               :value="gradientName"
-              >{{ gradientName }}</option
             >
+              {{ gradientName }}
+            </option>
           </select>
         </div>
       </label>

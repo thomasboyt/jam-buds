@@ -1,4 +1,4 @@
-export default async function(errorHandler, promise) {
+export default async function (errorHandler, promise) {
   try {
     return await promise;
   } catch (err) {

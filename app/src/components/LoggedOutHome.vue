@@ -22,9 +22,7 @@
         </div>
 
         <div v-else>
-          <h2>
-            hey, listen!
-          </h2>
+          <h2>hey, listen!</h2>
 
           <p>
             this is <strong>jam buds</strong>, a site for sharing music with

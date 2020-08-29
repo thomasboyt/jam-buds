@@ -13,9 +13,7 @@
 
     <ul>
       <li>
-        <nuxt-link to="/" @click.native="handleClick">
-          your feed
-        </nuxt-link>
+        <nuxt-link to="/" @click.native="handleClick"> your feed </nuxt-link>
       </li>
       <li>
         <nuxt-link

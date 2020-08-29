@@ -31,9 +31,7 @@
         </template>
         <template v-else>
           <p>
-            <nuxt-link :to="nextPage">
-              continue without connecting
-            </nuxt-link>
+            <nuxt-link :to="nextPage"> continue without connecting </nuxt-link>
           </p>
 
           <p>

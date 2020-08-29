@@ -29,4 +29,4 @@ export default {
 .link-tabs a.nuxt-link-exact-active {
   font-weight: 600;
 }
-</style:>
+</style>

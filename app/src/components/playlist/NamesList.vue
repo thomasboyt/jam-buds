@@ -2,9 +2,7 @@
   <span>
     <span v-for="(name, idx) in sortedNames" :key="name">
       <span v-if="idx !== 0">
-        <span v-if="names.length === 2">
-          and
-        </span>
+        <span v-if="names.length === 2"> and </span>
         <span v-else>
           <span v-if="idx === sortedNames.length - 1">, and </span>
           <span v-else>, </span>

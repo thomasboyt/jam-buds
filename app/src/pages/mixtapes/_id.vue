@@ -22,9 +22,7 @@
       <h2 v-else>{{ mixtape.title }}</h2>
 
       <p class="mixtape-meta">
-        <span v-if="isOwnMixtape">
-          your mixtape
-        </span>
+        <span v-if="isOwnMixtape"> your mixtape </span>
         <span v-else>
           a mixtape by
           <nuxt-link :to="`/users/${mixtape.author.name}`">{{
@@ -47,9 +45,7 @@
       </p>
 
       <panel v-if="isEditing">
-        <p>
-          this mixtape is in draft mode. would you like to publish it?
-        </p>
+        <p>this mixtape is in draft mode. would you like to publish it?</p>
         <publish-button :mixtape="mixtape" />
       </panel>
 
@@ -120,9 +116,7 @@ export default {
         {
           hid: 'description',
           name: 'og:description',
-          content: `check out this mixtape by ${
-            this.mixtape.author.name
-          } on jam buds!`,
+          content: `check out this mixtape by ${this.mixtape.author.name} on jam buds!`,
         },
         {
           name: 'og:image',

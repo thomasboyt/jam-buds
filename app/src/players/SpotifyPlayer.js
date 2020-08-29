@@ -55,9 +55,7 @@ export default class SpotifyPlayer {
     const token = await this._getOAuthToken();
 
     await axios({
-      url: `https://api.spotify.com/v1/me/player/play?device_id=${
-        this._deviceId
-      }`,
+      url: `https://api.spotify.com/v1/me/player/play?device_id=${this._deviceId}`,
       method: 'PUT',
       data: {
         uris: [`spotify:track:${song.spotifyId}`],

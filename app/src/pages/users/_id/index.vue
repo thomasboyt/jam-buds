@@ -17,9 +17,7 @@
       </template>
 
       <template v-slot:placeholder>
-        <p>
-          This user has not posted any songs yet :(
-        </p>
+        <p>This user has not posted any songs yet :(</p>
       </template>
     </playlist>
   </div>
@@ -50,9 +48,7 @@ export default {
       if (song) {
         meta = {
           title: song.title,
-          description: `${this.name} posted ${song.title} by ${
-            song.artists[0]
-          } on Jam Buds!`,
+          description: `${this.name} posted ${song.title} by ${song.artists[0]} on Jam Buds!`,
           image: song.albumArt,
         };
       }
