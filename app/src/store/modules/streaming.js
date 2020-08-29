@@ -20,7 +20,7 @@ const streaming = {
       state.hasAppleMusic = isAuthorized;
       state.loadedAppleMusic = true;
     },
-    removedAppleMusic(state) {
+    removeAppleMusic(state) {
       state.hasAppleMusic = false;
     },
   },
