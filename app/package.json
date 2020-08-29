@@ -36,7 +36,7 @@
     "intersection-observer": "^0.7.0",
     "lodash": "^4.17.20",
     "normalize.css": "^5.0.0",
-    "nuxt": "^2.12.2",
+    "nuxt": "^2.14.4",
     "svg-sprite-loader": "^4.2.5",
     "vuedraggable": "^2.23.2"
   }

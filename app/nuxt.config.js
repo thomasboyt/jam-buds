@@ -159,8 +159,8 @@ export default {
 
 // Borrowed from https://github.com/nuxt-community/svg-module/blob/master/lib/module.js
 function removeExistingSvgRule(config) {
-  const ORIGINAL_TEST = /\.(png|jpe?g|gif|svg|webp)$/;
-  const REPLACEMENT_TEST = /\.(png|jpe?g|gif|webp)$/;
+  const ORIGINAL_TEST = /\.(png|jpe?g|gif|svg|webp|avif)$/i;
+  const REPLACEMENT_TEST = /\.(png|jpe?g|gif|webp|avif)$/i;
 
   const rules = config.module.rules;
 
