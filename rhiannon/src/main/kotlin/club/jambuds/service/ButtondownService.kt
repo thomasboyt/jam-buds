@@ -29,7 +29,7 @@ open class ButtondownService(private val client: ButtondownClient?) {
         return results[0].id
     }
 
-    fun subscribe(email: String) {
+    open fun subscribe(email: String) {
         if (client == null) {
             return
         }

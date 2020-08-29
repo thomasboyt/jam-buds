@@ -168,7 +168,7 @@ class AuthRoutesTest : AppTest() {
             mapOf(
                 "token" to signInToken,
                 "name" to "jeff",
-                "subscribeToNewsletter" to false,
+                "subscribeToNewsletter" to true,
                 "showInPublicFeed" to true,
                 "referral" to "vinny"
             )
