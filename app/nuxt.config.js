@@ -111,7 +111,7 @@ export default {
   axios: {
     proxy: true,
     // only used during server-side renders
-    baseURL: `${process.env.JB_API_URL}/api`,
+    baseURL: `${process.env.JB_RHIANNON_URL}/api`,
     // only used for client-side renders
     prefix: '/api/',
   },
@@ -119,13 +119,13 @@ export default {
   // proxy whines if it gets passed an undefined target so we only set it if the
   // variable is present (it's only needed for server builds but there doesn't
   // seem to be a way to only configure for server builds?)
-  proxy: process.env.JB_API_URL
+  proxy: process.env.JB_RHIANNON_URL
     ? {
         '/api': {
-          target: process.env.JB_API_URL,
+          target: process.env.JB_RHIANNON_URL,
         },
         '/auth': {
-          target: process.env.JB_API_URL,
+          target: process.env.JB_RHIANNON_URL,
         },
       }
     : undefined,

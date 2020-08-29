@@ -1,17 +1,5 @@
 version: '3'
 services:
-  # some day, maybe...
-  # jambuds-app:
-  #   image: jambuds-app:latest
-  #   depends_on:
-  #     - jambuds-api
-  #   env_file: .env
-  # jambuds-api:
-  #   image: jambuds-api:latest
-  #   depends_on:
-  #     - db
-  #     - redis
-  #   env_file: .env
   redis:
     image: redis:5.0.3-alpine
     env_file: .env
