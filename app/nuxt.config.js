@@ -1,11 +1,3 @@
-// TODO
-//
-// if (process.env.ENABLE_STACKDRIVER_TRACE) {
-//   require('@google-cloud/trace-agent').start({
-//     ignoreUrls: ['^/assets', '^/favicon.ico$', '^/robots.txt$'],
-//   });
-// }
-
 import './src/util/loadDotEnv';
 
 export default {
