@@ -56,7 +56,7 @@ class AuthService(
         if (skipAuth) {
             return SendSignInTokenSkipAuthResponse(
                 token = token,
-                isRegistration = user != null
+                isRegistration = user == null
             )
         }
 

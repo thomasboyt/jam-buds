@@ -9,9 +9,8 @@
 // ***********************************************
 
 Cypress.Commands.add('login', (email) => {
-  cy.request('POST', '/auth/sign-in-token', { email }).then((response) => {
+  cy.request('POST', '/api/sign-in-token', { email }).then((response) => {
     const token = response.body.token;
-    cy.request(`/auth/sign-in?t=${token}`);
+    cy.visit(`/auth/sign-in?t=${token}`);
   });
-  cy.visit('/');
 });
