@@ -40,7 +40,7 @@ export default {
     let meta = {
       title: `${this.name}'s playlist`,
       description: 'check out this playlist on jam buds!',
-      image: `${process.env.STATIC_URL}/corgi_icon_square.png`,
+      image: `${this.$config.STATIC_URL}/corgi_icon_square.png`,
     };
 
     if (this.$route.query.song) {

@@ -17,18 +17,16 @@
   "author": "Thomas Boyt <me@thomasboyt.com>",
   "license": "Parity-6.0.0",
   "devDependencies": {
-    "@tboyt/music-kit-jwt": "^0.1.2",
     "dotenv": "^8.2.0",
     "eslint": "^7.7.0",
     "eslint-config-prettier": "^6.11.0",
-    "eslint-plugin-vue": "^6.2.2",
-    "sass": "^1.26.10",
-    "sass-loader": "^10.0.1"
+    "eslint-plugin-vue": "^6.2.2"
   },
   "dependencies": {
     "@nuxtjs/axios": "^5.12.2",
     "@nuxtjs/proxy": "^2.0.1",
     "@nuxtjs/sentry": "^4.3.4",
+    "@tboyt/music-kit-jwt": "^0.1.2",
     "body-scroll-lock": "^3.0.3",
     "cookie": "^0.4.1",
     "date-fns": "^2.16.0",
@@ -36,6 +34,8 @@
     "lodash": "^4.17.20",
     "normalize.css": "^8.0.1",
     "nuxt": "^2.14.4",
+    "sass": "^1.26.10",
+    "sass-loader": "^10.0.1",
     "svg-sprite-loader": "^5.0.0",
     "vuedraggable": "^2.24.1"
   }

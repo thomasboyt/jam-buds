@@ -47,7 +47,7 @@ export default {
 
       this.$emit('sentMail', email);
 
-      if (process.env.DANGER_SKIP_AUTH) {
+      if (this.$config.DANGER_SKIP_AUTH) {
         if (resp.data.isRegistration) {
           document.location = `/welcome/registration?t=${resp.data.token}`;
         } else {

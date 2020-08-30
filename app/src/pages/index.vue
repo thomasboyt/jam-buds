@@ -35,7 +35,7 @@ export default {
         },
         {
           name: 'og:image',
-          content: `${process.env.STATIC_URL}/corgi_icon_square.png`,
+          content: `${this.$config.STATIC_URL}/corgi_icon_square.png`,
         },
       ],
     };

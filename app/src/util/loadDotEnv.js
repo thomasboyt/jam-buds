@@ -17,10 +17,10 @@ if (process.env.NODE_ENV !== 'production') {
 
   if (!process.env.CI) {
     dotenv.config({
-      path: './.env',
+      path: './.env.development',
     });
   }
   dotenv.config({
-    path: './.env.defaults',
+    path: './.env.development.defaults',
   });
 }

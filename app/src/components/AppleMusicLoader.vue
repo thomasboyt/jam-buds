@@ -6,7 +6,7 @@
 /* global MusicKit */
 export default {
   mounted() {
-    if (process.env.DISABLE_APPLE_MUSIC) {
+    if (this.$config.DISABLE_APPLE_MUSIC) {
       return;
     }
 
@@ -23,8 +23,7 @@ export default {
     loaded() {
       // MusicKit global is now defined
       MusicKit.configure({
-        // see webpack/base.js
-        developerToken: process.env.MUSICKIT_AUTH_TOKEN,
+        developerToken: this.$store.state.streaming.musicKitToken,
         app: {
           name: 'Jam Buds',
           build: '0.0.1',

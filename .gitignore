@@ -3,6 +3,7 @@ tmp/
 app/.nuxt/
 
 .env
+.env.development
 .env.test
 
 spec/cypress/videos

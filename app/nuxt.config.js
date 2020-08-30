@@ -16,9 +16,24 @@ export default {
 
   env: {
     NODE_ENV: process.env.NODE_ENV,
+  },
+
+  publicRuntimeConfig: {
+    STATIC_URL: process.env.JB_STATIC_URL,
     DANGER_SKIP_AUTH: process.env.DANGER_SKIP_AUTH,
     DISABLE_APPLE_MUSIC: process.env.DISABLE_APPLE_MUSIC,
-    STATIC_URL: process.env.JB_STATIC_URL,
+    axios: {
+      browserBaseURL: `/api`,
+    },
+  },
+
+  privateRuntimeConfig: {
+    MUSICKIT_PRIVATE_KEY_PATH: process.env.MUSICKIT_PRIVATE_KEY_PATH,
+    MUSICKIT_TEAM_ID: process.env.MUSICKIT_TEAM_ID,
+    MUSICKIT_KEY_ID: process.env.MUSICKIT_KEY_ID,
+    axios: {
+      baseURL: `${process.env.JB_RHIANNON_URL}/api`,
+    },
   },
 
   /*
@@ -81,11 +96,12 @@ export default {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ['~/plugins/axios', '~/plugins/spriteExtract', '~/plugins/logError'],
-  /*
-   ** Nuxt.js dev-modules
-   */
-  buildModules: ['~/modules/appleMusicTokenInject'],
+  plugins: [
+    '~/plugins/axios',
+    '~/plugins/spriteExtract',
+    '~/plugins/logError',
+    '~/plugins/appleMusicToken.server.js',
+  ],
   /*
    ** Nuxt.js modules
    */
@@ -102,25 +118,22 @@ export default {
 
   axios: {
     proxy: true,
-    // only used during server-side renders
-    baseURL: `${process.env.JB_RHIANNON_URL}/api`,
-    // only used for client-side renders
-    prefix: '/api/',
   },
 
   // proxy whines if it gets passed an undefined target so we only set it if the
   // variable is present (it's only needed for server builds but there doesn't
   // seem to be a way to only configure for server builds?)
-  proxy: process.env.JB_RHIANNON_URL
-    ? {
-        '/api': {
-          target: process.env.JB_RHIANNON_URL,
-        },
-        '/auth': {
-          target: process.env.JB_RHIANNON_URL,
-        },
-      }
-    : undefined,
+  proxy:
+    process.env.JB_ENABLE_NUXT_PROXY && process.env.JB_RHIANNON_URL
+      ? {
+          '/api': {
+            target: process.env.JB_RHIANNON_URL,
+          },
+          '/auth': {
+            target: process.env.JB_RHIANNON_URL,
+          },
+        }
+      : undefined,
 
   /*
    ** Build configuration

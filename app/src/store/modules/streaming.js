@@ -5,6 +5,7 @@ const streaming = {
       loadedSpotify: false,
       hasAppleMusic: false,
       loadedAppleMusic: false,
+      musicKitToken: null,
     };
   },
 
@@ -22,6 +23,9 @@ const streaming = {
     },
     removeAppleMusic(state) {
       state.hasAppleMusic = false;
+    },
+    setMusicKitToken(state, token) {
+      state.musicKitToken = token;
     },
   },
 
