@@ -1,5 +1,21 @@
 import './src/util/loadDotEnv';
 
+// url check here is to prevent proxy config during builds
+const proxyEnabled =
+  process.env.JB_ENABLE_NUXT_PROXY && process.env.JB_RHIANNON_URL;
+
+function getProxyConfig() {
+  console.log('*** Enabling dev proxy');
+  return {
+    '/api': {
+      target: process.env.JB_RHIANNON_URL,
+    },
+    '/auth': {
+      target: process.env.JB_RHIANNON_URL,
+    },
+  };
+}
+
 export default {
   mode: 'universal',
 
@@ -77,28 +93,18 @@ export default {
     '~modules/spriteInject',
   ],
 
+  // Note: unlike other variables, this has to be set during build time!
+  // Will be resolved when https://github.com/nuxt-community/sentry-module/issues/202 is
+  // implemented.
   sentry: {
     dsn: process.env.SENTRY_PUBLIC_DSN_APP,
   },
 
   axios: {
-    proxy: true,
+    proxy: proxyEnabled,
   },
 
-  // proxy whines if it gets passed an undefined target so we only set it if the
-  // variable is present (it's only needed for server builds but there doesn't
-  // seem to be a way to only configure for server builds?)
-  proxy:
-    process.env.JB_ENABLE_NUXT_PROXY && process.env.JB_RHIANNON_URL
-      ? {
-          '/api': {
-            target: process.env.JB_RHIANNON_URL,
-          },
-          '/auth': {
-            target: process.env.JB_RHIANNON_URL,
-          },
-        }
-      : undefined,
+  proxy: proxyEnabled ? getProxyConfig() : undefined,
 
   /*
    ** Build configuration

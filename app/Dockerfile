@@ -12,6 +12,7 @@ COPY --chown=node:node . .
 USER node
 
 # Build app
+ARG SENTRY_PUBLIC_DSN_APP
 RUN NODE_ENV=production npm run build -- --quiet
 
 # Create static folder that can be served from e.g. Caddy
