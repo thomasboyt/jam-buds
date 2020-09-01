@@ -2,12 +2,10 @@ version: '3'
 services:
   redis:
     image: redis:5.0.3-alpine
-    env_file: .env
     ports:
       - "6380:6379"
   db:
     image: postgres:11.2-alpine
-    env_file: .env
     environment:
       POSTGRES_DB: jambuds
     ports:
