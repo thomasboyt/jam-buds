@@ -63,9 +63,33 @@ jobs:
       - name: "-- INTEGRATION TESTS --"
         run: exit 0
   
-      - name: Install app dependencies
+      - name: Start Rhiannon server
+        run: ./gradlew run &
+        working-directory: ./rhiannon
+        env:
+          JDBC_DATABASE_URL: "jdbc:postgresql://localhost:${{ job.services.postgres.ports[5432] }}/jambuds_test?user=postgres&password=postgres"
+          REDIS_URL: "redis://localhost:${{ job.services.redis.ports[6379] }}"
+          JAMBUDS_ENV: "feature"
+          SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
+          SPOTIFY_CLIENT_SECRET: ${{ secrets.SPOTIFY_CLIENT_SECRET }}
+
+      - name: Install frontend dependencies
         run: npm ci
         working-directory: ./app
+
+      - name: Build frontend
+        run: npm run build
+        working-directory: ./app
+        env:
+          NODE_ENV: test
+          CI: "1"
+
+      - name: Start frontend
+        run: npm start &
+        working-directory: ./app
+        env:
+          NODE_ENV: test
+          CI: "1"
 
       - name: Install psql@11
         run: |
@@ -75,39 +99,13 @@ jobs:
           sudo apt-get update
           sudo apt install postgresql-client-11
 
-      - run: npm install -g wait-on
-
-      - name: Build app
-        run: npm run build
-        working-directory: ./app
-        env:
-          NODE_ENV: test
-          CI: "1"
-
-      - name: Start App server
-        run: npm start & wait-on -t 20000 http://localhost:8081
-        working-directory: ./app
-        env:
-          NODE_ENV: test
-          CI: "1"
-      
-      - name: Start Rhiannon server
-        run: ./gradlew run & wait-on -t 20000 tcp:7000
-        working-directory: ./rhiannon
-        env:
-          JDBC_DATABASE_URL: "jdbc:postgresql://localhost:${{ job.services.postgres.ports[5432] }}/jambuds_test?user=postgres&password=postgres"
-          REDIS_URL: "redis://localhost:${{ job.services.redis.ports[6379] }}"
-          JAMBUDS_ENV: "feature"
-          SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
-          SPOTIFY_CLIENT_SECRET: ${{ secrets.SPOTIFY_CLIENT_SECRET }}
-
-      - name: Install spec dependencies
-        run: npm ci
-        working-directory: ./spec
-
       - name: Run Cypress
-        run: npm test
-        working-directory: ./spec
+        uses: cypress-io/github-action@v2
+        with:
+          working-directory: ./spec
+          command: npm test
+          wait-on: 'http://localhost:8081'
+          wait-on-timeout: 30
         env:
           JDBC_DATABASE_URL: "jdbc:postgresql://localhost:${{ job.services.postgres.ports[5432] }}/jambuds_test?user=postgres&password=postgres"
           DATABASE_URL: "postgres://postgres@localhost:${{ job.services.postgres.ports[5432] }}/jambuds_test"
