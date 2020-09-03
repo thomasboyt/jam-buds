@@ -1,6 +1,6 @@
 # Jam Buds
 
-![](https://github.com/thomasboyt/jam-buds/workflows/Run%20Tests/badge.svg)
+[![Run tests](https://github.com/thomasboyt/jam-buds/workflows/Run%20Tests/badge.svg)](https://github.com/thomasboyt/jam-buds/actions?query=workflow%3A%22Run+Tests%22) [![Deploy to jambuds.club](https://github.com/thomasboyt/jambuds-ops/workflows/Deploy%20to%20jambuds.club/badge.svg?event=workflow_dispatch)](https://github.com/thomasboyt/jambuds-ops/actions?query=workflow%3A%22Deploy+to+jambuds.club%22)
 
 ## Overview
 
