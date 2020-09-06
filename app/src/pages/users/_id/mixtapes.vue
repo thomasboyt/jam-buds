@@ -25,6 +25,13 @@
     >
       <template v-slot:item="{ item }">
         <mixtape-item :timestamp="item.timestamp" :mixtape="item.mixtape" />
+        <entry-details
+          type="userPlaylist"
+          :id="item.postId"
+          :name="name"
+          :note="item.noteText"
+          :date="item.timestamp"
+        />
       </template>
 
       <template #placeholder>
@@ -39,6 +46,7 @@ import { mapState } from 'vuex';
 import ProfileNav from '../../../components/ProfileNav.vue';
 import Playlist from '../../../components/playlist/Playlist.vue';
 import MixtapeItem from '../../../components/playlist/MixtapeItem.vue';
+import EntryDetails from '../../../components/playlist/EntryDetails.vue';
 import Panel from '../../../components/Panel.vue';
 import CreateMixtapeButton from '../../../components/CreateMixtapeButton.vue';
 import with404Handler from '~/util/with404Handler';
@@ -50,6 +58,7 @@ export default {
     MixtapeItem,
     Panel,
     CreateMixtapeButton,
+    EntryDetails,
   },
 
   head() {

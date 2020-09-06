@@ -8,7 +8,13 @@
       @requestNextPage="handleRequestNextPage"
     >
       <template v-slot:item="{ item }">
-        <post-item :item="item" @requestPlay="handleRequestPlay" verb="liked" />
+        <playlist-entry :item="item" @requestPlay="handleRequestPlay" />
+        <entry-details
+          type="userLiked"
+          :name="name"
+          :note="item.noteText"
+          :date="item.timestamp"
+        />
       </template>
 
       <template v-slot:placeholder>
@@ -21,14 +27,16 @@
 <script>
 import ProfileNav from '../../../components/ProfileNav.vue';
 import Playlist from '../../../components/playlist/Playlist.vue';
-import PostItem from '../../../components/playlist/PostItem.vue';
+import PlaylistEntry from '../../../components/playlist/PlaylistEntry.vue';
+import EntryDetails from '../../../components/playlist/EntryDetails.vue';
 import with404Handler from '~/util/with404Handler';
 
 export default {
   components: {
     ProfileNav,
     Playlist,
-    PostItem,
+    PlaylistEntry,
+    EntryDetails,
   },
 
   head() {

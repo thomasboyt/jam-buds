@@ -11,7 +11,7 @@ describe('following a user', () => {
 
     cy.visit('/');
 
-    cy.contains('abe posted');
+    cy.get('.entry-details').contains('abe');
   });
 
   it('shows that user a notification', () => {

@@ -5,7 +5,8 @@ describe('viewing feed', () => {
 
     cy.get('.playlist-entries li')
       .should('contain', 'Drive')
-      .and('contain', 'You and vinny posted');
+      .and('contain', 'jeff')
+      .and('contain', 'vinny');
   });
 
   it('includes mixtapes', () => {
