@@ -1,11 +1,5 @@
 <template>
   <div>
-    <entry-posted-by
-      :names="[mixtape.authorName]"
-      :timestamp="timestamp"
-      verb="posted"
-    />
-
     <nuxt-link class="playlist-mixtape" :to="mixtapeLink">
       <img class="art" :src="art" />
 
@@ -13,7 +7,8 @@
         <div class="label-content">
           <span class="title">{{ mixtape.title }}</span
           ><br />
-          a mixtape with {{ mixtape.numTracks }} tracks
+          a mixtape by {{ mixtape.authorName }} with
+          {{ mixtape.songCount }} tracks
         </div>
       </div>
     </nuxt-link>
@@ -21,13 +16,10 @@
 </template>
 
 <script>
-import EntryPostedBy from './EntryPostedBy.vue';
 import getMixtapeArt from '../../util/getMixtapeArt';
 
 export default {
-  components: { EntryPostedBy },
-
-  props: ['mixtape', 'timestamp'],
+  props: ['mixtape'],
 
   computed: {
     art() {

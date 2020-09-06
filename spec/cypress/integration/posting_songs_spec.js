@@ -21,6 +21,6 @@ describe('posting a new song', () => {
     cy.get('[data-test="add-song-confirm"]').click();
 
     cy.contains('.playlist-song', 'TT').and('contain', 'TWICE');
-    cy.contains('.note', 'some thoughts about this song');
+    cy.contains('.note-text', 'some thoughts about this song');
   });
 });

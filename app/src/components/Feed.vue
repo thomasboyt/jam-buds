@@ -20,10 +20,15 @@
       @requestNextPage="handleRequestNextPage"
     >
       <template v-slot:item="{ item }">
-        <post-item
-          :item="item"
-          @requestPlay="handleRequestPlay"
-          verb="posted"
+        <playlist-entry :item="item" @requestPlay="handleRequestPlay" />
+        <entry-details
+          v-for="post in sortPosts(item.posts)"
+          type="feed"
+          :id="post.id"
+          :name="post.userName"
+          :note="post.noteText"
+          :date="post.timestamp"
+          :key="post.id"
         />
       </template>
 
@@ -41,10 +46,12 @@
 
 <script>
 import { mapState } from 'vuex';
+import sortBy from 'lodash/sortBy';
 
 import Playlist from './playlist/Playlist.vue';
 import AddSongForm from './AddSongForm.vue';
-import PostItem from './playlist/PostItem.vue';
+import PlaylistEntry from './playlist/PlaylistEntry.vue';
+import EntryDetails from './playlist/EntryDetails.vue';
 import PageHeader from './PageHeader.vue';
 import NotificationsFeedSection from './NotificationsFeedSection.vue';
 
@@ -52,7 +59,8 @@ export default {
   components: {
     Playlist,
     AddSongForm,
-    PostItem,
+    PlaylistEntry,
+    EntryDetails,
     PageHeader,
     NotificationsFeedSection,
   },
@@ -79,6 +87,10 @@ export default {
   },
 
   methods: {
+    sortPosts(posts) {
+      return sortBy(posts, (item) => -new Date(item.timestamp).valueOf());
+    },
+
     async handleRequestNextPage() {
       this.loadingNextPage = true;
 

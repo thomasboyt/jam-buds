@@ -1,3 +1,5 @@
+<!-- unused for now but keeping around for some kind of "collapsed view" -->
+
 <template>
   <span>
     <span v-for="(name, idx) in sortedNames" :key="name">
