@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="club.jambuds.ApplicationKt" type="JetRunConfigurationType" factoryName="Kotlin" nameIsGenerated="true">
+  <configuration default="false" name="Run" type="JetRunConfigurationType">
     <module name="jam-buds.main" />
     <option name="VM_PARAMETERS" value="" />
     <option name="PROGRAM_PARAMETERS" value="" />
