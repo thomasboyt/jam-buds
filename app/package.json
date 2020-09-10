@@ -29,6 +29,7 @@
     "@tboyt/music-kit-jwt": "^0.1.2",
     "body-scroll-lock": "^3.0.3",
     "cookie": "^0.4.1",
+    "cookie-universal-nuxt": "^2.1.4",
     "date-fns": "^2.16.0",
     "intersection-observer": "^0.11.0",
     "lodash": "^4.17.20",

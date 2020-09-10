@@ -13,6 +13,18 @@ const auth = {
   },
 
   actions: {
+    async signInWithToken(context, token) {
+      const resp = await this.$axios({
+        url: '/sign-in',
+        method: 'POST',
+        data: {
+          signInToken: token,
+        },
+        withCredentials: true,
+      });
+      return resp.data.authToken;
+    },
+
     async fetchCurrentUser(context) {
       if (!this.$axios.defaults.headers['X-Auth-Token']) {
         return;

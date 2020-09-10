@@ -91,6 +91,7 @@ export default {
     '@nuxtjs/axios',
     '@nuxtjs/proxy',
     '~modules/spriteInject',
+    ['cookie-universal-nuxt', { parseJSON: false }],
   ],
 
   // Note: unlike other variables, this has to be set during build time!
