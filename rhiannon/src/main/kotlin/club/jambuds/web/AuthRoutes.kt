@@ -1,7 +1,7 @@
 package club.jambuds.web
 
+import club.jambuds.responses.SignInResponse
 import club.jambuds.service.AuthService
-import club.jambuds.web.extensions.currentUser
 import club.jambuds.web.extensions.validateJsonBody
 import com.google.gson.annotations.Expose
 import io.javalin.apibuilder.ApiBuilder
@@ -16,7 +16,7 @@ class AuthRoutes(private val authService: AuthService, private val appUrl: Strin
     fun register() {
         ApiBuilder.post("/api/sign-in-token", this::sendSignInToken)
         ApiBuilder.post("/api/registration", this::register)
-        ApiBuilder.get("/auth/sign-in", this::signIn)
+        ApiBuilder.post("/api/sign-in", this::signIn)
         ApiBuilder.post("/api/sign-out", this::signOut)
     }
 
@@ -24,12 +24,13 @@ class AuthRoutes(private val authService: AuthService, private val appUrl: Strin
         @field:NotNull
         @field:Pattern(regexp = """^[^\s@]+@[^\s@]+\.[^\s@]+$""", message = "Invalid email format")
         @Expose val email: String,
-        @Expose val signupReferral: String?
+        @Expose val signupReferral: String?,
+        @Expose val dest: String?
     )
 
     private fun sendSignInToken(ctx: Context) {
         val body = ctx.validateJsonBody(SendSignInTokenBody::class.java)
-        val resp = authService.sendSignInToken(body.email, body.signupReferral)
+        val resp = authService.sendSignInToken(body.email, body.signupReferral, body.dest)
         if (resp != null) {
             ctx.json(resp)
         } else {
@@ -37,17 +38,14 @@ class AuthRoutes(private val authService: AuthService, private val appUrl: Strin
         }
     }
 
+    data class SignInBody(
+        @field:NotNull
+        @Expose val signInToken: String
+    )
     private fun signIn(ctx: Context) {
-        if (ctx.currentUser != null) {
-            // user is already signed in
-            ctx.redirect(appUrl)
-            return
-        }
-
-        val signInToken = ctx.queryParam<String>("t").get()
-        val authToken = authService.signIn(signInToken)
-        ctx.cookie(AUTH_TOKEN_COOKIE, authToken, maxAge = 60 * 60 * 24 * 365)
-        ctx.redirect(appUrl)
+        val body = ctx.validateJsonBody(SignInBody::class.java)
+        val authToken = authService.signIn(body.signInToken)
+        ctx.json(SignInResponse(authToken))
     }
 
     data class RegisterBody(
