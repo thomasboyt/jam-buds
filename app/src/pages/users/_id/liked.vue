@@ -2,9 +2,10 @@
   <div>
     <profile-nav :title="title" />
     <playlist
-      :items="items"
-      :items-exhausted="itemsExhausted"
+      :playlist-key="playlistKey"
       :loading-next-page="loadingNextPage"
+      :error="$fetchState.error"
+      :is-loading="$fetchState.pending"
       @requestNextPage="handleRequestNextPage"
     >
       <template v-slot:item="{ item }">
@@ -29,7 +30,6 @@ import ProfileNav from '../../../components/ProfileNav.vue';
 import Playlist from '../../../components/playlist/Playlist.vue';
 import PlaylistEntry from '../../../components/playlist/PlaylistEntry.vue';
 import EntryDetails from '../../../components/playlist/EntryDetails.vue';
-import with404Handler from '~/util/with404Handler';
 
 export default {
   components: {
@@ -45,10 +45,10 @@ export default {
     };
   },
 
-  async fetch({ store, route, error }) {
-    await with404Handler(
-      error,
-      store.dispatch('loadProfileLikesPlaylist', route.params.id)
+  fetch() {
+    return this.$store.dispatch(
+      'loadProfileLikesPlaylist',
+      this.$route.params.id
     );
   },
 
@@ -64,12 +64,6 @@ export default {
     },
     playlistKey() {
       return `${this.name}/likes`;
-    },
-    items() {
-      return this.$store.getters.playlistItems(this.playlistKey);
-    },
-    itemsExhausted() {
-      return this.$store.state.playlists[this.playlistKey].itemsExhausted;
     },
     playbackSourcePath() {
       return `/users/${this.name}/liked`;

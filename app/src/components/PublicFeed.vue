@@ -17,9 +17,10 @@
     </p>
 
     <playlist
-      :items="items"
-      :items-exhausted="feedItemsExhausted"
+      playlist-key="publicFeed"
       :loading-next-page="loadingNextPage"
+      :is-loading="$fetchState.pending"
+      :error="$fetchState.error"
       @requestNextPage="handleRequestNextPage"
     >
       <template v-slot:item="{ item }">
@@ -58,6 +59,13 @@ export default {
     return {
       title: 'Public Feed',
     };
+  },
+
+  async fetch() {
+    await this.$store.dispatch('loadPlaylist', {
+      key: 'publicFeed',
+      url: '/public-feed',
+    });
   },
 
   data() {

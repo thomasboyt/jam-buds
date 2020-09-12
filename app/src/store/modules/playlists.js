@@ -35,6 +35,8 @@ const playlists = {
         items: [],
         itemsExhausted: false,
         url,
+        /** whether we've successfully tried to load at least one page */
+        hasLoadedInitialItems: false,
       });
     },
 
@@ -66,6 +68,8 @@ const playlists = {
      * Append a new page of items to a playlist.
      */
     pushPlaylist(state, { key, page }) {
+      state[key].hasLoadedInitialItems = true;
+
       state[key].items = state[key].items.concat(
         page.items.map((entry) => denormalizeItem(entry))
       );

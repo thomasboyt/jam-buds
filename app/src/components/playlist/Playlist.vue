@@ -1,5 +1,9 @@
 <template>
-  <div v-if="!items.length" class="main-placeholder">
+  <div v-if="isLoading && !hasLoadedInitialItems" class="main-placeholder">
+    <!-- TODO: spinner go here? -->
+  </div>
+
+  <div v-else-if="!items.length" class="main-placeholder">
     <slot name="placeholder" />
   </div>
 
@@ -21,12 +25,27 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import ConnectStreamingBanner from './ConnectStreamingBanner.vue';
 
 export default {
   components: { ConnectStreamingBanner },
 
-  props: ['items', 'itemsExhausted', 'loadingNextPage'],
+  props: ['playlistKey', 'loadingNextPage', 'isLoading'],
+
+  computed: {
+    items() {
+      return this.$store.getters.playlistItems(this.playlistKey);
+    },
+    ...mapState({
+      itemsExhausted(state) {
+        return state.playlists[this.playlistKey].itemsExhausted;
+      },
+      hasLoadedInitialItems(state) {
+        return state.playlists[this.playlistKey].hasLoadedInitialItems;
+      },
+    }),
+  },
 
   methods: {
     handleRequestNextPage(evt) {
