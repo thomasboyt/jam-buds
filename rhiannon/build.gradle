@@ -72,6 +72,7 @@ dependencies {
     implementation "ch.qos.logback:logback-classic:1.2.3"
     implementation 'io.sentry:sentry:1.7.30'
     implementation 'io.sentry:sentry-logback:1.7.30'
+    implementation 'com.newrelic.agent.java:newrelic-api:5.14.0'
 
     // database access
     implementation "org.jdbi:jdbi3-core:$jdbi3_version"

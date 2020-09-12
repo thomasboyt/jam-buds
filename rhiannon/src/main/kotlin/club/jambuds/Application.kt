@@ -51,6 +51,7 @@ import club.jambuds.web.TwitterAuthRoutes
 import club.jambuds.web.UserRoutes
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.newrelic.api.agent.NewRelic
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
 import com.zaxxer.hikari.HikariDataSource
@@ -128,6 +129,10 @@ fun createJavalinApp(): Javalin {
     val app = Javalin.create { config ->
         config.defaultContentType = "application/json"
         config.showJavalinBanner = false // would be fun to turn this back on for not tests
+    }
+
+    app.before { ctx ->
+        NewRelic.setTransactionName(ctx.method() + " " + ctx.matchedPath())
     }
 
     configureJsonMapper()
