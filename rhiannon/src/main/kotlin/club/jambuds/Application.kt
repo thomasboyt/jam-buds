@@ -132,7 +132,7 @@ fun createJavalinApp(): Javalin {
     }
 
     app.before { ctx ->
-        NewRelic.setTransactionName(ctx.method() + " " + ctx.matchedPath())
+        NewRelic.setTransactionName(null, ctx.method() + " " + ctx.matchedPath())
     }
 
     configureJsonMapper()
