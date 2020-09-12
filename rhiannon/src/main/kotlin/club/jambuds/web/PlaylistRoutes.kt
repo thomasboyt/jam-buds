@@ -72,8 +72,7 @@ class PlaylistRoutes(
         )
         val resp = UserPlaylistResponse(
             items = playlist.items,
-            limit = playlist.limit,
-            userProfile = userProfile
+            limit = playlist.limit
         )
         ctx.json(resp)
     }
@@ -94,8 +93,7 @@ class PlaylistRoutes(
         )
         val resp = UserPlaylistResponse(
             items = playlist.items,
-            limit = playlist.limit,
-            userProfile = userProfile
+            limit = playlist.limit
         )
         ctx.json(resp)
     }
