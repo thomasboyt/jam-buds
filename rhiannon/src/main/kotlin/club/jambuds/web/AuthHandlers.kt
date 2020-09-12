@@ -3,7 +3,6 @@ package club.jambuds.web
 import club.jambuds.dao.UserDao
 import io.javalin.apibuilder.ApiBuilder.before
 import io.javalin.http.Context
-import io.javalin.http.UnauthorizedResponse
 
 class AuthHandlers(private val userDao: UserDao) {
     fun register() {

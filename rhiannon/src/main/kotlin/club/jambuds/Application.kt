@@ -36,6 +36,7 @@ import club.jambuds.service.TwitterService
 import club.jambuds.service.UserService
 import club.jambuds.util.InstantTypeAdapter
 import club.jambuds.util.LocalDateTimeTypeAdapter
+import club.jambuds.util.NewRelicPlugin
 import club.jambuds.web.AuthHandlers
 import club.jambuds.web.AuthRoutes
 import club.jambuds.web.FollowingRoutes
@@ -129,10 +130,7 @@ fun createJavalinApp(): Javalin {
     val app = Javalin.create { config ->
         config.defaultContentType = "application/json"
         config.showJavalinBanner = false // would be fun to turn this back on for not tests
-    }
-
-    app.before { ctx ->
-        NewRelic.setTransactionName(null, ctx.method() + " " + ctx.matchedPath())
+        config.registerPlugin(NewRelicPlugin())
     }
 
     configureJsonMapper()
