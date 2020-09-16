@@ -1,6 +1,7 @@
 const auth = {
   state() {
     return {
+      authToken: null,
       // populated by /me lookup
       authenticated: false,
     };
@@ -10,21 +11,12 @@ const auth = {
     setCurrentUser(state) {
       state.authenticated = true;
     },
+    setAuthToken(state, authToken) {
+      state.authToken = authToken;
+    },
   },
 
   actions: {
-    async signInWithToken(context, token) {
-      const resp = await this.$axios({
-        url: '/sign-in',
-        method: 'POST',
-        data: {
-          signInToken: token,
-        },
-        withCredentials: true,
-      });
-      return resp.data.authToken;
-    },
-
     async fetchCurrentUser(context) {
       if (!this.$axios.defaults.headers['X-Auth-Token']) {
         return;

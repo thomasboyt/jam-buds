@@ -1,9 +1,6 @@
-import { parse as parseCookie } from 'cookie';
-
-export default function ({ $axios }) {
+export default function ({ $axios, store }) {
   if (process.client) {
-    const cookie = parseCookie(document.cookie);
-    const authToken = cookie.jamBudsAuthToken;
+    const authToken = store.state.auth.authToken;
 
     if (authToken) {
       $axios.defaults.headers = {

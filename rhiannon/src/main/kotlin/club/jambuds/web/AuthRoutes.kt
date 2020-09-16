@@ -6,6 +6,7 @@ import club.jambuds.web.extensions.validateJsonBody
 import com.google.gson.annotations.Expose
 import io.javalin.apibuilder.ApiBuilder
 import io.javalin.http.Context
+import javax.servlet.http.Cookie
 import javax.validation.constraints.NotNull
 import javax.validation.constraints.Pattern
 import javax.validation.constraints.Size
@@ -45,6 +46,9 @@ class AuthRoutes(private val authService: AuthService, private val appUrl: Strin
     private fun signIn(ctx: Context) {
         val body = ctx.validateJsonBody(SignInBody::class.java)
         val authToken = authService.signIn(body.signInToken)
+        // web uses cookie for ssr...
+        setTokenCookie(ctx, authToken)
+        // ...mobile (and ssr-less web if needed) uses returned json
         ctx.json(SignInResponse(authToken))
     }
 
@@ -79,7 +83,7 @@ class AuthRoutes(private val authService: AuthService, private val appUrl: Strin
             referral = body.referral
         )
 
-        ctx.cookie(AUTH_TOKEN_COOKIE, authToken, maxAge = 60 * 60 * 24 * 365)
+        setTokenCookie(ctx, authToken)
         ctx.status(204)
     }
 
@@ -90,5 +94,13 @@ class AuthRoutes(private val authService: AuthService, private val appUrl: Strin
             ctx.removeCookie(AUTH_TOKEN_COOKIE, "/")
         }
         ctx.status(204)
+    }
+
+    private fun setTokenCookie(ctx: Context, authToken: String) {
+        ctx.cookie(Cookie(AUTH_TOKEN_COOKIE, authToken).apply {
+            maxAge = 60 * 60 * 24 * 365
+            isHttpOnly = true
+            secure = appUrl.startsWith("https")
+        })
     }
 }

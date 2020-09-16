@@ -16,7 +16,7 @@
 
 <script>
 export default {
-  async middleware({ app, query, redirect, store }) {
+  async middleware({ app, query, redirect, res }) {
     const token = query.t;
     const dest = query.dest;
 
@@ -28,11 +28,16 @@ export default {
     if (process.server) {
       if (!dest) {
         try {
-          const authToken = await store.dispatch('signInWithToken', token);
-          app.$cookies.set('jamBudsAuthToken', authToken, {
-            path: '/',
-            maxAge: 60 * 60 * 24 * 365,
+          const signInResp = await app.$axios({
+            url: '/sign-in',
+            method: 'POST',
+            data: {
+              signInToken: token,
+            },
           });
+          // forward along the cookie from the API
+          const setCookie = signInResp.headers['set-cookie'];
+          res.setHeader('set-cookie', setCookie);
           redirect('/');
         } catch (err) {
           console.error(err);
