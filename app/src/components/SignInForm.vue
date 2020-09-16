@@ -51,7 +51,7 @@ export default {
         if (resp.data.isRegistration) {
           document.location = `/welcome/registration?t=${resp.data.token}`;
         } else {
-          document.location = `/auth/sign-in?t=${resp.data.token}`;
+          document.location = `/sign-in?t=${resp.data.token}`;
         }
       }
     },
