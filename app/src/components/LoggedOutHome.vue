@@ -75,6 +75,16 @@ export default {
     };
   },
 
+  mounted() {
+    if ('sign-in-error' in this.$route.query) {
+      this.$store.commit(
+        'showErrorModal',
+        'Invalid or expired sign-in token used. Please try requesting a new sign-in email.'
+      );
+      this.$router.replace(this.$route.path);
+    }
+  },
+
   methods: {
     handleSentMail(emailAddress) {
       this.sentMailAddress = emailAddress;

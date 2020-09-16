@@ -4,6 +4,7 @@ import club.jambuds.AppTest
 import club.jambuds.getGson
 import club.jambuds.helpers.TestDataFactories
 import club.jambuds.responses.GetCurrentUserResponse
+import club.jambuds.responses.SignInResponse
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.argForWhich
 import com.nhaarman.mockitokotlin2.check
@@ -129,7 +130,7 @@ class AuthRoutesTest : AppTest() {
 
         val token = getSignInToken(email)
         val appUrl = config.getString("appUrl")
-        val url = "$appUrl/auth/sign-in?t=$token"
+        val url = "$appUrl/sign-in?t=$token"
 
         verify(mockEmailClient, times(1)).sendEmail(
             fromEmail = any(),
@@ -148,15 +149,16 @@ class AuthRoutesTest : AppTest() {
     }
 
     @Test
-    fun `GET auth_sign-in - signs in as user`() {
+    fun `POST auth_sign-in - returns auth token to user`() {
         val user = TestDataFactories.createUser(txn, "jeff", true)
         val signInToken = createSignInToken(user.email)
-
-        val resp = Unirest.get("$authUrl/sign-in?t=$signInToken").asString()
-        assertEquals(302, resp.status)
+        val body = JSONObject(mapOf("signInToken" to signInToken))
+        val resp = Unirest.post("$appUrl/sign-in").body(body).asString()
+        assertEquals(200, resp.status)
 
         val authToken = getAuthToken(user.id)
-        assertEquals(authToken, resp.cookies.getNamed(AUTH_TOKEN_COOKIE).value)
+        val respBody = gson.fromJson(resp.body, SignInResponse::class.java)
+        assertEquals(authToken, respBody.authToken)
     }
 
     @Test

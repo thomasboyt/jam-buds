@@ -78,6 +78,7 @@ const root = {
         this.$axios.defaults.headers = {
           'X-Auth-Token': authToken,
         };
+        this.commit('setAuthToken', authToken);
       }
 
       await context.dispatch('fetchCurrentUser');

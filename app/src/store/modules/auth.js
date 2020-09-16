@@ -1,6 +1,7 @@
 const auth = {
   state() {
     return {
+      authToken: null,
       // populated by /me lookup
       authenticated: false,
     };
@@ -9,6 +10,9 @@ const auth = {
   mutations: {
     setCurrentUser(state) {
       state.authenticated = true;
+    },
+    setAuthToken(state, authToken) {
+      state.authToken = authToken;
     },
   },
 

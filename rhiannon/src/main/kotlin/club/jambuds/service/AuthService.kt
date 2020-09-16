@@ -9,7 +9,6 @@ import club.jambuds.util.generateRandomString
 import io.javalin.http.BadRequestResponse
 import io.sentry.Sentry
 import org.slf4j.LoggerFactory
-import java.lang.Exception
 
 class AuthService(
     private val userDao: UserDao,
@@ -23,14 +22,24 @@ class AuthService(
 ) {
     private val logger = LoggerFactory.getLogger(AuthService::class.java.name)
 
-    fun sendSignInToken(email: String, signUpReferral: String?): SendSignInTokenSkipAuthResponse? {
+    fun sendSignInToken(
+        email: String,
+        signUpReferral: String?,
+        dest: String?
+    ): SendSignInTokenSkipAuthResponse? {
         val token = generateRandomString(24)
         signInTokenDao.createSignInToken(email, token)
         val user = userDao.getUserByEmail(email)
 
+        val linkSuffix = if (dest != null) {
+            "&dest=$dest"
+        } else {
+            ""
+        }
+
         if (user == null) {
             // sign up
-            var link = "${appUrl}/welcome/registration?t=${token}"
+            var link = "${appUrl}/welcome/registration?t=${token}" + linkSuffix
 
             if (signUpReferral != null) {
                 link += "&referral=$signUpReferral"
@@ -44,7 +53,7 @@ class AuthService(
             )
         } else {
             // sign in
-            val link = "${appUrl}/auth/sign-in?t=${token}"
+            val link = "${appUrl}/sign-in?t=${token}" + linkSuffix
             emailService.sendEmail(
                 email = email,
                 subject = "Your sign-in link for jambuds.club",
