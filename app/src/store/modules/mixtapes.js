@@ -133,6 +133,11 @@ const mixtapes = {
       // to be navigated away from before we clear that cache, see
       // <mixtape-page />
     },
+
+    removeMixtapeFromCache(context, { mixtapeId }) {
+      context.commit('removeMixtape', { mixtapeId });
+      context.commit('deleteOwnPlaylistMixtape', { mixtapeId });
+    },
   },
 
   getters: {

@@ -1,9 +1,11 @@
 import Vue from 'vue';
 
+const mixtapeKey = (id) => `mixtape:${id}`;
+
 function denormalizeItem(entry) {
   const entryId = entry.song
     ? `song:${entry.song.id}`
-    : `mixtape:${entry.mixtape.id}`;
+    : mixtapeKey(entry.mixtape.id);
 
   const denormalizedItem = {
     ...entry,
@@ -75,7 +77,7 @@ const playlists = {
       }
     },
 
-    deleteOwnPlaylistItem(state, { songId, currentUserName }) {
+    deleteOwnPlaylistSong(state, { songId, currentUserName }) {
       // After you delete your post of a song, remove the song from any playlist
       // where the only poster was you
       for (let key of Object.keys(state)) {
@@ -98,6 +100,19 @@ const playlists = {
             );
           }
 
+          state[key].items = items;
+        }
+      }
+    },
+
+    deleteOwnPlaylistMixtape(state, { mixtapeId }) {
+      for (let key of Object.keys(state)) {
+        const existingIdx = state[key].items.findIndex(
+          (entry) => entry.id === mixtapeKey(mixtapeId)
+        );
+        if (existingIdx !== -1) {
+          const items = state[key].items.slice();
+          items.splice(existingIdx, 1);
           state[key].items = items;
         }
       }

@@ -212,7 +212,7 @@ export default {
       }
 
       this.$router.push('/', () => {
-        this.$store.commit('removeMixtape', { mixtapeId });
+        this.$store.dispatch('removeMixtapeFromCache', { mixtapeId });
       });
     },
   },
