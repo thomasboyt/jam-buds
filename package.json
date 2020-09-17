@@ -3,7 +3,9 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "api": "cd rhiannon && JAMBUDS_ENV=development ./gradlew run --console=plain",
+    "app": "cd app && npm run dev"
   },
   "repository": {
     "type": "git",
