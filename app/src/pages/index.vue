@@ -41,15 +41,6 @@ export default {
     };
   },
 
-  async fetch({ store }) {
-    if (store.state.auth.authenticated) {
-      await Promise.all([
-        store.dispatch('loadPlaylist', { key: 'feed', url: '/feed' }),
-        store.dispatch('notifications/load'),
-      ]);
-    }
-  },
-
   computed: mapState({
     authenticated: (state) => state.auth.authenticated,
   }),

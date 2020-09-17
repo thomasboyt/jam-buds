@@ -4,6 +4,5 @@ import com.google.gson.annotations.Expose
 
 data class UserPlaylistResponse(
     @Expose val items: List<UserPlaylistEntry>,
-    @Expose val limit: Int,
-    @Expose val userProfile: UserProfile
+    @Expose val limit: Int
 )

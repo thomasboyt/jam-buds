@@ -1,6 +1,7 @@
 package club.jambuds.web
 
 import club.jambuds.responses.GetCurrentUserResponse
+import club.jambuds.responses.GetUserProfileResponse
 import club.jambuds.responses.TwitterFriendSuggestionsResponse
 import club.jambuds.responses.UserFollowingResponse
 import club.jambuds.service.UserService
@@ -14,6 +15,7 @@ class UserRoutes(private val userService: UserService) {
     fun register() {
         get("/api/me", this::getCurrentUser)
         get("/api/friend-suggestions", this::getTwitterFriendSuggestions)
+        get("/api/users/:userName", this::getUserProfile)
         get("/api/users/:userName/following", this::getUserFollowing)
         get("/api/users/:userName/followers", this::getUserFollowers)
     }
@@ -31,6 +33,13 @@ class UserRoutes(private val userService: UserService) {
         ctx.json(GetCurrentUserResponse(user = serializedUser))
     }
 
+    private fun getUserProfile(ctx: Context) {
+        val userName = ctx.pathParam<String>("userName").get()
+        val profile = userService.getUserProfileByName(userName)
+            ?: throw NotFoundResponse("User not found with name $userName")
+        ctx.json(GetUserProfileResponse(userProfile = profile))
+    }
+
     private fun getTwitterFriendSuggestions(ctx: Context) {
         val user = ctx.requireUser()
         val users = userService.getUnfollowedTwitterUsersForUser(user)
@@ -44,7 +53,7 @@ class UserRoutes(private val userService: UserService) {
 
         val users = userService.getFollowingByUserId(userProfile.id)
 
-        ctx.json(UserFollowingResponse(userProfile, users))
+        ctx.json(UserFollowingResponse(users))
     }
 
     private fun getUserFollowers(ctx: Context) {
@@ -54,6 +63,6 @@ class UserRoutes(private val userService: UserService) {
 
         val users = userService.getFollowersByUserId(userProfile.id)
 
-        ctx.json(UserFollowingResponse(userProfile, users))
+        ctx.json(UserFollowingResponse(users))
     }
 }

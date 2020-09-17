@@ -5,9 +5,6 @@ import club.jambuds.getGson
 import club.jambuds.helpers.TestDataFactories
 import club.jambuds.model.User
 import club.jambuds.responses.FeedPlaylistResponse
-import club.jambuds.responses.UserPlaylistResponse
-import club.jambuds.responses.UserProfile
-import io.javalin.plugin.json.JavalinJson
 import kong.unirest.GetRequest
 import kong.unirest.Unirest
 import kong.unirest.json.JSONObject
@@ -358,21 +355,6 @@ class PlaylistRoutesTest : AppTest() {
             expected,
             body.items[0].posts.map { mapOf("userName" to it.userName, "noteText" to it.noteText) }
         )
-    }
-
-    @Test
-    fun `GET playlists_(userName) - includes user profile`() {
-        val jeff = TestDataFactories.createUser(txn, "jeff", true)
-        val colorScheme = TestDataFactories.createColorScheme(txn, jeff.id)
-
-        val resp = Unirest.get("$appUrl/playlists/jeff").asString()
-        assertEquals(200, resp.status)
-        val expected = UserPlaylistResponse(
-            items = emptyList(),
-            limit = 20,
-            userProfile = UserProfile(id = jeff.id, name = jeff.name, colorScheme = colorScheme)
-        )
-        assertEquals(JavalinJson.toJson(expected), resp.body)
     }
 
     @Test

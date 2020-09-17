@@ -6,7 +6,7 @@
       </template>
     </profile-nav>
 
-    <panel v-if="isCurrentUserPage && draftMixtapes.length">
+    <panel v-if="showDraftMixtapes">
       <p>You've started on the following draft mixtapes:</p>
       <ul>
         <li v-for="mixtape of draftMixtapes" :key="mixtape.id">
@@ -18,9 +18,10 @@
     </panel>
 
     <playlist
-      :items="items"
-      :items-exhausted="itemsExhausted"
+      :playlist-key="playlistKey"
       :loading-next-page="loadingNextPage"
+      :error="$fetchState.error"
+      :is-loading="$fetchState.pending"
       @requestNextPage="handleRequestNextPage"
     >
       <template v-slot:item="{ item }">
@@ -49,7 +50,6 @@ import MixtapeItem from '../../../components/playlist/MixtapeItem.vue';
 import EntryDetails from '../../../components/playlist/EntryDetails.vue';
 import Panel from '../../../components/Panel.vue';
 import CreateMixtapeButton from '../../../components/CreateMixtapeButton.vue';
-import with404Handler from '~/util/with404Handler';
 
 export default {
   components: {
@@ -67,17 +67,19 @@ export default {
     };
   },
 
-  async fetch({ store, route, error }) {
-    const requests = [store.dispatch('loadProfileMixtapes', route.params.id)];
+  fetch() {
+    const requests = [
+      this.$store.dispatch('loadProfileMixtapes', this.$route.params.id),
+    ];
 
     if (
-      store.state.auth.authenticated &&
-      store.state.currentUser.name === route.params.id
+      this.$store.state.auth.authenticated &&
+      this.$store.state.currentUser.name === this.$route.params.id
     ) {
-      requests.push(store.dispatch('loadDraftMixtapes'));
+      requests.push(this.$store.dispatch('loadDraftMixtapes'));
     }
 
-    await with404Handler(error, Promise.all(requests));
+    return Promise.all(requests);
   },
 
   data() {
@@ -100,14 +102,16 @@ export default {
     playlistKey() {
       return `${this.name}/mixtapes`;
     },
-    items() {
-      return this.$store.getters.playlistItems(this.playlistKey);
-    },
-    itemsExhausted() {
-      return this.$store.state.playlists[this.playlistKey].itemsExhausted;
-    },
     title() {
       return `${this.name}'s mixtapes`;
+    },
+    showDraftMixtapes() {
+      return (
+        this.isCurrentUserPage &&
+        !this.$fetchState.pending &&
+        !this.$fetchState.error &&
+        this.draftMixtapes.length
+      );
     },
   },
 

@@ -12,9 +12,10 @@
     <notifications-feed-section />
 
     <playlist
-      :items="items"
-      :items-exhausted="feedItemsExhausted"
+      playlist-key="feed"
       :loading-next-page="loadingNextPage"
+      :is-loading="$fetchState.pending"
+      :error="$fetchState.error"
       @requestNextPage="handleRequestNextPage"
     >
       <template v-slot:item="{ item }">
@@ -67,6 +68,15 @@ export default {
     return {
       title: 'Feed',
     };
+  },
+
+  async fetch() {
+    const promises = Promise.all([
+      this.$store.dispatch('loadPlaylist', { key: 'feed', url: '/feed' }),
+      this.$store.dispatch('notifications/load'),
+    ]);
+
+    return promises;
   },
 
   data() {
