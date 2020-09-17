@@ -1,7 +1,10 @@
 <template>
   <div>
     <profile-nav :title="title" />
+    <h3>followers</h3>
     <users-list :users="followers" />
+    <h3>following</h3>
+    <users-list :users="following" />
   </div>
 </template>
 
@@ -23,22 +26,26 @@ export default {
     };
   },
 
-  async fetch({ store, route, error }) {
-    await with404Handler(
-      error,
-      store.dispatch('loadProfileFollowers', route.params.id)
+  fetch() {
+    return with404Handler(
+      this.$error,
+      Promise.all([
+        this.$store.dispatch('loadProfileFollowers', this.name),
+        this.$store.dispatch('loadProfileFollowing', this.name),
+      ])
     );
   },
 
   computed: {
     ...mapState({
       followers: (state) => state.profile.followers,
+      following: (state) => state.profile.following,
     }),
     name() {
       return this.$route.params.id;
     },
     title() {
-      return `${this.name}'s followers`;
+      return `${this.name}'s buds`;
     },
   },
 };

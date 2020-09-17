@@ -46,12 +46,8 @@ export default {
           label: 'Mixtapes',
         },
         {
-          to: '/following',
-          label: 'Following',
-        },
-        {
-          to: '/followers',
-          label: 'Followers',
+          to: '/buds',
+          label: 'Buds',
         },
       ],
     };
