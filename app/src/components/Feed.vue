@@ -3,11 +3,9 @@
     <div class="header-row">
       <page-header title="your feed" />
       <div class="header-row-button-container">
-        <add-song-form
-          @submit="handleAddSongSubmit"
-          desktop-cta="post song"
-          mobile-cta="+ post a song"
-        />
+        <add-song-button @click="handleAddSongClick">
+          + post a song
+        </add-song-button>
       </div>
     </div>
 
@@ -49,7 +47,7 @@ import { mapState } from 'vuex';
 import sortBy from 'lodash/sortBy';
 
 import Playlist from './playlist/Playlist.vue';
-import AddSongForm from './AddSongForm.vue';
+import AddSongButton from './AddSongButton.vue';
 import PlaylistEntry from './playlist/PlaylistEntry.vue';
 import EntryDetails from './playlist/EntryDetails.vue';
 import PageHeader from './PageHeader.vue';
@@ -58,7 +56,7 @@ import NotificationsFeedSection from './NotificationsFeedSection.vue';
 export default {
   components: {
     Playlist,
-    AddSongForm,
+    AddSongButton,
     PlaylistEntry,
     EntryDetails,
     PageHeader,
@@ -104,8 +102,8 @@ export default {
       }
     },
 
-    handleAddSongSubmit(initialSearch) {
-      this.$store.dispatch('showAddSong', initialSearch);
+    handleAddSongClick() {
+      this.$store.dispatch('showAddSong');
     },
 
     handleRequestPlay(songId) {

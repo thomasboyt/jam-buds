@@ -3,13 +3,7 @@ describe('posting a new song', () => {
     cy.login('jeff@jambuds.club');
     cy.visit('/');
 
-    // test that the inline input works
-    cy.get('[data-test="add-song-form"] input').type('Rhiannon');
-
     cy.get('[data-test="add-song"]:visible').click();
-
-    cy.get('[data-test="song-url-field"]').should('have.value', 'Rhiannon');
-    cy.contains('[data-test="search-results"] a', 'Rhiannon');
 
     cy.get('[data-test="song-url-field"]').clear().type('Twice');
     cy.get('button[type="submit"]').click();
