@@ -1,12 +1,11 @@
 <template>
-  <div class="link-tabs">
-    <span v-for="(link, idx) of links" :key="link.to">
+  <ul class="link-tabs">
+    <li v-for="link of links" :key="link.to">
       <nuxt-link :to="`${linkPrefix || ''}${link.to}`">{{
         link.label
       }}</nuxt-link>
-      <span v-if="idx !== links.length - 1">&nbsp;/&nbsp;</span>
-    </span>
-  </div>
+    </li>
+  </ul>
 </template>
 
 <script>
@@ -19,14 +18,35 @@ export default {
 @import '~/assets/styles/mixins.scss';
 
 .link-tabs {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px rgba(0, 0, 0, 0.4) solid;
+
   font-size: 18px;
+
+  li {
+    flex: 1 1 auto;
+    text-align: center;
+
+    a {
+      text-decoration: none;
+      display: block;
+      border-bottom: 4px transparent solid;
+      padding: 5px;
+
+      &.nuxt-link-exact-active {
+        font-weight: 600;
+        border-bottom-color: $black;
+      }
+    }
+  }
 
   @media (max-width: $breakpoint-small) {
     font-size: 16px;
   }
-}
-
-.link-tabs a.nuxt-link-exact-active {
-  font-weight: 600;
 }
 </style>

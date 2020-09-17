@@ -68,12 +68,19 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '~/assets/styles/mixins.scss';
+
 .user-header {
-  margin-bottom: 30px;
+  h2 {
+    margin-bottom: 0px;
+  }
+
+  margin-bottom: 16px;
 
   .user-header-top {
     display: flex;
-    align-items: flex-start;
+    align-items: center; // vertical align
+    margin-bottom: 16px;
 
     > * {
       flex: 0 0 auto;
@@ -81,6 +88,12 @@ export default {
 
     .cta-container {
       margin-left: auto;
+    }
+  }
+
+  @media (min-width: $breakpoint-small) {
+    .user-header-top {
+      margin-bottom: 32px;
     }
   }
 }
