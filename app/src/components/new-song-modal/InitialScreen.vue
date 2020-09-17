@@ -9,6 +9,7 @@
           @input="handleInput"
           placeholder="Search..."
           data-test="song-url-field"
+          ref="input"
         />
       </div>
 
@@ -17,7 +18,7 @@
         :disabled="buttonDisabled"
         :class="['submit-search', 'cta-button', { invalid }]"
       >
-        <span>is my shit</span>
+        <span>find</span>
       </button>
     </form>
 
@@ -26,6 +27,9 @@
       :search-results="searchResults"
       @selectedSong="handleSelectSong"
     />
+    <div v-else class="search-placeholder">
+      <p>Search for a song or artist you like!</p>
+    </div>
   </div>
 </template>
 
@@ -55,6 +59,8 @@ export default {
       this.songInput = this.$store.state.addSong.initialSearch;
       this.$store.commit('clearInitialSearch');
       this.handleSubmit();
+    } else {
+      this.$refs.input.focus();
     }
   },
 
@@ -96,3 +102,10 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.search-placeholder {
+  padding: 50px;
+  text-align: center;
+}
+</style>
