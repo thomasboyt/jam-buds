@@ -82,6 +82,7 @@ export default {
     '~/plugins/spriteExtract',
     '~/plugins/logError',
     '~/plugins/appleMusicToken.server.js',
+    '~/plugins/attachFromStateToRoutes',
   ],
   /*
    ** Nuxt.js modules
