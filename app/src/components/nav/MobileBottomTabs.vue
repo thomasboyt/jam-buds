@@ -17,7 +17,9 @@
 
 <script>
 import Icon from '~/components/Icon';
-const placeholderIcon = require('~/assets/heart_open.svg');
+const homeIcon = require('~/assets/home.svg');
+const profileIcon = require('~/assets/profile.svg');
+const globeIcon = require('~/assets/globe.svg');
 
 export default {
   components: { Icon },
@@ -26,13 +28,13 @@ export default {
     tabs() {
       const currentUserName = this.$store.state.currentUser.name;
       return [
-        { name: 'Feed', link: '/', icon: placeholderIcon },
+        { name: 'Feed', link: '/', icon: homeIcon },
         {
           name: 'Profile',
           link: `/users/${currentUserName}`,
-          icon: placeholderIcon,
+          icon: profileIcon,
         },
-        { name: 'Public', link: '/public-feed', icon: placeholderIcon },
+        { name: 'Public', link: '/public-feed', icon: globeIcon },
       ];
     },
 

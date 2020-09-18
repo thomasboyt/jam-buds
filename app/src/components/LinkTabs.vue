@@ -1,7 +1,7 @@
 <template>
   <ul class="link-tabs">
     <li v-for="link of links" :key="link.to">
-      <nuxt-link :to="`${linkPrefix || ''}${link.to}`">{{
+      <nuxt-link :to="`${linkPrefix || ''}${link.to}`" replace>{{
         link.label
       }}</nuxt-link>
     </li>
