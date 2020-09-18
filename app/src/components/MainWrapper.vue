@@ -1,10 +1,17 @@
 <template>
-  <div :class="['main', { 'with-sidebar': withSidebar }]" :style="cssTheme">
+  <div :class="['main', { 'with-sidebar': withSidebar }]">
     <logged-out-header v-if="!authenticated" />
 
     <div class="main-inner">
       <slot />
     </div>
+
+    <style>
+      :root {
+        --theme-body-background: {{cssTheme[ '--theme-body-background' ]}};
+        --theme-text-color: {{cssTheme[ '--theme-text-color' ]}};
+      }
+    </style>
   </div>
 </template>
 

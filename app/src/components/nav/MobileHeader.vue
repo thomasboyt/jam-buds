@@ -1,5 +1,5 @@
 <template>
-  <div class="mobile-header">
+  <div :class="['mobile-header', { 'show-border': !!pageTitle }]">
     <div class="header-content">
       <sidebar-toggle v-if="isRootPage" />
       <mobile-back-button v-else />
@@ -8,10 +8,6 @@
         <div v-if="pageTitle" class="page-title-container" key="title">
           <h2>{{ pageTitle }}</h2>
         </div>
-
-        <div v-else class="logo-container" key="logo">
-          <logo :small="true" />
-        </div>
       </transition>
     </div>
   </div>
@@ -19,11 +15,10 @@
 
 <script>
 import SidebarToggle from './SidebarToggle.vue';
-import Logo from '~/components/Logo.vue';
 import MobileBackButton from './MobileBackButton.vue';
 
 export default {
-  components: { SidebarToggle, Logo, MobileBackButton },
+  components: { SidebarToggle, MobileBackButton },
 
   computed: {
     pageTitle() {
@@ -42,19 +37,22 @@ export default {
 @import '~/assets/styles/z-index.scss';
 
 .mobile-header {
+  @media (min-width: $breakpoint-small) {
+    display: none;
+  }
+
   position: fixed;
   z-index: $z-header;
-
   top: 0;
   width: 100%;
   height: $header-height;
+  background: var(--theme-body-background);
+  background-size: auto 100vh;
+  border-bottom: 1px transparent solid;
 
-  background: $black;
-
-  padding: 0 20px;
-
-  @media (min-width: $breakpoint-small) {
-    display: none;
+  &.show-border {
+    transition: box-shadow ease-out 0.1s;
+    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.2);
   }
 
   a,
@@ -70,53 +68,45 @@ export default {
 
     margin: 0 auto;
     height: $header-height;
-
-    .sidebar-toggle {
-      margin-right: auto;
-
-      color: white;
-
-      display: none;
-
-      .icon {
-        fill: white;
-        width: 30px;
-        height: 30px;
-      }
-
-      @media (max-width: $breakpoint-small) {
-        display: block;
-      }
-    }
   }
 
-  .logo-container {
-    margin-top: -5px;
-    // ensure it's in the center column even if sidebar toggle isn't present (logged out)
-    grid-column-start: 2;
+  .back-button .icon {
+    color: $black;
+  }
+
+  .sidebar-toggle {
+    margin-right: auto;
+
+    .icon {
+      fill: $black;
+      width: 30px;
+      height: 30px;
+    }
   }
 
   .page-title-container {
     grid-column-start: 2;
 
     h2 {
-      color: #ddd;
       font-size: 22px;
       font-weight: 700;
       margin-bottom: 0;
-
-      // TODO: Use current page's gradient for this, or at least current user's
-      background: linear-gradient(to top right, #ed72df, #89fffd);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: rgba(255, 255, 255, 0.2);
       padding: 5px 0px;
+      color: $black;
+
+      &.colorful {
+        // TODO: Use current page's gradient for this, or at least current user's
+        background: linear-gradient(to top right, #ed72df, #89fffd);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: rgba(255, 255, 255, 0.2);
+      }
     }
   }
 
   .title-fade-enter-active,
   .title-fade-leave-active {
-    transition: opacity 0.15s ease;
+    transition: opacity 0.1s ease-out;
   }
   .title-fade-enter,
   .title-fade-leave-to {

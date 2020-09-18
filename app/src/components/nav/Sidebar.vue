@@ -111,6 +111,7 @@ export default {
 
 <style lang="scss" scoped>
 @import '~/assets/styles/mixins.scss';
+@import '~/assets/styles/z-index.scss';
 
 .sidebar {
   padding: 10px 20px;
@@ -124,26 +125,24 @@ export default {
 
   @media (max-width: $breakpoint-small) {
     position: fixed;
-    width: 300px;
+    width: $mobile-sidebar-width;
     height: 100%;
-    top: $header-height;
-    left: -300px;
-    z-index: 2;
+    top: 0;
+    left: -$mobile-sidebar-width;
+    z-index: $z-sidebar;
 
     transition: 0.2s left ease-in;
 
     &.-open {
       left: 0;
     }
-
-    .logo-container {
-      display: none;
-    }
   }
 
   .logo-container {
     margin: 20px auto 40px;
-    text-align: center;
+    @media (min-width: $breakpoint-small) {
+      text-align: center;
+    }
   }
 
   a,

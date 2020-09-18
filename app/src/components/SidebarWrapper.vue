@@ -4,7 +4,7 @@
 
     <div
       v-if="isSidebarOpen"
-      class="container-overlay"
+      class="modal-overlay"
       @click="handleClickSidebarOverlay"
     />
 
