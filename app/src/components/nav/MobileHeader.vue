@@ -25,8 +25,18 @@ export default {
       return this.$store.state.mobileHeaderTitle;
     },
     isRootPage() {
-      // TODO: use redux state
-      return this.$route.path === this.$store.state.activeBottomTab;
+      const activeBottomTab = this.$store.state.activeBottomTab;
+      if (this.$route.path === activeBottomTab) {
+        return true;
+      }
+      // hack for profile page...
+      if (
+        activeBottomTab.startsWith('/users') &&
+        this.$route.path.startsWith(activeBottomTab)
+      ) {
+        return true;
+      }
+      return false;
     },
   },
 };
