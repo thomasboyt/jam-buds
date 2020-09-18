@@ -182,24 +182,24 @@ export default {
 }
 
 .playlist-song--label {
+  flex-shrink: 1;
+  flex-grow: 1;
+  max-width: 100%;
+  min-width: 0;
+  margin-right: 10px;
+
+  line-height: 1.5em;
+
   .label-artist {
     font-weight: 500;
   }
 
   .label-artist,
   .label-title {
-    display: inline-block;
-    width: 100%;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
-
-  flex-shrink: 1;
-  flex-grow: 1;
-  max-width: 100%;
-  min-width: 0;
-  margin-right: 10px;
 }
 
 .playlist-song--actions {
@@ -244,11 +244,6 @@ export default {
   .playlist-song {
     padding: 5px;
     margin: 0 -5px 15px -5px;
-  }
-
-  .playlist-song--label {
-    font-size: 14px;
-    line-height: 1.25em;
   }
 
   .playlist-song--actions > * {

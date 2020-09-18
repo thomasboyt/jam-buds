@@ -23,7 +23,6 @@ ul {
 
   li a {
     display: block;
-    font-size: 14px;
     background: rgba(0, 0, 0, 0.05);
     padding: 10px;
     margin-bottom: 4px;

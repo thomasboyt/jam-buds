@@ -26,7 +26,7 @@ export default {
   text-align: left;
   display: flex;
   align-items: center;
-  line-height: 24px;
+  line-height: 1.5em;
 
   .album-art-container {
     flex: 0 0 auto;
@@ -53,11 +53,6 @@ export default {
     .artist {
       font-weight: 500;
     }
-  }
-
-  @media (max-width: $breakpoint-small) {
-    font-size: 14px;
-    line-height: 20px;
   }
 }
 </style>

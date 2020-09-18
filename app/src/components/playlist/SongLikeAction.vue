@@ -95,11 +95,5 @@ export default {
   min-width: 40px;
   padding: 0 5px;
   text-align: left;
-
-  @media (max-width: $breakpoint-small) {
-    font-size: 14px;
-    min-width: 35px;
-    margin-right: -10px;
-  }
 }
 </style>

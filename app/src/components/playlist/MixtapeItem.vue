@@ -58,14 +58,11 @@ export default {
 }
 
 .label {
-  line-height: 24px;
+  line-height: 1.5em;
   flex: 1 1 auto;
   overflow-x: hidden;
 
   > .label-content {
-    display: inline-block;
-    width: 100%;
-
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -85,11 +82,6 @@ export default {
   .art {
     margin-right: 10px;
     width: 54px;
-  }
-
-  .label {
-    font-size: 14px;
-    line-height: 20px;
   }
 
   .actions ::v-deep .action-button {
