@@ -1,6 +1,7 @@
 <template>
   <div class="app-container">
-    <mobile-nav />
+    <mobile-header />
+    <mobile-bottom-tabs v-if="authenticated" />
 
     <div class="page-container">
       <nuxt />
@@ -26,7 +27,8 @@ import AppleMusicLoader from '~/components/AppleMusicLoader.vue';
 import SpotifyLoader from '~/components/SpotifyLoader.vue';
 import AudioPlayer from '~/components/audio-player/AudioPlayer.vue';
 import AddSongModal from '~/components/new-song-modal/AddSongModal.vue';
-import MobileNav from '~/components/MobileNav.vue';
+import MobileHeader from '~/components/nav/MobileHeader.vue';
+import MobileBottomTabs from '~/components/nav/MobileBottomTabs.vue';
 import FlashMessage from '~/components/FlashMessage.vue';
 
 export default {
@@ -35,7 +37,8 @@ export default {
     AddSongModal,
     AppleMusicLoader,
     SpotifyLoader,
-    MobileNav,
+    MobileHeader,
+    MobileBottomTabs,
     FlashMessage,
   },
 

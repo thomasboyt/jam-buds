@@ -32,10 +32,14 @@ const root = {
       mobileHeaderTitle: null,
       flashMessage: null,
       isConnectStreamingBannerOpen: false,
+      activeBottomTab: '/',
     };
   },
 
   mutations: {
+    setActiveTab(state, path) {
+      state.activeBottomTab = path;
+    },
     openSidebar(state) {
       state.isSidebarOpen = true;
     },

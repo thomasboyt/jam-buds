@@ -1,7 +1,8 @@
 <template>
   <div class="mobile-header">
     <div class="header-content">
-      <sidebar-toggle />
+      <sidebar-toggle v-if="isRootPage" />
+      <mobile-back-button v-else />
 
       <transition name="title-fade" mode="out-in">
         <div v-if="pageTitle" class="page-title-container" key="title">
@@ -18,14 +19,19 @@
 
 <script>
 import SidebarToggle from './SidebarToggle.vue';
-import Logo from './Logo.vue';
+import Logo from '~/components/Logo.vue';
+import MobileBackButton from './MobileBackButton.vue';
 
 export default {
-  components: { SidebarToggle, Logo },
+  components: { SidebarToggle, Logo, MobileBackButton },
 
   computed: {
     pageTitle() {
       return this.$store.state.mobileHeaderTitle;
+    },
+    isRootPage() {
+      // TODO: use redux state
+      return this.$route.path === this.$store.state.activeBottomTab;
     },
   },
 };
