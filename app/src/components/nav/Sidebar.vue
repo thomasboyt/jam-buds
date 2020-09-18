@@ -4,12 +4,7 @@
       <logo />
     </div>
 
-    <p>
-      what up,
-      <nuxt-link :to="`/users/${currentUserName}`" @click.native="handleClick">
-        {{ currentUserName }}
-      </nuxt-link>
-    </p>
+    <p>what up, {{ currentUserName }}?</p>
 
     <ul>
       <li>
@@ -55,9 +50,10 @@
           about jam buds
         </nuxt-link>
       </li>
+      <li>
+        <a href="#" @click="handleSignOut">sign out</a>
+      </li>
     </ul>
-
-    <p>or <a href="#" @click="handleSignOut">sign out</a></p>
   </div>
 </template>
 
@@ -92,6 +88,11 @@ export default {
     async handleSignOut(evt) {
       evt.preventDefault();
 
+      const confirmed = window.confirm('Are you sure you want to sign out?');
+      if (!confirmed) {
+        return;
+      }
+
       try {
         await this.$axios({
           baseURL: null,
@@ -117,7 +118,8 @@ export default {
   padding: 10px 20px;
   background: $lighter-black;
   font-family: 'Open Sans', sans-serif;
-  color: white;
+  font-size: 16px;
+  color: #ccc;
 
   position: fixed;
   height: 100vh;
