@@ -28,6 +28,7 @@ const root = {
 
   state() {
     return {
+      isWebView: false,
       isSidebarOpen: false,
       mobileHeaderTitle: null,
       flashMessage: null,
@@ -37,6 +38,9 @@ const root = {
   },
 
   mutations: {
+    enableWebView(state) {
+      state.isWebView = true;
+    },
     setActiveTab(state, path) {
       state.activeBottomTab = path;
     },
@@ -74,7 +78,7 @@ const root = {
   },
 
   actions: {
-    async nuxtServerInit(context, { req }) {
+    async nuxtServerInit(context, { req, query }) {
       const cookie = parseCookie(req.headers.cookie || '');
       const authToken = cookie.jamBudsAuthToken;
 
@@ -86,6 +90,11 @@ const root = {
       }
 
       await context.dispatch('fetchCurrentUser');
+
+      // TODO: maybe pull this out of nuxtServerInit?
+      if ('webview' in query) {
+        context.commit('enableWebView');
+      }
     },
 
     setFlashMessage(state, { message, clearMs = 3000 }) {

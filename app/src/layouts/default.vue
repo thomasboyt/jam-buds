@@ -82,6 +82,7 @@ export default {
 
   computed: mapState({
     authenticated: (state) => state.auth.authenticated,
+    isWebView: (state) => state.isWebView,
     addSongModalIsOpen: (state) => state.addSong.showModal,
   }),
 
