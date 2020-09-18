@@ -42,7 +42,7 @@ export default {
 @import '~/assets/styles/z-index.scss';
 
 $banner-desktop-height: 165px;
-$banner-mobile-height: 300px;
+$banner-mobile-height: 330px;
 
 .connect-streaming-banner {
   position: fixed;

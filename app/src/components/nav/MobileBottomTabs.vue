@@ -55,11 +55,11 @@ export default {
 
 .mobile-bottom-tabs {
   position: fixed;
-  z-index: $z-header;
+  z-index: $z-mobile-tabbar;
 
   bottom: 0;
   width: 100%;
-  height: 44px;
+  height: $mobile-tabbar-height;
 
   background: $black;
 
