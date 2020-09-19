@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <div :class="['app-container', { 'webview-container': isWebView }]">
     <mobile-header />
     <mobile-bottom-tabs v-if="authenticated" />
 

@@ -8,6 +8,8 @@
 }
 
 html {
+  touch-action: manipulation;
+
   // prevent scroll bar from hiding when content is <page height. this
   // prevents content "jumping" horizontally on page load
   overflow-y: scroll;
@@ -21,6 +23,10 @@ body {
   @media (max-width: $breakpoint-small) {
     font-size: 14px;
   }
+}
+
+.webview-container * {
+  -webkit-tap-highlight-color: transparent;
 }
 
 h2 {
