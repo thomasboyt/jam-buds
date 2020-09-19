@@ -8,12 +8,14 @@
 
     <ul>
       <li>
-        <nuxt-link to="/" @click.native="handleClick"> your feed </nuxt-link>
+        <nuxt-link to="/" @click.native="handleClick('/')">
+          your feed
+        </nuxt-link>
       </li>
       <li>
         <nuxt-link
           :to="`/users/${currentUserName}`"
-          @click.native="handleClick"
+          @click.native="handleClick(`/users/${currentUserName}`)"
           :class="{
             'profile-link': true,
             'profile-link-active': profileActive,
@@ -25,28 +27,34 @@
       <li>
         <nuxt-link
           :to="`/users/${currentUserName}/mixtapes`"
-          @click.native="handleClick"
+          @click.native="handleClick(`/users/${currentUserName}`)"
         >
           your mixtapes
         </nuxt-link>
       </li>
       <li>
-        <nuxt-link to="/find-friends" @click.native="handleClick">
-          find friends
-        </nuxt-link>
-      </li>
-      <li>
-        <nuxt-link to="/public-feed" @click.native="handleClick">
+        <nuxt-link
+          to="/public-feed"
+          @click.native="handleClick('/public-feed')"
+        >
           public feed
         </nuxt-link>
       </li>
       <li>
-        <nuxt-link to="/settings" @click.native="handleClick">
+        <nuxt-link
+          to="/find-friends"
+          @click.native="handleClick('/find-friends')"
+        >
+          find friends
+        </nuxt-link>
+      </li>
+      <li>
+        <nuxt-link to="/settings" @click.native="handleClick('/settings')">
           your settings
         </nuxt-link>
       </li>
       <li>
-        <nuxt-link to="/about" @click.native="handleClick">
+        <nuxt-link to="/about" @click.native="handleClick('/about')">
           about jam buds
         </nuxt-link>
       </li>
@@ -81,7 +89,8 @@ export default {
   },
 
   methods: {
-    handleClick() {
+    handleClick(path) {
+      this.$store.commit('setActiveTab', path);
       this.$store.commit('closeSidebar');
     },
 
