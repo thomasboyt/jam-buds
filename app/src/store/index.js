@@ -1,5 +1,6 @@
 import Vuex from 'vuex';
 import { parse as parseCookie } from 'cookie';
+import { parse as parseUrl } from 'url';
 
 import auth from './modules/auth';
 import currentUser from './modules/currentUser';
@@ -95,6 +96,16 @@ const root = {
       if ('webview' in query) {
         context.commit('enableWebView');
       }
+
+      const pathname = parseUrl(req.url).pathname;
+      if (context.state.auth.authenticated) {
+        const currentProfile = `/users/${context.state.currentUser?.name}`;
+        if (pathname.startsWith(currentProfile)) {
+          context.commit('setActiveTab', currentProfile);
+          return;
+        }
+      }
+      context.commit('setActiveTab', pathname);
     },
 
     setFlashMessage(state, { message, clearMs = 3000 }) {
