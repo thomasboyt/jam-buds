@@ -1,12 +1,16 @@
 <template>
   <div :class="['mobile-header', { 'show-border': !!pageTitle }]">
     <div class="header-content">
-      <sidebar-toggle v-if="isRootPage" />
-      <mobile-back-button v-else />
+      <sidebar-toggle v-if="authenticated && isRootPage" />
+      <mobile-back-button v-else-if="authenticated || !isRootPage" />
 
       <transition name="title-fade" mode="out-in">
         <div v-if="pageTitle" class="page-title-container" key="title">
           <h2>{{ pageTitle }}</h2>
+        </div>
+
+        <div v-else-if="!authenticated" class="logo-container" key="logo">
+          <logo :small="true" />
         </div>
       </transition>
     </div>
@@ -16,13 +20,17 @@
 <script>
 import SidebarToggle from './SidebarToggle.vue';
 import MobileBackButton from './MobileBackButton.vue';
+import Logo from '../Logo.vue';
 
 export default {
-  components: { SidebarToggle, MobileBackButton },
+  components: { SidebarToggle, MobileBackButton, Logo },
 
   computed: {
     pageTitle() {
       return this.$store.state.mobileHeaderTitle;
+    },
+    authenticated() {
+      return this.$store.state.auth.authenticated;
     },
     isRootPage() {
       const activeBottomTab = this.$store.state.activeBottomTab;
@@ -92,6 +100,12 @@ export default {
       width: 30px;
       height: 30px;
     }
+  }
+
+  .logo-container {
+    margin-top: -5px;
+    // ensure it's in the center column even if sidebar toggle isn't present (logged out)
+    grid-column-start: 2;
   }
 
   .page-title-container {
