@@ -5,13 +5,6 @@
     <div class="main-inner">
       <slot />
     </div>
-
-    <style>
-      :root {
-        --theme-body-background: {{cssTheme[ '--theme-body-background' ]}};
-        --theme-text-color: {{cssTheme[ '--theme-text-color' ]}};
-      }
-    </style>
   </div>
 </template>
 
@@ -26,6 +19,22 @@ export default {
     LoggedOutHeader,
   },
   props: ['colorScheme', 'withSidebar', 'withColorSchemeOverride'],
+
+  head() {
+    return {
+      style: [
+        {
+          vmid: 'color-scheme',
+          innerHTML: `
+          :root {
+            --theme-body-background: ${this.cssTheme['--theme-body-background']};
+            --theme-text-color: ${this.cssTheme['--theme-text-color']};
+          }
+        `,
+        },
+      ],
+    };
+  },
 
   computed: {
     ...mapState({
