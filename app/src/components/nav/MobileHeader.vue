@@ -1,5 +1,5 @@
 <template>
-  <div :class="['mobile-header', { 'show-border': !!pageTitle }]">
+  <div :class="['mobile-header', { 'show-border': scrolled }]">
     <div class="header-content">
       <sidebar-toggle v-if="authenticated && isRootPage" />
       <mobile-back-button v-else-if="authenticated || !isRootPage" />
@@ -25,6 +25,12 @@ import Logo from '../Logo.vue';
 export default {
   components: { SidebarToggle, MobileBackButton, Logo },
 
+  data() {
+    return {
+      scrolled: false,
+    };
+  },
+
   computed: {
     pageTitle() {
       return this.$store.state.mobileHeaderTitle;
@@ -45,6 +51,24 @@ export default {
         return true;
       }
       return false;
+    },
+  },
+
+  mounted() {
+    document.addEventListener('scroll', this.handleScroll);
+  },
+
+  unmounted() {
+    document.removeEventListener('scroll', this.handleScroll);
+  },
+
+  methods: {
+    handleScroll() {
+      if (window.scrollY > 0) {
+        this.scrolled = true;
+      } else {
+        this.scrolled = false;
+      }
     },
   },
 };
