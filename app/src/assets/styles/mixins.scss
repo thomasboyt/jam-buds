@@ -5,6 +5,7 @@
 
 $header-height: 60px;
 $sidebar-width: 250px;
+$mobile-sidebar-width: 275px;
 
 $black: #2f2933;
 $lighter-black: lighten($black, 5%);
@@ -16,3 +17,6 @@ $yellow: #ffffa6;
 $post-song-gradient: linear-gradient(to right, yellow, hotpink);
 
 $breakpoint-small: 768px;
+
+$mobile-tabbar-height: 46px;
+$player-bar-height: 80px;

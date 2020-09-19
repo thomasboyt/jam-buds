@@ -4,21 +4,18 @@
       <logo />
     </div>
 
-    <p>
-      what up,
-      <nuxt-link :to="`/users/${currentUserName}`" @click.native="handleClick">
-        {{ currentUserName }}
-      </nuxt-link>
-    </p>
+    <p>what up, {{ currentUserName }}?</p>
 
     <ul>
       <li>
-        <nuxt-link to="/" @click.native="handleClick"> your feed </nuxt-link>
+        <nuxt-link to="/" @click.native="handleClick('/')">
+          your feed
+        </nuxt-link>
       </li>
       <li>
         <nuxt-link
           :to="`/users/${currentUserName}`"
-          @click.native="handleClick"
+          @click.native="handleClick(`/users/${currentUserName}`)"
           :class="{
             'profile-link': true,
             'profile-link-active': profileActive,
@@ -30,39 +27,46 @@
       <li>
         <nuxt-link
           :to="`/users/${currentUserName}/mixtapes`"
-          @click.native="handleClick"
+          @click.native="handleClick(`/users/${currentUserName}`)"
         >
           your mixtapes
         </nuxt-link>
       </li>
       <li>
-        <nuxt-link to="/find-friends" @click.native="handleClick">
-          find friends
-        </nuxt-link>
-      </li>
-      <li>
-        <nuxt-link to="/public-feed" @click.native="handleClick">
+        <nuxt-link
+          to="/public-feed"
+          @click.native="handleClick('/public-feed')"
+        >
           public feed
         </nuxt-link>
       </li>
       <li>
-        <nuxt-link to="/settings" @click.native="handleClick">
+        <nuxt-link
+          to="/find-friends"
+          @click.native="handleClick('/find-friends')"
+        >
+          find friends
+        </nuxt-link>
+      </li>
+      <li>
+        <nuxt-link to="/settings" @click.native="handleClick('/settings')">
           your settings
         </nuxt-link>
       </li>
       <li>
-        <nuxt-link to="/about" @click.native="handleClick">
+        <nuxt-link to="/about" @click.native="handleClick('/about')">
           about jam buds
         </nuxt-link>
       </li>
+      <li>
+        <a href="#" @click="handleSignOut">sign out</a>
+      </li>
     </ul>
-
-    <p>or <a href="#" @click="handleSignOut">sign out</a></p>
   </div>
 </template>
 
 <script>
-import Logo from './Logo.vue';
+import Logo from '~/components/Logo.vue';
 
 export default {
   components: { Logo },
@@ -85,12 +89,18 @@ export default {
   },
 
   methods: {
-    handleClick() {
+    handleClick(path) {
+      this.$store.commit('setActiveTab', path);
       this.$store.commit('closeSidebar');
     },
 
     async handleSignOut(evt) {
       evt.preventDefault();
+
+      const confirmed = window.confirm('Are you sure you want to sign out?');
+      if (!confirmed) {
+        return;
+      }
 
       try {
         await this.$axios({
@@ -111,12 +121,14 @@ export default {
 
 <style lang="scss" scoped>
 @import '~/assets/styles/mixins.scss';
+@import '~/assets/styles/z-index.scss';
 
 .sidebar {
   padding: 10px 20px;
   background: $lighter-black;
   font-family: 'Open Sans', sans-serif;
-  color: white;
+  font-size: 16px;
+  color: #ccc;
 
   position: fixed;
   height: 100vh;
@@ -124,26 +136,24 @@ export default {
 
   @media (max-width: $breakpoint-small) {
     position: fixed;
-    width: 300px;
+    width: $mobile-sidebar-width;
     height: 100%;
-    top: $header-height;
-    left: -300px;
-    z-index: 2;
+    top: 0;
+    left: -$mobile-sidebar-width;
+    z-index: $z-sidebar;
 
     transition: 0.2s left ease-in;
 
     &.-open {
       left: 0;
     }
-
-    .logo-container {
-      display: none;
-    }
   }
 
   .logo-container {
     margin: 20px auto 40px;
-    text-align: center;
+    @media (min-width: $breakpoint-small) {
+      text-align: center;
+    }
   }
 
   a,

@@ -1,5 +1,5 @@
 <template>
-  <div :class="['main', { 'with-sidebar': withSidebar }]" :style="cssTheme">
+  <div :class="['main', { 'with-sidebar': withSidebar }]">
     <logged-out-header v-if="!authenticated" />
 
     <div class="main-inner">
@@ -19,6 +19,22 @@ export default {
     LoggedOutHeader,
   },
   props: ['colorScheme', 'withSidebar', 'withColorSchemeOverride'],
+
+  head() {
+    return {
+      style: [
+        {
+          vmid: 'color-scheme',
+          innerHTML: `
+          :root {
+            --theme-body-background: ${this.cssTheme['--theme-body-background']};
+            --theme-text-color: ${this.cssTheme['--theme-text-color']};
+          }
+        `,
+        },
+      ],
+    };
+  },
 
   computed: {
     ...mapState({

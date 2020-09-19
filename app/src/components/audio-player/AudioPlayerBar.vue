@@ -1,5 +1,8 @@
 <template>
-  <div class="audio-player--bar" v-if="currentSong">
+  <div
+    :class="['audio-player--bar', { 'has-mobile-tab-bar': hasMobileTabBar }]"
+    v-if="currentSong"
+  >
     <audio-player-song-display
       :song="currentSong"
       :playback-source-path="playbackSourcePath"
@@ -81,6 +84,10 @@ export default {
     playPauseIcon() {
       return this.isPlaying ? pauseIcon : playIcon;
     },
+
+    hasMobileTabBar() {
+      return this.authenticated;
+    },
   },
 
   mounted() {
@@ -112,7 +119,7 @@ export default {
   position: fixed;
   bottom: 0;
   width: 100%;
-  height: 80px;
+  height: $player-bar-height;
   align-items: center;
   z-index: $z-player-bar;
 
@@ -123,11 +130,21 @@ export default {
 
   &.audio-player-open-enter,
   &.audio-player-open-leave-to {
-    bottom: -80px;
+    bottom: -$player-bar-height;
   }
 
   @media (max-width: $breakpoint-small) {
     display: flex;
+
+    &.has-mobile-tab-bar {
+      bottom: $mobile-tabbar-height;
+      border-bottom: 2px #000 solid;
+
+      &.audio-player-open-enter,
+      &.audio-player-open-leave-to {
+        bottom: $mobile-tabbar-height - $player-bar-height;
+      }
+    }
 
     .audio-player--controls {
       margin-left: auto;

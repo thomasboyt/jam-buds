@@ -1,5 +1,6 @@
 import Vuex from 'vuex';
 import { parse as parseCookie } from 'cookie';
+import { parse as parseUrl } from 'url';
 
 import auth from './modules/auth';
 import currentUser from './modules/currentUser';
@@ -28,14 +29,22 @@ const root = {
 
   state() {
     return {
+      isWebView: false,
       isSidebarOpen: false,
       mobileHeaderTitle: null,
       flashMessage: null,
       isConnectStreamingBannerOpen: false,
+      activeBottomTab: '/',
     };
   },
 
   mutations: {
+    enableWebView(state) {
+      state.isWebView = true;
+    },
+    setActiveTab(state, path) {
+      state.activeBottomTab = path;
+    },
     openSidebar(state) {
       state.isSidebarOpen = true;
     },
@@ -70,7 +79,7 @@ const root = {
   },
 
   actions: {
-    async nuxtServerInit(context, { req }) {
+    async nuxtServerInit(context, { req, query }) {
       const cookie = parseCookie(req.headers.cookie || '');
       const authToken = cookie.jamBudsAuthToken;
 
@@ -82,6 +91,21 @@ const root = {
       }
 
       await context.dispatch('fetchCurrentUser');
+
+      // TODO: maybe pull this out of nuxtServerInit?
+      if ('webview' in query) {
+        context.commit('enableWebView');
+      }
+
+      const pathname = parseUrl(req.url).pathname;
+      if (context.state.auth.authenticated) {
+        const currentProfile = `/users/${context.state.currentUser?.name}`;
+        if (pathname.startsWith(currentProfile)) {
+          context.commit('setActiveTab', currentProfile);
+          return;
+        }
+      }
+      context.commit('setActiveTab', pathname);
     },
 
     setFlashMessage(state, { message, clearMs = 3000 }) {

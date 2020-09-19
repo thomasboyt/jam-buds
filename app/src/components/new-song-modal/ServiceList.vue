@@ -55,10 +55,5 @@ export default {
       }
     }
   }
-
-  @media (max-width: $breakpoint-small) {
-    font-size: 14px;
-    line-height: 20px;
-  }
 }
 </style>

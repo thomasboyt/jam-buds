@@ -56,7 +56,7 @@ button.add-song {
 @media (max-width: $breakpoint-small) {
   button.add-song {
     position: fixed;
-    bottom: 20px;
+    bottom: 20px + $mobile-tabbar-height;
     right: 20px;
     z-index: $z-floating-button;
 
@@ -67,7 +67,7 @@ button.add-song {
   }
 
   body.with-audio-player button.add-song {
-    bottom: 100px;
+    bottom: 20px + $mobile-tabbar-height + $player-bar-height;
   }
 }
 </style>
