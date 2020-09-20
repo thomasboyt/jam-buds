@@ -1,9 +1,15 @@
 <template>
-  <div :class="['main', { 'with-sidebar': withSidebar }]">
-    <logged-out-header v-if="!authenticated" />
+  <div class="container">
+    <sidebar :open="isSidebarOpen" />
+    <div v-if="isSidebarOpen" class="modal-overlay" @click="handleClickSidebarOverlay" />
 
-    <div class="main-inner">
-      <slot />
+    <div :class="['main', { 'with-sidebar': authenticated }]">
+      <!-- TODO: remove this? v -->
+      <logged-out-header v-if="!authenticated" />
+
+      <div class="main-inner">
+        <slot />
+      </div>
     </div>
   </div>
 </template>
@@ -13,12 +19,15 @@ import { mapState } from 'vuex';
 import getCSSVariablesFromColorScheme from '../util/getCSSVariablesFromColorScheme';
 import { defaultColorScheme } from '../util/gradients';
 import LoggedOutHeader from './LoggedOutHeader.vue';
+import Sidebar from './nav/Sidebar.vue';
 
 export default {
   components: {
     LoggedOutHeader,
+    Sidebar,
   },
-  props: ['colorScheme', 'withSidebar', 'withColorSchemeOverride'],
+
+  props: ['colorScheme', 'withColorSchemeOverride'],
 
   head() {
     return {
@@ -40,6 +49,7 @@ export default {
     ...mapState({
       currentUserScheme: (state) => state.currentUser.colorScheme,
       authenticated: (state) => state.auth.authenticated,
+      isSidebarOpen: (state) => state.isSidebarOpen,
     }),
 
     cssTheme() {
@@ -52,6 +62,12 @@ export default {
       }
 
       return getCSSVariablesFromColorScheme(colorScheme);
+    },
+  },
+
+  methods: {
+    handleClickSidebarOverlay() {
+      this.$store.commit('closeSidebar');
     },
   },
 };

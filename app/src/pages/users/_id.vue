@@ -1,18 +1,11 @@
 <template>
-  <sidebar-wrapper v-slot="{ withSidebar }">
-    <main-wrapper
-      :with-sidebar="withSidebar"
-      :with-color-scheme-override="true"
-      :color-scheme="colorScheme"
-    >
-      <nuxt-child />
-    </main-wrapper>
-  </sidebar-wrapper>
+  <main-wrapper :with-color-scheme-override="true" :color-scheme="colorScheme">
+    <nuxt-child />
+  </main-wrapper>
 </template>
 
 <script>
 import { mapState } from 'vuex';
-import SidebarWrapper from '../../components/SidebarWrapper.vue';
 import MainWrapper from '../../components/MainWrapper.vue';
 import with404Handler from '~/util/with404Handler';
 
@@ -20,7 +13,7 @@ const isCurrentUser = (store, route) =>
   store.state.currentUser?.name === route.params.id;
 
 export default {
-  components: { SidebarWrapper, MainWrapper },
+  components: { MainWrapper },
 
   asyncData({ store, route, error }) {
     if (isCurrentUser(store, route)) {

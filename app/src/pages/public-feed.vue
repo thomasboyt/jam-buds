@@ -1,22 +1,17 @@
 <template>
-  <sidebar-wrapper v-slot="{ withSidebar }">
-    <main-wrapper :with-sidebar="withSidebar">
-      <public-feed />
-    </main-wrapper>
-  </sidebar-wrapper>
+  <main-wrapper>
+    <public-feed />
+  </main-wrapper>
 </template>
 
 <script>
 import PublicFeed from '../components/PublicFeed.vue';
-
 import MainWrapper from '../components/MainWrapper.vue';
-import SidebarWrapper from '../components/SidebarWrapper.vue';
 
 export default {
   components: {
     PublicFeed,
     MainWrapper,
-    SidebarWrapper,
   },
 };
 </script>

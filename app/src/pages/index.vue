@@ -1,9 +1,7 @@
 <template>
-  <sidebar-wrapper v-if="authenticated" v-slot="{ withSidebar }">
-    <main-wrapper :with-sidebar="withSidebar">
-      <feed />
-    </main-wrapper>
-  </sidebar-wrapper>
+  <main-wrapper v-if="authenticated">
+    <feed />
+  </main-wrapper>
 
   <logged-out-home v-else />
 </template>
@@ -13,13 +11,11 @@ import { mapState } from 'vuex';
 import Feed from '../components/Feed.vue';
 import LoggedOutHome from '../components/LoggedOutHome.vue';
 import MainWrapper from '../components/MainWrapper.vue';
-import SidebarWrapper from '../components/SidebarWrapper.vue';
 
 export default {
   components: {
     Feed,
     MainWrapper,
-    SidebarWrapper,
     LoggedOutHome,
   },
 

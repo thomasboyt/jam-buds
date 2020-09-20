@@ -1,83 +1,68 @@
 <template>
-  <sidebar-wrapper v-slot="{ withSidebar }">
-    <main-wrapper
-      :with-sidebar="withSidebar"
-      :with-color-scheme-override="true"
-      :color-scheme="mixtape.author.colorScheme"
-    >
-      <share-landing-banner>
-        <nuxt-link to="/">sign up</nuxt-link>
-        to listen to this mixtape in your browser by connecting spotify or apple
-        music!
-      </share-landing-banner>
+  <main-wrapper :with-color-scheme-override="true" :color-scheme="mixtape.author.colorScheme">
+    <share-landing-banner>
+      <nuxt-link to="/">sign up</nuxt-link>to listen to this mixtape in your browser by connecting spotify or apple
+      music!
+    </share-landing-banner>
 
-      <editable-title
-        v-if="isEditing"
-        :mixtape="mixtape"
-        :editing="editingTitle"
-        @enter="handleEnterEditTitle"
-        @exit="handleExitEditTitle"
-      />
+    <editable-title
+      v-if="isEditing"
+      :mixtape="mixtape"
+      :editing="editingTitle"
+      @enter="handleEnterEditTitle"
+      @exit="handleExitEditTitle"
+    />
 
-      <h2 v-else>{{ mixtape.title }}</h2>
+    <h2 v-else>{{ mixtape.title }}</h2>
 
-      <p class="mixtape-meta">
-        <span v-if="isOwnMixtape"> your mixtape </span>
-        <span v-else>
-          a mixtape by
-          <nuxt-link :to="`/users/${mixtape.author.name}`">{{
-            mixtape.author.name
-          }}</nuxt-link>
-        </span>
+    <p class="mixtape-meta">
+      <span v-if="isOwnMixtape">your mixtape</span>
+      <span v-else>
+        a mixtape by
+        <nuxt-link :to="`/users/${mixtape.author.name}`">
+          {{
+          mixtape.author.name
+          }}
+        </nuxt-link>
+      </span>
 
-        <span v-if="!isEditing"> &middot; posted {{ publishedAt }}</span>
+      <span v-if="!isEditing">&middot; posted {{ publishedAt }}</span>
 
-        <span v-if="isOwnMixtape">
-          <span v-if="isEditing">
-            &middot;
-            <button class="link-button" @click="handleEnterEditTitle">
-              rename
-            </button>
-          </span>
+      <span v-if="isOwnMixtape">
+        <span v-if="isEditing">
           &middot;
-          <button class="link-button" @click="handleDelete">delete</button>
+          <button class="link-button" @click="handleEnterEditTitle">rename</button>
         </span>
-      </p>
+        &middot;
+        <button class="link-button" @click="handleDelete">delete</button>
+      </span>
+    </p>
 
-      <panel v-if="isEditing">
-        <p>this mixtape is in draft mode. would you like to publish it?</p>
-        <publish-button :mixtape="mixtape" />
-      </panel>
+    <panel v-if="isEditing">
+      <p>this mixtape is in draft mode. would you like to publish it?</p>
+      <publish-button :mixtape="mixtape" />
+    </panel>
 
-      <template v-if="mixtape.tracks.length > 0">
-        <mixtape :mixtape-id="$route.params.id" :is-editing="isEditing" />
+    <template v-if="mixtape.tracks.length > 0">
+      <mixtape :mixtape-id="$route.params.id" :is-editing="isEditing" />
 
-        <add-song-button @click="handleAddSongOpen" v-if="isEditing"
-          >+ add a song</add-song-button
-        >
-      </template>
-      <div v-else class="main-placeholder">
-        <add-song-button
-          :style="{ margin: '0 auto' }"
-          @click="handleAddSongOpen"
-          v-if="isEditing"
-          >+ add a song</add-song-button
-        >
-      </div>
-
-      <add-song-modal
+      <add-song-button @click="handleAddSongOpen" v-if="isEditing">+ add a song</add-song-button>
+    </template>
+    <div v-else class="main-placeholder">
+      <add-song-button
+        :style="{ margin: '0 auto' }"
+        @click="handleAddSongOpen"
         v-if="isEditing"
-        title="add to mixtape"
-        :mixtape-id="mixtapeId"
-      />
-    </main-wrapper>
-  </sidebar-wrapper>
+      >+ add a song</add-song-button>
+    </div>
+
+    <add-song-modal v-if="isEditing" title="add to mixtape" :mixtape-id="mixtapeId" />
+  </main-wrapper>
 </template>
 
 <script>
 import Mixtape from '../../components/mixtapes/Mixtape.vue';
 import MainWrapper from '../../components/MainWrapper.vue';
-import SidebarWrapper from '../../components/SidebarWrapper.vue';
 import AddSongButton from '../../components/AddSongButton.vue';
 import AddSongModal from '../../components/new-song-modal/AddSongModal.vue';
 import EditableTitle from '../../components/mixtapes/EditableTitle.vue';
@@ -92,7 +77,6 @@ export default {
   components: {
     Mixtape,
     MainWrapper,
-    SidebarWrapper,
     AddSongButton,
     AddSongModal,
     EditableTitle,

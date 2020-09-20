@@ -1,25 +1,21 @@
 <template>
-  <sidebar-wrapper v-slot="{ withSidebar }">
-    <main-wrapper :with-sidebar="withSidebar">
-      <h2>your settings</h2>
+  <main-wrapper>
+    <h2>your settings</h2>
 
-      <link-tabs link-prefix="/settings" :links="navLinks" />
+    <link-tabs link-prefix="/settings" :links="navLinks" />
 
-      <div :style="{ marginTop: '30px' }">
-        <nuxt-child />
-      </div>
-    </main-wrapper>
-  </sidebar-wrapper>
+    <div :style="{ marginTop: '30px' }">
+      <nuxt-child />
+    </div>
+  </main-wrapper>
 </template>
 
 <script>
 import MainWrapper from '../components/MainWrapper.vue';
-import SidebarWrapper from '../components/SidebarWrapper.vue';
 import LinkTabs from '../components/LinkTabs.vue';
 
 export default {
   components: {
-    SidebarWrapper,
     MainWrapper,
     LinkTabs,
   },
