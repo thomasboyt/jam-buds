@@ -1,29 +1,25 @@
 <template>
   <modal :title="title" :is-open="isOpen" @close="handleCloseModal">
     <transition name="fade">
-      <div class="fade-screen" v-if="state === INITIAL_STATE" key="initial">
+      <div class="add-song-modal fade-screen" v-if="state === INITIAL_STATE" key="initial">
         <initial-screen @selectedSong="handleSelectedSong" />
       </div>
 
-      <div class="fade-screen" v-if="state === CONFIRM_STATE" key="confirm">
+      <div class="add-song-modal fade-screen" v-if="state === CONFIRM_STATE" key="confirm">
         <mixtape-confirm-screen
           v-if="mixtapeId"
           :selected-song="selectedSong"
           :mixtape-id="mixtapeId"
           @finished="handleCloseModal"
         />
-        <confirm-screen
-          v-else
-          :selected-song="selectedSong"
-          @finished="handleCloseModal"
-        />
+        <confirm-screen v-else :selected-song="selectedSong" @finished="handleCloseModal" />
       </div>
     </transition>
   </modal>
 </template>
 
 <script>
-import Modal from './Modal.vue';
+import Modal from '../Modal.vue';
 import InitialScreen from './InitialScreen.vue';
 import ConfirmScreen from './ConfirmScreen.vue';
 import MixtapeConfirmScreen from './MixtapeConfirmScreen.vue';
@@ -35,7 +31,7 @@ const CONFIRM_STATE = 'confirm';
 export default {
   components: { Modal, InitialScreen, ConfirmScreen, MixtapeConfirmScreen },
 
-  props: ['isOpen', 'mixtapeId', 'title'],
+  props: ['mixtapeId', 'title'],
 
   data() {
     return {
@@ -44,6 +40,12 @@ export default {
       CONFIRM_STATE,
       selectedSong: null,
     };
+  },
+
+  computed: {
+    isOpen() {
+      return this.$route.query.modal === 'add-song';
+    },
   },
 
   methods: {
