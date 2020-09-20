@@ -1,19 +1,19 @@
 <template>
   <div>
     <div class="connect-page connect-twitter">
-      <h3>connect to twitter <small>(optional!)</small></h3>
+      <h3>
+        connect to twitter
+        <small>(optional!)</small>
+      </h3>
 
       <template v-if="twitterName">
         <p>
           you've connected your twitter account
-          <strong>@{{ twitterName }}</strong
-          >!
+          <strong>@{{ twitterName }}</strong>!
         </p>
 
         <div class="lower">
-          <settings-button tag="nuxt-link" :to="nextPage"
-            >continue</settings-button
-          >
+          <settings-button tag="nuxt-link" :to="nextPage" @click.native="setTab">continue</settings-button>
         </div>
       </template>
 
@@ -28,7 +28,7 @@
 
         <div class="lower">
           <p>
-            <nuxt-link :to="nextPage"> continue without connecting </nuxt-link>
+            <nuxt-link :to="nextPage" @click.native="setTab">continue without connecting</nuxt-link>
           </p>
         </div>
       </template>
@@ -54,6 +54,12 @@ export default {
   computed: mapState({
     twitterName: (state) => state.currentUser.twitterName,
   }),
+
+  methods: {
+    setTab() {
+      this.$store.commit('setActiveTab', '/');
+    },
+  },
 };
 </script>
 

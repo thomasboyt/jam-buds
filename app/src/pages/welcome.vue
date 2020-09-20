@@ -1,6 +1,6 @@
 <template>
   <div class="welcome-page-wrapper" :style="{ background: gradient }">
-    <logged-out-header />
+    <logged-out-header :show-mobile="true" />
 
     <h2>
       <span v-if="name">welcome, {{ name }}!</span>
@@ -55,12 +55,7 @@ h2 {
 
   flex: 1;
 
-  @media (max-width: $breakpoint-small) {
-    padding-top: 100px;
-  }
-  @media (min-width: $breakpoint-small) {
-    padding-top: 25px;
-  }
+  padding-top: 40px;
 }
 
 .fade-page {
