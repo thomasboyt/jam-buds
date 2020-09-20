@@ -1,5 +1,8 @@
 <template>
   <div class="container">
+    <mobile-header />
+    <mobile-bottom-tabs v-if="authenticated" />
+
     <sidebar :open="isSidebarOpen" />
     <div v-if="isSidebarOpen" class="modal-overlay" @click="handleClickSidebarOverlay" />
 
@@ -20,10 +23,14 @@ import getCSSVariablesFromColorScheme from '../util/getCSSVariablesFromColorSche
 import { defaultColorScheme } from '../util/gradients';
 import LoggedOutHeader from './LoggedOutHeader.vue';
 import Sidebar from './nav/Sidebar.vue';
+import MobileHeader from '~/components/nav/MobileHeader.vue';
+import MobileBottomTabs from '~/components/nav/MobileBottomTabs.vue';
 
 export default {
   components: {
     LoggedOutHeader,
+    MobileHeader,
+    MobileBottomTabs,
     Sidebar,
   },
 

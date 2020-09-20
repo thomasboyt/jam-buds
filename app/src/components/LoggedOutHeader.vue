@@ -1,5 +1,5 @@
 <template>
-  <div class="logged-out-header">
+  <div :class="['logged-out-header', {'hide-mobile': !showMobile}]">
     <div class="logo-container">
       <logo />
     </div>
@@ -10,6 +10,7 @@
 import Logo from './Logo.vue';
 export default {
   components: { Logo },
+  props: ['showMobile'],
 };
 </script>
 
@@ -20,8 +21,10 @@ export default {
   margin-bottom: 40px;
   text-align: center;
 
-  @media (max-width: $breakpoint-small) {
-    display: none;
+  &.hide-mobile {
+    @media (max-width: $breakpoint-small) {
+      display: none;
+    }
   }
 }
 </style>

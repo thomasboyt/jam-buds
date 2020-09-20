@@ -1,5 +1,6 @@
 <template>
   <div class="logged-out-home" :style="{ background: gradient }">
+    <logged-out-header :show-mobile="true" />
     <div class="logged-out-main">
       <div class="left-drawing">
         <img :src="corgi" />
@@ -25,7 +26,8 @@
           <h2>hey, listen!</h2>
 
           <p>
-            this is <strong>jam buds</strong>, a site for sharing music with
+            this is
+            <strong>jam buds</strong>, a site for sharing music with
             friends
           </p>
 
@@ -34,7 +36,10 @@
             everyone you know is listening to.
           </p>
 
-          <p>want to get started? <strong>sign up or log in below:</strong></p>
+          <p>
+            want to get started?
+            <strong>sign up or log in below:</strong>
+          </p>
 
           <sign-in-form @sentMail="handleSentMail" />
 
@@ -53,7 +58,7 @@
         <a href="https://jambuds.club/users/thomas">thomas</a>
         &middot;
       </span>
-      <nuxt-link to="/about">about jam buds</nuxt-link> &middot;
+      <nuxt-link to="/about">about jam buds</nuxt-link>&middot;
       <a href="mailto:hello@jambuds.club">hello@jambuds.club</a>
     </footer>
   </div>
@@ -61,11 +66,12 @@
 
 <script>
 import SignInForm from './SignInForm.vue';
+import LoggedOutHeader from './LoggedOutHeader.vue';
 import corgi from '~/assets/ghettoblaster_corgi.png';
 import getGradient from '../util/gradients';
 
 export default {
-  components: { SignInForm },
+  components: { SignInForm, LoggedOutHeader },
 
   data() {
     return {

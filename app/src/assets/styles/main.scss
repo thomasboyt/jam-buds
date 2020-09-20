@@ -70,7 +70,9 @@ a:active {
   padding: 10px;
   padding-top: 20px;
   padding-bottom: 140px; // room for audio player + FAB
+}
 
+.main {
   @media (max-width: $breakpoint-small) {
     padding-top: $header-height + 20px;
   }

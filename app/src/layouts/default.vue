@@ -1,8 +1,5 @@
 <template>
   <div :class="['app-container', { 'webview-container': isWebView }]">
-    <mobile-header />
-    <mobile-bottom-tabs v-if="authenticated" />
-
     <div class="page-container">
       <nuxt />
     </div>
@@ -19,8 +16,6 @@ import { mapState } from 'vuex';
 import AppleMusicLoader from '~/components/AppleMusicLoader.vue';
 import SpotifyLoader from '~/components/SpotifyLoader.vue';
 import AudioPlayer from '~/components/audio-player/AudioPlayer.vue';
-import MobileHeader from '~/components/nav/MobileHeader.vue';
-import MobileBottomTabs from '~/components/nav/MobileBottomTabs.vue';
 import FlashMessage from '~/components/FlashMessage.vue';
 
 export default {
@@ -28,8 +23,6 @@ export default {
     AudioPlayer,
     AppleMusicLoader,
     SpotifyLoader,
-    MobileHeader,
-    MobileBottomTabs,
     FlashMessage,
   },
 
