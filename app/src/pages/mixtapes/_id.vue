@@ -69,8 +69,6 @@
         v-if="isEditing"
         title="add to mixtape"
         :mixtape-id="mixtapeId"
-        :is-open="addSongOpen"
-        @close="handleAddSongClose"
       />
     </main-wrapper>
   </sidebar-wrapper>
@@ -88,6 +86,7 @@ import Panel from '../../components/Panel.vue';
 import ShareLandingBanner from '../../components/ShareLandingBanner.vue';
 import getMixtapeArt from '../../util/getMixtapeArt';
 import with404Handler from '../../util/with404Handler';
+import { showModal } from '~/util/modal.js';
 
 export default {
   components: {
@@ -176,11 +175,7 @@ export default {
 
   methods: {
     handleAddSongOpen() {
-      this.addSongOpen = true;
-    },
-
-    handleAddSongClose() {
-      this.addSongOpen = false;
+      showModal(this.$router, this.$route, 'add-song');
     },
 
     handleEnterEditTitle() {

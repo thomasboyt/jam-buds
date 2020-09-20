@@ -7,13 +7,6 @@
       <nuxt />
     </div>
 
-    <add-song-modal
-      v-if="authenticated"
-      title="share a jam!"
-      :is-open="addSongModalIsOpen"
-      @close="handleCloseAddSongModal"
-    />
-
     <audio-player />
     <apple-music-loader />
     <spotify-loader />
@@ -26,7 +19,6 @@ import { mapState } from 'vuex';
 import AppleMusicLoader from '~/components/AppleMusicLoader.vue';
 import SpotifyLoader from '~/components/SpotifyLoader.vue';
 import AudioPlayer from '~/components/audio-player/AudioPlayer.vue';
-import AddSongModal from '~/components/new-song-modal/AddSongModal.vue';
 import MobileHeader from '~/components/nav/MobileHeader.vue';
 import MobileBottomTabs from '~/components/nav/MobileBottomTabs.vue';
 import FlashMessage from '~/components/FlashMessage.vue';
@@ -34,7 +26,6 @@ import FlashMessage from '~/components/FlashMessage.vue';
 export default {
   components: {
     AudioPlayer,
-    AddSongModal,
     AppleMusicLoader,
     SpotifyLoader,
     MobileHeader,
@@ -83,13 +74,6 @@ export default {
   computed: mapState({
     authenticated: (state) => state.auth.authenticated,
     isWebView: (state) => state.isWebView,
-    addSongModalIsOpen: (state) => state.addSong.showModal,
   }),
-
-  methods: {
-    handleCloseAddSongModal() {
-      this.$store.dispatch('closeAddSong');
-    },
-  },
 };
 </script>

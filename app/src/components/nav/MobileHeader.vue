@@ -21,6 +21,7 @@
 import SidebarToggle from './SidebarToggle.vue';
 import MobileBackButton from './MobileBackButton.vue';
 import Logo from '../Logo.vue';
+import isRootPage from '~/util/isRootPage';
 
 export default {
   components: { SidebarToggle, MobileBackButton, Logo },
@@ -39,18 +40,7 @@ export default {
       return this.$store.state.auth.authenticated;
     },
     isRootPage() {
-      const activeBottomTab = this.$store.state.activeBottomTab;
-      if (this.$route.path === activeBottomTab) {
-        return true;
-      }
-      // hack for profile page...
-      if (
-        activeBottomTab.startsWith('/users') &&
-        this.$route.path.startsWith(activeBottomTab)
-      ) {
-        return true;
-      }
-      return false;
+      return isRootPage(this.$store, this.$route);
     },
   },
 

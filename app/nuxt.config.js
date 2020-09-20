@@ -83,6 +83,7 @@ export default {
     '~/plugins/logError',
     '~/plugins/appleMusicToken.server.js',
     '~/plugins/attachFromStateToRoutes',
+    '~/plugins/webviewListener.client.js',
   ],
   /*
    ** Nuxt.js modules
