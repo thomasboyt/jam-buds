@@ -40,6 +40,8 @@
         </p>
       </template>
     </playlist>
+
+    <add-song-modal title="share a jam!" />
   </div>
 </template>
 
@@ -49,15 +51,18 @@ import sortBy from 'lodash/sortBy';
 
 import Playlist from './playlist/Playlist.vue';
 import AddSongButton from './AddSongButton.vue';
+import AddSongModal from './new-song-modal/AddSongModal.vue';
 import PlaylistEntry from './playlist/PlaylistEntry.vue';
 import EntryDetails from './playlist/EntryDetails.vue';
 import PageHeader from './PageHeader.vue';
 import NotificationsFeedSection from './NotificationsFeedSection.vue';
+import { showModal } from '~/util/modal.js';
 
 export default {
   components: {
     Playlist,
     AddSongButton,
+    AddSongModal,
     PlaylistEntry,
     EntryDetails,
     PageHeader,
@@ -113,7 +118,7 @@ export default {
     },
 
     handleAddSongClick() {
-      this.$store.dispatch('showAddSong');
+      showModal(this.$router, this.$route, 'add-song');
     },
 
     handleRequestPlay(songId) {

@@ -57,7 +57,6 @@ export default {
   mounted() {
     if (this.$store.state.addSong.initialSearch) {
       this.songInput = this.$store.state.addSong.initialSearch;
-      this.$store.commit('clearInitialSearch');
       this.handleSubmit();
     } else {
       this.$refs.input.focus();

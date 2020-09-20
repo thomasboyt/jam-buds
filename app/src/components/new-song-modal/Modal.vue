@@ -30,20 +30,26 @@
 
 <script>
 import { enableBodyScroll, disableBodyScroll } from 'body-scroll-lock';
-
 import Icon from '../Icon.vue';
+import { closeModal } from '~/util/modal.js';
 
 const closeIcon = require('~/assets/close.svg');
 
 export default {
   components: { Icon },
 
-  props: ['isOpen', 'title'],
+  props: ['title'],
 
   data() {
     return {
       closeIcon,
     };
+  },
+
+  computed: {
+    isOpen() {
+      return this.$route.query.modal === 'add-song';
+    },
   },
 
   watch: {
@@ -66,7 +72,7 @@ export default {
     },
 
     handleCloseModal() {
-      this.$emit('close');
+      closeModal(this.$router, this.$route);
     },
   },
 };

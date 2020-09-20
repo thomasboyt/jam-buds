@@ -1,33 +1,5 @@
 const addSong = {
-  state() {
-    return {
-      showModal: false,
-      initialSearch: null,
-    };
-  },
-
-  mutations: {
-    showAddSongModal(state, initialSearch) {
-      state.showModal = true;
-      state.initialSearch = initialSearch;
-    },
-    closeAddSongModal(state) {
-      state.showModal = false;
-    },
-    clearInitialSearch(state) {
-      state.initialSearch = null;
-    },
-  },
-
   actions: {
-    showAddSong(context, initialSearch) {
-      context.commit('showAddSongModal', initialSearch);
-    },
-
-    closeAddSong(context) {
-      context.commit('closeAddSongModal');
-    },
-
     didSubmitSong(context, { song, currentPath }) {
       context.commit('addSongs', [song], { root: true });
 
@@ -44,8 +16,6 @@ const addSong = {
           key: `${userName}/posts`,
         });
       }
-
-      context.commit('closeAddSongModal');
     },
   },
 };
