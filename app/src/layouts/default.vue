@@ -8,6 +8,9 @@
     <apple-music-loader />
     <spotify-loader />
     <flash-message />
+    <template v-if="authenticated">
+      <notifications-modal />
+    </template>
   </div>
 </template>
 
@@ -17,6 +20,7 @@ import AppleMusicLoader from '~/components/AppleMusicLoader.vue';
 import SpotifyLoader from '~/components/SpotifyLoader.vue';
 import AudioPlayer from '~/components/audio-player/AudioPlayer.vue';
 import FlashMessage from '~/components/FlashMessage.vue';
+import NotificationsModal from '~/components/NotificationsModal.vue';
 
 export default {
   components: {
@@ -24,6 +28,7 @@ export default {
     AppleMusicLoader,
     SpotifyLoader,
     FlashMessage,
+    NotificationsModal,
   },
 
   head() {

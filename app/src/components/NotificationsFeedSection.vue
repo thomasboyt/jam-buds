@@ -12,11 +12,9 @@
 
     <ul :style="{ marginBottom: '0px' }">
       <li v-for="notification of notifications" :key="notification.id">
-        <strong
-          ><nuxt-link :to="`/users/${notification.user.name}`">{{
-            notification.user.name
-          }}</nuxt-link></strong
-        >
+        <strong>
+          <nuxt-link :to="`/users/${notification.user.name}`">{{notification.user.name}}</nuxt-link>
+        </strong>
         is now following you.
       </li>
     </ul>
@@ -52,6 +50,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '~/assets/styles/mixins.scss';
+
 .notifications-panel {
   position: relative;
 
@@ -63,6 +63,10 @@ export default {
 
   li {
     margin-bottom: 4px;
+  }
+
+  @media (max-width: $breakpoint-small) {
+    display: none;
   }
 }
 
