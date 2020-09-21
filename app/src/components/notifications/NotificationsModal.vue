@@ -8,7 +8,7 @@
       <ul>
         <li v-for="notification of notifications" :key="notification.id">
           <nuxt-link
-            :class="{ read: notification.read }"
+            :class="{ read: notification.seen }"
             :to="`/users/${notification.user.name}`"
             @click.native="handleClickNotification(notification)"
           >

@@ -12,11 +12,11 @@ const notifications = {
       state.items = notifications;
     },
     markRead(state, id) {
-      state.items.find((item) => item.id === id).read = true;
+      state.items.find((item) => item.id === id).seen = true;
     },
     markAllRead(state) {
       state.items = state.items.map((item) => {
-        return { ...item, read: true };
+        return { ...item, seen: true };
       });
     },
   },
@@ -51,14 +51,14 @@ const notifications = {
       // don't show an error since it's easier to just ignore...
       await this.$axios({
         method: 'POST',
-        url: `/notificaftions/${id}/read`,
+        url: `/notifications/${id}/read`,
       });
     },
   },
 
   getters: {
     hasUnreadNotifications(state) {
-      return state.items.some((item) => !item.read);
+      return state.items.some((item) => !item.seen);
     },
   },
 };
