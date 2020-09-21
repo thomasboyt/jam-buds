@@ -2,7 +2,7 @@
   <div v-if="authenticated" :class="['sidebar', { '-open': open }]">
     <div class="logo-container">
       <logo />
-      <notifications-button class="notifications-button" />
+      <notifications-button />
     </div>
 
     <p>what up, {{ currentUserName }}?</p>
