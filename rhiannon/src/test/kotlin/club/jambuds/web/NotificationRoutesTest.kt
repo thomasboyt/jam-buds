@@ -67,20 +67,93 @@ class NotificationRoutesTest : AppTest() {
         val jeff = TestDataFactories.createUser(txn, "jeff", true)
         val jeffAuthToken = TestDataFactories.createAuthToken(txn, jeff.id)
 
+        // create follow notifications
         val vinny = TestDataFactories.createUser(txn, "vinny", true)
         followingService.followUser(vinny.id, jeff.name)
+        val brad = TestDataFactories.createUser(txn, "brad", true)
+        followingService.followUser(brad.id, jeff.name)
+        followingService.followUser(vinny.id, brad.name)
+        val bradAuthToken = TestDataFactories.createAuthToken(txn, brad.id)
 
         val markReadResp = Unirest.post("$appUrl/notifications/mark-all-read")
             .header("X-Auth-Token", jeffAuthToken)
             .asString()
         assertEquals(204, markReadResp.status)
 
-        val resp = Unirest.get("$appUrl/notifications")
+        // jeff should have 0 items...
+        val jeffResp = Unirest.get("$appUrl/notifications")
             .header("X-Auth-Token", jeffAuthToken)
             .asString()
-        assertEquals(200, resp.status)
+        assertEquals(200, jeffResp.status)
 
-        val items = gson.fromJson(resp.body, Array<NotificationItem>::class.java).toList()
-        assertEquals(0, items.size)
+        val jeffItems = gson.fromJson(jeffResp.body, Array<NotificationItem>::class.java).toList()
+        assertEquals(0, jeffItems.size)
+
+        // ...while brad still has one
+        val bradResp = Unirest.get("$appUrl/notifications")
+            .header("X-Auth-Token", bradAuthToken)
+            .asString()
+        assertEquals(200, bradResp.status)
+
+        val bradItems = gson.fromJson(bradResp.body, Array<NotificationItem>::class.java).toList()
+        assertEquals(1, bradItems.size)
+    }
+
+    @Test
+    fun `POST notifications_(id)_read - marks one notification as read`() {
+        val jeff = TestDataFactories.createUser(txn, "jeff", true)
+        val jeffAuthToken = TestDataFactories.createAuthToken(txn, jeff.id)
+
+        // create follow notifications
+        val vinny = TestDataFactories.createUser(txn, "vinny", true)
+        followingService.followUser(vinny.id, jeff.name)
+        val brad = TestDataFactories.createUser(txn, "brad", true)
+        followingService.followUser(brad.id, jeff.name)
+
+        val initResp = Unirest.get("$appUrl/notifications")
+            .header("X-Auth-Token", jeffAuthToken)
+            .asString()
+        assertEquals(200, initResp.status)
+
+        val initItems = gson.fromJson(initResp.body, Array<NotificationItem>::class.java).toList()
+        assertEquals(2, initItems.size)
+
+        val firstItemId = initItems[0].id
+        val secondItemId = initItems[1].id
+
+        val markReadResp = Unirest.post("$appUrl/notifications/$firstItemId/read")
+            .header("X-Auth-Token", jeffAuthToken)
+            .asString()
+        assertEquals(204, markReadResp.status)
+
+        val afterResp = Unirest.get("$appUrl/notifications")
+            .header("X-Auth-Token", jeffAuthToken)
+            .asString()
+        assertEquals(200, afterResp.status)
+
+        val afterItems = gson.fromJson(afterResp.body, Array<NotificationItem>::class.java).toList()
+        assertEquals(1, afterItems.size)
+        assertEquals(secondItemId, afterItems[0].id)
+    }
+
+    @Test
+    fun `POST notifications_(id)_read - does not allow updates from other users`() {
+        val jeff = TestDataFactories.createUser(txn, "jeff", true)
+        val jeffAuthToken = TestDataFactories.createAuthToken(txn, jeff.id)
+        val vinny = TestDataFactories.createUser(txn, "vinny", true)
+        val vinnyAuthToken = TestDataFactories.createAuthToken(txn, vinny.id)
+        followingService.followUser(vinny.id, jeff.name)
+
+        val initResp = Unirest.get("$appUrl/notifications")
+            .header("X-Auth-Token", jeffAuthToken)
+            .asString()
+        assertEquals(200, initResp.status)
+        val items = gson.fromJson(initResp.body, Array<NotificationItem>::class.java).toList()
+        val notificationId = items[0].id
+
+        val resp = Unirest.post("$appUrl/notifications/$notificationId/read")
+            .header("X-Auth-Token", vinnyAuthToken)
+            .asString()
+        assertEquals(404, resp.status)
     }
 }

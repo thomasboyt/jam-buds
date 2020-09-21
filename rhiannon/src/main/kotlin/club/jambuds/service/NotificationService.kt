@@ -3,8 +3,10 @@ package club.jambuds.service
 import club.jambuds.dao.NotificationsDao
 import club.jambuds.dao.UserDao
 import club.jambuds.model.NotificationType
+import club.jambuds.model.User
 import club.jambuds.responses.NotificationItem
 import club.jambuds.responses.PublicUser
+import io.javalin.http.NotFoundResponse
 
 class NotificationService(
     private val notificationsDao: NotificationsDao,
@@ -27,7 +29,9 @@ class NotificationService(
                 NotificationItem(
                     id = it.id,
                     type = it.type,
-                    user = PublicUser(id = user.id, name = user.name)
+                    user = PublicUser(id = user.id, name = user.name),
+                    timestamp = it.createdAt,
+                    seen = it.read
                 )
             } else {
                 throw Error("Notification type not yet implemented: ${it.type}")
@@ -37,5 +41,13 @@ class NotificationService(
 
     fun markAllReadForUserId(userId: Int) {
         notificationsDao.markAllReadForUserId(userId)
+    }
+
+    fun markOneRead(notificationId: Int, user: User) {
+        val numUpdated =
+            notificationsDao.markOneReadForUserId(notificationId = notificationId, userId = user.id)
+        if (numUpdated == 0) {
+            throw NotFoundResponse("No notification ID $notificationId found for user ID ${user.id}")
+        }
     }
 }
