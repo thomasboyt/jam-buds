@@ -22,11 +22,14 @@ describe('following a user', () => {
     cy.login('abe@jambuds.club');
     cy.visit('/');
 
-    cy.get('.notifications-panel')
-      .should('contain', '1 new update since your last visit')
-      .and('contain', 'jeff is now following you');
+    cy.get('.notifications-button .notifications-dot').should('exist');
+    cy.get('.sidebar .notifications-button').click();
 
-    cy.get('.notifications-panel .close-button').click();
-    cy.get('.notifications-panel').should('not.exist');
+    cy.get('.modal').should('contain', 'jeff is now following you');
+
+    // TODO: move this to some kinda notifications test
+    cy.get('.modal li').click();
+    cy.url().should('include', '/users/jeff');
+    cy.get('.notifications-button .notifications-dot').should('not.exist');
   });
 });
