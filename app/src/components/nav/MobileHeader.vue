@@ -15,9 +15,7 @@
       </transition>
 
       <div class="right-container" v-if="authenticated">
-        <nuxt-link :to="{query: {modal: 'notifications'}}" append>
-          <icon :glyph="notificationsIcon" />
-        </nuxt-link>
+        <notifications-button />
         <!-- <nuxt-link :to="{query: {modal: 'settings'}}" append>
           <icon :glyph="settingsIcon" />
         </nuxt-link>-->
@@ -29,19 +27,17 @@
 <script>
 import SidebarToggle from './SidebarToggle.vue';
 import MobileBackButton from './MobileBackButton.vue';
+import NotificationsButton from '../notifications/NotificationsButton.vue';
 import Logo from '../Logo.vue';
-import Icon from '../Icon.vue';
 import isRootPage from '~/util/isRootPage';
-const notificationsIcon = require('~/assets/bell.svg');
 // const settingsIcon = require('~/assets/settings.svg');
 
 export default {
-  components: { SidebarToggle, MobileBackButton, Logo, Icon },
+  components: { SidebarToggle, MobileBackButton, Logo, NotificationsButton },
 
   data() {
     return {
       scrolled: false,
-      notificationsIcon,
       // settingsIcon,
     };
   },

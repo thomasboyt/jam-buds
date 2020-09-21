@@ -55,6 +55,12 @@ const notifications = {
       });
     },
   },
+
+  getters: {
+    hasUnreadNotifications(state) {
+      return state.items.some((item) => !item.read);
+    },
+  },
 };
 
 export default notifications;

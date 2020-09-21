@@ -9,8 +9,6 @@
       </div>
     </div>
 
-    <notifications-feed-section />
-
     <playlist
       playlist-key="feed"
       :loading-next-page="loadingNextPage"
@@ -55,7 +53,6 @@ import AddSongModal from './new-song-modal/AddSongModal.vue';
 import PlaylistEntry from './playlist/PlaylistEntry.vue';
 import EntryDetails from './playlist/EntryDetails.vue';
 import PageHeader from './PageHeader.vue';
-import NotificationsFeedSection from './NotificationsFeedSection.vue';
 import { showModal } from '~/util/modal.js';
 
 export default {
@@ -66,7 +63,6 @@ export default {
     PlaylistEntry,
     EntryDetails,
     PageHeader,
-    NotificationsFeedSection,
   },
 
   head() {
@@ -76,12 +72,7 @@ export default {
   },
 
   async fetch() {
-    const promises = Promise.all([
-      this.$store.dispatch('loadPlaylist', { key: 'feed', url: '/feed' }),
-      this.$store.dispatch('notifications/load'),
-    ]);
-
-    return promises;
+    return this.$store.dispatch('loadPlaylist', { key: 'feed', url: '/feed' });
   },
 
   data() {

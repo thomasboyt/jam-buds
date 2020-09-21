@@ -20,7 +20,7 @@ import AppleMusicLoader from '~/components/AppleMusicLoader.vue';
 import SpotifyLoader from '~/components/SpotifyLoader.vue';
 import AudioPlayer from '~/components/audio-player/AudioPlayer.vue';
 import FlashMessage from '~/components/FlashMessage.vue';
-import NotificationsModal from '~/components/NotificationsModal.vue';
+import NotificationsModal from '~/components/notifications/NotificationsModal.vue';
 
 export default {
   components: {

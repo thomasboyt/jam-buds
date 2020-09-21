@@ -1,33 +1,42 @@
 <template>
   <modal title="notifications" :is-open="isOpen">
-    <div class="button-row">
-      <button @click="handleMarkAllRead">mark all read</button>
-    </div>
-    <ul>
-      <li v-for="notification of notifications" :key="notification.id">
-        <nuxt-link
-          :class="{ read: notification.read }"
-          :to="`/users/${notification.user.name}`"
-          @click.native="handleClickNotification(notification)"
-        >
-          {{ notification.user.name }} is now following you.<br />
-          <div class="timestamp">
-            {{ formatTimestamp(notification.timestamp) }}
-          </div>
-        </nuxt-link>
-      </li>
-    </ul>
+    <template v-if="notifications.length > 0">
+      <div class="button-row">
+        <button @click="handleMarkAllRead">mark all read</button>
+      </div>
+
+      <ul>
+        <li v-for="notification of notifications" :key="notification.id">
+          <nuxt-link
+            :class="{ read: notification.read }"
+            :to="`/users/${notification.user.name}`"
+            @click.native="handleClickNotification(notification)"
+          >
+            {{ notification.user.name }} is now following you.<br />
+            <div class="timestamp">
+              {{ formatTimestamp(notification.timestamp) }}
+            </div>
+          </nuxt-link>
+        </li>
+      </ul>
+    </template>
+
+    <div v-else class="placeholder">No new notifications!</div>
   </modal>
 </template>
 
 <script>
-import Modal from './Modal.vue';
+import Modal from '../Modal.vue';
 import formatDistanceToNowStrict from 'date-fns/formatDistanceToNowStrict';
 import subDays from 'date-fns/subDays';
 import isBefore from 'date-fns/isBefore';
 
 export default {
   components: { Modal },
+
+  fetch() {
+    return this.$store.dispatch('notifications/load');
+  },
 
   computed: {
     notifications() {
@@ -102,7 +111,16 @@ ul {
     .timestamp {
       font-size: 12px;
       margin-top: 5px;
+
+      @media (min-width: $breakpoint-small) {
+        font-size: 14px;
+      }
     }
   }
+}
+
+.placeholder {
+  text-align: center;
+  margin-top: 100px;
 }
 </style>
