@@ -29,6 +29,15 @@ interface NotificationsDao {
 
     @SqlUpdate(
         """
+        UPDATE notifications
+        SET read = true
+        WHERE id = :notificationId AND target_user_id = :userId
+        """
+    )
+    fun markOneReadForUserId(notificationId: Int, userId: Int): Int
+
+    @SqlUpdate(
+        """
         INSERT INTO notifications
             (target_user_id, type, notification_user_id)
         VALUES

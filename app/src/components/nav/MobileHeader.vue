@@ -13,6 +13,13 @@
           <logo :small="true" />
         </div>
       </transition>
+
+      <div class="right-container" v-if="authenticated">
+        <notifications-button />
+        <!-- <nuxt-link :to="{query: {modal: 'settings'}}" append>
+          <icon :glyph="settingsIcon" />
+        </nuxt-link>-->
+      </div>
     </div>
   </div>
 </template>
@@ -20,15 +27,18 @@
 <script>
 import SidebarToggle from './SidebarToggle.vue';
 import MobileBackButton from './MobileBackButton.vue';
+import NotificationsButton from '../notifications/NotificationsButton.vue';
 import Logo from '../Logo.vue';
 import isRootPage from '~/util/isRootPage';
+// const settingsIcon = require('~/assets/settings.svg');
 
 export default {
-  components: { SidebarToggle, MobileBackButton, Logo },
+  components: { SidebarToggle, MobileBackButton, Logo, NotificationsButton },
 
   data() {
     return {
       scrolled: false,
+      // settingsIcon,
     };
   },
 
@@ -92,6 +102,14 @@ export default {
     color: yellow;
   }
 
+  button {
+    padding: 0;
+  }
+
+  .icon {
+    margin: 0 5px;
+  }
+
   .header-content {
     display: grid;
     align-items: center;
@@ -139,6 +157,24 @@ export default {
         background-clip: text;
         color: rgba(255, 255, 255, 0.2);
       }
+    }
+  }
+
+  .right-container {
+    grid-column-start: 3;
+    display: flex;
+    margin-left: auto;
+
+    a {
+      display: block;
+      flex: 0 0 auto;
+      color: $black;
+    }
+
+    .icon {
+      fill: $black;
+      width: 30px;
+      height: 30px;
     }
   }
 

@@ -2,6 +2,7 @@
   <div v-if="authenticated" :class="['sidebar', { '-open': open }]">
     <div class="logo-container">
       <logo />
+      <notifications-button />
     </div>
 
     <p>what up, {{ currentUserName }}?</p>
@@ -67,9 +68,10 @@
 
 <script>
 import Logo from '~/components/Logo.vue';
+import NotificationsButton from '~/components/notifications/NotificationsButton.vue';
 
 export default {
-  components: { Logo },
+  components: { Logo, NotificationsButton },
 
   props: ['open'],
 
@@ -150,9 +152,24 @@ export default {
   }
 
   .logo-container {
+    display: flex;
     margin: 20px auto 40px;
-    @media (min-width: $breakpoint-small) {
-      text-align: center;
+
+    ::v-deep .logo {
+      flex: 0 0 auto;
+    }
+
+    .notifications-button {
+      flex: 0 0 36px;
+      height: 36px;
+      padding: 5px;
+      margin-left: auto;
+      border: 1px #ccc solid;
+      border-radius: 9999px;
+
+      @media (max-width: $breakpoint-small) {
+        display: none;
+      }
     }
   }
 

@@ -9,6 +9,7 @@ class NotificationRoutes(private val notificationService: NotificationService) {
     fun register() {
         ApiBuilder.get("/api/notifications", this::getNotifications)
         ApiBuilder.post("/api/notifications/mark-all-read", this::markAllRead)
+        ApiBuilder.post("/api/notifications/:id/read", this::markOneRead)
     }
 
     private fun getNotifications(ctx: Context) {
@@ -20,8 +21,14 @@ class NotificationRoutes(private val notificationService: NotificationService) {
 
     private fun markAllRead(ctx: Context) {
         val currentUser = ctx.requireUser()
-        val notifications =
-            notificationService.markAllReadForUserId(userId = currentUser.id)
+        notificationService.markAllReadForUserId(userId = currentUser.id)
+        ctx.status(204)
+    }
+
+    private fun markOneRead(ctx: Context) {
+        val currentUser = ctx.requireUser()
+        val notificationId = ctx.pathParam<Int>("id").get()
+        notificationService.markOneRead(notificationId = notificationId, user = currentUser)
         ctx.status(204)
     }
 }
