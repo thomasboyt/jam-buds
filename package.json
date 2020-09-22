@@ -5,7 +5,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "api": "cd rhiannon && JAMBUDS_ENV=development ./gradlew run --console=plain",
-    "app": "cd app && npm run dev"
+    "app": "cd app && npm run dev",
+    "api-e2e": "cd rhiannon && JAMBUDS_ENV=feature ./gradlew run",
+    "app-e2e": "cd app && npm run e2e"
   },
   "repository": {
     "type": "git",
