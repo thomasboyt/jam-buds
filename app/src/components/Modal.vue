@@ -8,7 +8,11 @@
               <h2>{{ title }}</h2>
             </div>
 
-            <button class="modal-close-button" type="button" @click="handleCloseModal">
+            <button
+              class="modal-close-button"
+              type="button"
+              @click="handleCloseModal"
+            >
               <icon :glyph="closeIcon" />
             </button>
           </div>
@@ -79,8 +83,6 @@ $modal-height: 550px;
   background: $lighter-black;
   color: rgb(225, 225, 225);
 
-  border-radius: 10px;
-
   position: absolute;
   z-index: $z-modal;
 
@@ -92,6 +94,7 @@ $modal-height: 550px;
   }
 
   @media (min-width: $breakpoint-small) {
+    border-radius: 10px;
     width: $modal-width;
     height: $modal-height;
     top: 50%;
