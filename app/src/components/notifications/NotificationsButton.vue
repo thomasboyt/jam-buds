@@ -6,7 +6,7 @@
     append
   >
     <icon :glyph="notificationsIcon" />
-    <div v-if="hasUnreadNotifications" class="notifications-dot"></div>
+    <div v-show="hasUnreadNotifications" class="notifications-dot"></div>
   </nuxt-link>
 </template>
 
