@@ -39,7 +39,7 @@ export default {
     // copy color scheme out of store
     const colorScheme = {
       ...defaultColorScheme,
-      ...this.$store.state.currentUser.colorScheme,
+      ...this.$store.getters.currentUserColorScheme,
     };
 
     return {
@@ -63,7 +63,10 @@ export default {
         throw err;
       }
 
-      this.$store.commit('updateColorScheme', { ...this.colorScheme });
+      this.$store.commit('updateProfileColorScheme', {
+        name: this.$store.state.currentUser.name,
+        colorScheme: { ...this.colorScheme },
+      });
 
       this.$store.dispatch('setFlashMessage', {
         message: 'Your color scheme has been updated.',

@@ -19,9 +19,6 @@ const currentUser = {
       // XXX: is there a reason this uses Vue.set?
       Vue.set(state, 'friendSuggestions', suggestions);
     },
-    updateColorScheme(state, scheme) {
-      Vue.set(state, 'colorScheme', scheme);
-    },
     disconnectedTwitter(state) {
       state.twitterName = null;
     },

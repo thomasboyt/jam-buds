@@ -12,6 +12,9 @@ const profiles = {
         Vue.set(state, profile.name, profile);
       }
     },
+    updateProfileColorScheme(state, { name, colorScheme }) {
+      state[name].colorScheme = colorScheme;
+    },
   },
 
   actions: {
@@ -23,6 +26,12 @@ const profiles = {
       });
 
       context.commit('addProfiles', [resp.data.userProfile]);
+    },
+  },
+
+  getters: {
+    currentUserColorScheme(state, getters, rootState) {
+      return state[rootState.currentUser.name]?.colorScheme;
     },
   },
 };

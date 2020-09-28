@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 import getCSSVariablesFromColorScheme from '../util/getCSSVariablesFromColorScheme';
 import { defaultColorScheme } from '../util/gradients';
 import LoggedOutHeader from './LoggedOutHeader.vue';
@@ -54,10 +54,11 @@ export default {
 
   computed: {
     ...mapState({
-      currentUserScheme: (state) => state.currentUser.colorScheme,
       authenticated: (state) => state.auth.authenticated,
       isSidebarOpen: (state) => state.isSidebarOpen,
     }),
+
+    ...mapGetters(['currentUserColorScheme']),
 
     cssTheme() {
       let colorScheme;
@@ -65,7 +66,7 @@ export default {
       if (this.withColorSchemeOverride) {
         colorScheme = this.colorScheme || defaultColorScheme;
       } else {
-        colorScheme = this.currentUserScheme || defaultColorScheme;
+        colorScheme = this.currentUserColorScheme || defaultColorScheme;
       }
 
       return getCSSVariablesFromColorScheme(colorScheme);
