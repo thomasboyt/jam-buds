@@ -116,15 +116,17 @@ brew install redis
 
 To run feature tests locally, you need to spin up all services:
 
-```
-cd app && npm run e2e
-cd rhiannon && JAMBUDS_ENV=feature ./gradlew run
+```sh
+docker-compose up -d
+# in project root, separate shells:
+npm run app-e2e
+npm run api-e2e # or Run (Feature Tests) profile in IntelliJ
 ```
 
 Once they're started:
 
 ```
-cd spec && npm test
+cd spec && npx cypress open
 ```
 
 Feature tests use the default test DB (`jambuds_test`). To avoid lengthy flyway migration times, feature tests clean and run the migrations once, then use a saved copy of the test schema (in `tmp/schema.sql`). `npm test` will automatically regenerate this schema, but if you are running Cypress tests through any other mechanism, note that if you change the DB schema, you'll need to run `npm run setupDb` to see the changes.
