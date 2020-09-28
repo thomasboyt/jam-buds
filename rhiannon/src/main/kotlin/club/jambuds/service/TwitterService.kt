@@ -28,11 +28,9 @@ open class TwitterService(
         val resp = twitterClient.postStatus(tweetContent).execute()
 
         if (!resp.isSuccessful) {
-            logger.error(
-                "Failed to send tweet: status ${resp.code()} \n ${
-                resp.errorBody()!!.string()
-                }"
-            )
+            val code = resp.code()
+            val errorBody = resp.errorBody()!!.string()
+            logger.error("Failed to send tweet: status $code\n$errorBody")
         }
     }
 
