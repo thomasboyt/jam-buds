@@ -30,6 +30,6 @@ describe('following a user', () => {
     // TODO: move this to some kinda notifications test
     cy.get('.modal li').click();
     cy.url().should('include', '/users/jeff');
-    cy.get('.notifications-button .notifications-dot').should('not.exist');
+    cy.get('.notifications-button .notifications-dot').should('not.be.visible');
   });
 });
