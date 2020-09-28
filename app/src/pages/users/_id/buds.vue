@@ -9,7 +9,6 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
 import ProfileNav from '../../../components/ProfileNav.vue';
 import UsersList from '../../../components/UsersList.vue';
 import with404Handler from '~/util/with404Handler';
@@ -26,21 +25,33 @@ export default {
     };
   },
 
-  fetch() {
-    return with404Handler(
+  async fetch() {
+    const [followersResp, followingResp] = await with404Handler(
       this.$error,
       Promise.all([
-        this.$store.dispatch('loadProfileFollowers', this.name),
-        this.$store.dispatch('loadProfileFollowing', this.name),
+        this.$axios({
+          url: `/users/${this.name}/followers`,
+          method: 'GET',
+        }),
+        this.$axios({
+          url: `/users/${this.name}/following`,
+          method: 'GET',
+        }),
       ])
     );
+
+    this.followers = followersResp.data.users;
+    this.following = followingResp.data.users;
+  },
+
+  data() {
+    return {
+      followers: [],
+      following: [],
+    };
   },
 
   computed: {
-    ...mapState({
-      followers: (state) => state.profile.followers,
-      following: (state) => state.profile.following,
-    }),
     name() {
       return this.$route.params.id;
     },

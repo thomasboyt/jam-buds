@@ -7,7 +7,7 @@ import currentUser from './modules/currentUser';
 import songs from './modules/songs';
 import playback from './modules/playback';
 import playlists from './modules/playlists';
-import profile from './modules/profile';
+import profiles from './modules/profiles';
 import addSong from './modules/addSong';
 import mixtapes from './modules/mixtapes';
 import notifications from './modules/notifications';
@@ -20,7 +20,7 @@ const root = {
     songs,
     playback,
     playlists,
-    profile,
+    profiles,
     addSong,
     mixtapes,
     notifications,

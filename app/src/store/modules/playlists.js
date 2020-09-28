@@ -179,6 +179,27 @@ const playlists = {
 
       return resp.data;
     },
+
+    async loadProfilePostsPlaylist(context, userName) {
+      await context.dispatch('loadPlaylist', {
+        key: `${userName}/posts`,
+        url: `/playlists/${userName}`,
+      });
+    },
+
+    async loadProfileLikesPlaylist(context, userName) {
+      await context.dispatch('loadPlaylist', {
+        key: `${userName}/likes`,
+        url: `/playlists/${userName}/liked`,
+      });
+    },
+
+    async loadProfileMixtapes(context, userName) {
+      await context.dispatch('loadPlaylist', {
+        key: `${userName}/mixtapes`,
+        url: `/playlists/${userName}?onlyMixtapes=true`,
+      });
+    },
   },
 
   getters: {
