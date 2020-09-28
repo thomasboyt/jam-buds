@@ -11,4 +11,3 @@ data class Mixtape(
     val userId: Int,
     @Expose val publishedAt: Instant?
 )
-

@@ -19,7 +19,7 @@ interface EmailClient {
     )
 }
 
-class SendgridClient(sgApiKey: String): EmailClient {
+class SendgridClient(sgApiKey: String) : EmailClient {
     private val sg = SendGrid(sgApiKey)
 
     override fun sendEmail(
@@ -49,7 +49,7 @@ class SendgridClient(sgApiKey: String): EmailClient {
     }
 }
 
-class DevEmailClient(): EmailClient {
+class DevEmailClient() : EmailClient {
     private val logger = LoggerFactory.getLogger(DevEmailClient::class.java.name)
 
     override fun sendEmail(

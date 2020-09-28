@@ -52,7 +52,6 @@ import club.jambuds.web.TwitterAuthRoutes
 import club.jambuds.web.UserRoutes
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.newrelic.api.agent.NewRelic
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
 import com.zaxxer.hikari.HikariDataSource

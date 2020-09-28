@@ -57,7 +57,10 @@ class SpotifyAuthRoutes(private val spotifyAuthService: SpotifyAuthService) {
         val spotifyRefreshToken = ctx.cookie("spotifyRefreshToken")
         val spotifyExpiresAtMs = ctx.cookie("spotifyExpiresAtMs")?.toLong()
 
-        if (spotifyAccessToken == null || spotifyRefreshToken == null || spotifyExpiresAtMs == null) {
+        if (spotifyAccessToken == null ||
+            spotifyRefreshToken == null ||
+            spotifyExpiresAtMs == null
+        ) {
             clearSpotifyCookies(ctx)
             ctx.json(
                 SpotifyTokenResponse(

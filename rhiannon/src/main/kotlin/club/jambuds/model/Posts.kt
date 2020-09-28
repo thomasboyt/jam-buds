@@ -33,4 +33,3 @@ data class AggregatedPost(
     override val timestamp: Instant,
     val posts: List<AggregatedPostItem>
 ) : PlaylistPost
-

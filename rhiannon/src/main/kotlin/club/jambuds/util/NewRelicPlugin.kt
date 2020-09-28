@@ -10,7 +10,7 @@ import org.eclipse.jetty.servlet.ServletHandler
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
-class NewRelicPlugin: Plugin {
+class NewRelicPlugin : Plugin {
     override fun apply(app: Javalin) {
         val server = app.server()?.server() ?: return
 
@@ -31,7 +31,7 @@ class NewRelicPlugin: Plugin {
                     .map(HandlerEntry::path)
                     .map { path: String -> if (path == "/" || path == "") "/" else path }
                     .orElse("NOT_FOUND")
-                NewRelic.setTransactionName(null, "${request.method} ${uri}")
+                NewRelic.setTransactionName(null, "${request.method} $uri")
                 nextHandle(target, baseRequest, request, response)
             }
         }

@@ -38,7 +38,9 @@ class PostService(
 
     fun deleteSongPost(currentUser: User, songId: Int) {
         if (postDao.getUserPostForSongId(songId = songId, userId = currentUser.id) == null) {
-            throw NotFoundResponse("No post found for user id ${currentUser.id} and song id $songId")
+            throw NotFoundResponse(
+                "No post found for user id ${currentUser.id} and song id $songId"
+            )
         }
 
         postDao.deleteSongPost(userId = currentUser.id, songId = songId)
@@ -58,12 +60,12 @@ class PostService(
     private fun truncateNoteForTweet(text: String): String {
         val tweetLength = 280
         val twitterUrlLength = 23
-        val maxTextLength = tweetLength - twitterUrlLength - 1  // 1 for space between url and note
+        val maxTextLength = tweetLength - twitterUrlLength - 1 // 1 for space between url and note
         if (text.length <= maxTextLength) {
             return text
         }
 
-        val truncatedText = text.slice(0..(maxTextLength - 3))  // subtract three for ellipsis
+        val truncatedText = text.slice(0..(maxTextLength - 3)) // subtract three for ellipsis
         return "$truncatedText..."
     }
 }

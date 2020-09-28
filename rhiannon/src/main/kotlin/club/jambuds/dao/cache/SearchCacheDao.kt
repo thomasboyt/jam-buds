@@ -22,7 +22,7 @@ class SearchCacheDao(private val redis: StatefulRedisConnection<String, String>)
         val cmd = redis.sync()
         val key = getSearchCacheKey(spotifyId)
         cmd.set(key, gson.toJson(cacheEntry))
-        cmd.expire(key, 60 * 60)  // 1 hour cache
+        cmd.expire(key, 60 * 60) // 1 hour cache
     }
 
     private fun getSearchCacheKey(spotifyId: String): String {

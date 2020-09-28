@@ -39,7 +39,7 @@ class AuthService(
 
         if (user == null) {
             // sign up
-            var link = "${appUrl}/welcome/registration?t=${token}" + linkSuffix
+            var link = "$appUrl/welcome/registration?t=$token" + linkSuffix
 
             if (signUpReferral != null) {
                 link += "&referral=$signUpReferral"
@@ -53,7 +53,7 @@ class AuthService(
             )
         } else {
             // sign in
-            val link = "${appUrl}/sign-in?t=${token}" + linkSuffix
+            val link = "$appUrl/sign-in?t=$token" + linkSuffix
             emailService.sendEmail(
                 email = email,
                 subject = "Your sign-in link for jambuds.club",
@@ -78,7 +78,9 @@ class AuthService(
         signInTokenDao.deleteSignInToken(token)
 
         val user = userDao.getUserByEmail(email)
-            ?: throw BadRequestResponse("A user does not exist for the email attached to this token")
+            ?: throw BadRequestResponse(
+                "A user does not exist for the email attached to this token"
+            )
 
         return createAuthTokenForUserId(user.id)
     }
@@ -104,7 +106,9 @@ class AuthService(
         }
 
         if (userDao.getUserByUserName(username) != null) {
-            throw FormValidationErrorResponse(listOf("name" to "This username has already been taken."))
+            throw FormValidationErrorResponse(
+                listOf("name" to "This username has already been taken.")
+            )
         }
 
         val user =

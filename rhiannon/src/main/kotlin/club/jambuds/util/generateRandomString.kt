@@ -12,4 +12,3 @@ fun generateRandomString(len: Int): String {
     }
     return sb.toString()
 }
-

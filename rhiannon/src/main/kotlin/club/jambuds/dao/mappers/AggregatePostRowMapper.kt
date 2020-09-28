@@ -47,4 +47,3 @@ class AggregatedPostRowMapper : RowMapper<AggregatedPost> {
         override fun write(out: JsonWriter, value: Instant?) = throw NotImplementedError()
     }
 }
-

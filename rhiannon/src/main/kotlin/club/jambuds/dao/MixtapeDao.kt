@@ -40,11 +40,12 @@ interface MixtapeDao : SqlObject {
     fun reorderMixtapeSongs(mixtapeId: Int, songIds: List<Int>) {
         handle.useTransaction<Exception> { txn ->
             songIds.forEachIndexed { idx, songId ->
-                val query = """
+                val query =
+                    """
                     UPDATE mixtape_song_entries
                     SET rank=:rank
                     WHERE mixtape_id = :mixtapeId AND song_id = :songId
-                """.trimIndent()
+                    """.trimIndent()
 
                 txn.createUpdate(query)
                     .bind("mixtapeId", mixtapeId)
@@ -62,21 +63,23 @@ interface MixtapeDao : SqlObject {
 
     fun publishMixtape(mixtapeId: Int, currentUserId: Int) {
         handle.useTransaction<Exception> { txn ->
-            val updatePublishQuery = """
+            val updatePublishQuery =
+                """
                 UPDATE mixtapes
                 SET published_at=:publishedAt
                 WHERE id=:mixtapeId
-            """.trimIndent()
+                """.trimIndent()
 
             txn.createUpdate(updatePublishQuery)
                 .bind("publishedAt", Instant.now())
                 .bind("mixtapeId", mixtapeId)
                 .execute()
 
-            val postMixtapeQuery = """
+            val postMixtapeQuery =
+                """
                 INSERT INTO posts (user_id, mixtape_id)
                 VALUES            (:userId, :mixtapeId)
-            """.trimIndent()
+                """.trimIndent()
 
             txn.createUpdate(postMixtapeQuery)
                 .bind("userId", currentUserId)
