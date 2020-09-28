@@ -9,7 +9,7 @@ import kong.unirest.json.JSONObject
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
-class SettingsRoutesTest: AppTest() {
+class SettingsRoutesTest : AppTest() {
     private val gson = getGson()
 
     @Test
@@ -36,7 +36,14 @@ class SettingsRoutesTest: AppTest() {
         resp = Unirest
             .post("$appUrl/settings/color-scheme")
             .header("X-Auth-Token", authToken)
-            .body(JSONObject(mapOf("backgroundGradientName" to "darkRainbow", "textColor" to "white")))
+            .body(
+                JSONObject(
+                    mapOf(
+                        "backgroundGradientName" to "darkRainbow",
+                        "textColor" to "white"
+                    )
+                )
+            )
             .asString()
         assertEquals(204, resp.status)
 
