@@ -67,7 +67,6 @@ class UserService(
     }
 
     fun serializeCurrentUser(currentUser: User): CurrentUser {
-        val colorScheme = colorSchemeDao.getColorSchemeByUserId(currentUser.id)
         val following = userDao.getFollowingForUserId(currentUser.id)
         val notificationsCount = notificationsDao.getNewNotificationsCount(currentUser.id)
 
@@ -77,9 +76,9 @@ class UserService(
             email = currentUser.email,
             showInPublicFeed = currentUser.showInPublicFeed,
             twitterName = currentUser.twitterName,
-            colorScheme = colorScheme,
             following = following.map { PublicUser(id = it.id, name = it.name) },
-            unreadNotificationCount = notificationsCount
+            unreadNotificationCount = notificationsCount,
+            profile = getUserProfileForUser(currentUser)
         )
     }
 
