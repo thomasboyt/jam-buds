@@ -58,6 +58,7 @@ class SettingsRoutes(
         @field:NotNull @Expose val backgroundGradientName: String,
         @field:NotNull @Expose val textColor: String
     )
+
     private fun updateColorScheme(ctx: Context) {
         val user = ctx.requireUser()
         val colorScheme = ctx.validateJsonBody(UpdateColorSchemeBody::class.java)

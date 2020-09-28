@@ -40,7 +40,9 @@ class UserService(
 
     fun getUnfollowedTwitterUsersForUser(user: User): List<PublicUserWithTwitterName> {
         if (user.twitterName == null) {
-            throw BadRequestResponse("Cannot fetch Twitter friends with no attached Twitter account")
+            throw BadRequestResponse(
+                "Cannot fetch Twitter friends with no attached Twitter account"
+            )
         }
 
         var twitterIds = twitterFollowingCacheDao.getTwitterFollowingCache(user.id)
@@ -83,11 +85,11 @@ class UserService(
 
     fun getFollowingByUserId(userId: Int): List<PublicUser> {
         val users = userDao.getFollowingForUserId(userId)
-        return users.map { PublicUser( id = it.id, name = it.name )}
+        return users.map { PublicUser(id = it.id, name = it.name) }
     }
 
     fun getFollowersByUserId(userId: Int): List<PublicUser> {
         val users = userDao.getFollowersForUserId(userId)
-        return users.map { PublicUser( id = it.id, name = it.name )}
+        return users.map { PublicUser(id = it.id, name = it.name) }
     }
 }

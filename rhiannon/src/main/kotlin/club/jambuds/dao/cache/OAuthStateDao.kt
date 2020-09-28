@@ -9,7 +9,7 @@ class OAuthStateDao(private val redis: StatefulRedisConnection<String, String>) 
         val cmd = redis.sync()
         val key = getStateKey(token)
         cmd.set(key, redirectPath)
-        cmd.expire(key, 15 * 60)  // 15 minute cache
+        cmd.expire(key, 15 * 60) // 15 minute cache
         return token
     }
 

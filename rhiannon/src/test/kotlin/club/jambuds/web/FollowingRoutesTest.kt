@@ -104,7 +104,8 @@ class FollowingRoutesTest : AppTest() {
             .asString()
         assertEquals(200, initialNotificationsResp.status)
 
-        return gson.fromJson(initialNotificationsResp.body, Array<NotificationItem>::class.java).toList()
+        return gson
+            .fromJson(initialNotificationsResp.body, Array<NotificationItem>::class.java)
+            .toList()
     }
-
 }

@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit
 // left open for mocking
 open class SpotifyApiService(clientId: String, clientSecret: String) {
     private val logger = LoggerFactory.getLogger(SpotifyApiService::class.java.name)
+
     // TODO: should this use a pool at all?
     private val threadPool = Executors.newScheduledThreadPool(1)
 

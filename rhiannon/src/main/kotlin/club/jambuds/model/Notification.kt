@@ -6,10 +6,13 @@ import java.time.Instant
 enum class NotificationType(val sqlVal: String) {
     @SerializedName("like")
     LIKE("like"),
+
     @SerializedName("follow")
     FOLLOW("follow"),
+
     @SerializedName("join")
     JOIN("join"),
+
     @SerializedName("system")
     SYSTEM("system")
 }

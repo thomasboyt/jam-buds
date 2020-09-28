@@ -6,7 +6,7 @@ import club.jambuds.dao.UserDao
 import club.jambuds.model.User
 import io.javalin.http.InternalServerErrorResponse
 
-class ExistingTwitterException: Exception()
+class ExistingTwitterException : Exception()
 
 class TwitterAuthService(
     private val userDao: UserDao,
@@ -15,7 +15,9 @@ class TwitterAuthService(
 ) {
     fun getRequestToken(callbackUrl: String): String {
         val twitterOauthClient = createTwitterOauthClient(
-            consumerKey, consumerSecret, mapOf(
+            consumerKey,
+            consumerSecret,
+            mapOf(
                 "oauth_callback" to callbackUrl
             )
         )
@@ -24,7 +26,9 @@ class TwitterAuthService(
 
         if (!resp.isSuccessful) {
             val err = resp.errorBody()?.string()
-            throw InternalServerErrorResponse("Failed to fetch request token: status ${resp.code()} \n $err")
+            throw InternalServerErrorResponse(
+                "Failed to fetch request token: status ${resp.code()} \n $err"
+            )
         }
 
         val resultParams = parseAuthResponseBody(resp.body()!!)
@@ -40,7 +44,9 @@ class TwitterAuthService(
 
     private fun getAccessToken(oauthToken: String, oauthVerifier: String): TwitterOauthCredentials {
         val twitterOauthClient = createTwitterOauthClient(
-            consumerKey, consumerSecret, mapOf(
+            consumerKey,
+            consumerSecret,
+            mapOf(
                 "oauth_token" to oauthToken
             )
         )
@@ -49,7 +55,9 @@ class TwitterAuthService(
 
         if (!resp.isSuccessful) {
             val err = resp.errorBody()?.string()
-            throw InternalServerErrorResponse("Failed to fetch request token: status ${resp.code()} \n $err")
+            throw InternalServerErrorResponse(
+                "Failed to fetch request token: status ${resp.code()} \n $err"
+            )
         }
 
         val resultParams = parseAuthResponseBody(resp.body()!!)
@@ -71,12 +79,19 @@ class TwitterAuthService(
     fun getAndSaveCredentials(user: User, oauthToken: String, oauthVerifier: String) {
         val credentials = getAccessToken(oauthToken, oauthVerifier)
 
-        val client = createTwitterClient(consumerKey, consumerSecret, credentials.accessToken, credentials.accessSecret)
+        val client = createTwitterClient(
+            consumerKey,
+            consumerSecret,
+            credentials.accessToken,
+            credentials.accessSecret
+        )
         val resp = client.verifyCredentials().execute()
 
         if (!resp.isSuccessful) {
             val err = resp.errorBody()?.string()
-            throw InternalServerErrorResponse("Failed to verify Twitter credentials: status ${resp.code()} \n $err")
+            throw InternalServerErrorResponse(
+                "Failed to verify Twitter credentials: status ${resp.code()} \n $err"
+            )
         }
 
         val twitterUser = resp.body()!!

@@ -9,4 +9,5 @@ max_line_length=100
 
 # Note that rules in any ruleset other than the standard ruleset will need to be prefixed
 # by the ruleset identifier.
-disabled_rules=no-wildcard-imports,import-ordering
+disabled_rules=no-wildcard-imports
+kotlin_imports_layout=idea

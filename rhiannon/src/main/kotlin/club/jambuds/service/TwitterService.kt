@@ -1,7 +1,6 @@
 package club.jambuds.service
 
 import club.jambuds.clients.createTwitterClient
-import club.jambuds.clients.createTwitterOauthClient
 import club.jambuds.model.User
 import io.javalin.http.InternalServerErrorResponse
 import org.slf4j.LoggerFactory
@@ -29,11 +28,9 @@ open class TwitterService(
         val resp = twitterClient.postStatus(tweetContent).execute()
 
         if (!resp.isSuccessful) {
-            logger.error(
-                "Failed to send tweet: status ${resp.code()} \n ${
-                    resp.errorBody()!!.string()
-                }"
-            )
+            val code = resp.code()
+            val errorBody = resp.errorBody()!!.string()
+            logger.error("Failed to send tweet: status $code\n$errorBody")
         }
     }
 
@@ -64,5 +61,4 @@ open class TwitterService(
 
         return resp.body()!!.ids
     }
-
 }

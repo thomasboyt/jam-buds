@@ -37,7 +37,9 @@ open class AppleMusicService(musickitToken: String, private val disabled: Boolea
 
     open fun getSongDetailsByIsrc(isrc: String): AppleMusicSearchResult? {
         if (disabled) {
-            throw Error("Attempted to use AppleMusicService even though it was configured as disabled")
+            throw Error(
+                "Attempted to use AppleMusicService even though it was configured as disabled"
+            )
         }
 
         val resp = client.getSongsByISRC(isrc).execute()
@@ -71,4 +73,3 @@ open class AppleMusicService(musickitToken: String, private val disabled: Boolea
         }
     }
 }
-

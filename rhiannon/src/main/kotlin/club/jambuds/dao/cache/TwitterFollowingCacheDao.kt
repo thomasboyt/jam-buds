@@ -7,7 +7,7 @@ class TwitterFollowingCacheDao(private val redis: StatefulRedisConnection<String
         val cmd = redis.sync()
         val key = getKey(userId)
         cmd.sadd(key, *twitterIds.toTypedArray())
-        cmd.expire(key, 15 * 60)  // 15 minute cache
+        cmd.expire(key, 15 * 60) // 15 minute cache
     }
 
     fun getTwitterFollowingCache(userId: Int): List<String>? {
@@ -20,6 +20,6 @@ class TwitterFollowingCacheDao(private val redis: StatefulRedisConnection<String
     }
 
     private fun getKey(userId: Int): String {
-        return "twitter_friends:${userId}"
+        return "twitter_friends:$userId"
     }
 }

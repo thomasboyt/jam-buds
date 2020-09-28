@@ -9,4 +9,3 @@ data class SearchCacheEntry(
     val appleMusicId: String?,
     val appleMusicUrl: String?
 )
-

@@ -8,13 +8,16 @@ import java.io.StringWriter
 class EmailService(private val emailClient: EmailClient) {
     // some day, could move this to a TemplateService, if I want
     private val htmlEngine: PebbleEngine
+
     init {
         val loader = ClasspathLoader()
         loader.prefix = "templates/emails"
         loader.suffix = ".html"
         htmlEngine = PebbleEngine.Builder().loader(loader).build()
     }
+
     private val textEngine: PebbleEngine
+
     init {
         val loader = ClasspathLoader()
         loader.prefix = "templates/emails"
@@ -37,7 +40,11 @@ class EmailService(private val emailClient: EmailClient) {
         )
     }
 
-    private fun buildTemplate(templateName: String, engine: PebbleEngine, context: Map<String, Any>): String {
+    private fun buildTemplate(
+        templateName: String,
+        engine: PebbleEngine,
+        context: Map<String, Any>
+    ): String {
         val template = engine.getTemplate(templateName)
         val writer = StringWriter()
         template.evaluate(writer, context)

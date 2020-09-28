@@ -16,10 +16,15 @@ import retrofit2.http.Query
 
 interface ButtondownClient {
     @GET("v1/subscribers")
-    fun getSubscribers(@Query("email") email: String, @Query("type") type: String): Call<ButtondownGetSubscribersResponse>
+    fun getSubscribers(
+        @Query("email") email: String,
+        @Query("type") type: String
+    ): Call<ButtondownGetSubscribersResponse>
 
     @POST("v1/subscribers")
-    fun createSubscriber(@Body body: ButtondownCreateSubscriberBody): Call<ButtondownCreateSubscriberResponse>
+    fun createSubscriber(
+        @Body body: ButtondownCreateSubscriberBody
+    ): Call<ButtondownCreateSubscriberResponse>
 
     @DELETE("v1/subscribers/{id}")
     fun deleteSubscriber(@Path("id") id: String): Call<Void>
@@ -64,4 +69,3 @@ private fun getButtondownGson(): Gson {
         .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
         .create()
 }
-

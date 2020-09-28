@@ -25,7 +25,10 @@ class NotificationService(
         return notifications.map {
             if (it.type == NotificationType.FOLLOW) {
                 val user = usersById[it.notificationUserId!!]
-                    ?: throw Error("No notificationUserId ${it.notificationUserId} found for notification ID ${it.id}")
+                    ?: throw Error(
+                        "No notificationUserId ${it.notificationUserId} found " +
+                            "for notification ID ${it.id}"
+                    )
                 NotificationItem(
                     id = it.id,
                     type = it.type,
@@ -47,7 +50,9 @@ class NotificationService(
         val numUpdated =
             notificationsDao.markOneReadForUserId(notificationId = notificationId, userId = user.id)
         if (numUpdated == 0) {
-            throw NotFoundResponse("No notification ID $notificationId found for user ID ${user.id}")
+            throw NotFoundResponse(
+                "No notification ID $notificationId found for user ID ${user.id}"
+            )
         }
     }
 }

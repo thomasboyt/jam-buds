@@ -54,7 +54,7 @@ open class ButtondownService(private val client: ButtondownClient?) {
         if (!resp.isSuccessful) {
             throw InternalServerErrorResponse(
                 "Error unsubscribing $buttondownId from Buttondown: ${resp.code()} \n" +
-                " ${resp.errorBody()!!.string()}"
+                    " ${resp.errorBody()!!.string()}"
             )
         }
     }

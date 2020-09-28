@@ -12,6 +12,10 @@ import javax.validation.constraints.Pattern
 import javax.validation.constraints.Size
 
 const val AUTH_TOKEN_COOKIE = "jamBudsAuthToken"
+const val EMAIL_RE =
+    """^[^\s@]+@[^\s@]+\.[^\s@]+$"""
+const val USERNAME_RE =
+    """^[a-zA-Z0-9_]+$"""
 
 class AuthRoutes(private val authService: AuthService, private val appUrl: String) {
     fun register() {
@@ -23,7 +27,10 @@ class AuthRoutes(private val authService: AuthService, private val appUrl: Strin
 
     data class SendSignInTokenBody(
         @field:NotNull
-        @field:Pattern(regexp = """^[^\s@]+@[^\s@]+\.[^\s@]+$""", message = "Invalid email format")
+        @field:Pattern(
+            regexp = EMAIL_RE,
+            message = "Invalid email format"
+        )
         @Expose val email: String,
         @Expose val signupReferral: String?,
         @Expose val dest: String?
@@ -43,6 +50,7 @@ class AuthRoutes(private val authService: AuthService, private val appUrl: Strin
         @field:NotNull
         @Expose val signInToken: String
     )
+
     private fun signIn(ctx: Context) {
         val body = ctx.validateJsonBody(SignInBody::class.java)
         val authToken = authService.signIn(body.signInToken)
@@ -58,7 +66,7 @@ class AuthRoutes(private val authService: AuthService, private val appUrl: Strin
 
         @field:NotNull
         @field:Pattern(
-            regexp = """^[a-zA-Z0-9_]+$""",
+            regexp = USERNAME_RE,
             message = "Username has invalid characters. Stick to A-z, 0-9, and underscores, please!"
         )
         @field:Size(min = 3, max = 16, message = "Username must be between 3 and 16 characters.")
@@ -97,10 +105,12 @@ class AuthRoutes(private val authService: AuthService, private val appUrl: Strin
     }
 
     private fun setTokenCookie(ctx: Context, authToken: String) {
-        ctx.cookie(Cookie(AUTH_TOKEN_COOKIE, authToken).apply {
-            maxAge = 60 * 60 * 24 * 365
-            isHttpOnly = true
-            secure = appUrl.startsWith("https")
-        })
+        ctx.cookie(
+            Cookie(AUTH_TOKEN_COOKIE, authToken).apply {
+                maxAge = 60 * 60 * 24 * 365
+                isHttpOnly = true
+                secure = appUrl.startsWith("https")
+            }
+        )
     }
 }

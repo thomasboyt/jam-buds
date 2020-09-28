@@ -38,10 +38,10 @@ class TwitterAuthRoutes(
         val state = ctx.queryParam("state") ?: throw BadRequestResponse("Missing `state` param")
         val redirect = oAuthStateDao.getRedirectPathForStateToken(state)
             ?: throw BadRequestResponse("Invalid `state` param")
-        val oauthToken =
-            ctx.queryParam("oauth_token") ?: throw BadRequestResponse("Missing `oauth_token` param")
-        val oauthVerifier =
-            ctx.queryParam("oauth_verifier") ?: throw BadRequestResponse("Missing `oauth_verifier` param")
+        val oauthToken = ctx.queryParam("oauth_token")
+            ?: throw BadRequestResponse("Missing `oauth_token` param")
+        val oauthVerifier = ctx.queryParam("oauth_verifier")
+            ?: throw BadRequestResponse("Missing `oauth_verifier` param")
 
         try {
             twitterAuthService.getAndSaveCredentials(user, oauthToken, oauthVerifier)
@@ -54,8 +54,10 @@ class TwitterAuthRoutes(
     }
 
     private fun requireUserFromCookie(ctx: Context): User {
-        val authToken = ctx.cookie(AUTH_TOKEN_COOKIE) ?: throw UnauthorizedResponse("Missing auth token cookie")
-        return userDao.getUserByAuthToken(authToken) ?: throw UnauthorizedResponse("Inavlid auth token cookie")
+        val authToken = ctx.cookie(AUTH_TOKEN_COOKIE)
+            ?: throw UnauthorizedResponse("Missing auth token cookie")
+        return userDao.getUserByAuthToken(authToken)
+            ?: throw UnauthorizedResponse("Inavlid auth token cookie")
     }
 
     private fun deleteTwitterConnection(ctx: Context) {
