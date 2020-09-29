@@ -6,6 +6,7 @@ import club.jambuds.dao.UserDao
 import club.jambuds.dao.cache.TwitterFollowingCacheDao
 import club.jambuds.model.User
 import club.jambuds.responses.CurrentUser
+import club.jambuds.responses.FeedPlaylistEntry
 import club.jambuds.responses.PublicUser
 import club.jambuds.responses.PublicUserWithTwitterName
 import club.jambuds.responses.UserProfile
@@ -21,6 +22,20 @@ class UserService(
     fun getUserProfileByName(userName: String): UserProfile? {
         val user = userDao.getUserByUserName(userName) ?: return null
         return getUserProfileForUser(user)
+    }
+
+    private fun getUserProfilesByNames(userNames: List<String>): List<UserProfile> {
+        val users = userDao.getUsersByNames(userNames)
+        val userIds = users.map { it.id }
+        val colorSchemes =
+            colorSchemeDao.getColorSchemesByUserIds(userIds).map { it.userId to it }.toMap()
+        return users.map {
+            UserProfile(
+                id = it.id,
+                name = it.name,
+                colorScheme = colorSchemes[it.id]
+            )
+        }
     }
 
     fun getUserProfileByUserId(userId: Int): UserProfile? {
@@ -90,5 +105,12 @@ class UserService(
     fun getFollowersByUserId(userId: Int): List<PublicUser> {
         val users = userDao.getFollowersForUserId(userId)
         return users.map { PublicUser(id = it.id, name = it.name) }
+    }
+
+    fun getUserProfilesFromFeedEntries(
+        playlist: PlaylistService.Playlist<FeedPlaylistEntry>
+    ): List<UserProfile> {
+        val userNames = playlist.items.flatMap { item -> item.posts.map { it.userName } }.distinct()
+        return getUserProfilesByNames(userNames)
     }
 }

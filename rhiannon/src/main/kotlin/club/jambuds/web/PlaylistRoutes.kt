@@ -31,9 +31,11 @@ class PlaylistRoutes(
             beforeTimestamp = timestamps.beforeTimestamp,
             afterTimestamp = timestamps.afterTimestamp
         )
+        val profiles = userService.getUserProfilesFromFeedEntries(playlist)
         val resp = FeedPlaylistResponse(
             items = playlist.items,
-            limit = playlist.limit
+            limit = playlist.limit,
+            profiles = profiles
         )
         ctx.json(resp)
     }
@@ -47,9 +49,11 @@ class PlaylistRoutes(
             beforeTimestamp = timestamps.beforeTimestamp,
             afterTimestamp = timestamps.afterTimestamp
         )
+        val profiles = userService.getUserProfilesFromFeedEntries(playlist)
         val resp = FeedPlaylistResponse(
             items = playlist.items,
-            limit = playlist.limit
+            limit = playlist.limit,
+            profiles = profiles
         )
         ctx.json(resp)
     }

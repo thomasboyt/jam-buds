@@ -39,6 +39,9 @@ interface UserDao {
     @SqlQuery
     fun getUsersByIds(@BindList("userIds") userIds: List<Int>): List<User>
 
+    @SqlQuery
+    fun getUsersByNames(@BindList("userNames") userNames: List<String>): List<User>
+
     @SqlUpdate
     @GetGeneratedKeys
     fun createUser(email: String, name: String, showInPublicFeed: Boolean): User
