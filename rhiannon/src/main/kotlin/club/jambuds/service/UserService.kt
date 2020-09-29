@@ -10,6 +10,7 @@ import club.jambuds.responses.FeedPlaylistEntry
 import club.jambuds.responses.PublicUser
 import club.jambuds.responses.PublicUserWithTwitterName
 import club.jambuds.responses.UserProfile
+import club.jambuds.util.defaultColorScheme
 import io.javalin.http.BadRequestResponse
 
 class UserService(
@@ -24,7 +25,16 @@ class UserService(
         return getUserProfileForUser(user)
     }
 
+    fun getUserProfileByUserId(userId: Int): UserProfile? {
+        val user = userDao.getUserByUserId(userId) ?: return null
+        return getUserProfileForUser(user)
+    }
+
     private fun getUserProfilesByNames(userNames: List<String>): List<UserProfile> {
+        if (userNames.isEmpty()) {
+            return emptyList()
+        }
+
         val users = userDao.getUsersByNames(userNames)
         val userIds = users.map { it.id }
         val colorSchemes =
@@ -33,14 +43,9 @@ class UserService(
             UserProfile(
                 id = it.id,
                 name = it.name,
-                colorScheme = colorSchemes[it.id]
+                colorScheme = colorSchemes[it.id] ?: defaultColorScheme
             )
         }
-    }
-
-    fun getUserProfileByUserId(userId: Int): UserProfile? {
-        val user = userDao.getUserByUserId(userId) ?: return null
-        return getUserProfileForUser(user)
     }
 
     private fun getUserProfileForUser(user: User): UserProfile {
@@ -49,7 +54,7 @@ class UserService(
         return UserProfile(
             id = user.id,
             name = user.name,
-            colorScheme = colorScheme
+            colorScheme = colorScheme ?: defaultColorScheme
         )
     }
 
