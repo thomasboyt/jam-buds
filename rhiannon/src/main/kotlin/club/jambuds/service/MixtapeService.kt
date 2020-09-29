@@ -3,6 +3,7 @@ package club.jambuds.service
 import club.jambuds.dao.MixtapeDao
 import club.jambuds.dao.SongDao
 import club.jambuds.model.Mixtape
+import club.jambuds.model.MixtapePreview
 import club.jambuds.model.SongWithMeta
 import club.jambuds.model.User
 import club.jambuds.responses.MixtapeWithSongsReponse
@@ -20,18 +21,15 @@ class MixtapeService(
     private val searchService: SearchService
 ) {
     fun createMixtape(title: String, currentUserId: Int): MixtapeWithSongsReponse {
-        val slug = toSlug(title)
-        val mixtape = mixtapeDao.createMixtape(currentUserId, title, slug)
-
         val userProfile = userService.getUserProfileByUserId(currentUserId)
             ?: throw Error("could not find user with id $currentUserId")
 
+        val slug = toSlug(title)
+        val mixtape = mixtapeDao.createMixtape(currentUserId, title, slug)
+        val mixtapePreview = mixtapeDao.getMixtapePreviewById(mixtape.id)!!
+
         return MixtapeWithSongsReponse(
-            id = mixtape.id,
-            title = mixtape.title,
-            slug = mixtape.slug,
-            isPublished = mixtape.publishedAt != null,
-            publishedAt = mixtape.publishedAt,
+            mixtape = mixtapePreview,
             tracks = emptyList(),
             author = userProfile
         )
@@ -52,7 +50,7 @@ class MixtapeService(
     }
 
     fun getMixtapeById(id: Int, currentUserId: Int?): MixtapeWithSongsReponse? {
-        val mixtape = mixtapeDao.getMixtapeById(id) ?: return null
+        val mixtape = mixtapeDao.getMixtapePreviewById(id) ?: return null
 
         // Users cannot access draft mixtapes that are not their own
         if (mixtape.publishedAt == null && mixtape.userId != currentUserId) {
@@ -66,11 +64,7 @@ class MixtapeService(
             ?: throw Error("could not find user with id ${mixtape.userId}")
 
         return MixtapeWithSongsReponse(
-            id = mixtape.id,
-            title = mixtape.title,
-            slug = mixtape.slug,
-            isPublished = mixtape.publishedAt != null,
-            publishedAt = mixtape.publishedAt,
+            mixtape = mixtape,
             tracks = songs,
             author = userProfile
         )
@@ -142,7 +136,7 @@ class MixtapeService(
         }
     }
 
-    fun getDraftMixtapesByUser(currentUser: User): List<Mixtape> {
-        return mixtapeDao.getDraftMixtapesByUserId(currentUser.id)
+    fun getDraftMixtapesByUser(currentUser: User): List<MixtapePreview> {
+        return mixtapeDao.getDraftMixtapePreviewsByUserId(currentUser.id)
     }
 }

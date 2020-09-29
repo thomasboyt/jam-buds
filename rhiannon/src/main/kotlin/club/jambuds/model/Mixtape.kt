@@ -6,8 +6,8 @@ import java.time.Instant
 data class Mixtape(
     @Expose val id: Int,
     val createdAt: Instant,
+    val userId: Int,
     @Expose val title: String,
     @Expose val slug: String,
-    val userId: Int,
     @Expose val publishedAt: Instant?
 )

@@ -13,11 +13,15 @@ import java.time.Instant
 interface MixtapeDao : SqlObject {
     @SqlQuery
     @UseClasspathSqlLocator
-    fun getMixtapesByIds(@BindList("mixtapeIds") mixtapeIds: List<Int>): List<MixtapePreview>
+    fun getMixtapeById(mixtapeId: Int): Mixtape?
 
     @SqlQuery
     @UseClasspathSqlLocator
-    fun getMixtapeById(mixtapeId: Int): Mixtape?
+    fun getMixtapePreviewById(mixtapeId: Int): MixtapePreview?
+
+    @SqlQuery
+    @UseClasspathSqlLocator
+    fun getMixtapePreviewsByIds(@BindList("mixtapeIds") mixtapeIds: List<Int>): List<MixtapePreview>
 
     @SqlUpdate
     @GetGeneratedKeys
@@ -88,8 +92,7 @@ interface MixtapeDao : SqlObject {
         }
     }
 
-    @SqlQuery(
-        "SELECT * FROM mixtapes WHERE user_id = :userId AND published_at IS NULL"
-    )
-    fun getDraftMixtapesByUserId(userId: Int): List<Mixtape>
+    @SqlQuery
+    @UseClasspathSqlLocator
+    fun getDraftMixtapePreviewsByUserId(userId: Int): List<MixtapePreview>
 }
