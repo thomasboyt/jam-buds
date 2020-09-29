@@ -66,10 +66,9 @@ export default {
     },
   },
 
-  /*
-   ** Customize the progress-bar color
-   */
-  loading: { color: 'hotpink' },
+  // disable the loading bar
+  loading: false,
+
   /*
    ** Global CSS
    */
