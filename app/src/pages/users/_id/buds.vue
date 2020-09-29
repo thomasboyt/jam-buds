@@ -42,6 +42,8 @@ export default {
 
     this.followers = followersResp.data.users;
     this.following = followingResp.data.users;
+
+    this.$store.commit('addProfiles', [...this.followers, ...this.following]);
   },
 
   data() {
