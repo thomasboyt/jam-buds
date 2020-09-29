@@ -157,6 +157,9 @@ const playlists = {
         resp.data.items.map((item) => item.song).filter((song) => song)
       );
       context.commit('pushPlaylist', { key, page: resp.data });
+      if (resp.data.profiles) {
+        context.commit('addProfiles', resp.data.profiles);
+      }
 
       return resp.data;
     },
@@ -176,6 +179,9 @@ const playlists = {
         resp.data.items.map((item) => item.song).filter((song) => song)
       );
       context.commit('addToPlaylistHead', { key, items: resp.data.items });
+      if (resp.data.profiles) {
+        context.commit('addProfiles', resp.data.profiles);
+      }
 
       return resp.data;
     },
