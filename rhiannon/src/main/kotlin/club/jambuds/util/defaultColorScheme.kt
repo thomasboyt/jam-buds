@@ -3,8 +3,8 @@ package club.jambuds.util
 import club.jambuds.model.ColorScheme
 
 val defaultColorScheme = ColorScheme(
-    id = -1,
-    userId = -1,
+    id = 0,
+    userId = 0,
     backgroundGradientName = "jam buds",
     textColor = "black"
 )

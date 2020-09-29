@@ -31,6 +31,8 @@ class MixtapeRoutesTest : AppTest() {
         assertEquals(200, resp.status)
         val body = gson.fromJson(resp.body, MixtapeWithSongsReponse::class.java)
         assertEquals(1, body.tracks.size)
+        assertEquals("jeff", body.author.name)
+        assertEquals(mixtapeId, body.mixtape.id)
     }
 
     @Test
@@ -61,9 +63,9 @@ class MixtapeRoutesTest : AppTest() {
 
         val body = gson.fromJson(resp.body, MixtapeWithSongsReponse::class.java)
         assertEquals("jeff", body.author.name)
-        assertEquals("A mixtape", body.title)
-        assertEquals("a-mixtape", body.slug)
-        assertEquals(false, body.isPublished)
+        assertEquals("A mixtape", body.mixtape.title)
+        assertEquals("a-mixtape", body.mixtape.slug)
+        assertEquals(null, body.mixtape.publishedAt)
         assertEquals(0, body.tracks.size)
     }
 
@@ -278,7 +280,7 @@ class MixtapeRoutesTest : AppTest() {
             .asString()
         assertEquals(200, mixtapeResp.status)
         val mixtapeBody = gson.fromJson(mixtapeResp.body, MixtapeWithSongsReponse::class.java)
-        assertEquals("A better mixtape title", mixtapeBody.title)
+        assertEquals("A better mixtape title", mixtapeBody.mixtape.title)
     }
 
     @Test

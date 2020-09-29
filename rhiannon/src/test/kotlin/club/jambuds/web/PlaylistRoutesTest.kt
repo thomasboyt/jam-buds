@@ -237,6 +237,33 @@ class PlaylistRoutesTest : AppTest() {
     }
 
     @Test
+    fun `GET public-feed - correctly aggregates profiles`() {
+        val jeff = TestDataFactories.createUser(txn, "jeff", true)
+        TestDataFactories.createSongPost(
+            txn,
+            userId = jeff.id,
+            songId = TestDataFactories.createSong(txn)
+        )
+        TestDataFactories.createSongPost(
+            txn,
+            userId = jeff.id,
+            songId = TestDataFactories.createSong(txn)
+        )
+
+        val reusedSongId = TestDataFactories.createSong(txn)
+        val vinny = TestDataFactories.createUser(txn, "vinny", true)
+        val brad = TestDataFactories.createUser(txn, "brad", true)
+        TestDataFactories.createSongPost(txn, userId = vinny.id, songId = reusedSongId)
+        TestDataFactories.createSongPost(txn, userId = brad.id, songId = reusedSongId)
+        TestDataFactories.createSongPost(txn, userId = jeff.id, songId = reusedSongId)
+
+        val resp = Unirest.get("$appUrl/public-feed").asString()
+        val body = gson.fromJson(resp.body, FeedPlaylistResponse::class.java)
+        assertEquals(3, body.profiles.size)
+        assertEquals(setOf(vinny.id, jeff.id, brad.id), body.profiles.map { it.id }.toSet())
+    }
+
+    @Test
     fun `GET feed - only includes posts from users the current user follows and their own`() {
         val jeff = TestDataFactories.createUser(txn, "jeff", true)
         val vinny = TestDataFactories.createUser(txn, "vinny", true)

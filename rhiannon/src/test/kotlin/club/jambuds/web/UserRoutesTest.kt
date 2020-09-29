@@ -8,6 +8,8 @@ import club.jambuds.responses.GetCurrentUserResponse
 import club.jambuds.responses.PublicUser
 import club.jambuds.responses.TwitterFriendSuggestionsResponse
 import club.jambuds.responses.UserFollowingResponse
+import club.jambuds.responses.UserProfile
+import club.jambuds.util.defaultColorScheme
 import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
@@ -53,7 +55,11 @@ class UserRoutesTest : AppTest() {
             following = listOf(PublicUser(id = vinny.id, name = vinny.name)),
             // TODO: test these
             unreadNotificationCount = 0,
-            colorScheme = null
+            profile = UserProfile(
+                id = jeff.id,
+                name = "jeff",
+                colorScheme = defaultColorScheme
+            )
         )
         assertEquals(expectedUser, body.user)
     }

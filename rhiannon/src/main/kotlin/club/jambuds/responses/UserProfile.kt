@@ -6,5 +6,5 @@ import com.google.gson.annotations.Expose
 data class UserProfile(
     @Expose val id: Int,
     @Expose val name: String,
-    @Expose val colorScheme: ColorScheme?
+    @Expose val colorScheme: ColorScheme
 )
