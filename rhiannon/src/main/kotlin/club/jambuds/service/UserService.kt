@@ -97,14 +97,16 @@ class UserService(
         )
     }
 
-    fun getFollowingByUserId(userId: Int): List<PublicUser> {
+    fun getFollowingByUserId(userId: Int): List<UserProfile> {
         val users = userDao.getFollowingForUserId(userId)
-        return users.map { PublicUser(id = it.id, name = it.name) }
+        val userNames = users.map { it.name }
+        return getUserProfilesByNames(userNames)
     }
 
-    fun getFollowersByUserId(userId: Int): List<PublicUser> {
+    fun getFollowersByUserId(userId: Int): List<UserProfile> {
         val users = userDao.getFollowersForUserId(userId)
-        return users.map { PublicUser(id = it.id, name = it.name) }
+        val userNames = users.map { it.name }
+        return getUserProfilesByNames(userNames)
     }
 
     fun getUserProfilesFromFeedEntries(
