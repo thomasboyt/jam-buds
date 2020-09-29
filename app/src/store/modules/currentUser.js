@@ -67,6 +67,7 @@ const currentUser = {
       });
 
       context.commit('setDraftMixtapes', resp.data.mixtapes);
+      context.commit('addMixtapes', resp.data.mixtapes);
     },
   },
 

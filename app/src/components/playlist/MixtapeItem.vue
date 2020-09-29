@@ -1,6 +1,10 @@
 <template>
   <div>
-    <nuxt-link class="playlist-mixtape" :to="mixtapeLink">
+    <nuxt-link
+      class="playlist-mixtape"
+      :to="mixtapeLink"
+      @click.native="setColorScheme"
+    >
       <img class="art" :src="art" />
 
       <div class="label">
@@ -28,6 +32,15 @@ export default {
 
     mixtapeLink() {
       return `/mixtapes/${this.mixtape.id}/${this.mixtape.slug}`;
+    },
+  },
+
+  methods: {
+    setColorScheme() {
+      this.$store.dispatch(
+        'colorScheme/setOverrideFromProfile',
+        this.mixtape.authorName
+      );
     },
   },
 };

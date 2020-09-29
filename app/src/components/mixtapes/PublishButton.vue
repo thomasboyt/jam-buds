@@ -21,7 +21,7 @@ export default {
 
   computed: {
     hasSongs() {
-      return this.mixtape.tracks.length > 0;
+      return this.mixtape.tracks ? this.mixtape.tracks.length > 0 : false;
     },
   },
 

@@ -12,6 +12,7 @@ import addSong from './modules/addSong';
 import mixtapes from './modules/mixtapes';
 import notifications from './modules/notifications';
 import streaming from './modules/streaming';
+import colorScheme from './modules/colorScheme';
 
 const root = {
   modules: {
@@ -25,6 +26,7 @@ const root = {
     mixtapes,
     notifications,
     streaming,
+    colorScheme,
   },
 
   state() {
