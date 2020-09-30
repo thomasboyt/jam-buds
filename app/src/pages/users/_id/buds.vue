@@ -11,7 +11,6 @@
 <script>
 import ProfileNav from '../../../components/ProfileNav.vue';
 import UsersList from '../../../components/UsersList.vue';
-import with404Handler from '~/util/with404Handler';
 
 export default {
   components: {
@@ -26,19 +25,16 @@ export default {
   },
 
   async fetch() {
-    const [followersResp, followingResp] = await with404Handler(
-      this.$error,
-      Promise.all([
-        this.$axios({
-          url: `/users/${this.name}/followers`,
-          method: 'GET',
-        }),
-        this.$axios({
-          url: `/users/${this.name}/following`,
-          method: 'GET',
-        }),
-      ])
-    );
+    const [followersResp, followingResp] = await Promise.all([
+      this.$axios({
+        url: `/users/${this.name}/followers`,
+        method: 'GET',
+      }),
+      this.$axios({
+        url: `/users/${this.name}/following`,
+        method: 'GET',
+      }),
+    ]);
 
     this.followers = followersResp.data.users;
     this.following = followingResp.data.users;

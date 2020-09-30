@@ -15,7 +15,11 @@
       <logged-out-header v-if="!authenticated" />
 
       <div class="main-inner">
-        <slot />
+        <div class="error-page" v-if="fetchState && fetchState.error">
+          <p v-if="errorCode === 404">The requested resource was not found.</p>
+          <p v-else>An unexpected error occurred while loading this page.</p>
+        </div>
+        <slot v-else />
       </div>
     </div>
   </div>
@@ -37,7 +41,7 @@ export default {
     Sidebar,
   },
 
-  props: ['withColorSchemeOverride'],
+  props: ['withColorSchemeOverride', 'fetchState'],
 
   head() {
     if (!process.server) {
@@ -69,6 +73,10 @@ export default {
     cssTheme() {
       const scheme = this.$store.getters['colorScheme/currentColorScheme'];
       return getCSSVariablesFromColorScheme(scheme);
+    },
+
+    errorCode() {
+      return this.fetchState.error.response?.status;
     },
   },
 
@@ -127,5 +135,10 @@ export default {
       margin-left: $sidebar-width;
     }
   }
+}
+
+.error-page {
+  text-align: center;
+  margin-top: 200px;
 }
 </style>

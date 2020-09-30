@@ -1,5 +1,5 @@
 <template>
-  <main-wrapper :with-color-scheme-override="true">
+  <main-wrapper :with-color-scheme-override="true" :fetch-state="$fetchState">
     <template v-if="mixtape">
       <share-landing-banner>
         <nuxt-link to="/">sign up</nuxt-link>to listen to this mixtape in your

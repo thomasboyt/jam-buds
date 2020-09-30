@@ -1,5 +1,5 @@
 <template>
-  <main-wrapper :with-color-scheme-override="true">
+  <main-wrapper :with-color-scheme-override="true" :fetch-state="$fetchState">
     <nuxt-child />
   </main-wrapper>
 </template>
