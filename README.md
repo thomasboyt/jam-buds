@@ -6,8 +6,8 @@
 
 Jam Buds is split into two services:
 
-* The *App service* is the frontend app powered by [Nuxt.js](https://nuxtjs.org/). The app is initially server-side rendered before being used as a SPA once laded.
-* *Rhiannon* is a the backend server for Jam Buds. It has a codename because it replaced the more generically-named "API server," written in Node.
+* The *App service* is the frontend app powered by [Nuxt.js](https://nuxtjs.org/).
+* *Rhiannon* is a the backend server for Jam Buds, written in Kotlin and running on [Javalin](https://javalin.io/). It has a codename because it replaced the more generically-named "API server," written in Node.
 
 In addition, this repo also contains some development-specific configuration and feature tests that interact with both the browser app and APIs.
 
@@ -88,14 +88,14 @@ Further migrations are handled through Flyway. Run like so:
 
 ### Launching
 
-In your terminal:
+In two separate terminal tabs, you can launch the app and API servers from the project root:
 
 ```
-cd app
-npm run dev
+npm run app
+npm run api
 ```
 
-In IntelliJ, run the `club.jambuds.ApplicationKt` target that should be preconfigured.
+You can also run the API through IntelliJ - just run the "Run" target that should be preconfigured.
 
 You should be able to visit [localhost:8080](http://localhost:8080) and see the application running successfully.
 
