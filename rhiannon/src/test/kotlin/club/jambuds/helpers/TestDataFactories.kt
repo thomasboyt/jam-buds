@@ -1,6 +1,5 @@
 package club.jambuds.helpers
 
-import club.jambuds.model.ColorScheme
 import club.jambuds.model.Post
 import club.jambuds.model.User
 import club.jambuds.util.generateRandomString
@@ -14,9 +13,10 @@ import java.time.Instant
 
 object TestDataFactories {
     fun createSongPost(txn: Handle, userId: Int, songId: Int, note: String? = null): Post {
-        val query = """
+        val query =
+            """
             insert into posts (user_id, song_id, note) values (:userId, :songId, :note)
-        """.trimIndent()
+            """.trimIndent()
 
         return txn.createUpdate(query)
             .bind("userId", userId)
@@ -28,9 +28,10 @@ object TestDataFactories {
     }
 
     fun createMixtapePost(txn: Handle, userId: Int, mixtapeId: Int): Post {
-        val query = """
+        val query =
+            """
             insert into posts (user_id, mixtape_id) values (:userId, :mixtapeId)
-        """.trimIndent()
+            """.trimIndent()
 
         return txn.createUpdate(query)
             .bind("userId", userId)
@@ -41,9 +42,10 @@ object TestDataFactories {
     }
 
     fun createSong(txn: Handle, spotifyId: String = "spotify_id"): Int {
-        val query = """
+        val query =
+            """
             insert into songs (title, artists, spotify_id) values (:title, :artist, :spotifyId)
-        """.trimIndent()
+            """.trimIndent()
 
         return txn.createUpdate(query)
             .bind("title", "song")
@@ -60,10 +62,11 @@ object TestDataFactories {
         showInFeed: Boolean,
         hasTwitter: Boolean = false
     ): User {
-        val query = """
+        val query =
+            """
             insert into users (name, email, show_in_public_feed, twitter_id, twitter_name, twitter_token, twitter_secret)
                         values (:name, :email, :showInPublicFeed, :twitterId, :twitterName, :twitterAuthToken, :twitterAuthSecret)
-        """.trimIndent()
+            """.trimIndent()
 
         return txn.createUpdate(query)
             .bind("name", name)
@@ -79,22 +82,22 @@ object TestDataFactories {
     }
 
     fun followUser(txn: Handle, userId: Int, followingId: Int): Int {
-        return txn.createUpdate(
+        val query =
             """
-                insert into following (user_id, following_id) values (:userId, :followingId)
-                """.trimIndent()
-        )
+            insert into following (user_id, following_id) values (:userId, :followingId)
+            """.trimIndent()
+        return txn.createUpdate(query)
             .bind("userId", userId)
             .bind("followingId", followingId)
             .execute()
     }
 
     fun createLike(txn: Handle, userId: Int, songId: Int): Int {
-        return txn.createUpdate(
+        val query =
             """
-                insert into likes (user_id, song_id) values (:userId, :songId)
-                """.trimIndent()
-        )
+            insert into likes (user_id, song_id) values (:userId, :songId)
+            """.trimIndent()
+        return txn.createUpdate(query)
             .bind("userId", userId)
             .bind("songId", songId)
             .execute()
@@ -102,31 +105,23 @@ object TestDataFactories {
 
     fun createAuthToken(txn: Handle, userId: Int): String {
         val token = generateRandomString(16)
-        txn.createUpdate("insert into auth_tokens (user_id, auth_token) values (:userId, :authToken)")
+        val query =
+            """
+            insert into auth_tokens (user_id, auth_token) values (:userId, :authToken)
+            """.trimIndent()
+        txn.createUpdate(query)
             .bind("userId", userId)
             .bind("authToken", token)
             .execute()
         return token
     }
 
-    fun createColorScheme(txn: Handle, userId: Int): ColorScheme {
-        val query = """
-            insert into color_schemes (user_id, background_gradient_name, text_color)
-                         values       (:userId, 'gradient', 'black')
-         """.trimIndent()
-
-        return txn.createUpdate(query)
-            .bind("userId", userId)
-            .executeAndReturnGeneratedKeys()
-            .mapTo(ColorScheme::class.java)
-            .one()
-    }
-
     fun createMixtape(txn: Handle, userId: Int, isPublished: Boolean): Int {
-        val query = """
+        val query =
+            """
             insert into mixtapes (user_id, title,  slug,   published_at)
                          values  (:userId, :title, :slug, :publishedAt)
-         """.trimIndent()
+            """.trimIndent()
 
         val publishedAt = if (isPublished) {
             Instant.now()
@@ -145,10 +140,11 @@ object TestDataFactories {
     }
 
     fun addSongToMixtape(txn: Handle, mixtapeId: Int, songId: Int, rank: Int) {
-        val query = """
+        val query =
+            """
             insert into mixtape_song_entries (mixtape_id, song_id, rank)
                         values               (:mixtapeId, :songId, :rank)
-        """.trimIndent()
+            """.trimIndent()
 
         txn.createUpdate(query)
             .bind("mixtapeId", mixtapeId)

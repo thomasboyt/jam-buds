@@ -29,14 +29,14 @@ class TwitterClientTest {
         )
 
         assertEquals(
-            "OAuth "
-                + "oauth_consumer_key=\"xvz1evFS4wEEPTGEFPHBog\", "
-                + "oauth_nonce=\"kYjzVBB8Y0ZFabxSWbWovY3uYSQ2pTgmZeNu2VS4cg\", "
-                + "oauth_signature=\"hCtSmYh%2BiHYCEqBWrE7C7hYmtUk%3D\", "
-                + "oauth_signature_method=\"HMAC-SHA1\", "
-                + "oauth_timestamp=\"1318622958\", "
-                + "oauth_token=\"370773112-GmHxMAgYyLbNEtIKZeRNFsMKPR9EyMZeS9weJAEb\", "
-                + "oauth_version=\"1.0\"",
+            "OAuth " +
+                "oauth_consumer_key=\"xvz1evFS4wEEPTGEFPHBog\", " +
+                "oauth_nonce=\"kYjzVBB8Y0ZFabxSWbWovY3uYSQ2pTgmZeNu2VS4cg\", " +
+                "oauth_signature=\"hCtSmYh%2BiHYCEqBWrE7C7hYmtUk%3D\", " +
+                "oauth_signature_method=\"HMAC-SHA1\", " +
+                "oauth_timestamp=\"1318622958\", " +
+                "oauth_token=\"370773112-GmHxMAgYyLbNEtIKZeRNFsMKPR9EyMZeS9weJAEb\", " +
+                "oauth_version=\"1.0\"",
             header
         )
     }
@@ -65,14 +65,14 @@ class TwitterClientTest {
         )
 
         assertEquals(
-            "OAuth "
-                + "oauth_callback=\"http%3A%2F%2Flocalhost%2Fsign-in-with-twitter%2F\", "
-                + "oauth_consumer_key=\"cChZNFj6T5R0TigYB9yd1w\", "
-                + "oauth_nonce=\"ea9ec8429b68d6b77cd5600adbbb0456\", "
-                + "oauth_signature=\"F1Li3tvehgcraF8DMJ7OyxO4w9Y%3D\", "
-                + "oauth_signature_method=\"HMAC-SHA1\", "
-                + "oauth_timestamp=\"1318467427\", "
-                + "oauth_version=\"1.0\"",
+            "OAuth " +
+                "oauth_callback=\"http%3A%2F%2Flocalhost%2Fsign-in-with-twitter%2F\", " +
+                "oauth_consumer_key=\"cChZNFj6T5R0TigYB9yd1w\", " +
+                "oauth_nonce=\"ea9ec8429b68d6b77cd5600adbbb0456\", " +
+                "oauth_signature=\"F1Li3tvehgcraF8DMJ7OyxO4w9Y%3D\", " +
+                "oauth_signature_method=\"HMAC-SHA1\", " +
+                "oauth_timestamp=\"1318467427\", " +
+                "oauth_version=\"1.0\"",
             header
         )
     }

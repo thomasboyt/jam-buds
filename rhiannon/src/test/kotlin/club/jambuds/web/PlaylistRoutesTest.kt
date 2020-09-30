@@ -112,7 +112,7 @@ class PlaylistRoutesTest : AppTest() {
     fun `all playlists - allows pagination using a before timestamp`() {
         val jeff = TestDataFactories.createUser(txn, "jeff", true)
         val songIds = (1..50).map {
-            Thread.sleep(1)  // prevent creating songs at the "same time"
+            Thread.sleep(1) // prevent creating songs at the "same time"
             val songId = TestDataFactories.createSong(txn)
             TestDataFactories.createSongPost(txn, userId = jeff.id, songId = songId)
             TestDataFactories.createLike(txn, userId = jeff.id, songId = songId)
@@ -137,9 +137,12 @@ class PlaylistRoutesTest : AppTest() {
                 .body.`object`
                 .getJSONArray("items")
             val expectedSecondPageIds = songIds.reversed().slice(20..39)
-            assertEquals(expectedSecondPageIds, secondPageItems.map {
-                (it as JSONObject).getJSONObject("song").getInt("id")
-            })
+            assertEquals(
+                expectedSecondPageIds,
+                secondPageItems.map {
+                    (it as JSONObject).getJSONObject("song").getInt("id")
+                }
+            )
         }
     }
 
@@ -176,9 +179,12 @@ class PlaylistRoutesTest : AppTest() {
             // excludes the item with the timestamp used as the cursor
             val expectedAfterItems = songIds.reversed().slice(0..38)
 
-            assertEquals(expectedAfterItems, afterItems.map {
-                (it as JSONObject).getJSONObject("song").getInt("id")
-            })
+            assertEquals(
+                expectedAfterItems,
+                afterItems.map {
+                    (it as JSONObject).getJSONObject("song").getInt("id")
+                }
+            )
         }
     }
 
