@@ -1,6 +1,7 @@
 package club.jambuds.web
 
 import club.jambuds.AppTest
+import club.jambuds.clients.TwitterUserObject
 import club.jambuds.getGson
 import club.jambuds.helpers.TestDataFactories
 import club.jambuds.responses.CurrentUser
@@ -80,6 +81,15 @@ class UserRoutesTest : AppTest() {
 
         val twitterFollowed = listOf(vinny.twitterId!!, brad.twitterId!!)
         whenever(mockTwitterService.getTwitterFriendIds(jeff)).thenReturn(twitterFollowed)
+        whenever(mockTwitterService.getTwitterProfiles(jeff, listOf(vinny.twitterId!!))).thenReturn(
+            mapOf(
+                vinny.twitterId!! to TwitterUserObject(
+                    id_str = vinny.twitterId!!,
+                    screen_name = "VinnyCaravella",
+                    profile_image_url_https = "abc"
+                )
+            )
+        )
 
         val resp = Unirest.get("$appUrl/friend-suggestions")
             .header("X-Auth-Token", authToken)
@@ -87,17 +97,18 @@ class UserRoutesTest : AppTest() {
         assertEquals(200, resp.status)
         var body = gson.fromJson(resp.body, TwitterFriendSuggestionsResponse::class.java)
         assertEquals(1, body.users.size)
-        assertEquals(vinny.id, body.users[0].id)
+        assertEquals(vinny.id, body.users[0].profile.id)
+        assertEquals("VinnyCaravella", body.users[0].twitterName)
+        assertEquals("abc", body.users[0].twitterAvatar)
 
+        // ensure cached friends list is used
         val secondResp = Unirest.get("$appUrl/friend-suggestions")
             .header("X-Auth-Token", authToken)
             .asString()
         assertEquals(200, secondResp.status)
         body = gson.fromJson(resp.body, TwitterFriendSuggestionsResponse::class.java)
         assertEquals(1, body.users.size)
-        assertEquals(vinny.id, body.users[0].id)
-
-        // ensure cached friends list was used
+        assertEquals(vinny.id, body.users[0].profile.id)
         verify(mockTwitterService, times(1)).getTwitterFriendIds(jeff)
     }
 

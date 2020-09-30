@@ -28,6 +28,9 @@ interface TwitterClient {
 
     @GET("account/verify_credentials.json")
     fun verifyCredentials(): Call<VerifyCredentialsResponse>
+
+    @POST("users/lookup.json")
+    fun lookup(@Query("user_id") userIds: List<String>): Call<List<TwitterUserObject>>
 }
 
 interface TwitterOauthClient {
@@ -44,7 +47,16 @@ data class TwitterPostResponse(private val id_str: String)
 
 data class FriendIdsResponse(val ids: List<String>)
 
-data class VerifyCredentialsResponse(val id_str: String, val screen_name: String)
+data class VerifyCredentialsResponse(
+    val id_str: String,
+    val screen_name: String
+)
+
+data class TwitterUserObject(
+    val id_str: String,
+    val screen_name: String,
+    val profile_image_url_https: String
+)
 
 private fun encodeValue(value: String): String {
     return URLEncoder.encode(value, StandardCharsets.UTF_8.toString())

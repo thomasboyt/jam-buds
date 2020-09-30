@@ -8,7 +8,7 @@ import club.jambuds.model.User
 import club.jambuds.responses.CurrentUser
 import club.jambuds.responses.FeedPlaylistEntry
 import club.jambuds.responses.PublicUser
-import club.jambuds.responses.PublicUserWithTwitterName
+import club.jambuds.responses.TwitterFriendSuggestion
 import club.jambuds.responses.UserProfile
 import club.jambuds.util.defaultColorScheme
 import io.javalin.http.BadRequestResponse
@@ -36,16 +36,7 @@ class UserService(
         }
 
         val users = userDao.getUsersByNames(userNames)
-        val userIds = users.map { it.id }
-        val colorSchemes =
-            colorSchemeDao.getColorSchemesByUserIds(userIds).map { it.userId to it }.toMap()
-        return users.map {
-            UserProfile(
-                id = it.id,
-                name = it.name,
-                colorScheme = colorSchemes[it.id] ?: defaultColorScheme
-            )
-        }
+        return getUserProfileForUsers(users)
     }
 
     private fun getUserProfileForUser(user: User): UserProfile {
@@ -58,7 +49,20 @@ class UserService(
         )
     }
 
-    fun getUnfollowedTwitterUsersForUser(user: User): List<PublicUserWithTwitterName> {
+    private fun getUserProfileForUsers(users: List<User>): List<UserProfile> {
+        val userIds = users.map { it.id }
+        val colorSchemes =
+            colorSchemeDao.getColorSchemesByUserIds(userIds).map { it.userId to it }.toMap()
+        return users.map {
+            UserProfile(
+                id = it.id,
+                name = it.name,
+                colorScheme = colorSchemes[it.id] ?: defaultColorScheme
+            )
+        }
+    }
+
+    fun getUnfollowedTwitterUsersForUser(user: User): List<TwitterFriendSuggestion> {
         if (user.twitterName == null) {
             throw BadRequestResponse(
                 "Cannot fetch Twitter friends with no attached Twitter account"
@@ -70,18 +74,26 @@ class UserService(
             twitterIds = twitterService.getTwitterFriendIds(user)
             twitterFollowingCacheDao.setTwitterFollowingCache(user.id, twitterIds)
         }
-
-        val unfollowedUsers = if (twitterIds.isNotEmpty()) {
-            userDao.getUnfollowedUsersByTwitterIds(user.id, twitterIds)
-        } else {
-            emptyList()
+        if (twitterIds.isEmpty()) {
+            return emptyList()
         }
 
+        val unfollowedUsers = userDao.getUnfollowedUsersByTwitterIds(user.id, twitterIds)
+        if (unfollowedUsers.isEmpty()) {
+            return emptyList()
+        }
+
+        val profiles = getUserProfileForUsers(unfollowedUsers).map { it.id to it }.toMap()
+        val twitterProfiles =
+            twitterService.getTwitterProfiles(user, unfollowedUsers.map { it.twitterId!! })
+
         return unfollowedUsers.map {
-            PublicUserWithTwitterName(
-                id = it.id,
-                name = it.name,
-                twitterName = it.twitterName!!
+            val twitterProfile = twitterProfiles[it.twitterId]
+                ?: error("no profile found for twitter ID ${it.twitterId}")
+            TwitterFriendSuggestion(
+                profile = profiles[it.id] ?: error("no profile found for user id ${it.id}"),
+                twitterName = twitterProfile.screen_name,
+                twitterAvatar = twitterProfile.profile_image_url_https
             )
         }
     }

@@ -1,5 +1,7 @@
 package club.jambuds.service
 
+import club.jambuds.clients.TwitterClient
+import club.jambuds.clients.TwitterUserObject
 import club.jambuds.clients.createTwitterClient
 import club.jambuds.model.User
 import io.javalin.http.InternalServerErrorResponse
@@ -12,20 +14,22 @@ open class TwitterService(
 ) {
     private val logger = LoggerFactory.getLogger(TwitterService::class.java.name)
 
-    open fun postTweet(user: User, tweetContent: String) {
-        check(!disableTwitter) { "tried to call postTweet but Twtter is disabled" }
+    open fun getTwitterClient(user: User): TwitterClient {
+        check(!disableTwitter) { "tried to call getTwitterClient but Twtter is disabled" }
         check(user.twitterToken != null && user.twitterSecret != null) {
-            "cannot post tweet for user with no attached twitter"
+            "cannot get twitter client for user with no attached twitter"
         }
 
-        val twitterClient = createTwitterClient(
+        return createTwitterClient(
             consumerKey,
             consumerSecret,
             user.twitterToken,
             user.twitterSecret
         )
+    }
 
-        val resp = twitterClient.postStatus(tweetContent).execute()
+    open fun postTweet(user: User, tweetContent: String) {
+        val resp = getTwitterClient(user).postStatus(tweetContent).execute()
 
         if (!resp.isSuccessful) {
             val code = resp.code()
@@ -34,24 +38,8 @@ open class TwitterService(
         }
     }
 
-    /**
-     * TODO: cache Twitter friends in Redis
-     */
     open fun getTwitterFriendIds(user: User): List<String> {
-        check(!disableTwitter) { "tried to call getTwitterFriendIds but Twtter is disabled" }
-        check(user.twitterToken != null && user.twitterSecret != null) {
-            "cannot get twitter friends for user with no twitter attached"
-        }
-
-        // TODO: make this possible to stub
-        val twitterClient = createTwitterClient(
-            consumerKey,
-            consumerSecret,
-            user.twitterToken,
-            user.twitterSecret
-        )
-
-        val resp = twitterClient.getFriendIds().execute()
+        val resp = getTwitterClient(user).getFriendIds().execute()
 
         if (!resp.isSuccessful) {
             val err = resp.errorBody()?.string()
@@ -60,5 +48,20 @@ open class TwitterService(
         }
 
         return resp.body()!!.ids
+    }
+
+    open fun getTwitterProfiles(
+        user: User,
+        twitterIds: List<String>
+    ): Map<String, TwitterUserObject> {
+        val resp = getTwitterClient(user).lookup(userIds = twitterIds).execute()
+
+        if (!resp.isSuccessful) {
+            val err = resp.errorBody()?.string()
+            logger.error("Failed to fetch twitter avatars: status ${resp.code()} \n $err")
+            throw InternalServerErrorResponse("Failed to fetch Twitter avatars")
+        }
+
+        return resp.body()!!.map { it.id_str to it }.toMap()
     }
 }
