@@ -1,3 +1,5 @@
+import { defaultColorScheme } from '~/util/gradients';
+
 /**
  * the current displayed color scheme is managed here, instead of in a
  * component, for a few reasons:
@@ -54,7 +56,7 @@ const colorScheme = {
         }
         return state.override;
       }
-      return getters.currentUserColorScheme;
+      return getters.currentUserColorScheme || defaultColorScheme;
     },
   },
 };
