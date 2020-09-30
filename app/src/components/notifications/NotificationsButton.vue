@@ -39,15 +39,13 @@ export default {
 @import '~/assets/styles/mixins.scss';
 
 .notifications-button {
-  width: 36px;
-  height: 36px;
   position: relative;
 }
 
 .notifications-dot {
   position: absolute;
-  right: 4px;
-  bottom: 5px;
+  right: 6px;
+  bottom: 1px;
   background: red;
   border: 1px $black solid;
   width: 8px;
