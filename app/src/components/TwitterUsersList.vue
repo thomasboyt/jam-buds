@@ -1,20 +1,20 @@
 <template>
   <ul>
     <li v-for="user of users" :key="user.id">
-      <img :src="avatarSrc(user.twitterName)" />
+      <img :src="user.twitterAvatar" />
 
       <div class="body">
         <div>
-          <span class="name"
-            ><nuxt-link :to="`/users/${user.name}`">{{
-              user.name
-            }}</nuxt-link></span
-          >
+          <span class="name">
+            <nuxt-link :to="`/users/${user.profile.name}`">
+              <template>{{ user.profile.name }}</template>
+            </nuxt-link>
+          </span>
           @{{ user.twitterName }}
         </div>
 
         <div class="button-container">
-          <follow-toggle :name="user.name" />
+          <follow-toggle :name="user.profile.name" />
         </div>
       </div>
     </li>
@@ -28,12 +28,6 @@ export default {
   components: { FollowToggle },
 
   props: ['users'],
-
-  methods: {
-    avatarSrc(name) {
-      return `https://avatars.io/twitter/${name}`;
-    },
-  },
 };
 </script>
 

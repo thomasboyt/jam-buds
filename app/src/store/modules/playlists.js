@@ -152,10 +152,7 @@ const playlists = {
         params: { before: previousTimestamp },
       });
 
-      context.commit(
-        'addSongs',
-        resp.data.items.map((item) => item.song).filter((song) => song)
-      );
+      context.dispatch('addPlaylistResources', resp.data);
       context.commit('pushPlaylist', { key, page: resp.data });
 
       return resp.data;
@@ -171,13 +168,45 @@ const playlists = {
         params: { after: afterTimestamp },
       });
 
-      context.commit(
-        'addSongs',
-        resp.data.items.map((item) => item.song).filter((song) => song)
-      );
+      context.dispatch('addPlaylistResources', resp.data);
       context.commit('addToPlaylistHead', { key, items: resp.data.items });
 
       return resp.data;
+    },
+
+    addPlaylistResources(context, { items, profiles }) {
+      context.commit(
+        'addSongs',
+        items.map((item) => item.song).filter((song) => song)
+      );
+      context.commit(
+        'addMixtapes',
+        items.map((item) => item.mixtape).filter((mixtape) => mixtape)
+      );
+      if (profiles) {
+        context.commit('addProfiles', profiles);
+      }
+    },
+
+    async loadProfilePostsPlaylist(context, userName) {
+      await context.dispatch('loadPlaylist', {
+        key: `${userName}/posts`,
+        url: `/playlists/${userName}`,
+      });
+    },
+
+    async loadProfileLikesPlaylist(context, userName) {
+      await context.dispatch('loadPlaylist', {
+        key: `${userName}/likes`,
+        url: `/playlists/${userName}/liked`,
+      });
+    },
+
+    async loadProfileMixtapes(context, userName) {
+      await context.dispatch('loadPlaylist', {
+        key: `${userName}/mixtapes`,
+        url: `/playlists/${userName}?onlyMixtapes=true`,
+      });
     },
   },
 

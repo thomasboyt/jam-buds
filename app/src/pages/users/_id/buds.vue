@@ -9,10 +9,8 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
 import ProfileNav from '../../../components/ProfileNav.vue';
 import UsersList from '../../../components/UsersList.vue';
-import with404Handler from '~/util/with404Handler';
 
 export default {
   components: {
@@ -26,21 +24,32 @@ export default {
     };
   },
 
-  fetch() {
-    return with404Handler(
-      this.$error,
-      Promise.all([
-        this.$store.dispatch('loadProfileFollowers', this.name),
-        this.$store.dispatch('loadProfileFollowing', this.name),
-      ])
-    );
+  async fetch() {
+    const [followersResp, followingResp] = await Promise.all([
+      this.$axios({
+        url: `/users/${this.name}/followers`,
+        method: 'GET',
+      }),
+      this.$axios({
+        url: `/users/${this.name}/following`,
+        method: 'GET',
+      }),
+    ]);
+
+    this.followers = followersResp.data.users;
+    this.following = followingResp.data.users;
+
+    this.$store.commit('addProfiles', [...this.followers, ...this.following]);
+  },
+
+  data() {
+    return {
+      followers: [],
+      following: [],
+    };
   },
 
   computed: {
-    ...mapState({
-      followers: (state) => state.profile.followers,
-      following: (state) => state.profile.following,
-    }),
     name() {
       return this.$route.params.id;
     },

@@ -31,6 +31,7 @@ const auth = {
       if (resp.data.user) {
         const user = resp.data.user;
         context.commit('setCurrentUser', user);
+        context.commit('addProfiles', [user.profile]);
       }
     },
   },

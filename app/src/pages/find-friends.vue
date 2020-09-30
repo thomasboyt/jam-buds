@@ -4,7 +4,7 @@
 
     <p :style="{ marginBottom: '32px' }">
       jam buds is more fun with more pals! make sure to check out the
-      <nuxt-link to="/public-feed">public feed</nuxt-link>too to find more
+      <nuxt-link to="/public-feed">public feed</nuxt-link> too to find more
       folks to follow.
     </p>
 
@@ -14,11 +14,15 @@
 
     <panel title="find on twitter">
       <div v-if="showTwitterSuggestions">
-        <div
-          v-if="friendSuggestions.length === 0"
-          class="main-placeholder"
-        >No suggestions found! Try inviting your Twitter friends to Jam Buds!</div>
-        <twitter-users-list v-else :users="friendSuggestions" />
+        <div v-if="$fetchState.pending" class="main-placeholder">
+          Loading...
+        </div>
+        <template v-else>
+          <div v-if="friendSuggestions.length === 0" class="main-placeholder">
+            No suggestions found! Try inviting your Twitter friends to Jam Buds!
+          </div>
+          <twitter-users-list v-else :users="friendSuggestions" />
+        </template>
       </div>
       <div v-else>
         <p>
@@ -55,9 +59,9 @@ export default {
     };
   },
 
-  async fetch({ store }) {
-    if (store.state.currentUser.twitterName) {
-      await store.dispatch('loadFriendSuggestions');
+  async fetch() {
+    if (this.$store.state.currentUser.twitterName) {
+      await this.$store.dispatch('loadFriendSuggestions');
     }
   },
 

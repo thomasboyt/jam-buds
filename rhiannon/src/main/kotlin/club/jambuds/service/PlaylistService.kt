@@ -173,7 +173,7 @@ class PlaylistService(
     private fun getMixtapesMap(posts: List<PlaylistPost>): Map<Int, MixtapePreview> {
         val mixtapeIds = posts.mapNotNull { it.mixtapeId }
         return if (mixtapeIds.isNotEmpty()) {
-            val mixtapesList = mixtapeDao.getMixtapesByIds(mixtapeIds)
+            val mixtapesList = mixtapeDao.getMixtapePreviewsByIds(mixtapeIds)
             mixtapesList.map { it.id to it }.toMap()
         } else {
             emptyMap()

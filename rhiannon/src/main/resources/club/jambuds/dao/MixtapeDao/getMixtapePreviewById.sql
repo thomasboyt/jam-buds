@@ -7,4 +7,4 @@ FROM
 JOIN
     users ON users.id = mixtapes.user_id
 WHERE
-    mixtapes.id IN (<mixtapeIds>);
+    mixtapes.id=:mixtapeId

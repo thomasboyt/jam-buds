@@ -4,14 +4,22 @@
     <mobile-bottom-tabs v-if="authenticated" />
 
     <sidebar :open="isSidebarOpen" />
-    <div v-if="isSidebarOpen" class="modal-overlay" @click="handleClickSidebarOverlay" />
+    <div
+      v-if="isSidebarOpen"
+      class="modal-overlay"
+      @click="handleClickSidebarOverlay"
+    />
 
     <div :class="['main', { 'with-sidebar': authenticated }]">
       <!-- TODO: remove this? v -->
       <logged-out-header v-if="!authenticated" />
 
       <div class="main-inner">
-        <slot />
+        <div class="error-page" v-if="fetchState && fetchState.error">
+          <p v-if="errorCode === 404">The requested resource was not found.</p>
+          <p v-else>An unexpected error occurred while loading this page.</p>
+        </div>
+        <slot v-else />
       </div>
     </div>
   </div>
@@ -20,7 +28,6 @@
 <script>
 import { mapState } from 'vuex';
 import getCSSVariablesFromColorScheme from '../util/getCSSVariablesFromColorScheme';
-import { defaultColorScheme } from '../util/gradients';
 import LoggedOutHeader from './LoggedOutHeader.vue';
 import Sidebar from './nav/Sidebar.vue';
 import MobileHeader from '~/components/nav/MobileHeader.vue';
@@ -34,9 +41,14 @@ export default {
     Sidebar,
   },
 
-  props: ['colorScheme', 'withColorSchemeOverride'],
+  props: ['withColorSchemeOverride', 'fetchState'],
 
   head() {
+    if (!process.server) {
+      // only set css variables in head for SSR build
+      return;
+    }
+
     return {
       style: [
         {
@@ -54,27 +66,53 @@ export default {
 
   computed: {
     ...mapState({
-      currentUserScheme: (state) => state.currentUser.colorScheme,
       authenticated: (state) => state.auth.authenticated,
       isSidebarOpen: (state) => state.isSidebarOpen,
     }),
 
     cssTheme() {
-      let colorScheme;
-
-      if (this.withColorSchemeOverride) {
-        colorScheme = this.colorScheme || defaultColorScheme;
-      } else {
-        colorScheme = this.currentUserScheme || defaultColorScheme;
-      }
-
-      return getCSSVariablesFromColorScheme(colorScheme);
+      const scheme = this.$store.getters['colorScheme/currentColorScheme'];
+      return getCSSVariablesFromColorScheme(scheme);
     },
+
+    errorCode() {
+      return this.fetchState.error.response?.status;
+    },
+  },
+
+  watch: {
+    cssTheme(cssTheme) {
+      this.updateTheme(cssTheme);
+    },
+  },
+
+  created() {
+    if (this.withColorSchemeOverride) {
+      this.$store.commit('colorScheme/enableOverride');
+    } else {
+      // reset back to default color scheme
+      this.$store.commit('colorScheme/disableOverride');
+    }
+  },
+
+  mounted() {
+    this.updateTheme(this.cssTheme);
   },
 
   methods: {
     handleClickSidebarOverlay() {
       this.$store.commit('closeSidebar');
+    },
+
+    updateTheme(cssTheme) {
+      document.documentElement.style.setProperty(
+        '--theme-body-background',
+        cssTheme['--theme-body-background']
+      );
+      document.documentElement.style.setProperty(
+        '--theme-text-color',
+        cssTheme['--theme-text-color']
+      );
     },
   },
 };
@@ -97,5 +135,10 @@ export default {
       margin-left: $sidebar-width;
     }
   }
+}
+
+.error-page {
+  text-align: center;
+  margin-top: 200px;
 }
 </style>

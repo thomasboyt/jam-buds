@@ -6,16 +6,7 @@
       </template>
     </profile-nav>
 
-    <panel v-if="showDraftMixtapes">
-      <p>You've started on the following draft mixtapes:</p>
-      <ul>
-        <li v-for="mixtape of draftMixtapes" :key="mixtape.id">
-          <nuxt-link :to="`/mixtapes/${mixtape.id}/${mixtape.slug}`">
-            {{ mixtape.title }}
-          </nuxt-link>
-        </li>
-      </ul>
-    </panel>
+    <draft-mixtapes-list v-if="showDraftMixtapes" :mixtapes="draftMixtapes" />
 
     <playlist
       :playlist-key="playlistKey"
@@ -48,7 +39,7 @@ import ProfileNav from '../../../components/ProfileNav.vue';
 import Playlist from '../../../components/playlist/Playlist.vue';
 import MixtapeItem from '../../../components/playlist/MixtapeItem.vue';
 import EntryDetails from '../../../components/playlist/EntryDetails.vue';
-import Panel from '../../../components/Panel.vue';
+import DraftMixtapesList from '../../../components/DraftMixtapesList.vue';
 import CreateMixtapeButton from '../../../components/CreateMixtapeButton.vue';
 
 export default {
@@ -56,7 +47,7 @@ export default {
     ProfileNav,
     Playlist,
     MixtapeItem,
-    Panel,
+    DraftMixtapesList,
     CreateMixtapeButton,
     EntryDetails,
   },

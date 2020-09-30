@@ -34,7 +34,7 @@ export default {
         this.requestInFlight = false;
       }
 
-      const { id, slug } = resp.data;
+      const { id, slug } = resp.data.mixtape;
       this.$router.push(`/mixtapes/${id}/${slug}`);
     },
   },

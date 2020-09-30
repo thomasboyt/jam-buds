@@ -14,4 +14,10 @@ describe("viewing a user's profile", () => {
       .should('contain', "vinny's mixtape")
       .get('a[href="/mixtapes/1/vinny-s-mixtape"]');
   });
+
+  it('works for logged-out users', () => {
+    cy.visit('/users/vinny');
+    cy.get('.share-banner').should('exist');
+    cy.get('.playlist-song').contains('Drive');
+  });
 });

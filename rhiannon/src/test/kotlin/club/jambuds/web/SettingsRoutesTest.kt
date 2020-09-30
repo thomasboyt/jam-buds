@@ -30,8 +30,8 @@ class SettingsRoutesTest : AppTest() {
         assertEquals(200, resp.status)
 
         var meBody = gson.fromJson(resp.body, GetCurrentUserResponse::class.java)
-        assertEquals("rainbow", meBody.user!!.colorScheme!!.backgroundGradientName)
-        assertEquals("black", meBody.user!!.colorScheme!!.textColor)
+        assertEquals("rainbow", meBody.user!!.profile.colorScheme.backgroundGradientName)
+        assertEquals("black", meBody.user!!.profile.colorScheme.textColor)
 
         resp = Unirest
             .post("$appUrl/settings/color-scheme")
@@ -53,7 +53,7 @@ class SettingsRoutesTest : AppTest() {
         assertEquals(200, resp.status)
 
         meBody = gson.fromJson(resp.body, GetCurrentUserResponse::class.java)
-        assertEquals("darkRainbow", meBody.user!!.colorScheme!!.backgroundGradientName)
-        assertEquals("white", meBody.user!!.colorScheme!!.textColor)
+        assertEquals("darkRainbow", meBody.user!!.profile.colorScheme.backgroundGradientName)
+        assertEquals("white", meBody.user!!.profile.colorScheme.textColor)
     }
 }

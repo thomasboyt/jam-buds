@@ -1,9 +1,9 @@
 <template>
   <ul class="link-tabs">
     <li v-for="link of links" :key="link.to">
-      <nuxt-link :to="`${linkPrefix || ''}${link.to}`" replace>{{
-        link.label
-      }}</nuxt-link>
+      <nuxt-link :to="`${linkPrefix || ''}${link.to}`" replace>
+        <template>{{ link.label }}</template>
+      </nuxt-link>
     </li>
   </ul>
 </template>

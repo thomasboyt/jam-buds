@@ -6,9 +6,9 @@
           <span class="date">Liked {{ formattedTimestamp }} ago</span>
         </template>
         <template v-else>
-          <nuxt-link :to="`/users/${name}`" :style="{ fontWeight: 600 }">{{
-            name
-          }}</nuxt-link>
+          <nuxt-link :to="`/users/${name}`" :style="{ fontWeight: 600 }">
+            <template>{{ name }}</template>
+          </nuxt-link>
           <span class="date"> ({{ formattedTimestamp }} ago)</span>
         </template>
       </div>

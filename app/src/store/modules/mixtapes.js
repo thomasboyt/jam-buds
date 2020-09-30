@@ -3,47 +3,56 @@ import Vue from 'vue';
 const mixtapes = {
   state() {
     // [k, v] -> [id, resource]
-    return {};
+    return {
+      mixtapesById: {},
+      tracksByMixtapeId: {},
+    };
   },
 
   mutations: {
     setMixtape(state, { id, data }) {
-      const tracks = data.tracks.map((song) => song.id);
-      Vue.set(state, id, {
-        ...data,
-        tracks,
-      });
-    },
-
-    setMixtapeOrder(state, { mixtapeId, songOrder }) {
-      state[mixtapeId].tracks = songOrder;
+      const trackIds = data.tracks.map((song) => song.id);
+      Vue.set(state.mixtapesById, id, data.mixtape);
+      Vue.set(state.tracksByMixtapeId, id, trackIds);
     },
 
     setMixtapeTitle(state, { mixtapeId, title }) {
-      state[mixtapeId].title = title;
+      state.mixtapesById[mixtapeId].title = title;
     },
 
     setMixtapeSlug(state, { mixtapeId, slug }) {
-      state[mixtapeId].slug = slug;
+      state.mixtapesById[mixtapeId].slug = slug;
     },
 
     setMixtapePublished(state, { mixtapeId }) {
-      state[mixtapeId].isPublished = true;
-      state[mixtapeId].publishedAt = new Date().toISOString();
+      state.mixtapesById[mixtapeId].publishedAt = new Date().toISOString();
+    },
+
+    setMixtapeOrder(state, { mixtapeId, songOrder }) {
+      Vue.set(state.tracksByMixtapeId, mixtapeId, songOrder);
     },
 
     appendToMixtape(state, { songId, mixtapeId }) {
-      state[mixtapeId].tracks = state[mixtapeId].tracks.concat([songId]);
+      const newTracks = state.tracksByMixtapeId.concat([songId]);
+      Vue.set(state.tracksByMixtapeId, mixtapeId, newTracks);
     },
 
     removeFromMixtape(state, { songId, mixtapeId }) {
-      state[mixtapeId].tracks = state[mixtapeId].tracks.filter(
+      const newTracks = state[mixtapeId].tracks.filter(
         (mixtapeSongId) => mixtapeSongId !== songId
       );
+      Vue.set(state.tracksByMixtapeId, mixtapeId, newTracks);
+    },
+
+    addMixtapes(state, mixtapes) {
+      for (let mixtape of mixtapes) {
+        Vue.set(state.mixtapesById, mixtape.id, mixtape);
+      }
     },
 
     removeMixtape(state, { mixtapeId }) {
-      Vue.delete(state, mixtapeId);
+      Vue.delete(state.mixtapesById, mixtapeId);
+      Vue.delete(state.tracksByMixtapeId, mixtapeId);
     },
   },
 
@@ -56,6 +65,7 @@ const mixtapes = {
 
       context.commit('addSongs', resp.data.tracks);
       context.commit('setMixtape', { id, data: resp.data });
+      context.commit('addProfiles', [resp.data.author]);
 
       return resp.data;
     },
@@ -76,7 +86,7 @@ const mixtapes = {
 
     async updateMixtapeSongOrder(context, { mixtapeId, songOrder }) {
       // TODO: maybe prevent race conditions here?
-      const prevOrder = context.state[mixtapeId].tracks;
+      const prevOrder = context.state.tracksByMixtapeId[mixtapeId];
       context.commit('setMixtapeOrder', { mixtapeId, songOrder });
 
       try {
@@ -92,7 +102,7 @@ const mixtapes = {
     },
 
     async renameMixtape(context, { mixtapeId, title }) {
-      const prevTitle = context.state[mixtapeId].title;
+      const prevTitle = context.state.mixtapesById[mixtapeId].title;
       context.commit('setMixtapeTitle', { mixtapeId, title });
 
       try {
@@ -141,9 +151,19 @@ const mixtapes = {
   },
 
   getters: {
-    getMixtape(state) {
+    getMixtape(state, getters, rootState) {
       return (key) => {
-        return state[key];
+        const mixtape = state.mixtapesById[key];
+
+        if (!mixtape) {
+          return null;
+        }
+
+        return {
+          ...mixtape,
+          tracks: state.tracksByMixtapeId[key],
+          author: rootState.profiles[mixtape.authorName],
+        };
       };
     },
   },
