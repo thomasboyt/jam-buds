@@ -114,11 +114,11 @@ $modal-height: 550px;
   flex-flow: column;
   position: relative;
 
-  a,
+  ::v-deep a,
   a:visited,
   a:hover,
   a:active {
-    color: rgb(225, 225, 225) !important;
+    color: rgb(225, 225, 225);
   }
 
   .header-container {
