@@ -52,7 +52,11 @@ const colorScheme = {
       if (state.shouldOverride) {
         // if we expect an override, but none is present, render the last color scheme
         if (!state.override) {
-          return state.lastColorScheme || getters.currentUserColorScheme;
+          return (
+            state.lastColorScheme ||
+            getters.currentUserColorScheme ||
+            defaultColorScheme
+          );
         }
         return state.override;
       }
