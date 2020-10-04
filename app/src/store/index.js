@@ -32,7 +32,6 @@ const root = {
   state() {
     return {
       isWebView: false,
-      isSidebarOpen: false,
       mobileHeaderTitle: null,
       flashMessage: null,
       isConnectStreamingBannerOpen: false,
@@ -46,12 +45,6 @@ const root = {
     },
     setActiveTab(state, path) {
       state.activeBottomTab = path;
-    },
-    openSidebar(state) {
-      state.isSidebarOpen = true;
-    },
-    closeSidebar(state) {
-      state.isSidebarOpen = false;
     },
     showErrorModal(state, errMsg) {
       const msg = errMsg || 'An unknown error occurred! Please try again.';

@@ -2,11 +2,7 @@
   <div :class="['mobile-header', { 'show-border': scrolled }]">
     <div class="header-content">
       <div class="header-left">
-        <sidebar-toggle v-if="authenticated && isRootPage" class="icon-link" />
-        <mobile-back-button
-          v-else-if="authenticated || !isRootPage"
-          class="icon-link"
-        />
+        <mobile-back-button v-if="!isRootPage" class="icon-link" />
       </div>
 
       <div class="header-center">
@@ -31,7 +27,6 @@
 </template>
 
 <script>
-import SidebarToggle from './SidebarToggle.vue';
 import MobileBackButton from './MobileBackButton.vue';
 import NotificationsButton from '../notifications/NotificationsButton.vue';
 import Logo from '../Logo.vue';
@@ -39,7 +34,6 @@ import isRootPage from '~/util/isRootPage';
 
 export default {
   components: {
-    SidebarToggle,
     MobileBackButton,
     Logo,
     NotificationsButton,
