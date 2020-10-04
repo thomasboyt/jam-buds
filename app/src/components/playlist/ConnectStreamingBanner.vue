@@ -25,6 +25,7 @@
 </template>
 
 <script>
+import { enableBodyScroll, disableBodyScroll } from 'body-scroll-lock';
 import SpotifyConnectButton from '~/components/settings//SpotifyConnectButton.vue';
 import AppleMusicConnectButton from '~/components/settings/AppleMusicConnectButton.vue';
 
@@ -34,6 +35,16 @@ export default {
   computed: {
     isConnectStreamingBannerOpen() {
       return this.$store.state.isConnectStreamingBannerOpen;
+    },
+  },
+
+  watch: {
+    isConnectStreamingBannerOpen(isOpen) {
+      if (isOpen) {
+        disableBodyScroll();
+      } else {
+        enableBodyScroll();
+      }
     },
   },
 
