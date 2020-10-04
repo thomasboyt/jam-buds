@@ -69,6 +69,19 @@ const currentUser = {
       context.commit('setDraftMixtapes', resp.data.mixtapes);
       context.commit('addMixtapes', resp.data.mixtapes);
     },
+
+    async signOut() {
+      try {
+        await this.$axios({
+          baseURL: null,
+          url: '/api/sign-out',
+          method: 'POST',
+        });
+      } catch (err) {
+        this.$store.commit('showErrorModal');
+        throw err;
+      }
+    },
   },
 
   getters: {

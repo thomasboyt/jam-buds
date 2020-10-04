@@ -29,12 +29,19 @@
         you sorted
       </settings-panel>
     </a>
+
     <nuxt-link class="link-wrapper" to="/about">
       <settings-panel title="About" :is-link="true">
         in case you forgot what this thing you're using right now is (or if you
         want a refresher on the rules of the place)
       </settings-panel>
     </nuxt-link>
+
+    <a href="#" class="link-wrapper" @click="handleSignOut">
+      <settings-panel title="Sign out" :is-link="true">
+        sign out of jam buds on this device
+      </settings-panel>
+    </a>
   </main-wrapper>
 </template>
 
@@ -62,6 +69,21 @@ export default {
     return {
       title: 'your settings',
     };
+  },
+
+  methods: {
+    async handleSignOut(evt) {
+      evt.preventDefault();
+
+      const confirmed = window.confirm('Are you sure you want to sign out?');
+      if (!confirmed) {
+        return;
+      }
+
+      await this.$store.dispatch('signOut');
+
+      document.location.href = '/';
+    },
   },
 };
 </script>

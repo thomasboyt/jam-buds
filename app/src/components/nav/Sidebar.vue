@@ -104,16 +104,7 @@ export default {
         return;
       }
 
-      try {
-        await this.$axios({
-          baseURL: null,
-          url: '/api/sign-out',
-          method: 'POST',
-        });
-      } catch (err) {
-        this.$store.commit('showErrorModal');
-        throw err;
-      }
+      await this.$store.dispatch('signOut');
 
       document.location.href = '/';
     },
