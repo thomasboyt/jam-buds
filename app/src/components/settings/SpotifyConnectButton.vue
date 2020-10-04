@@ -1,14 +1,12 @@
 <template>
-  <settings-button tag="a" :href="spotifyConnectLink"
-    >connect to spotify</settings-button
-  >
+  <jb-button tag="a" :href="spotifyConnectLink">connect to spotify</jb-button>
 </template>
 
 <script>
-import SettingsButton from './SettingsButton.vue';
+import JbButton from '../lib/JbButton.vue';
 
 export default {
-  components: { SettingsButton },
+  components: { JbButton },
 
   props: ['redirect'],
 

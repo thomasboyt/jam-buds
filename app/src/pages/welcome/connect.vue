@@ -25,9 +25,7 @@
 
       <div class="lower">
         <template v-if="hasSpotify || hasAppleMusic">
-          <settings-button tag="nuxt-link" :to="nextPage"
-            >continue</settings-button
-          >
+          <jb-button tag="nuxt-link" :to="nextPage">continue</jb-button>
         </template>
         <template v-else>
           <p>
@@ -47,12 +45,12 @@
 <script>
 import { mapState } from 'vuex';
 
-import SpotifyConnectButton from '../../components/settings/SpotifyConnectButton.vue';
-import AppleMusicConnectButton from '../../components/settings/AppleMusicConnectButton.vue';
-import SettingsButton from '../../components/settings/SettingsButton.vue';
+import SpotifyConnectButton from '~/components/settings/SpotifyConnectButton.vue';
+import AppleMusicConnectButton from '~/components/settings/AppleMusicConnectButton.vue';
+import JbButton from '~/components/lib/JbButton.vue';
 
 export default {
-  components: { SpotifyConnectButton, AppleMusicConnectButton, SettingsButton },
+  components: { SpotifyConnectButton, AppleMusicConnectButton, JbButton },
 
   data() {
     return {
@@ -102,7 +100,7 @@ h3 {
   flex-wrap: wrap;
   margin: -10px;
 
-  ::v-deep .settings-button {
+  ::v-deep .jb-button {
     flex: 0 0 auto;
     margin: 10px;
   }

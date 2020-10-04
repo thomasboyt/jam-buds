@@ -1,16 +1,16 @@
 <template>
-  <settings-button @click="handleConnectAppleMusic"
-    >connect to apple music</settings-button
-  >
+  <jb-button @click="handleConnectAppleMusic">
+    connect to apple music
+  </jb-button>
 </template>
 
 <script>
 /* global MusicKit */
 
-import SettingsButton from './SettingsButton.vue';
+import JbButton from '../lib/JbButton.vue';
 
 export default {
-  components: { SettingsButton },
+  components: { JbButton },
 
   methods: {
     async handleConnectAppleMusic() {

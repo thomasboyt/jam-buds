@@ -2,11 +2,12 @@
   <component
     :is="tag"
     :to="to"
-    class="button settings-button"
-    :disabled="isSaving || disabled"
+    class="jb-button"
+    :disabled="disabled"
     @click="handleClick"
-    ><slot
-  /></component>
+  >
+    <slot />
+  </component>
 </template>
 
 <script>
@@ -18,10 +19,6 @@ export default {
     tag: {
       type: String,
       default: 'button',
-    },
-    isSaving: {
-      type: Boolean,
-      default: false,
     },
     disabled: {
       type: Boolean,
@@ -38,7 +35,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.settings-button {
+.jb-button {
+  // default padding - easy to override
   padding: 15px 25px;
 
   color: currentColor;

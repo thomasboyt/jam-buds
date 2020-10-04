@@ -1,8 +1,12 @@
 <template>
   <div v-if="twitterName" class="button-row">
-    <settings-button @click="handleDisconnect" :is-saving="isDisconnecting">
+    <jb-button
+      class="disconnect-button"
+      @click="handleDisconnect"
+      :disabled="isDisconnecting"
+    >
       <template>disconnect</template>
-    </settings-button>
+    </jb-button>
   </div>
 
   <div v-else>
@@ -20,11 +24,11 @@
 <script>
 import { mapState } from 'vuex';
 
-import SettingsButton from './SettingsButton.vue';
+import JbButton from '../lib/JbButton.vue';
 import TwitterConnectButton from './TwitterConnectButton.vue';
 
 export default {
-  components: { SettingsButton, TwitterConnectButton },
+  components: { JbButton, TwitterConnectButton },
 
   data() {
     return {
@@ -61,5 +65,9 @@ export default {
 <style lang="scss" scoped>
 .button-row {
   text-align: center;
+}
+
+.disconnect-button {
+  width: 200px;
 }
 </style>

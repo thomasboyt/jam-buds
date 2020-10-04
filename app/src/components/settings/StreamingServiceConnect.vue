@@ -1,9 +1,9 @@
 <template>
   <div v-if="hasSpotify || hasAppleMusic">
     <div class="button-group">
-      <settings-button @click="handleDisconnect" :is-saving="isDisconnecting">
+      <jb-button @click="handleDisconnect" :disabled="isDisconnecting">
         <template>disconnect</template>
-      </settings-button>
+      </jb-button>
     </div>
   </div>
   <div v-else>
@@ -25,13 +25,13 @@
 import { mapState } from 'vuex';
 import SpotifyConnectButton from '~/components/settings/SpotifyConnectButton.vue';
 import AppleMusicConnectButton from '~/components/settings/AppleMusicConnectButton.vue';
-import SettingsButton from '~/components/settings/SettingsButton.vue';
+import JbButton from '~/components/lib/JbButton.vue';
 
 export default {
   components: {
     SpotifyConnectButton,
     AppleMusicConnectButton,
-    SettingsButton,
+    JbButton,
   },
 
   head() {
@@ -90,7 +90,7 @@ export default {
   margin: -10px -10px 1em -10px;
   justify-content: center;
 
-  ::v-deep .settings-button {
+  ::v-deep .jb-button {
     flex: 0 0 auto;
     width: 250px;
     margin: 10px;

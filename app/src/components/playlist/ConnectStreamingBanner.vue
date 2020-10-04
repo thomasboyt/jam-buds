@@ -89,7 +89,7 @@ $banner-mobile-height: 330px;
   justify-content: center;
   margin: 0 auto;
 
-  ::v-deep .settings-button {
+  ::v-deep .jb-button {
     flex: 0 0 auto;
     width: 250px;
     margin: 10px;

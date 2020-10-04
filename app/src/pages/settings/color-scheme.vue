@@ -17,26 +17,6 @@
         </label>
       </li>
     </ul>
-    <!-- 
-    <form @submit="handleSubmit">
-      <label>
-        <div class="field-label">background gradient</div>
-        <div class="field-control">
-          <select v-model="colorScheme.backgroundGradientName">
-            <option
-              v-for="gradientName of gradients"
-              :key="gradientName"
-              :value="gradientName"
-            >
-              {{ gradientName }}
-            </option>
-          </select>
-        </div>
-      </label>
-      <settings-button type="submit" :style="{ marginTop: '10px' }"
-        >save</settings-button
-      >
-    </form> -->
   </main-wrapper>
 </template>
 

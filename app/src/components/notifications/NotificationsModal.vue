@@ -2,7 +2,9 @@
   <modal title="notifications" :is-open="isOpen">
     <template v-if="notifications.length > 0">
       <div class="button-row">
-        <button @click="handleMarkAllRead">mark all read</button>
+        <jb-button class="mark-read-button" @click="handleMarkAllRead">
+          mark all read
+        </jb-button>
       </div>
 
       <ul>
@@ -27,12 +29,13 @@
 
 <script>
 import Modal from '../Modal.vue';
+import JbButton from '../lib/JbButton.vue';
 import formatDistanceToNowStrict from 'date-fns/formatDistanceToNowStrict';
 import subDays from 'date-fns/subDays';
 import isBefore from 'date-fns/isBefore';
 
 export default {
-  components: { Modal },
+  components: { Modal, JbButton },
 
   fetch() {
     return this.$store.dispatch('notifications/load');
@@ -82,13 +85,11 @@ export default {
 .button-row {
   text-align: center;
   margin-bottom: 16px;
+}
 
-  button {
-    border: 1px #e1e1e1 solid;
-    border-radius: 9999px;
-    color: #e1e1e1;
-    padding: 8px 12px;
-  }
+.mark-read-button {
+  border-width: 1px;
+  padding: 8px 12px;
 }
 
 ul {

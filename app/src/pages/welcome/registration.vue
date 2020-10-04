@@ -22,21 +22,21 @@
           </label>
         </div>
 
-        <settings-button type="submit" :is-saving="requestInFlight">
+        <jb-button type="submit" :disabled="requestInFlight">
           continue
-        </settings-button>
+        </jb-button>
       </form>
     </div>
   </div>
 </template>
 
 <script>
-import FieldErrorDisplay from '../../components/FieldErrorDisplay.vue';
-import RegistrationNameUrlField from '../../components/RegistrationNameUrlField.vue';
-import SettingsButton from '../../components/settings/SettingsButton.vue';
+import FieldErrorDisplay from '~/components/FieldErrorDisplay.vue';
+import RegistrationNameUrlField from '~/components/RegistrationNameUrlField.vue';
+import JbButton from '~/components/lib/JbButton.vue';
 
 export default {
-  components: { FieldErrorDisplay, RegistrationNameUrlField, SettingsButton },
+  components: { FieldErrorDisplay, RegistrationNameUrlField, JbButton },
 
   data() {
     return {

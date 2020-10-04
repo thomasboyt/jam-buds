@@ -14,11 +14,14 @@
       </li>
     </ul>
 
-    <div v-if="!itemsExhausted">
-      <div v-if="loadingNextPage">Loading...</div>
-
-      <a v-else href="#" @click="handleRequestNextPage"> Load next page </a>
-    </div>
+    <jb-button
+      v-if="!itemsExhausted"
+      class="load-page-button"
+      :disabled="loadingNextPage"
+      @click="handleRequestNextPage"
+    >
+      Load next page
+    </jb-button>
 
     <connect-streaming-banner />
   </div>
@@ -27,9 +30,10 @@
 <script>
 import { mapState } from 'vuex';
 import ConnectStreamingBanner from './ConnectStreamingBanner.vue';
+import JbButton from '../lib/JbButton';
 
 export default {
-  components: { ConnectStreamingBanner },
+  components: { ConnectStreamingBanner, JbButton },
 
   props: ['playlistKey', 'loadingNextPage', 'isLoading'],
 
@@ -61,5 +65,11 @@ ul.playlist-entries {
   list-style-type: none;
   padding-left: 0px;
   margin-top: 0px;
+}
+
+.load-page-button {
+  width: 100%;
+  padding: 20px 0;
+  margin-top: 10px;
 }
 </style>

@@ -1,19 +1,23 @@
 <template>
-  <button
+  <jb-button
     v-if="isFollowing"
     class="follow-toggle -is-following"
     @click="handleUnfollow"
   >
     <span>Unfollow</span>
-  </button>
+  </jb-button>
 
-  <button v-else class="follow-toggle" @click="handleFollow">
+  <jb-button v-else class="follow-toggle" @click="handleFollow">
     <span>+ Follow</span>
-  </button>
+  </jb-button>
 </template>
 
 <script>
+import JbButton from './lib/JbButton';
+
 export default {
+  components: { JbButton },
+
   props: ['name'],
 
   computed: {
@@ -46,20 +50,9 @@ export default {
 
 <style lang="scss" scoped>
 .follow-toggle {
-  color: var(--theme-text-color);
-  // this is a weird color because darker colors have aliasing problems
-  border: 1px #444 solid;
-  border-radius: 9999px;
-
-  &:hover {
-    background: rgba(0, 0, 0, 0.1);
-  }
-
   padding: 8px 12px;
-  width: 110px;
-
+  width: 120px;
   font-weight: 600;
-  font-size: 16px;
 
   &.-is-following {
     span {

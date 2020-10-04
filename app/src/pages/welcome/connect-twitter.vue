@@ -9,11 +9,14 @@
       <template v-if="twitterName">
         <p>
           you've connected your twitter account
-          <strong>@{{ twitterName }}</strong>!
+          <strong>@{{ twitterName }}</strong
+          >!
         </p>
 
         <div class="lower">
-          <settings-button tag="nuxt-link" :to="nextPage" @click.native="setTab">continue</settings-button>
+          <jb-button tag="nuxt-link" :to="nextPage" @click.native="setTab">
+            continue
+          </jb-button>
         </div>
       </template>
 
@@ -28,7 +31,9 @@
 
         <div class="lower">
           <p>
-            <nuxt-link :to="nextPage" @click.native="setTab">continue without connecting</nuxt-link>
+            <nuxt-link :to="nextPage" @click.native="setTab"
+              >continue without connecting</nuxt-link
+            >
           </p>
         </div>
       </template>
@@ -39,11 +44,11 @@
 <script>
 import { mapState } from 'vuex';
 
-import TwitterConnectButton from '../../components/settings/TwitterConnectButton.vue';
-import SettingsButton from '../../components/settings/SettingsButton.vue';
+import TwitterConnectButton from '~/components/settings/TwitterConnectButton.vue';
+import JbButton from '~/components/lib/JbButton.vue';
 
 export default {
-  components: { TwitterConnectButton, SettingsButton },
+  components: { TwitterConnectButton, JbButton },
 
   data() {
     return {
