@@ -59,9 +59,6 @@
           about jam buds
         </nuxt-link>
       </li>
-      <li>
-        <a href="#" @click="handleSignOut">sign out</a>
-      </li>
     </ul>
   </div>
 </template>
@@ -95,19 +92,6 @@ export default {
     handleClick(path) {
       this.$store.commit('setActiveTab', path);
       this.$store.commit('closeSidebar');
-    },
-
-    async handleSignOut(evt) {
-      evt.preventDefault();
-
-      const confirmed = window.confirm('Are you sure you want to sign out?');
-      if (!confirmed) {
-        return;
-      }
-
-      await this.$store.dispatch('signOut');
-
-      document.location.href = '/';
     },
   },
 };
