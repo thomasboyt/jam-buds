@@ -54,8 +54,9 @@ export default {
 
 input,
 button {
-  flex: 0 0 auto;
+  flex: 1 0 auto;
   height: 45px;
+  padding: 0 5px;
   font-family: 'Work Sans', sans-serif;
 }
 
@@ -64,7 +65,6 @@ button {
   background: yellow;
   color: black;
   font-weight: bold;
-  width: 100px;
   margin-left: 20px;
 }
 </style>

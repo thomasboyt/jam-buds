@@ -1,6 +1,6 @@
 <template>
   <main-wrapper>
-    <page-header title="your settings" />
+    <page-header title="settings" />
 
     <h3>connections</h3>
 
@@ -67,7 +67,7 @@ export default {
 
   head() {
     return {
-      title: 'your settings',
+      title: 'settings',
     };
   },
 

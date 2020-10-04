@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import FollowToggle from './FollowToggle.vue';
+import FollowToggle from '../FollowToggle.vue';
 
 export default {
   components: { FollowToggle },

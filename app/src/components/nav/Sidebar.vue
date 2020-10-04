@@ -35,6 +35,14 @@
       </li>
       <li>
         <nuxt-link
+          :to="`/users/${currentUserName}/buds`"
+          @click.native="handleClick(`/users/${currentUserName}`)"
+        >
+          your buds
+        </nuxt-link>
+      </li>
+      <li>
+        <nuxt-link
           to="/public-feed"
           @click.native="handleClick('/public-feed')"
         >
@@ -42,16 +50,8 @@
         </nuxt-link>
       </li>
       <li>
-        <nuxt-link
-          to="/find-friends"
-          @click.native="handleClick('/find-friends')"
-        >
-          find friends
-        </nuxt-link>
-      </li>
-      <li>
         <nuxt-link to="/settings" @click.native="handleClick('/settings')">
-          your settings
+          settings
         </nuxt-link>
       </li>
       <li>
@@ -85,7 +85,8 @@ export default {
     profileActive() {
       return (
         this.$route.path.startsWith(`/users/${this.currentUserName}`) &&
-        this.$route.path !== `/users/${this.currentUserName}/mixtapes`
+        this.$route.path !== `/users/${this.currentUserName}/mixtapes` &&
+        this.$route.path !== `/users/${this.currentUserName}/buds`
       );
     },
   },
