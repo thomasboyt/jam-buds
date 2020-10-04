@@ -91,6 +91,8 @@ $modal-height: 550px;
     bottom: 0;
     left: 0;
     right: 0;
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
   }
 
   @media (min-width: $breakpoint-small) {
