@@ -82,7 +82,11 @@ export default {
 
       await this.$store.dispatch('signOut');
 
-      document.location.href = '/';
+      if (this.$nativeBridge) {
+        this.$nativeBridge.signOut();
+      } else {
+        document.location.href = '/';
+      }
     },
   },
 };
