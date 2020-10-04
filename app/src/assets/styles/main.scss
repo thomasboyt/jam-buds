@@ -74,7 +74,7 @@ a:active {
 
 .main {
   @media (max-width: $breakpoint-small) {
-    padding-top: $header-height + 20px;
+    padding-top: $header-height + 6px;
   }
   @media (min-width: $breakpoint-small) {
     padding-top: 40px;

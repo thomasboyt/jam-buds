@@ -3,15 +3,9 @@
     <mobile-header />
     <mobile-bottom-tabs v-if="authenticated" />
 
-    <sidebar :open="isSidebarOpen" />
-    <div
-      v-if="isSidebarOpen"
-      class="modal-overlay"
-      @click="handleClickSidebarOverlay"
-    />
+    <sidebar />
 
     <div :class="['main', { 'with-sidebar': authenticated }]">
-      <!-- TODO: remove this? v -->
       <logged-out-header v-if="!authenticated" />
 
       <div class="main-inner">
@@ -67,7 +61,6 @@ export default {
   computed: {
     ...mapState({
       authenticated: (state) => state.auth.authenticated,
-      isSidebarOpen: (state) => state.isSidebarOpen,
     }),
 
     cssTheme() {

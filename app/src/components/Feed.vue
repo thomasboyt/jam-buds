@@ -32,9 +32,7 @@
       <template #placeholder>
         <p>
           Your feed doesn't have any items yet!
-          <nuxt-link to="/find-friends">
-            Find some friends to follow!
-          </nuxt-link>
+          <nuxt-link to="/public-feed">Find some buds to follow!</nuxt-link>
         </p>
       </template>
     </playlist>

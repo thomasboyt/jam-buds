@@ -20,6 +20,7 @@ import Icon from '~/components/Icon';
 const homeIcon = require('~/assets/home.svg');
 const profileIcon = require('~/assets/profile.svg');
 const globeIcon = require('~/assets/globe.svg');
+const settingsIcon = require('~/assets/settings.svg');
 
 export default {
   components: { Icon },
@@ -35,6 +36,7 @@ export default {
           icon: profileIcon,
         },
         { name: 'Public', link: '/public-feed', icon: globeIcon },
+        { name: 'Settings', link: '/settings', icon: settingsIcon },
       ];
     },
 

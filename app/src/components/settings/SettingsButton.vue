@@ -41,16 +41,15 @@ export default {
 .settings-button {
   padding: 15px 25px;
 
-  color: var(--theme-text-color);
-  border: 2px var(--theme-text-color) solid;
+  color: currentColor;
+  border: 2px currentColor solid;
   &:hover {
     background: rgba(0, 0, 0, 0.1);
   }
 
   display: inline-block;
   text-align: center;
-  width: 250px;
-  height: 56px;
+  border-radius: 9999px;
   text-decoration: none;
 
   &:disabled {

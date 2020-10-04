@@ -91,6 +91,7 @@ $banner-mobile-height: 330px;
 
   ::v-deep .settings-button {
     flex: 0 0 auto;
+    width: 250px;
     margin: 10px;
     color: white;
     border-color: white;
