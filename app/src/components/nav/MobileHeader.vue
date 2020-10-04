@@ -24,13 +24,6 @@
       <div class="header-right">
         <template v-if="authenticated">
           <notifications-button class="icon-link" />
-          <nuxt-link
-            class="icon-link"
-            :to="{ query: { modal: 'settings' } }"
-            append
-          >
-            <icon :glyph="settingsIcon" />
-          </nuxt-link>
         </template>
       </div>
     </div>
@@ -43,8 +36,6 @@ import MobileBackButton from './MobileBackButton.vue';
 import NotificationsButton from '../notifications/NotificationsButton.vue';
 import Logo from '../Logo.vue';
 import isRootPage from '~/util/isRootPage';
-import Icon from '../Icon';
-const settingsIcon = require('~/assets/settings.svg');
 
 export default {
   components: {
@@ -52,13 +43,11 @@ export default {
     MobileBackButton,
     Logo,
     NotificationsButton,
-    Icon,
   },
 
   data() {
     return {
       scrolled: false,
-      settingsIcon,
     };
   },
 

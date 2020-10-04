@@ -49,8 +49,7 @@ export default {
 
   display: inline-block;
   text-align: center;
-  width: 250px;
-  height: 56px;
+  border-radius: 9999px;
   text-decoration: none;
 
   &:disabled {

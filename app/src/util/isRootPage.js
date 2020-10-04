@@ -7,6 +7,7 @@ export default function isRootPage(store, route) {
   if (route.path === activeBottomTab) {
     return true;
   }
+
   // hack for profile page...
   if (
     activeBottomTab.startsWith('/users') &&
@@ -14,5 +15,6 @@ export default function isRootPage(store, route) {
   ) {
     return true;
   }
+
   return false;
 }

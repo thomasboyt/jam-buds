@@ -1,28 +1,20 @@
 <template>
   <div v-if="hasSpotify || hasAppleMusic">
-    <p>you're connected to {{ serviceName }}</p>
-    <p>
-      <settings-button @click="handleDisconnect" :is-saving="isDisconnecting"
-        >disconnect</settings-button
-      >
-    </p>
+    <div class="button-group">
+      <settings-button @click="handleDisconnect" :is-saving="isDisconnecting">
+        <template>disconnect</template>
+      </settings-button>
+    </div>
   </div>
   <div v-else>
-    <p>
-      the best way to listen on jam buds is to use a spotify or apple music
-      account, if you have one.
-    </p>
-
-    <p class="button-group">
+    <div class="button-group">
       <spotify-connect-button redirect="/settings" />
-
       <apple-music-connect-button />
-    </p>
+    </div>
     <p class="streaming-disclaimer">
-      <em>n.b.</em>: i've got all the love in the world for all of y'all on
-      google play music, tidal, and... idk, whatever streaming service amazon
-      has? unfortunately, none of these services have APIs for in-browser
-      playback.
+      (not using either of these? while we'd love to support more services,
+      we're not aware of any others that have an API for in-browser or native
+      mobile playback.)
     </p>
   </div>
 </template>
@@ -31,17 +23,20 @@
 /* global MusicKit */
 
 import { mapState } from 'vuex';
-
-import SpotifyConnectButton from './SpotifyConnectButton.vue';
-import AppleMusicConnectButton from './AppleMusicConnectButton.vue';
-import SettingsButton from './SettingsButton.vue';
+import SpotifyConnectButton from '~/components/settings/SpotifyConnectButton.vue';
+import AppleMusicConnectButton from '~/components/settings/AppleMusicConnectButton.vue';
+import SettingsButton from '~/components/settings/SettingsButton.vue';
 
 export default {
-  components: { SettingsButton, AppleMusicConnectButton, SpotifyConnectButton },
+  components: {
+    SpotifyConnectButton,
+    AppleMusicConnectButton,
+    SettingsButton,
+  },
 
-  data() {
+  head() {
     return {
-      isDisconnecting: false,
+      title: 'streaming settings',
     };
   },
 
@@ -93,9 +88,11 @@ export default {
   display: flex;
   flex-wrap: wrap;
   margin: -10px -10px 1em -10px;
+  justify-content: center;
 
   ::v-deep .settings-button {
     flex: 0 0 auto;
+    width: 250px;
     margin: 10px;
   }
 }

@@ -1,13 +1,8 @@
 <template>
-  <div v-if="twitterName">
-    <p>
-      you've connected your twitter account
-      <strong>@{{ twitterName }}</strong>
-    </p>
-
-    <settings-button @click="handleDisconnect" :is-saving="isDisconnecting"
-      >disconnect</settings-button
-    >
+  <div v-if="twitterName" class="button-row">
+    <settings-button @click="handleDisconnect" :is-saving="isDisconnecting">
+      <template>disconnect</template>
+    </settings-button>
   </div>
 
   <div v-else>
@@ -16,8 +11,9 @@
       see folks you follow who are on jam buds, and let folks who follow you
       find you. you can also cross-post to twitter when posting a song
     </p>
-
-    <twitter-connect-button redirect="/settings" />
+    <div class="button-row">
+      <twitter-connect-button redirect="/settings" />
+    </div>
   </div>
 </template>
 
@@ -61,3 +57,9 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.button-row {
+  text-align: center;
+}
+</style>

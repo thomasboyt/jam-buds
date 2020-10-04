@@ -106,6 +106,10 @@ const root = {
           context.commit('setActiveTab', currentProfile);
           return;
         }
+        if (pathname.startsWith('/settings')) {
+          context.commit('setActiveTab', '/settings');
+          return;
+        }
       }
       context.commit('setActiveTab', pathname);
     },
