@@ -8,6 +8,8 @@
     <div :class="['main', { 'with-sidebar': authenticated }]">
       <logged-out-header v-if="!authenticated" />
 
+      <div class="mobile-bg" />
+
       <div class="main-inner">
         <div class="error-page" v-if="fetchState && fetchState.error">
           <p v-if="errorCode === 404">The requested resource was not found.</p>
@@ -114,16 +116,34 @@ export default {
 <style lang="scss">
 @import '~/assets/styles/mixins.scss';
 
-.main {
+.mobile-bg {
   background: var(--theme-body-background);
-  background-attachment: fixed;
-  color: var(--theme-text-color);
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  z-index: -1;
 
+  @media (min-width: $breakpoint-small) {
+    display: none;
+  }
+}
+
+.main {
+  color: var(--theme-text-color);
   a {
     color: var(--theme-text-color);
   }
 
+  @media (max-width: $breakpoint-small) {
+    background: transparent;
+  }
+
   @media (min-width: $breakpoint-small) {
+    background: var(--theme-body-background);
+    background-attachment: fixed;
+
     &.with-sidebar {
       margin-left: $sidebar-width;
     }

@@ -92,7 +92,7 @@ export default {
   width: 100%;
   height: $header-height;
   background: var(--theme-body-background);
-  background-size: auto 100vh;
+  background-size: 100vw 100vh;
   border-bottom: 1px transparent solid;
 
   &.show-border {
