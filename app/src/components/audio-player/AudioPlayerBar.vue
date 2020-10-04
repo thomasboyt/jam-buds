@@ -137,12 +137,12 @@ export default {
     display: flex;
 
     &.has-mobile-tab-bar {
-      bottom: $mobile-tabbar-height;
+      bottom: var(--mobile-bottom-bar-height);
       border-bottom: 2px #000 solid;
 
       &.audio-player-open-enter,
       &.audio-player-open-leave-to {
-        bottom: $mobile-tabbar-height - $player-bar-height;
+        bottom: calc(var(--mobile-bottom-bar-height) - #{$player-bar-height});
       }
     }
 

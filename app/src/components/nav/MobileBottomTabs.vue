@@ -63,7 +63,8 @@ export default {
 
   bottom: 0;
   width: 100%;
-  height: $mobile-tabbar-height;
+  height: var(--mobile-bottom-bar-height);
+  padding-bottom: env(safe-area-inset-bottom);
 
   background: $black;
 
@@ -79,7 +80,6 @@ export default {
   height: 100%;
 
   display: flex;
-  align-items: center;
   justify-content: center;
 
   li {

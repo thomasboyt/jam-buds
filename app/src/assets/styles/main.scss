@@ -7,6 +7,15 @@
   box-sizing: border-box;
 }
 
+:root {
+  --mobile-header-height: calc(
+    #{$header-height} + env(safe-area-inset-top, 0px)
+  );
+  --mobile-bottom-bar-height: calc(
+    #{$mobile-tabbar-height} + env(safe-area-inset-bottom, 0px)
+  );
+}
+
 html {
   touch-action: manipulation;
 
@@ -69,12 +78,12 @@ a:active {
 .logged-out-main {
   padding: 10px;
   padding-top: 20px;
-  padding-bottom: 140px; // room for audio player + FAB
+  padding-bottom: calc(var(--mobile-bottom-bar-height) + #{$player-bar-height});
 }
 
 .main {
   @media (max-width: $breakpoint-small) {
-    padding-top: $header-height + 6px;
+    padding-top: var(--mobile-header-height);
   }
   @media (min-width: $breakpoint-small) {
     padding-top: 40px;

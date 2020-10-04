@@ -90,7 +90,10 @@ export default {
   z-index: $z-header;
   top: 0;
   width: 100%;
-  height: $header-height;
+  // support ios notch
+  height: calc(#{$header-height} + env(safe-area-inset-top, 0px));
+  padding-top: env(safe-area-inset-top, 0px);
+
   background: var(--theme-body-background);
   background-size: 100vw 100vh;
   border-bottom: 1px transparent solid;
