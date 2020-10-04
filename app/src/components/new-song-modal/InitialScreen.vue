@@ -59,7 +59,15 @@ export default {
       this.songInput = this.$store.state.addSong.initialSearch;
       this.handleSubmit();
     } else {
-      this.$refs.input.focus();
+      // iOS Safari freaks out trying to animate modal when opening keyboard,
+      // so we delay focus until after modal is animated in
+      if (window.navigator.userAgent.includes('iPhone')) {
+        setTimeout(() => {
+          this.$refs.input.focus();
+        }, 400);
+      } else {
+        this.$refs.input.focus();
+      }
     }
   },
 
