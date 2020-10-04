@@ -135,7 +135,7 @@ button:active,
   }
 }
 
-// TODO: this is global since it's used by modal & sidebar...
+// TODO: this is global since it's used by modal & streaming banner...
 .modal-overlay {
   z-index: $z-modal-overlay;
 
@@ -145,4 +145,8 @@ button:active,
   right: 0;
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.3);
+
+  &.-streaming-banner {
+    z-index: $z-streaming-banner-overlay;
+  }
 }

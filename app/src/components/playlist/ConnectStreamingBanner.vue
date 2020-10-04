@@ -1,17 +1,25 @@
 <template>
-  <transition name="connect-streaming-open" v-if="isConnectStreamingBannerOpen">
-    <div class="connect-streaming-banner">
-      <p class="title">hey! to listen to music, select a streaming service:</p>
-      <p class="button-group">
-        <spotify-connect-button :redirect="$route.path" />
-        <apple-music-connect-button />
-      </p>
-      <p class="close-line">
-        or
-        <button type="button" @click="handleClose" class="link-button">
-          continue using youtube search
-        </button>
-      </p>
+  <transition
+    name="connect-streaming-open"
+    v-if="isConnectStreamingBannerOpen"
+    :duration="{ enter: 200, leave: 200 }"
+  >
+    <div class="modal-overlay -streaming-banner" @click="handleClose">
+      <div class="connect-streaming-banner">
+        <p class="title">
+          hey! to listen to music, select a streaming service:
+        </p>
+        <p class="button-group">
+          <spotify-connect-button :redirect="$route.path" />
+          <apple-music-connect-button />
+        </p>
+        <p class="close-line">
+          or
+          <button type="button" @click="handleClose" class="link-button">
+            continue using youtube search
+          </button>
+        </p>
+      </div>
     </div>
   </transition>
 </template>
@@ -58,20 +66,23 @@ $banner-mobile-height: 330px;
   text-align: center;
   padding: 16px;
 
-  &.connect-streaming-open-enter-active,
-  &.connect-streaming-open-leave-active {
-    transition: 0.2s bottom cubic-bezier(0, 0, 0.2, 1);
-  }
-
-  &.connect-streaming-open-enter,
-  &.connect-streaming-open-leave-to {
-    bottom: -$banner-desktop-height;
-  }
-
   @media (max-width: $breakpoint-small) {
     height: $banner-mobile-height;
-    &.connect-streaming-open-enter,
-    &.connect-streaming-open-leave-to {
+  }
+}
+
+.connect-streaming-open-enter-active,
+.connect-streaming-open-leave-active {
+  .connect-streaming-banner {
+    transition: 0.2s bottom cubic-bezier(0, 0, 0.2, 1);
+  }
+}
+
+.connect-streaming-open-enter,
+.connect-streaming-open-leave-to {
+  .connect-streaming-banner {
+    bottom: -$banner-desktop-height;
+    @media (max-width: $breakpoint-small) {
       bottom: -$banner-mobile-height;
     }
   }
