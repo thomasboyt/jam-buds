@@ -40,6 +40,12 @@ export default {
     };
   },
 
+  data() {
+    return {
+      isDisconnecting: false,
+    };
+  },
+
   computed: {
     ...mapState({
       hasSpotify: (state) => state.streaming.hasSpotify,
