@@ -59,13 +59,17 @@ export default {
       this.songInput = this.$store.state.addSong.initialSearch;
       this.handleSubmit();
     } else {
-      // iOS Safari freaks out trying to animate modal when opening keyboard,
-      // so we delay focus until after modal is animated in
-      if (window.navigator.userAgent.includes('iPhone')) {
-        setTimeout(() => {
-          this.$refs.input.focus();
-        }, 400);
-      } else {
+      // iOS Safari freaks out trying to animate the modal when opening
+      // the keyboard, since viewport height changes and stuff.
+      //
+      // unfortunately can't just focus-on-delay because iOS Safari has a bunch
+      // of weird heuristics preventing autofocus when it's not from a user
+      // event. should eventually update the design to make it easier to tap in
+      const iOS =
+        window.navigator.userAgent.includes('iPhone') ||
+        window.navigator.userAgent.includes('iPad');
+
+      if (!iOS) {
         this.$refs.input.focus();
       }
     }
