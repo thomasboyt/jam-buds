@@ -111,6 +111,15 @@ export default {
    ** Build configuration
    */
   build: {
+    // prevent HMR infinite reload bug due to cached assets
+    // https://github.com/nuxt/nuxt.js/issues/3828
+    devMiddleware: {
+      headers: {
+        'Cache-Control': 'no-store',
+        Vary: '*',
+      },
+    },
+
     /*
      ** You can extend webpack config here
      */
