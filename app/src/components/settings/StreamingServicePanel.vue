@@ -8,7 +8,6 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
 import SettingsPanelExpanding from './SettingsPanelExpanding.vue';
 import StreamingServiceConnect from './StreamingServiceConnect.vue';
 
@@ -16,27 +15,23 @@ export default {
   components: { SettingsPanelExpanding, StreamingServiceConnect },
 
   computed: {
-    ...mapState({
-      hasSpotify: (state) => state.streaming.hasSpotify,
-      hasAppleMusic: (state) => state.streaming.hasAppleMusic,
-    }),
+    serviceName() {
+      return this.$store.getters.streamingServiceName;
+    },
 
     title() {
-      if (this.hasSpotify) {
-        return 'Connected to Spotify';
-      } else if (this.hasAppleMusic) {
-        return 'Connected to Apple Music';
+      if (this.serviceName) {
+        return `Listening with ${this.serviceName}`;
       } else {
-        return 'Connect a streaming service';
+        return 'Select a streaming service';
       }
     },
 
     description() {
-      if (this.hasSpotify || this.hasAppleMusic) {
-        const serviceName = this.hasSpotify ? 'Spotify' : 'Apple Music';
-        return `you'll listen to music using ${serviceName} on this device.`;
+      if (this.serviceName) {
+        return `you'll listen to music using ${this.serviceName} on this device.`;
       } else {
-        return 'connect to Spotify or Apple Music to use the Jam Buds music player';
+        return 'select a streaming service to listen to music with';
       }
     },
   },

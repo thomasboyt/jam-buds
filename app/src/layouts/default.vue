@@ -5,11 +5,22 @@
     </div>
 
     <audio-player />
-    <apple-music-loader />
-    <spotify-loader />
     <flash-message />
+
     <template v-if="authenticated">
       <notifications-modal />
+    </template>
+
+    <template v-if="!isWebView">
+      <!-- it'd be nice to only load this if apple music was selected, but right
+      now it has to be loaded for authentication to happen to determine if it
+      *can be* selected... -->
+      <template v-if="supports.appleMusic">
+        <apple-music-loader />
+      </template>
+      <template v-if="supports.spotify && streamingService === 'spotify'">
+        <spotify-loader />
+      </template>
     </template>
   </div>
 </template>
@@ -75,6 +86,21 @@ export default {
   computed: mapState({
     authenticated: (state) => state.auth.authenticated,
     isWebView: (state) => state.isWebView,
+    supports: (state) => state.streaming.supports,
+    streamingService: (state) => state.streaming.service,
   }),
+
+  mounted() {
+    // this is an odd place for this, but plugins can't be used since they break
+    // dom matching between server/client rendering
+    this.$store.dispatch('initializeStreaming', {
+      userAgent: navigator.userAgent,
+    });
+
+    if ('spotifySuccess' in this.$route.query) {
+      this.$store.dispatch('updateStreamingService', 'spotify');
+      this.$router.replace(this.$route.path);
+    }
+  },
 };
 </script>

@@ -1,6 +1,6 @@
 <template>
   <jb-button @click="handleConnectAppleMusic">
-    connect to apple music
+    listen with apple music
   </jb-button>
 </template>
 
@@ -14,10 +14,16 @@ export default {
 
   methods: {
     async handleConnectAppleMusic() {
-      await MusicKit.getInstance().authorize();
-      this.$store.commit('loadedAppleMusic', true);
-      this.$store.commit('hideConnectStreamingBanner');
-      this.$emit('connectedAppleMusic');
+      const { webPlayerEnabled, supports } = this.$store.state.streaming;
+      if (supports.appleMusic) {
+        if (webPlayerEnabled) {
+          await MusicKit.getInstance().authorize();
+        } else {
+          // TODO: native connection
+        }
+      }
+      this.$store.dispatch('updateStreamingService', 'appleMusic');
+      this.$emit('connected');
     },
   },
 };

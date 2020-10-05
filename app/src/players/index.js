@@ -10,14 +10,12 @@ export async function getOrCreatePlayer(type, opts) {
       spotifyPlayer = new SpotifyPlayer(opts);
       await spotifyPlayer.initialize();
     }
-
     return spotifyPlayer;
-  } else if (type === 'applemusic') {
+  } else if (type === 'appleMusic') {
     if (!appleMusicPlayer) {
       appleMusicPlayer = new AppleMusicPlayer(opts);
       await appleMusicPlayer.initialize();
     }
-
     return appleMusicPlayer;
   } else {
     throw new Error(`unrecognized player type requested: ${type}`);

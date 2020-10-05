@@ -1,7 +1,7 @@
 <template>
   <transition
     name="connect-streaming-open"
-    v-if="isConnectStreamingBannerOpen"
+    v-if="show"
     :duration="{ enter: 200, leave: 200 }"
   >
     <div class="modal-overlay -streaming-banner" @click="handleClose">
@@ -10,8 +10,11 @@
           hey! to listen to music, select a streaming service:
         </p>
         <p class="button-group">
-          <spotify-connect-button :redirect="$route.path" />
-          <apple-music-connect-button />
+          <spotify-connect-button
+            :redirect="$route.path"
+            @connected="handleConnected"
+          />
+          <apple-music-connect-button @connected="handleConnected" />
         </p>
         <p class="close-line">
           or
@@ -32,14 +35,10 @@ import AppleMusicConnectButton from '~/components/settings/AppleMusicConnectButt
 export default {
   components: { AppleMusicConnectButton, SpotifyConnectButton },
 
-  computed: {
-    isConnectStreamingBannerOpen() {
-      return this.$store.state.isConnectStreamingBannerOpen;
-    },
-  },
+  props: ['show'],
 
   watch: {
-    isConnectStreamingBannerOpen(isOpen) {
+    show(isOpen) {
       if (isOpen) {
         disableBodyScroll();
       } else {
@@ -49,8 +48,11 @@ export default {
   },
 
   methods: {
+    handleConnected() {
+      this.$emit('connected');
+    },
     handleClose() {
-      this.$store.commit('hideConnectStreamingBanner');
+      this.$emit('close');
     },
   },
 };

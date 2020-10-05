@@ -5,6 +5,19 @@
 <script>
 /* global MusicKit */
 export default {
+  computed: {
+    usingAppleMusicWebPlayer() {
+      const {
+        supports,
+        service,
+        webPlayerEnabled,
+      } = this.$store.state.streaming;
+      return (
+        service === 'appleMusic' && webPlayerEnabled && supports.appleMusic
+      );
+    },
+  },
+
   mounted() {
     if (this.$config.DISABLE_APPLE_MUSIC) {
       return;
@@ -30,8 +43,11 @@ export default {
         },
       });
 
+      // if we're no longer authorized, disable apple music
       const music = MusicKit.getInstance();
-      this.$store.commit('loadedAppleMusic', music.isAuthorized);
+      if (this.usingAppleMusicWebPlayer && !music.isAuthorized) {
+        this.$store.dispatch('unsetStreamingService');
+      }
     },
   },
 };

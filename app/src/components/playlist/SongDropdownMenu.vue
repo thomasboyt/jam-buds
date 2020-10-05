@@ -40,6 +40,7 @@
 <script>
 import Icon from '../Icon.vue';
 import YoutubeSearchLink from './YoutubeSearchLink.vue';
+import getSpotifyUrl from '~/util/getSpotifyUrl';
 import dropdownIcon from '~/assets/kebab-vertical.svg';
 
 export default {
@@ -56,7 +57,7 @@ export default {
 
   computed: {
     spotifyUrl() {
-      return `https://open.spotify.com/track/${this.song.spotifyId}`;
+      return getSpotifyUrl(this.song.spotifyId);
     },
   },
 
