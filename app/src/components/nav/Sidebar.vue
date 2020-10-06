@@ -9,14 +9,11 @@
 
     <ul>
       <li>
-        <nuxt-link to="/" @click.native="handleClick('/')">
-          your feed
-        </nuxt-link>
+        <nuxt-link to="/"> your feed </nuxt-link>
       </li>
       <li>
         <nuxt-link
           :to="`/users/${currentUserName}`"
-          @click.native="handleClick(`/users/${currentUserName}`)"
           :class="{
             'profile-link': true,
             'profile-link-active': profileActive,
@@ -26,38 +23,23 @@
         </nuxt-link>
       </li>
       <li>
-        <nuxt-link
-          :to="`/users/${currentUserName}/mixtapes`"
-          @click.native="handleClick(`/users/${currentUserName}`)"
-        >
+        <nuxt-link :to="`/users/${currentUserName}/mixtapes`">
           your mixtapes
         </nuxt-link>
       </li>
       <li>
-        <nuxt-link
-          :to="`/users/${currentUserName}/buds`"
-          @click.native="handleClick(`/users/${currentUserName}`)"
-        >
+        <nuxt-link :to="`/users/${currentUserName}/buds`">
           your buds
         </nuxt-link>
       </li>
       <li>
-        <nuxt-link
-          to="/public-feed"
-          @click.native="handleClick('/public-feed')"
-        >
-          public feed
-        </nuxt-link>
+        <nuxt-link to="/public-feed"> public feed </nuxt-link>
       </li>
       <li>
-        <nuxt-link to="/settings" @click.native="handleClick('/settings')">
-          settings
-        </nuxt-link>
+        <nuxt-link to="/settings"> settings </nuxt-link>
       </li>
       <li>
-        <nuxt-link to="/about" @click.native="handleClick('/about')">
-          about jam buds
-        </nuxt-link>
+        <nuxt-link to="/about"> about jam buds </nuxt-link>
       </li>
     </ul>
   </div>
@@ -85,13 +67,6 @@ export default {
         this.$route.path !== `/users/${this.currentUserName}/mixtapes` &&
         this.$route.path !== `/users/${this.currentUserName}/buds`
       );
-    },
-  },
-
-  methods: {
-    handleClick(path) {
-      this.$store.commit('setActiveTab', path);
-      this.$store.commit('closeSidebar');
     },
   },
 };

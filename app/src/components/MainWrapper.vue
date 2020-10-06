@@ -95,10 +95,6 @@ export default {
   },
 
   methods: {
-    handleClickSidebarOverlay() {
-      this.$store.commit('closeSidebar');
-    },
-
     updateTheme(cssTheme) {
       document.documentElement.style.setProperty(
         '--theme-body-background',
