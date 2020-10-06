@@ -49,7 +49,7 @@ class SpotifyAuthRoutes(private val spotifyAuthService: SpotifyAuthService) {
         }
 
         setSpotifyCookies(ctx, credentials)
-        redirectWithParams("")
+        redirectWithParams("spotifySuccess")
     }
 
     private fun getSpotifyToken(ctx: Context) {
