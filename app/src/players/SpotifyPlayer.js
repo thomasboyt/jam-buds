@@ -54,16 +54,33 @@ export default class SpotifyPlayer {
 
     const token = await this._getOAuthToken();
 
-    await axios({
-      url: `https://api.spotify.com/v1/me/player/play?device_id=${this._deviceId}`,
-      method: 'PUT',
-      data: {
-        uris: [`spotify:track:${song.spotifyId}`],
-      },
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    try {
+      await axios({
+        url: `https://api.spotify.com/v1/me/player/play?device_id=${this._deviceId}`,
+        method: 'PUT',
+        data: {
+          uris: [`spotify:track:${song.spotifyId}`],
+        },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    } catch (err) {
+      if (err.response?.data?.error?.reason === 'PREMIUM_REQUIRED') {
+        this.store.commit(
+          'showErrorModal',
+          'A premium Spotify account is required for playback, sorry :('
+        );
+        this.store.commit('playback/clearPlayback');
+        this.store.dispatch('unsetStreamingService');
+        return;
+      }
+      this.store.commit(
+        'showErrorModal',
+        'An unknown error occurred trying to play back music'
+      );
+      throw err; // throw error for logging
+    }
 
     this.store.dispatch('playback/sync', {
       isBuffering: false,
