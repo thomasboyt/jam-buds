@@ -1,18 +1,30 @@
 <template>
   <modal :title="title" :is-open="isOpen" @close="handleCloseModal">
     <transition name="fade">
-      <div class="add-song-modal fade-screen" v-if="state === INITIAL_STATE" key="initial">
+      <div
+        class="add-song-modal fade-screen"
+        v-if="state === INITIAL_STATE"
+        key="initial"
+      >
         <initial-screen @selectedSong="handleSelectedSong" />
       </div>
 
-      <div class="add-song-modal fade-screen" v-if="state === CONFIRM_STATE" key="confirm">
+      <div
+        class="add-song-modal fade-screen"
+        v-if="state === CONFIRM_STATE"
+        key="confirm"
+      >
         <mixtape-confirm-screen
           v-if="mixtapeId"
           :selected-song="selectedSong"
           :mixtape-id="mixtapeId"
           @finished="handleCloseModal"
         />
-        <confirm-screen v-else :selected-song="selectedSong" @finished="handleCloseModal" />
+        <confirm-screen
+          v-else
+          :selected-song="selectedSong"
+          @finished="handleCloseModal"
+        />
       </div>
     </transition>
   </modal>
@@ -48,6 +60,15 @@ export default {
     },
   },
 
+  watch: {
+    isOpen(isOpen) {
+      if (!isOpen) {
+        this.state = INITIAL_STATE;
+        this.selectedSong = null;
+      }
+    },
+  },
+
   methods: {
     handleSelectedSong(song) {
       this.selectedSong = song;
@@ -56,8 +77,6 @@ export default {
 
     handleCloseModal() {
       closeModal(this.$router, this.$route);
-      this.state = INITIAL_STATE;
-      this.selectedSong = null;
     },
   },
 };
