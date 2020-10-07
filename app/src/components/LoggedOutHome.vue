@@ -27,8 +27,7 @@
 
           <p>
             this is
-            <strong>jam buds</strong>, a site for sharing music with
-            friends
+            <strong>jam buds</strong>, a site for sharing music with friends
           </p>
 
           <p>
@@ -58,7 +57,7 @@
         <a href="https://jambuds.club/users/thomas">thomas</a>
         &middot;
       </span>
-      <nuxt-link to="/about">about jam buds</nuxt-link>&middot;
+      <nuxt-link to="/about">about jam buds</nuxt-link> &middot;
       <a href="mailto:hello@jambuds.club">hello@jambuds.club</a>
     </footer>
   </div>
