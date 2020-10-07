@@ -33,7 +33,7 @@ const mixtapes = {
     },
 
     appendToMixtape(state, { songId, mixtapeId }) {
-      const newTracks = state.tracksByMixtapeId.concat([songId]);
+      const newTracks = state.tracksByMixtapeId[mixtapeId].concat([songId]);
       Vue.set(state.tracksByMixtapeId, mixtapeId, newTracks);
     },
 
