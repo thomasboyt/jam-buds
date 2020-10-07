@@ -2,11 +2,13 @@
   <component
     :is="tag"
     :to="to"
-    class="jb-button"
+    :class="['jb-button', buttonStyle]"
     :disabled="disabled"
     @click="handleClick"
   >
-    <slot />
+    <span class="label">
+      <slot />
+    </span>
   </component>
 </template>
 
@@ -24,6 +26,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    buttonStyle: {
+      type: String,
+      default: 'hollow',
+    },
   },
 
   methods: {
@@ -35,15 +41,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '~/assets/styles/mixins.scss';
+
 .jb-button {
+  font-weight: 500;
   // default padding - easy to override
   padding: 15px 25px;
-
-  color: currentColor;
-  border: 2px currentColor solid;
-  &:hover {
-    background: rgba(0, 0, 0, 0.1);
-  }
 
   display: inline-block;
   text-align: center;
@@ -56,6 +59,30 @@ export default {
 
     &:active {
       transform: none;
+    }
+  }
+
+  &.hollow {
+    color: currentColor;
+    border: 2px currentColor solid;
+    &:hover {
+      background: rgba(0, 0, 0, 0.1);
+    }
+  }
+
+  &.page-action {
+    font-size: 20px;
+    font-weight: 600;
+    background: $black;
+
+    .label {
+      background: $post-song-gradient;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: rgba(255, 255, 255, 0.2);
+    }
+    &:hover .label {
+      color: rgba(255, 255, 255, 0.5);
     }
   }
 }

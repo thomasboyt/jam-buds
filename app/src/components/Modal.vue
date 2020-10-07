@@ -17,7 +17,7 @@
             </button>
           </div>
 
-          <div :style="{ flex: '1 0 auto' }">
+          <div :style="{ flex: '1 0 auto', position: 'relative' }">
             <slot />
           </div>
         </div>
@@ -86,13 +86,15 @@ $modal-height: 550px;
   position: absolute;
   z-index: $z-modal;
 
+  padding: 20px;
+
   @media (max-width: $breakpoint-small) {
     top: 0;
     bottom: 0;
     left: 0;
     right: 0;
-    padding-top: env(safe-area-inset-top);
-    padding-bottom: env(safe-area-inset-bottom);
+    padding-top: max(env(safe-area-inset-top, 0px), 20px);
+    padding-bottom: max(env(safe-area-inset-bottom, 0px), 20px);
   }
 
   @media (min-width: $breakpoint-small) {
@@ -104,8 +106,6 @@ $modal-height: 550px;
     margin-top: -$modal-height/2;
     margin-left: -$modal-width/2;
   }
-
-  padding: 20px;
 
   outline: none;
 }

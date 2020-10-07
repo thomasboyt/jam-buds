@@ -1,24 +1,21 @@
 <template>
   <div>
-    <form class="submit-box" @submit="handleSubmitForm">
-      <div class="input-container">
-        <input
-          type="text"
-          :class="{ invalid }"
-          v-model="songInput"
-          @input="handleInput"
-          placeholder="Search..."
-          data-test="song-url-field"
-          ref="input"
-        />
-      </div>
+    <form
+      :class="['search-box', { focused: searchFocused }]"
+      @submit="handleSubmitForm"
+    >
+      <input
+        type="text"
+        v-model="songInput"
+        placeholder="Search..."
+        data-test="song-url-field"
+        ref="input"
+        @focus="handleFocus"
+        @blur="handleBlur"
+      />
 
-      <button
-        type="submit"
-        :disabled="buttonDisabled"
-        :class="['submit-search', 'cta-button', { invalid }]"
-      >
-        <span>find</span>
+      <button class="search-button" type="submit">
+        <icon :glyph="searchIcon" />
       </button>
     </form>
 
@@ -35,22 +32,25 @@
 
 <script>
 import SpotifyResults from './SpotifyResults.vue';
+import Icon from '../Icon.vue';
+const searchIcon = require('~/assets/search.svg');
 
 export default {
-  components: { SpotifyResults },
+  components: { SpotifyResults, Icon },
 
   data() {
     return {
       songInput: '',
-      invalid: false,
       requestInFlight: false,
       searchResults: null,
+      searchIcon,
+      searchFocused: false,
     };
   },
 
   computed: {
-    buttonDisabled() {
-      return this.songInput === '' || this.invalid || this.requestInFlight;
+    searchDisabled() {
+      return this.songInput === '' || this.requestInFlight;
     },
   },
 
@@ -76,10 +76,6 @@ export default {
   },
 
   methods: {
-    handleInput() {
-      this.invalid = false;
-    },
-
     handleSelectSong(song) {
       this.$emit('selectedSong', song);
     },
@@ -90,6 +86,10 @@ export default {
     },
 
     async handleSubmit() {
+      if (this.searchDisabled) {
+        return;
+      }
+
       this.requestInFlight = true;
 
       let resp;
@@ -110,11 +110,62 @@ export default {
 
       this.requestInFlight = false;
     },
+
+    handleFocus() {
+      this.searchFocused = true;
+    },
+
+    handleBlur() {
+      this.searchFocused = false;
+    },
   },
 };
 </script>
 
 <style lang="scss" scoped>
+.search-box {
+  display: flex;
+  height: 50px;
+
+  // 0px here keeps it from getting a weird thing specified by input, I guess?
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px #777 solid;
+  border-radius: 9999px;
+
+  &.focused {
+    border-color: hotpink;
+  }
+}
+
+input {
+  flex: 1 0 auto;
+  height: 100%;
+  margin-left: 20px;
+  font-size: 16px;
+  border: none;
+
+  background: transparent;
+  color: currentColor;
+
+  &:focus {
+    // visual state covered by search box focus
+    outline: none;
+  }
+}
+
+.search-button {
+  flex: 0 0 auto;
+  padding-left: 10px;
+  padding-right: 20px;
+  line-height: 100%;
+  color: inherit;
+
+  .icon {
+    width: 20px;
+    height: 20px;
+  }
+}
+
 .search-placeholder {
   padding: 50px;
   text-align: center;

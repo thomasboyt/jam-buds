@@ -50,7 +50,7 @@ export default {
 
 <style lang="scss" scoped>
 .follow-toggle {
-  padding: 8px 12px;
+  padding: 8px 15px;
   width: 120px;
   font-weight: 600;
 

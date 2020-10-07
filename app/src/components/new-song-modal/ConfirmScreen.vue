@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="confirm-screen"
-    :style="{ minHeight: '100%', display: 'flex', flexFlow: 'column' }"
-  >
+  <div class="confirm-screen">
     <div :style="{ marginBottom: '12px' }">
       <song-preview :song="selectedSong" />
     </div>
@@ -25,14 +22,14 @@
         {{ error }}
       </p>
 
-      <button
+      <jb-button
         @click="handleSubmit"
-        class="cta-button submit-song"
+        class="post-button"
         data-test="add-song-confirm"
-        :style="{ marginTop: 'auto' }"
+        button-style="solid"
       >
         post it!!
-      </button>
+      </jb-button>
     </template>
     <template v-else>
       <div>loading...</div>
@@ -48,9 +45,10 @@ import serializeSongLabel from '../../util/serializeSongLabel';
 import NoteField, { MAX_POST_LENGTH } from './NoteField.vue';
 import ServiceList from './ServiceList.vue';
 import SongPreview from './SongPreview.vue';
+import JbButton from '../lib/JbButton';
 
 export default {
-  components: { NoteField, ServiceList, SongPreview },
+  components: { NoteField, ServiceList, SongPreview, JbButton },
 
   props: ['selectedSong'],
 
@@ -136,8 +134,26 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '~/assets/styles/mixins.scss';
+
+.confirm-screen {
+  min-height: 100%;
+  display: flex;
+  flex-flow: column;
+  text-align: center;
+}
+
 .error {
   color: red;
   font-weight: bold;
+}
+
+.post-button {
+  margin-top: auto;
+  color: $black;
+  padding: 12px 0;
+  background-color: hotpink;
+  font-weight: bold;
+  font-size: 1.5em;
 }
 </style>

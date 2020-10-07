@@ -56,7 +56,6 @@ export default {
 
 <style lang="scss" scoped>
 .publish-button {
-  font-weight: bold;
   padding: 15px 40px;
 }
 </style>
