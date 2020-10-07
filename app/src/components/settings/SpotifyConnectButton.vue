@@ -1,5 +1,5 @@
 <template>
-  <jb-button tag="a" :href="spotifyConnectLink">connect to spotify</jb-button>
+  <jb-button tag="button" @click="handleConnect">listen with spotify</jb-button>
 </template>
 
 <script>
@@ -34,6 +34,22 @@ export default {
         );
       }
     }
+  },
+
+  methods: {
+    handleConnect() {
+      const { webPlayerEnabled, supports } = this.$store.state.streaming;
+      if (supports.spotify) {
+        if (webPlayerEnabled) {
+          document.location = this.spotifyConnectLink;
+          return;
+        } else {
+          // TODO: native connection
+        }
+      }
+      this.$store.dispatch('updateStreamingService', 'spotify');
+      this.$emit('connected');
+    },
   },
 };
 </script>

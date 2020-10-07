@@ -34,7 +34,6 @@ const root = {
       isWebView: false,
       mobileHeaderTitle: null,
       flashMessage: null,
-      isConnectStreamingBannerOpen: false,
       activeBottomTab: '/',
     };
   },
@@ -64,12 +63,6 @@ const root = {
     clearFlashMessage(state) {
       state.flashMessage = null;
       state.timeoutHandle = null;
-    },
-    showConnectStreamingBanner(state) {
-      state.isConnectStreamingBannerOpen = true;
-    },
-    hideConnectStreamingBanner(state) {
-      state.isConnectStreamingBannerOpen = false;
     },
   },
 

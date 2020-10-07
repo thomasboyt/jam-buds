@@ -24,7 +24,6 @@
         </song>
       </li>
     </draggable>
-    <connect-streaming-banner />
   </div>
 </template>
 
@@ -34,7 +33,6 @@ import Draggable from 'vuedraggable';
 import Song from '../playlist/Song.vue';
 import SongRemoveFromMixtapeAction from './SongRemoveFromMixtapeAction.vue';
 import Icon from '../Icon.vue';
-import ConnectStreamingBanner from '../playlist/ConnectStreamingBanner.vue';
 
 const dragIcon = require('~/assets/menu.svg');
 
@@ -44,7 +42,6 @@ export default {
     SongRemoveFromMixtapeAction,
     Draggable,
     Icon,
-    ConnectStreamingBanner,
   },
 
   props: ['mixtapeId', 'isEditing'],

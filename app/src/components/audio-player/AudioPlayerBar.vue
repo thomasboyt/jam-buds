@@ -74,10 +74,6 @@ export default {
     ...mapGetters('playback', ['currentSong']),
 
     ...mapState({
-      hasStreamingService: (state) =>
-        state.streaming.hasSpotify || state.streaming.hasAppleMusic,
-      hasSpotify: (state) => state.streaming.hasSpotify,
-      hasAppleMusic: (state) => state.streaming.hasAppleMusic,
       authenticated: (state) => state.auth.authenticated,
     }),
 

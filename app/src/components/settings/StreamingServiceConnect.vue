@@ -1,5 +1,5 @@
 <template>
-  <div v-if="hasSpotify || hasAppleMusic">
+  <div v-if="streamingService">
     <div class="button-group">
       <jb-button @click="handleDisconnect" :disabled="isDisconnecting">
         <template>disconnect</template>
@@ -8,8 +8,11 @@
   </div>
   <div v-else>
     <div class="button-group">
-      <spotify-connect-button redirect="/settings" />
-      <apple-music-connect-button />
+      <spotify-connect-button
+        redirect="/settings"
+        @connected="handleConnected"
+      />
+      <apple-music-connect-button @connected="handleConnected" />
     </div>
     <p class="streaming-disclaimer">
       (not using either of these? while we'd love to support more services,
@@ -48,42 +51,63 @@ export default {
 
   computed: {
     ...mapState({
-      hasSpotify: (state) => state.streaming.hasSpotify,
-      hasAppleMusic: (state) => state.streaming.hasAppleMusic,
-      serviceName: (state) =>
-        state.streaming.hasSpotify ? 'Spotify' : 'Apple Music',
+      streamingService: (state) => state.streaming.service,
+      isWebView: (state) => state.isWebView,
+      webPlayerEnabled: (state) => state.streaming.webPlayerEnabled,
+      supports: (state) => state.streaming.supports,
     }),
+    serviceName() {
+      return this.$store.getters.streamingServiceName;
+    },
   },
 
   methods: {
     handleDisconnect() {
-      if (this.hasSpotify) {
+      if (this.streamingService === 'spotify') {
         this.handleDisconnectSpotify();
-      } else {
+      } else if (this.streamingService === 'appleMusic') {
         this.handleDisconnectAppleMusic();
       }
+      this.$store.dispatch('unsetStreamingService');
     },
 
     async handleDisconnectAppleMusic() {
-      await MusicKit.getInstance().unauthorize();
-      this.$store.commit('removeAppleMusic');
+      if (this.supports.appleMusic) {
+        if (this.webPlayerEnabled) {
+          await MusicKit.getInstance().unauthorize();
+        } else {
+          // TODO: disconnect native integration
+        }
+      }
     },
 
     async handleDisconnectSpotify() {
-      this.isDisconnecting = true;
+      if (this.supports.spotify) {
+        if (this.webPlayerEnabled) {
+          try {
+            await this.$axios({
+              url: '/spotify-token',
+              method: 'DELETE',
+            });
+          } catch (err) {
+            this.$store.commit('showErrorModal');
+            throw err;
+          }
 
-      try {
-        await this.$axios({
-          url: '/spotify-token',
-          method: 'DELETE',
-        });
-      } catch (err) {
-        this.$store.commit('showErrorModal');
-        throw err;
+          this.isDisconnecting = false;
+        } else {
+          // TODO: disconnect native integration
+        }
       }
+      this.isDisconnecting = true;
+    },
 
-      this.$store.commit('removeSpotify');
-      this.isDisconnecting = false;
+    handleConnected() {
+      this.$router.push('/settings');
+      this.$store.dispatch('setFlashMessage', {
+        message: `You've set ${this.serviceName} as your streaming service.`,
+        clearMs: 4000,
+      });
     },
   },
 };

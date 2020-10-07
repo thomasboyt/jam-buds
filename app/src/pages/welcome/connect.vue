@@ -1,11 +1,8 @@
 <template>
   <div>
     <div class="connect-page">
-      <template v-if="hasSpotify || hasAppleMusic">
-        <h3>
-          you've connected <span v-if="hasSpotify">spotify</span
-          ><span v-else>apple music</span>!
-        </h3>
+      <template v-if="serviceName">
+        <h3>you've connected {{ serviceName }}!</h3>
       </template>
       <template v-else>
         <h3>connect a streaming service <small>(optional!)</small></h3>
@@ -16,15 +13,16 @@
         </p>
 
         <div class="button-group">
-          <spotify-connect-button redirect="/welcome/connect" />
-          <apple-music-connect-button
-            @connectedAppleMusic="handleConnectedAppleMusic"
+          <spotify-connect-button
+            redirect="/welcome/connect"
+            @connected="handleConnected"
           />
+          <apple-music-connect-button @connected="handleConnected" />
         </div>
       </template>
 
       <div class="lower">
-        <template v-if="hasSpotify || hasAppleMusic">
+        <template v-if="serviceName">
           <jb-button tag="nuxt-link" :to="nextPage">continue</jb-button>
         </template>
         <template v-else>
@@ -43,8 +41,6 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
-
 import SpotifyConnectButton from '~/components/settings/SpotifyConnectButton.vue';
 import AppleMusicConnectButton from '~/components/settings/AppleMusicConnectButton.vue';
 import JbButton from '~/components/lib/JbButton.vue';
@@ -58,13 +54,14 @@ export default {
     };
   },
 
-  computed: mapState({
-    hasSpotify: (state) => state.streaming.hasSpotify,
-    hasAppleMusic: (state) => state.streaming.hasAppleMusic,
-  }),
+  computed: {
+    serviceName() {
+      return this.$store.getters.streamingServiceName;
+    },
+  },
 
   methods: {
-    handleConnectedAppleMusic() {
+    handleConnected() {
       this.$router.push(this.nextPage);
     },
   },

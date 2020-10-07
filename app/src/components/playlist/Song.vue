@@ -1,36 +1,46 @@
 <template>
-  <div
-    :class="[
-      'playlist-song',
-      { 'is-playing': isPlaying, 'can-play': canRequestPlay },
-    ]"
-    @mouseover="isHovering = true"
-    @mouseleave="isHovering = false"
-  >
-    <div class="playlist-song--main" @click="handleClick">
-      <album-art
-        :album-art="song.albumArt"
-        :can-play="canRequestPlay"
-        :is-playing="isPlaying"
-        :is-hovering="isHovering"
-      />
+  <div>
+    <div
+      :class="[
+        'playlist-song',
+        { 'is-playing': isPlaying, 'can-play': canRequestPlay },
+      ]"
+      @mouseover="isHovering = true"
+      @mouseleave="isHovering = false"
+    >
+      <div class="playlist-song--main" @click="handleClick">
+        <album-art
+          :album-art="song.albumArt"
+          :can-play="canRequestPlay"
+          :is-playing="isPlaying"
+          :is-hovering="isHovering"
+        />
 
-      <div class="playlist-song--label">
-        <div class="label-content">
-          <div class="label-artist">{{ song.artists.join(', ') }}</div>
-          <div class="label-title">{{ song.title }}</div>
+        <div class="playlist-song--label">
+          <div class="label-content">
+            <div class="label-artist">{{ song.artists.join(', ') }}</div>
+            <div class="label-title">{{ song.title }}</div>
+          </div>
+          <song-like-action :mobile="true" :song="song" />
         </div>
-        <song-like-action :mobile="true" :song="song" />
-      </div>
 
-      <span class="playlist-song--actions">
-        <slot name="actions">
-          <song-youtube-action v-if="showYoutube" :song="song" />
-          <song-like-action :song="song" />
-          <song-dropdown-menu :song="song" :show-delete="showDeleteMenuItem" />
-        </slot>
-      </span>
+        <span class="playlist-song--actions">
+          <slot name="actions">
+            <song-youtube-action v-if="showYoutube" :song="song" />
+            <song-like-action :song="song" />
+            <song-dropdown-menu
+              :song="song"
+              :show-delete="showDeleteMenuItem"
+            />
+          </slot>
+        </span>
+      </div>
     </div>
+    <connect-streaming-banner
+      :show="showConnectStreamingBanner"
+      @close="handleCloseStreamingBanner"
+      @connected="handleConnectedFromStreamingBanner"
+    />
   </div>
 </template>
 
@@ -41,6 +51,8 @@ import AlbumArt from './AlbumArt.vue';
 import SongLikeAction from './SongLikeAction.vue';
 import SongYoutubeAction from './SongYoutubeAction.vue';
 import SongDropdownMenu from './SongDropdownMenu.vue';
+import ConnectStreamingBanner from './ConnectStreamingBanner';
+import getSpotifyUrl from '~/util/getSpotifyUrl';
 
 export default {
   components: {
@@ -48,6 +60,7 @@ export default {
     SongLikeAction,
     SongYoutubeAction,
     SongDropdownMenu,
+    ConnectStreamingBanner,
   },
 
   props: {
@@ -63,6 +76,7 @@ export default {
   data() {
     return {
       isHovering: false,
+      showConnectStreamingBanner: false,
     };
   },
 
@@ -70,14 +84,11 @@ export default {
     ...mapState({
       canPlay(state) {
         return (
-          (state.streaming.hasSpotify && this.song.spotifyId) ||
-          (state.streaming.hasAppleMusic && this.song.appleMusicId)
+          (state.streaming.service === 'spotify' && this.song.spotifyId) ||
+          (state.streaming.service === 'appleMusic' && this.song.appleMusicId)
         );
       },
-
-      userHasStreamingService(state) {
-        return state.streaming.hasSpotify || state.streaming.hasAppleMusic;
-      },
+      streamingService: (state) => state.streaming.service,
 
       song(state) {
         return state.songs[this.songId];
@@ -104,17 +115,16 @@ export default {
     }),
 
     ...mapGetters('playback', ['currentSong']),
+    ...mapGetters(['playerEnabled']),
 
     // TODO: once a modal is implemented for apple music song-missing state,
     // this will just always be true after loading
     canRequestPlay() {
-      const { streaming } = this.$store.state;
-
       // for users with a connected streaming service, the song is clickable
       // if it can be played on that service
-      if (streaming.hasSpotify) {
+      if (this.streamingService === 'spotify') {
         return !!this.song.spotifyId;
-      } else if (streaming.hasAppleMusic) {
+      } else if (this.streamingService === 'appleMusic') {
         return !!this.song.appleMusicId;
       }
 
@@ -128,7 +138,7 @@ export default {
     },
 
     showYoutube() {
-      return this.$store.getters.loadedStreaming && !this.canPlay;
+      return this.streamingService === null;
     },
   },
 
@@ -140,19 +150,37 @@ export default {
         return;
       }
 
-      // Don't pop show-connect banner if the streaming services haven't loaded yet
-      // In the future this may do some kind of special queueing...
-      if (!this.$store.getters.loadedStreaming) {
-        return;
+      if (this.streamingService) {
+        if (this.playerEnabled) {
+          if (this.canPlay) {
+            this.$emit('requestPlay', this.songId);
+          }
+        } else {
+          this.openInPreferredService();
+        }
+      } else {
+        this.showConnectStreamingBanner = true;
       }
-
-      if (this.userHasStreamingService) {
+    },
+    openInPreferredService() {
+      if (this.streamingService === 'spotify') {
+        window.open(getSpotifyUrl(this.song.spotifyId));
+      } else if (this.streamingService === 'appleMusic') {
+        window.open(this.song.appleMusicUrl);
+      }
+    },
+    handleConnectedFromStreamingBanner() {
+      this.showConnectStreamingBanner = false;
+      if (this.playerEnabled) {
         if (this.canPlay) {
           this.$emit('requestPlay', this.songId);
         }
       } else {
-        this.$store.commit('showConnectStreamingBanner');
+        this.openInPreferredService();
       }
+    },
+    handleCloseStreamingBanner() {
+      this.showConnectStreamingBanner = false;
     },
   },
 };

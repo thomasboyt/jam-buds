@@ -94,21 +94,20 @@ const playback = {
      * Play a specific song by ID.
      */
     async playSong(context, { songId, songPlaylistTimestamp }) {
-      const player = context.rootState.streaming.hasSpotify
-        ? 'spotify'
-        : 'applemusic';
+      const player = context.rootState.streaming.service;
 
       context.commit('setPlayer', player);
       context.commit('playSong', { songId, songPlaylistTimestamp });
 
       const playerInstance = await getOrCreatePlayer(player, {
         store: this,
+        nativeBridge: this.$nativeBridge,
       });
 
       const song = context.getters.currentSong;
 
       const missingSpotify = player === 'spotify' && !song.spotifyId;
-      const missingAppleMusic = player === 'applemusic' && !song.appleMusicId;
+      const missingAppleMusic = player === 'appleMusic' && !song.appleMusicId;
 
       // XXX: This UI obviously sucks, but it's better than nothing...
       if (missingSpotify || missingAppleMusic) {

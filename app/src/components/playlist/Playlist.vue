@@ -22,18 +22,15 @@
     >
       Load next page
     </jb-button>
-
-    <connect-streaming-banner />
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex';
-import ConnectStreamingBanner from './ConnectStreamingBanner.vue';
 import JbButton from '../lib/JbButton';
 
 export default {
-  components: { ConnectStreamingBanner, JbButton },
+  components: { JbButton },
 
   props: ['playlistKey', 'loadingNextPage', 'isLoading'],
 
