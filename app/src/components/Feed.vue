@@ -51,7 +51,7 @@ import AddSongModal from './new-song-modal/AddSongModal.vue';
 import PlaylistEntry from './playlist/PlaylistEntry.vue';
 import EntryDetails from './playlist/EntryDetails.vue';
 import PageHeader from './PageHeader.vue';
-import { showModal } from '~/util/modal.js';
+import { showModal } from '~/util/modal';
 
 export default {
   components: {

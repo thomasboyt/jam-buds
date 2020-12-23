@@ -29,7 +29,7 @@
 <script>
 import { enableBodyScroll, disableBodyScroll } from 'body-scroll-lock';
 import Icon from './Icon.vue';
-import { closeModal } from '~/util/modal.js';
+import { closeModal } from '~/util/modal';
 
 const closeIcon = require('~/assets/close.svg');
 

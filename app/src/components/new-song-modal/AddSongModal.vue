@@ -35,7 +35,7 @@ import Modal from '../Modal.vue';
 import InitialScreen from './InitialScreen.vue';
 import ConfirmScreen from './ConfirmScreen.vue';
 import MixtapeConfirmScreen from './MixtapeConfirmScreen.vue';
-import { closeModal } from '~/util/modal.js';
+import { closeModal } from '~/util/modal';
 
 const INITIAL_STATE = 'initial';
 const CONFIRM_STATE = 'confirm';

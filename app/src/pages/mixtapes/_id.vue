@@ -82,7 +82,7 @@ import PublishButton from '../../components/mixtapes/PublishButton.vue';
 import Panel from '../../components/Panel.vue';
 import ShareLandingBanner from '../../components/ShareLandingBanner.vue';
 import getMixtapeArt from '../../util/getMixtapeArt';
-import { showModal } from '~/util/modal.js';
+import { showModal } from '~/util/modal';
 
 export default {
   components: {
