@@ -10,6 +10,7 @@ import io.javalin.apibuilder.ApiBuilder
 import io.javalin.http.BadRequestResponse
 import io.javalin.http.Context
 import io.javalin.http.UnauthorizedResponse
+import io.javalin.plugin.openapi.annotations.OpenApi
 
 class TwitterAuthRoutes(
     private val twitterAuthService: TwitterAuthService,
@@ -23,6 +24,7 @@ class TwitterAuthRoutes(
         ApiBuilder.delete("/api/twitter-connect", this::deleteTwitterConnection)
     }
 
+    @OpenApi(ignore = true)
     private fun redirectToTwitterAuth(ctx: Context) {
         requireUserFromCookie(ctx)
         val redirect = ctx.queryParam("redirect") ?: "/"
@@ -33,6 +35,7 @@ class TwitterAuthRoutes(
         ctx.redirect(url)
     }
 
+    @OpenApi(ignore = true)
     private fun twitterAuthCallback(ctx: Context) {
         val user = requireUserFromCookie(ctx)
         val state = ctx.queryParam("state") ?: throw BadRequestResponse("Missing `state` param")
@@ -60,6 +63,7 @@ class TwitterAuthRoutes(
             ?: throw UnauthorizedResponse("Inavlid auth token cookie")
     }
 
+    @OpenApi(ignore = true)
     private fun deleteTwitterConnection(ctx: Context) {
         val user = ctx.requireUser()
         userDao.deleteTwitterCredentials(user.id)

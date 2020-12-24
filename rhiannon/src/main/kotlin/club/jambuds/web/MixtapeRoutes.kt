@@ -10,6 +10,7 @@ import com.google.gson.annotations.Expose
 import io.javalin.apibuilder.ApiBuilder
 import io.javalin.http.Context
 import io.javalin.http.NotFoundResponse
+import io.javalin.plugin.openapi.annotations.OpenApi
 import javax.validation.constraints.NotNull
 
 class MixtapeRoutes(private val mixtapeService: MixtapeService) {
@@ -32,6 +33,7 @@ class MixtapeRoutes(private val mixtapeService: MixtapeService) {
         @Expose val title: String
     )
 
+    @OpenApi(ignore = true)
     private fun createMixtape(ctx: Context) {
         val currentUser = ctx.requireUser()
         val body = ctx.validateJsonBody(CreateBody::class.java)
@@ -39,6 +41,7 @@ class MixtapeRoutes(private val mixtapeService: MixtapeService) {
         ctx.json(mixtape)
     }
 
+    @OpenApi(ignore = true)
     private fun getMixtape(ctx: Context) {
         val currentUserId = ctx.currentUser?.id
         val id = ctx.pathParam<Int>("id").get()
@@ -49,6 +52,7 @@ class MixtapeRoutes(private val mixtapeService: MixtapeService) {
         ctx.json(mixtape)
     }
 
+    @OpenApi(ignore = true)
     private fun deleteMixtape(ctx: Context) {
         val currentUser = ctx.requireUser()
         val id = ctx.pathParam<Int>("id").get()
@@ -63,6 +67,7 @@ class MixtapeRoutes(private val mixtapeService: MixtapeService) {
         @Expose val spotifyId: String
     )
 
+    @OpenApi(ignore = true)
     private fun addSongToMixtape(ctx: Context) {
         val currentUser = ctx.requireUser()
         val mixtapeId = ctx.pathParam<Int>("mixtapeId").get()
@@ -77,6 +82,7 @@ class MixtapeRoutes(private val mixtapeService: MixtapeService) {
         ctx.json(song)
     }
 
+    @OpenApi(ignore = true)
     private fun removeSongFromMixtape(ctx: Context) {
         val currentUser = ctx.requireUser()
         val mixtapeId = ctx.pathParam<Int>("mixtapeId").get()
@@ -96,6 +102,7 @@ class MixtapeRoutes(private val mixtapeService: MixtapeService) {
         @Expose val songOrder: List<Int>
     )
 
+    @OpenApi(ignore = true)
     private fun reorderSongsInMixtape(ctx: Context) {
         val currentUser = ctx.requireUser()
         val mixtapeId = ctx.pathParam<Int>("mixtapeId").get()
@@ -115,6 +122,7 @@ class MixtapeRoutes(private val mixtapeService: MixtapeService) {
         @Expose val title: String
     )
 
+    @OpenApi(ignore = true)
     private fun renameMixtape(ctx: Context) {
         val currentUser = ctx.requireUser()
         val mixtapeId = ctx.pathParam<Int>("mixtapeId").get()
@@ -129,6 +137,7 @@ class MixtapeRoutes(private val mixtapeService: MixtapeService) {
         ctx.json(RenameMixtapeResponse(newSlug))
     }
 
+    @OpenApi(ignore = true)
     private fun publishMixtape(ctx: Context) {
         val currentUser = ctx.requireUser()
         val mixtapeId = ctx.pathParam<Int>("mixtapeId").get()
@@ -138,6 +147,7 @@ class MixtapeRoutes(private val mixtapeService: MixtapeService) {
         ctx.status(204)
     }
 
+    @OpenApi(ignore = true)
     private fun getDraftMixtapes(ctx: Context) {
         val currentUser = ctx.requireUser()
         val mixtapes = mixtapeService.getDraftMixtapesByUser(currentUser)

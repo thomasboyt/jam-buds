@@ -63,8 +63,16 @@ import io.javalin.core.validation.JavalinValidation
 import io.javalin.plugin.json.FromJsonMapper
 import io.javalin.plugin.json.JavalinJson
 import io.javalin.plugin.json.ToJsonMapper
+import io.javalin.plugin.openapi.OpenApiOptions
+import io.javalin.plugin.openapi.OpenApiPlugin
+import io.javalin.plugin.openapi.ui.SwaggerOptions
 import io.lettuce.core.RedisClient
 import io.sentry.Sentry
+import io.swagger.v3.oas.models.Components
+import io.swagger.v3.oas.models.OpenAPI
+import io.swagger.v3.oas.models.info.Info
+import io.swagger.v3.oas.models.security.SecurityRequirement
+import io.swagger.v3.oas.models.security.SecurityScheme
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.kotlin.KotlinPlugin
 import org.jdbi.v3.postgres.PostgresPlugin
@@ -128,11 +136,41 @@ fun getConfig(): Config {
         .getConfig("rhiannon")
 }
 
-fun createJavalinApp(): Javalin {
+fun createOpenApiPlugin(): OpenApiPlugin {
+    val scheme = SecurityScheme().apply {
+        type = SecurityScheme.Type.APIKEY
+        `in` = SecurityScheme.In.HEADER
+        name = "X-Auth-Token"
+    }
+    val opts = OpenApiOptions {
+        OpenAPI()
+            .components(Components().apply {
+                addSecuritySchemes("token", scheme)
+            })
+            .security(listOf(SecurityRequirement().addList("token")))
+            .info(Info().apply {
+                version("1.0")
+                title("Jam Buds API")
+                description("Jam Buds API")
+            })
+    }.apply {
+        path("/swagger-docs")
+        swagger(SwaggerOptions("/swagger-ui"))
+        defaultDocumentation { doc ->
+            // TODO
+        }
+    }
+    return OpenApiPlugin(opts)
+}
+
+fun createJavalinApp(generateOpenApi: Boolean): Javalin {
     val app = Javalin.create { config ->
         config.defaultContentType = "application/json"
         config.showJavalinBanner = false // would be fun to turn this back on for not tests
         config.registerPlugin(NewRelicPlugin())
+        if (generateOpenApi) {
+            config.registerPlugin(createOpenApiPlugin())
+        }
     }
 
     configureJsonMapper()
@@ -291,7 +329,7 @@ fun main() {
     }
 
     val config = getConfig()
-    val app = createJavalinApp()
+    val app = createJavalinApp(true) // TODO
     wire(app, config)
     app.start(config.getInt("port"))
 }

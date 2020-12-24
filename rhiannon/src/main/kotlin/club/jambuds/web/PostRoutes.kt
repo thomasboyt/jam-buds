@@ -8,6 +8,7 @@ import club.jambuds.web.extensions.validateJsonBody
 import com.google.gson.annotations.Expose
 import io.javalin.apibuilder.ApiBuilder
 import io.javalin.http.Context
+import io.javalin.plugin.openapi.annotations.OpenApi
 import javax.validation.constraints.NotNull
 
 class PostRoutes(private val postService: PostService, private val reportService: ReportService) {
@@ -27,6 +28,7 @@ class PostRoutes(private val postService: PostService, private val reportService
         @Expose val postTweet: Boolean
     )
 
+    @OpenApi(ignore = true)
     private fun createPost(ctx: Context) {
         val user = ctx.requireUser()
         val body = ctx.validateJsonBody(PostSongBody::class.java)
@@ -51,6 +53,7 @@ class PostRoutes(private val postService: PostService, private val reportService
         }
     }
 
+    @OpenApi(ignore = true)
     private fun deletePost(ctx: Context) {
         val user = ctx.requireUser()
         val postId = ctx.pathParam<Int>("postId").get()
@@ -61,6 +64,7 @@ class PostRoutes(private val postService: PostService, private val reportService
         ctx.status(204)
     }
 
+    @OpenApi(ignore = true)
     private fun reportPost(ctx: Context) {
         val user = ctx.requireUser()
         val postId = ctx.pathParam<Int>("postId").get()

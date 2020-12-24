@@ -5,6 +5,7 @@ import club.jambuds.service.SpotifyAuthService
 import com.wrapper.spotify.model_objects.credentials.AuthorizationCodeCredentials
 import io.javalin.apibuilder.ApiBuilder
 import io.javalin.http.Context
+import io.javalin.plugin.openapi.annotations.OpenApi
 import org.eclipse.jetty.http.HttpCookie.SAME_SITE_STRICT_COMMENT
 import java.time.Instant
 import javax.servlet.http.Cookie
@@ -17,12 +18,14 @@ class SpotifyAuthRoutes(private val spotifyAuthService: SpotifyAuthService) {
         ApiBuilder.delete("/api/spotify-token", this::deleteSpotifyToken)
     }
 
+    @OpenApi(ignore = true)
     private fun redirectToSpotifyAuth(ctx: Context) {
         val redirectPath = ctx.queryParam<String>("redirect").get()
         val uri = spotifyAuthService.getAuthorizeUri(redirectPath)
         ctx.redirect(uri.toString())
     }
 
+    @OpenApi(ignore = true)
     private fun spotifyAuthCallback(ctx: Context) {
         val state = ctx.queryParam<String>("state").get()
         val code = ctx.queryParam<String>("code").getOrNull()
@@ -52,6 +55,7 @@ class SpotifyAuthRoutes(private val spotifyAuthService: SpotifyAuthService) {
         redirectWithParams("spotifySuccess")
     }
 
+    @OpenApi(ignore = true)
     private fun getSpotifyToken(ctx: Context) {
         val spotifyAccessToken = ctx.cookie("spotifyAccessToken")
         val spotifyRefreshToken = ctx.cookie("spotifyRefreshToken")
@@ -103,6 +107,7 @@ class SpotifyAuthRoutes(private val spotifyAuthService: SpotifyAuthService) {
         ctx.json(resp)
     }
 
+    @OpenApi(ignore = true)
     private fun deleteSpotifyToken(ctx: Context) {
         clearSpotifyCookies(ctx)
         ctx.status(204)
@@ -133,6 +138,7 @@ class SpotifyAuthRoutes(private val spotifyAuthService: SpotifyAuthService) {
         return expiresAt
     }
 
+    @OpenApi(ignore = true)
     private fun clearSpotifyCookies(ctx: Context) {
         val accessTokenCookie = Cookie("spotifyAccessToken", "")
         val refreshTokenCookie = Cookie("spotifyRefreshToken", "")

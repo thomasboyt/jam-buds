@@ -12,6 +12,7 @@ plugins {
     id "org.flywaydb.flyway" version "6.1.4"
     id 'com.google.cloud.tools.jib' version '2.5.0'
     id "org.jlleitschuh.gradle.ktlint" version "9.4.0"
+    id "io.swagger.core.v3.swagger-gradle-plugin" version "2.1.6"
 }
 
 apply plugin: 'kotlin'
@@ -47,9 +48,17 @@ repositories {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 
-    implementation 'io.javalin:javalin:3.7.0'
+    implementation 'io.javalin:javalin:3.12.0'
+    implementation 'io.javalin:javalin-openapi:3.12.0'
     implementation "com.typesafe:config:1.4.0"
     implementation 'com.google.code.gson:gson:2.8.6'
+
+    // swagger/openapi
+    implementation 'io.swagger.core.v3:swagger-annotations:2.1.6'
+    implementation 'io.swagger.core.v3:swagger-core:2.1.6'
+    implementation 'io.swagger.core.v3:swagger-models:2.1.6'
+    implementation 'org.webjars:swagger-ui:3.24.3'
+    implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.12.0'
 
     // email stuff
     implementation "io.pebbletemplates:pebble:3.1.4"

@@ -90,7 +90,7 @@ open class AppTest {
     fun wire(txn: Handle) {
         this.txn = txn
 
-        app = createJavalinApp()
+        app = createJavalinApp(false)
         app.start(testAppPort)
 
         mockSpotifyApiService = mock()

@@ -9,6 +9,7 @@ import club.jambuds.web.extensions.validateJsonBody
 import com.google.gson.annotations.Expose
 import io.javalin.apibuilder.ApiBuilder
 import io.javalin.http.Context
+import io.javalin.plugin.openapi.annotations.OpenApi
 import org.jetbrains.annotations.NotNull
 
 class SettingsRoutes(
@@ -25,6 +26,7 @@ class SettingsRoutes(
         ApiBuilder.post("/api/settings/go-private", this::hideInPublicFeed)
     }
 
+    @OpenApi(ignore = true)
     private fun getNewsletterSubscriptionStatus(ctx: Context) {
         val user = ctx.requireUser()
         val subscriptionId = buttondownService.getButtondownSubscriptionId(user.email)
@@ -32,6 +34,7 @@ class SettingsRoutes(
         ctx.json(GetNewsletterSubscriptionStatusResponse(subscribed = isSubscribed))
     }
 
+    @OpenApi(ignore = true)
     private fun subscribeToNewsletter(ctx: Context) {
         val user = ctx.requireUser()
         val subscriptionId = buttondownService.getButtondownSubscriptionId(user.email)
@@ -43,6 +46,7 @@ class SettingsRoutes(
         ctx.status(204)
     }
 
+    @OpenApi(ignore = true)
     private fun unsubscribeFromNewsletter(ctx: Context) {
         val user = ctx.requireUser()
         val subscriptionId = buttondownService.getButtondownSubscriptionId(user.email)
@@ -59,6 +63,7 @@ class SettingsRoutes(
         @field:NotNull @Expose val textColor: String
     )
 
+    @OpenApi(ignore = true)
     private fun updateColorScheme(ctx: Context) {
         val user = ctx.requireUser()
         val colorScheme = ctx.validateJsonBody(UpdateColorSchemeBody::class.java)
@@ -70,12 +75,14 @@ class SettingsRoutes(
         ctx.status(204)
     }
 
+    @OpenApi(ignore = true)
     private fun showInPublicFeed(ctx: Context) {
         val user = ctx.requireUser()
         userDao.updatePublicFeedVisibility(user.id, showInPublicFeed = true)
         ctx.status(204)
     }
 
+    @OpenApi(ignore = true)
     private fun hideInPublicFeed(ctx: Context) {
         val user = ctx.requireUser()
         userDao.updatePublicFeedVisibility(user.id, showInPublicFeed = false)

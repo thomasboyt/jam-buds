@@ -7,6 +7,7 @@ import io.javalin.apibuilder.ApiBuilder.delete
 import io.javalin.apibuilder.ApiBuilder.put
 import io.javalin.http.Context
 import io.javalin.http.NotFoundResponse
+import io.javalin.plugin.openapi.annotations.OpenApi
 
 class LikeRoutes(private val likeService: LikeService) {
     fun register() {
@@ -14,6 +15,7 @@ class LikeRoutes(private val likeService: LikeService) {
         delete("/api/likes/:type/:itemId", this::deleteLike)
     }
 
+    @OpenApi(ignore = true)
     private fun createLike(ctx: Context) {
         val currentUser = ctx.requireUser()
         val itemType = getItemType(ctx)
@@ -22,6 +24,7 @@ class LikeRoutes(private val likeService: LikeService) {
         ctx.status(204)
     }
 
+    @OpenApi(ignore = true)
     private fun deleteLike(ctx: Context) {
         val currentUser = ctx.requireUser()
         val itemType = getItemType(ctx)

@@ -6,6 +6,7 @@ import club.jambuds.web.extensions.validateJsonBody
 import com.google.gson.annotations.Expose
 import io.javalin.apibuilder.ApiBuilder
 import io.javalin.http.Context
+import io.javalin.plugin.openapi.annotations.OpenApi
 import javax.servlet.http.Cookie
 import javax.validation.constraints.NotNull
 import javax.validation.constraints.Pattern
@@ -38,6 +39,7 @@ class AuthRoutes(private val authService: AuthService, private val appUrl: Strin
         @Expose val sendCodeInsteadOfLink: Boolean?
     )
 
+    @OpenApi(ignore = true)
     private fun sendSignInToken(ctx: Context) {
         val body = ctx.validateJsonBody(SendSignInTokenBody::class.java)
         val resp = authService.sendSignInToken(
@@ -79,6 +81,7 @@ class AuthRoutes(private val authService: AuthService, private val appUrl: Strin
         @Expose val signInToken: String
     )
 
+    @OpenApi(ignore = true)
     private fun signIn(ctx: Context) {
         val body = ctx.validateJsonBody(SignInBody::class.java)
         val authToken = authService.signIn(body.signInToken)
@@ -109,6 +112,7 @@ class AuthRoutes(private val authService: AuthService, private val appUrl: Strin
         @Expose val referral: String
     )
 
+    @OpenApi(ignore = true)
     private fun register(ctx: Context) {
         val body = ctx.validateJsonBody(RegisterBody::class.java)
         val authToken = authService.registerUser(
@@ -123,6 +127,7 @@ class AuthRoutes(private val authService: AuthService, private val appUrl: Strin
         ctx.status(204)
     }
 
+    @OpenApi(ignore = true)
     private fun signOut(ctx: Context) {
         val token = ctx.cookie(AUTH_TOKEN_COOKIE)
         if (token != null) {
