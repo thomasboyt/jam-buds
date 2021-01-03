@@ -9,30 +9,33 @@
       :playback-source-label="playbackSourceLabel"
     />
 
-    <div class="audio-player--controls" v-if="currentSong">
+    <div class="audio-player--controls-wrapper" v-if="currentSong">
       <loading-spinner v-if="isBuffering" />
       <template v-else>
-        <div class="audio-player--control-container"></div>
-        <div class="audio-player--control-container">
-          <button
-            :class="{ 'play-pause-button': true, play: !isPlaying }"
-            @click="handlePlayPauseClick"
-            :disabled="!currentSong"
-          >
-            <icon :glyph="playPauseIcon" />
-          </button>
-        </div>
+        <div class="audio-player--controls">
+          <div class="audio-player--control-container" />
+          <div class="audio-player--control-container">
+            <button
+              :class="{ 'play-pause-button': true, play: !isPlaying }"
+              @click="handlePlayPauseClick"
+              :disabled="!currentSong"
+            >
+              <icon :glyph="playPauseIcon" />
+            </button>
+          </div>
 
-        <div class="audio-player--control-container">
-          <button
-            class="next-button"
-            @click="handleNextClick"
-            :disabled="!currentSong"
-          >
-            <icon :glyph="nextIcon" />
-          </button>
+          <div class="audio-player--control-container">
+            <button
+              class="next-button"
+              @click="handleNextClick"
+              :disabled="!currentSong"
+            >
+              <icon :glyph="nextIcon" />
+            </button>
+          </div>
         </div>
       </template>
+      <audio-player-progress />
     </div>
   </div>
 </template>
@@ -42,6 +45,7 @@ import { mapState, mapGetters } from 'vuex';
 
 import Icon from '../Icon.vue';
 import AudioPlayerSongDisplay from './AudioPlayerSongDisplay.vue';
+import AudioPlayerProgress from './AudioPlayerProgress.vue';
 import LoadingSpinner from './LoadingSpinner.vue';
 
 const playIcon = require('~/assets/play-filled.svg');
@@ -53,6 +57,7 @@ export default {
     Icon,
     LoadingSpinner,
     AudioPlayerSongDisplay,
+    AudioPlayerProgress,
   },
 
   data() {
@@ -69,6 +74,8 @@ export default {
       'isBuffering',
       'playbackSourcePath',
       'playbackSourceLabel',
+      'secondsElapsed',
+      'secondsTotal',
     ]),
 
     ...mapGetters('playback', ['currentSong']),
@@ -179,12 +186,13 @@ export default {
 
 .audio-player--controls {
   display: flex;
+  margin: 0 auto;
 
   button {
     margin: 0 auto;
-    height: 40px;
-    width: 40px;
-    border-radius: 40px;
+    height: 36px;
+    width: 36px;
+    border-radius: 36px;
     display: block;
 
     background: none;

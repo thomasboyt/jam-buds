@@ -24,6 +24,8 @@ const playback = {
 
       isPlaying: false,
       isBuffering: false,
+      secondsTotal: null,
+      secondsElapsed: null,
 
       /** Currently playing song ID*/
       currentSongId: null,

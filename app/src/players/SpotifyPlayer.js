@@ -196,6 +196,8 @@ export default class SpotifyPlayer {
 
     const syncState = {
       isPlaying: !state.paused,
+      secondsElapsed: Math.floor(state.position / 1000),
+      secondsTotal: Math.ceil(state.duration / 1000),
     };
     console.log('syncing', syncState);
     this.store.dispatch('playback/sync', syncState);
