@@ -19,6 +19,10 @@ export default class AppleMusicPlayer {
   async setSong(song) {
     this.songEnded = false;
 
+    this.store.dispatch('playback/sync', {
+      isBuffering: true,
+    });
+
     await MusicKit.getInstance().setQueue({
       song: song.appleMusicId,
     });
@@ -30,6 +34,21 @@ export default class AppleMusicPlayer {
     MusicKit.getInstance().addEventListener('playbackStateDidChange', (evt) =>
       this.onPlaybackStateChange(evt)
     );
+
+    MusicKit.getInstance().addEventListener(
+      'playbackDurationDidChange',
+      (evt) => {
+        this.store.dispatch('playback/sync', {
+          secondsTotal: evt.duration,
+        });
+      }
+    );
+
+    MusicKit.getInstance().addEventListener('playbackTimeDidChange', (evt) => {
+      this.store.dispatch('playback/sync', {
+        secondsElapsed: evt.currentPlaybackTime,
+      });
+    });
   }
 
   onPlaybackStateChange(evt) {
