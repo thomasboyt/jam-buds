@@ -25,7 +25,14 @@ const mixtapes = {
     },
 
     setMixtapePublished(state, { mixtapeId }) {
-      state.mixtapesById[mixtapeId].publishedAt = new Date().toISOString();
+      // Using vue.set because publishedAt is not present in returned mixtape
+      // resource if the playlist isn't published yet, so Vue doesn't pick it
+      // up w/r/t reactivity.
+      Vue.set(
+        state.mixtapesById[mixtapeId],
+        'publishedAt',
+        new Date().toISOString()
+      );
     },
 
     setMixtapeOrder(state, { mixtapeId, songOrder }) {
