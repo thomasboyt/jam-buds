@@ -13,7 +13,9 @@
       <loading-spinner v-if="isBuffering" />
       <template v-else>
         <div class="audio-player--controls">
-          <div class="audio-player--control-container" />
+          <div class="audio-player--control-container">
+            <audio-player-like-button class="like-toggle" :song="currentSong" />
+          </div>
           <div class="audio-player--control-container">
             <button
               :class="{ 'play-pause-button': true, play: !isPlaying }"
@@ -47,6 +49,7 @@ import Icon from '../Icon.vue';
 import AudioPlayerSongDisplay from './AudioPlayerSongDisplay.vue';
 import AudioPlayerProgress from './AudioPlayerProgress.vue';
 import LoadingSpinner from './LoadingSpinner.vue';
+import AudioPlayerLikeButton from './AudioPlayerLikeButton.vue';
 
 const playIcon = require('~/assets/play-filled.svg');
 const pauseIcon = require('~/assets/pause.svg');
@@ -58,6 +61,7 @@ export default {
     LoadingSpinner,
     AudioPlayerSongDisplay,
     AudioPlayerProgress,
+    AudioPlayerLikeButton,
   },
 
   data() {
@@ -220,7 +224,13 @@ export default {
     }
   }
 
-  .icon {
+  .like-toggle {
+    @media (max-width: $breakpoint-small) {
+      display: none;
+    }
+  }
+
+  ::v-deep .icon {
     width: 100%;
     height: 100%;
   }
