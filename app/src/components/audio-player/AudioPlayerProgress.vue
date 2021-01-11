@@ -119,7 +119,7 @@ export default {
 
 @media (min-width: $breakpoint-small) {
   .progress {
-    width: 300px;
+    width: 100%;
 
     color: white;
     font-size: 12px;

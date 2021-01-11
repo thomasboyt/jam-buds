@@ -153,15 +153,26 @@ export default {
       margin-left: auto;
       margin-right: 10px;
       flex-flow: row-reverse; // reverse play and next buttons
+    }
 
-      .loading-spinner {
-        // XXX: not sure why this is needed :\
-        margin-right: 26px;
-      }
+    .loading-spinner {
+      font-size: 6px;
+      margin-right: 26px;
     }
   }
 
   @media (min-width: $breakpoint-small) {
+    display: flex;
+    justify-items: center;
+
+    .audio-player--song-display {
+      width: 30%;
+    }
+
+    .audio-player--controls-wrapper {
+      width: 40%;
+    }
+
     .audio-player--controls {
       display: flex;
       width: 180px;
@@ -170,16 +181,10 @@ export default {
         flex: 1;
       }
     }
-  }
 
-  @media (min-width: $breakpoint-small) {
-    display: grid;
-    justify-items: center;
-    grid-column-gap: 5px;
-    grid-template-columns: 1fr 1fr 1fr;
-
-    .audio-player--song-display {
-      margin-right: auto; // right align this guy
+    .loading-spinner {
+      font-size: 6px;
+      margin: 16px auto;
     }
   }
 }

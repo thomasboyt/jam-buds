@@ -13,7 +13,7 @@
       <div>{{ title }}</div>
 
       <div>
-        <span class="hide-mobile">playing</span> from
+        from
         <nuxt-link :to="playbackSourcePath">
           {{ playbackSourceLabel }}
         </nuxt-link>
@@ -61,9 +61,14 @@ export default {
 
 .audio-player--song-display {
   display: flex;
-  min-width: 0;
-  max-width: 100%;
   height: 100%;
+  align-items: center;
+
+  margin-left: 10px;
+  margin-right: auto;
+  @media (min-width: $breakpoint-small) {
+    margin: 0;
+  }
 }
 
 .audio-player--label-container {
@@ -71,9 +76,11 @@ export default {
   max-width: 100%;
 
   color: white;
-  padding: 10px 15px;
   font-size: 14px;
 
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   > div {
     white-space: nowrap;
     overflow: hidden;
@@ -106,12 +113,6 @@ export default {
     fill: white;
   }
 
-  @media (max-width: $breakpoint-small) {
-    display: none;
-  }
-}
-
-.hide-mobile {
   @media (max-width: $breakpoint-small) {
     display: none;
   }
