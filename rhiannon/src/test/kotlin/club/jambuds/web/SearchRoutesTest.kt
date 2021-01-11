@@ -105,8 +105,7 @@ class SearchRoutesTest : AppTest() {
         whenever(mockAppleMusicService.getSongDetailsByIsrc("abcde")).thenReturn(
             AppleMusicSearchResult(
                 id = "hijkl",
-                attributes = AppleMusicSongAttributes(url = "asdf"),
-                playParams = emptyMap()
+                attributes = AppleMusicSongAttributes(url = "asdf", playParams = emptyMap())
             )
         )
 

@@ -13,13 +13,13 @@ interface AppleMusicClient {
 }
 
 data class AppleMusicSongAttributes(
-    val url: String
+    val url: String,
+    val playParams: Map<String, Any>?
 )
 
 data class AppleMusicSearchResult(
     val id: String,
-    val attributes: AppleMusicSongAttributes,
-    val playParams: Map<String, Any>?
+    val attributes: AppleMusicSongAttributes
 )
 
 data class AppleMusicSearchResponse(
@@ -27,7 +27,5 @@ data class AppleMusicSearchResponse(
 )
 
 fun getAppleMusicGson(): Gson {
-    return GsonBuilder()
-        .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-        .create()
+    return GsonBuilder().create()
 }
