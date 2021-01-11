@@ -141,8 +141,7 @@ const playback = {
       // mixtape playback
       if (context.state.mixtapeId) {
         const mixtapeId = context.state.mixtapeId;
-        const mixtape = context.rootState.mixtapes[mixtapeId];
-        const tracks = mixtape.tracks;
+        const tracks = context.rootState.mixtapes.tracksByMixtapeId[mixtapeId];
         const songIdx = tracks.findIndex(
           (id) => id === context.state.currentSongId
         );
@@ -198,7 +197,7 @@ const playback = {
      * Play a mixtape starting with a specific song ID.
      */
     playFromMixtape(context, { mixtapeId, mixtapeSlug, songId }) {
-      const mixtape = context.rootState.mixtapes[mixtapeId];
+      const mixtape = context.rootState.mixtapes.mixtapesById[mixtapeId];
       const playbackSourceLabel = mixtape.title;
       const playbackSourcePath = `/mixtapes/${mixtapeId}/${mixtapeSlug}`;
 
