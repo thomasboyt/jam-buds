@@ -23,6 +23,11 @@
         </nuxt-link>
       </li>
       <li>
+        <nuxt-link :to="`/users/${currentUserName}/liked`">
+          your likes
+        </nuxt-link>
+      </li>
+      <li>
         <nuxt-link :to="`/users/${currentUserName}/mixtapes`">
           your mixtapes
         </nuxt-link>
@@ -64,6 +69,7 @@ export default {
     profileActive() {
       return (
         this.$route.path.startsWith(`/users/${this.currentUserName}`) &&
+        this.$route.path !== `/users/${this.currentUserName}/liked` &&
         this.$route.path !== `/users/${this.currentUserName}/mixtapes` &&
         this.$route.path !== `/users/${this.currentUserName}/buds`
       );
