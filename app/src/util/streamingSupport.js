@@ -34,7 +34,7 @@ function getPlatformKey(ua, isWebView) {
     return isWebView ? 'iosNative' : 'iosWeb';
   } else if (ua.match(/Android/)) {
     return isWebView ? 'androidNative' : 'androidWeb';
-  } else if (ua.match(/Safari/)) {
+  } else if (ua.match(/Safari/) && !ua.match(/Edg\//)) {
     // "unknown" here because iPad sometimes pretends to be MacOS.
     // thankfully, we just want to disable spotify entirely across Safari
     return 'unknownSafariWeb';
