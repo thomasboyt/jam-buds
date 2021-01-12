@@ -1,10 +1,13 @@
 package club.jambuds.web
 
+import club.jambuds.responses.RefreshSpotifyTokenResponse
 import club.jambuds.responses.SpotifyTokenResponse
+import club.jambuds.responses.SwapSpotifyTokenResponse
 import club.jambuds.service.SpotifyAuthService
 import com.wrapper.spotify.model_objects.credentials.AuthorizationCodeCredentials
 import io.javalin.apibuilder.ApiBuilder
 import io.javalin.http.Context
+import io.javalin.http.UnauthorizedResponse
 import org.eclipse.jetty.http.HttpCookie.SAME_SITE_STRICT_COMMENT
 import java.time.Instant
 import javax.servlet.http.Cookie
@@ -15,6 +18,10 @@ class SpotifyAuthRoutes(private val spotifyAuthService: SpotifyAuthService) {
         ApiBuilder.get("/auth/spotify-connect/cb", this::spotifyAuthCallback)
         ApiBuilder.get("/api/spotify-token", this::getSpotifyToken)
         ApiBuilder.delete("/api/spotify-token", this::deleteSpotifyToken)
+
+        // mobile
+        ApiBuilder.post("/api/spotify-token/swap", this::swapSpotifyToken)
+        ApiBuilder.post("/api/spotify-token/refresh", this::refreshSpotifyToken)
     }
 
     private fun redirectToSpotifyAuth(ctx: Context) {
@@ -41,7 +48,7 @@ class SpotifyAuthRoutes(private val spotifyAuthService: SpotifyAuthService) {
             throw IllegalStateException("Missing one of code or error in spotify callback")
         }
 
-        val credentials = spotifyAuthService.redeemCallbackCode(code)
+        val credentials = spotifyAuthService.redeemCallbackCode(code, isMobile = false)
         val canPlayback = spotifyAuthService.validateUserCanPlayback(credentials)
 
         if (!canPlayback) {
@@ -82,7 +89,8 @@ class SpotifyAuthRoutes(private val spotifyAuthService: SpotifyAuthService) {
             return
         }
 
-        val credentials = spotifyAuthService.getRefreshedCredentials(spotifyRefreshToken)
+        val credentials =
+            spotifyAuthService.getRefreshedCredentials(spotifyRefreshToken, isMobile = false)
 
         if (credentials == null) {
             val resp = SpotifyTokenResponse(
@@ -145,5 +153,27 @@ class SpotifyAuthRoutes(private val spotifyAuthService: SpotifyAuthService) {
             cookie.comment = SAME_SITE_STRICT_COMMENT
             ctx.cookie(cookie)
         }
+    }
+
+    private fun swapSpotifyToken(ctx: Context) {
+        val code = ctx.formParam("code", String::class.java).get()
+        val credentials = spotifyAuthService.redeemCallbackCode(code, isMobile = true)
+        val resp = SwapSpotifyTokenResponse(
+            refreshToken = credentials.refreshToken,
+            accessToken = credentials.accessToken,
+            expiresIn = credentials.expiresIn
+        )
+        ctx.json(resp)
+    }
+
+    private fun refreshSpotifyToken(ctx: Context) {
+        val refreshToken = ctx.formParam("refresh_token", String::class.java).get()
+        val credentials = spotifyAuthService.getRefreshedCredentials(refreshToken, isMobile = true)
+            ?: throw UnauthorizedResponse("Refresh token was revoked")
+        val resp = RefreshSpotifyTokenResponse(
+            accessToken = credentials.accessToken,
+            expiresIn = credentials.expiresIn
+        )
+        ctx.json(resp)
     }
 }

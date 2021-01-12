@@ -14,11 +14,19 @@ class SpotifyAuthService(
     private val clientId: String,
     private val clientSecret: String
 ) {
-    private fun createSpotifyApi(): SpotifyApi {
+    private val mobileRedirectUri = SpotifyHttpManager.makeUri("jambuds://spotify-auth-callback")
+    private val webRedirectUri = SpotifyHttpManager.makeUri("$appUrl/auth/spotify-connect/cb")
+
+    private fun createSpotifyApi(isMobile: Boolean): SpotifyApi {
+        val redirectUri = if (isMobile) {
+            mobileRedirectUri
+        } else {
+            webRedirectUri
+        }
         return SpotifyApi.Builder()
             .setClientId(clientId)
             .setClientSecret(clientSecret)
-            .setRedirectUri(SpotifyHttpManager.makeUri("$appUrl/auth/spotify-connect/cb"))
+            .setRedirectUri(redirectUri)
             .build()
     }
 
@@ -32,7 +40,7 @@ class SpotifyAuthService(
             "user-read-private"
         ).joinToString(",")
 
-        val authorizationCodeUriRequest = createSpotifyApi().authorizationCodeUri()
+        val authorizationCodeUriRequest = createSpotifyApi(isMobile = false).authorizationCodeUri()
             .state(stateToken)
             .scope(scopes)
             .build()
@@ -40,13 +48,13 @@ class SpotifyAuthService(
         return authorizationCodeUriRequest.execute()
     }
 
-    fun redeemCallbackCode(code: String): AuthorizationCodeCredentials {
-        val authorizationCodeRequest = createSpotifyApi().authorizationCode(code).build()
+    fun redeemCallbackCode(code: String, isMobile: Boolean): AuthorizationCodeCredentials {
+        val authorizationCodeRequest = createSpotifyApi(isMobile).authorizationCode(code).build()
         return authorizationCodeRequest.execute()
     }
 
     fun validateUserCanPlayback(credentials: AuthorizationCodeCredentials): Boolean {
-        val spotifyApi = createSpotifyApi()
+        val spotifyApi = createSpotifyApi(isMobile = false)
         spotifyApi.accessToken = credentials.accessToken
         val resp = spotifyApi.currentUsersProfile.build().execute()
         return resp.product == ProductType.PREMIUM
@@ -57,8 +65,11 @@ class SpotifyAuthService(
             ?: throw IllegalStateException("No redirect path found for state $stateToken")
     }
 
-    fun getRefreshedCredentials(spotifyRefreshToken: String): AuthorizationCodeCredentials? {
-        val spotifyApi = createSpotifyApi()
+    fun getRefreshedCredentials(
+        spotifyRefreshToken: String,
+        isMobile: Boolean
+    ): AuthorizationCodeCredentials? {
+        val spotifyApi = createSpotifyApi(isMobile = isMobile)
         val req = spotifyApi.authorizationCodeRefresh()
             .refresh_token(spotifyRefreshToken)
             .build()
