@@ -1,4 +1,4 @@
-import { getOrCreatePlayer } from '../../players';
+import { getInitializedPlayer, getOrCreatePlayer } from '../../players';
 // const nextEntry = getNextSongEntry(playlist, entryIdx);
 
 // This takes advantage of playlist being ordered
@@ -26,6 +26,7 @@ const playback = {
       isBuffering: false,
       secondsTotal: null,
       secondsElapsed: null,
+      volume: 1,
 
       /** Currently playing song ID*/
       currentSongId: null,
@@ -89,6 +90,10 @@ const playback = {
         state[key] = syncState[key];
       }
     },
+
+    setVolume(state, volume) {
+      state.volume = volume;
+    },
   },
 
   actions: {
@@ -101,9 +106,14 @@ const playback = {
       context.commit('setPlayer', player);
       context.commit('playSong', { songId, songPlaylistTimestamp });
 
+      const storedVolume = parseFloat(localStorage.getItem('playerVolume'));
+      const initialVolume = Number.isNaN(storedVolume) ? 1 : storedVolume;
+      context.commit('setVolume', initialVolume);
+
       const playerInstance = await getOrCreatePlayer(player, {
         store: this,
         nativeBridge: this.$nativeBridge,
+        initialVolume,
       });
 
       const song = context.getters.currentSong;
@@ -132,9 +142,7 @@ const playback = {
      */
     async nextSong(context) {
       if (context.state.isPlaying) {
-        const playerInstance = await getOrCreatePlayer(context.state.player, {
-          store: this,
-        });
+        const playerInstance = getInitializedPlayer(context.state.player);
         playerInstance.pause();
       }
 
@@ -238,10 +246,8 @@ const playback = {
       });
     },
 
-    async togglePlayback(context) {
-      const playerInstance = await getOrCreatePlayer(context.state.player, {
-        store: this,
-      });
+    togglePlayback(context) {
+      const playerInstance = getInitializedPlayer(context.state.player);
 
       if (context.state.isPlaying) {
         playerInstance.pause();
@@ -256,6 +262,14 @@ const playback = {
 
     sync(context, payload) {
       context.commit('sync', payload);
+    },
+
+    changeVolume(context, volume) {
+      context.commit('setVolume', volume);
+
+      const playerInstance = getInitializedPlayer(context.state.player);
+      playerInstance.setVolume(volume);
+      localStorage.setItem('playerVolume', volume);
     },
   },
 

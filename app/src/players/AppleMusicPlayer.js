@@ -16,6 +16,10 @@ export default class AppleMusicPlayer {
     MusicKit.getInstance().pause();
   }
 
+  setVolume(volume) {
+    MusicKit.getInstance().player.volume = volume;
+  }
+
   async setSong(song) {
     this.songEnded = false;
 
@@ -30,25 +34,26 @@ export default class AppleMusicPlayer {
     await MusicKit.getInstance().play();
   }
 
-  async initialize() {
-    MusicKit.getInstance().addEventListener('playbackStateDidChange', (evt) =>
+  async initialize({ initialVolume }) {
+    const instance = MusicKit.getInstance();
+
+    instance.addEventListener('playbackStateDidChange', (evt) =>
       this.onPlaybackStateChange(evt)
     );
 
-    MusicKit.getInstance().addEventListener(
-      'playbackDurationDidChange',
-      (evt) => {
-        this.store.dispatch('playback/sync', {
-          secondsTotal: evt.duration,
-        });
-      }
-    );
+    instance.addEventListener('playbackDurationDidChange', (evt) => {
+      this.store.dispatch('playback/sync', {
+        secondsTotal: evt.duration,
+      });
+    });
 
-    MusicKit.getInstance().addEventListener('playbackTimeDidChange', (evt) => {
+    instance.addEventListener('playbackTimeDidChange', (evt) => {
       this.store.dispatch('playback/sync', {
         secondsElapsed: evt.currentPlaybackTime,
       });
     });
+
+    this.setVolume(initialVolume);
   }
 
   onPlaybackStateChange(evt) {

@@ -39,6 +39,10 @@
       </template>
       <audio-player-progress />
     </div>
+
+    <div class="volume-container">
+      <audio-player-volume-bar />
+    </div>
   </div>
 </template>
 
@@ -50,6 +54,7 @@ import AudioPlayerSongDisplay from './AudioPlayerSongDisplay.vue';
 import AudioPlayerProgress from './AudioPlayerProgress.vue';
 import LoadingSpinner from './LoadingSpinner.vue';
 import AudioPlayerLikeButton from './AudioPlayerLikeButton.vue';
+import AudioPlayerVolumeBar from './AudioPlayerVolumeBar.vue';
 
 const playIcon = require('~/assets/play-filled.svg');
 const pauseIcon = require('~/assets/pause.svg');
@@ -62,6 +67,7 @@ export default {
     AudioPlayerSongDisplay,
     AudioPlayerProgress,
     AudioPlayerLikeButton,
+    AudioPlayerVolumeBar,
   },
 
   data() {
@@ -163,6 +169,10 @@ export default {
       font-size: 6px;
       margin-right: 26px;
     }
+
+    .volume-container {
+      display: none;
+    }
   }
 
   @media (min-width: $breakpoint-small) {
@@ -175,6 +185,10 @@ export default {
 
     .audio-player--controls-wrapper {
       width: 40%;
+    }
+
+    .volume-container {
+      width: 30%;
     }
 
     .audio-player--controls {

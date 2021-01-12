@@ -45,6 +45,10 @@ export default class SpotifyPlayer {
     this._spotifyPlayer.pause();
   }
 
+  setVolume(volume) {
+    this._spotifyPlayer.setVolume(volume);
+  }
+
   async setSong(song) {
     this.trackStarted = false;
 
@@ -87,7 +91,7 @@ export default class SpotifyPlayer {
     });
   }
 
-  async initialize() {
+  async initialize({ initialVolume }) {
     // let's try to load spotify!!
     // 1. Load spotify SDK
     if (!spotifySDKLoaded) {
@@ -97,21 +101,21 @@ export default class SpotifyPlayer {
     }
 
     // 2. Create and connect player
-    await this._createAndReadyPlayer();
+    await this._createAndReadyPlayer(initialVolume);
 
     this._spotifyPlayer.addListener('player_state_changed', (state) =>
       this.onPlaybackStateChange(state)
     );
   }
 
-  async _createAndReadyPlayer() {
+  async _createAndReadyPlayer(initialVolume) {
     this._spotifyPlayer = new Spotify.Player({
       name: 'Jam Buds Player',
       getOAuthToken: async (cb) => {
         const token = await this._getOAuthToken();
         cb(token);
       },
-      volume: 0.5,
+      volume: initialVolume,
     });
 
     // TODO: maybe refactor this
