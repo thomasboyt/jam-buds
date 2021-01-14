@@ -2,7 +2,7 @@
   <div class="logged-out-home" :style="{ background: gradient }">
     <logged-out-header :show-mobile="true" />
     <div class="logged-out-main">
-      <div class="left-drawing">
+      <div class="drawing">
         <img :src="corgi" />
       </div>
 
@@ -23,16 +23,12 @@
         </div>
 
         <div v-else>
-          <h2>hey, listen!</h2>
+          <h2>music sounds better with friends</h2>
 
           <p>
-            this is
-            <strong>jam buds</strong>, a site for sharing music with friends
-          </p>
-
-          <p>
-            you can post songs you like, follow your friends, and listen to what
-            everyone you know is listening to.
+            no algorithms, no payola playlists. just what you and your friends
+            are listening to. optionally connect spotify or apple music for
+            seamless playback.
           </p>
 
           <p>
@@ -44,8 +40,8 @@
 
           <p class="email-note">
             (fyi: your email stays with us, and will only be used for
-            authentication unless you opt-in to other emails, like our extremely
-            cool weekly newsletter)
+            authentication unless you opt-in to other emails, like our
+            infrequently-published newsletter)
           </p>
         </div>
       </div>
@@ -121,11 +117,6 @@ export default {
     justify-content: center;
   }
 
-  .left-drawing {
-    flex: 0 1 auto;
-    transform: rotate(-10deg);
-  }
-
   .content {
     flex: 1 1 auto;
     margin-left: 70px;
@@ -133,27 +124,28 @@ export default {
   }
 }
 
-.left-drawing {
+.drawing {
+  margin: 0 auto;
+  text-align: center;
+
+  transform: rotate(10deg);
+  margin-bottom: 30px;
+  @media (min-width: $breakpoint-small) {
+    flex: 0 1 auto;
+    transform: rotate(-10deg);
+    margin: 0;
+  }
+
   img {
+    max-height: 250px;
     max-width: 100%;
     height: auto;
-    border: 15px hotpink solid;
-  }
+    border: 5px hotpink solid;
 
-  @media (max-width: $breakpoint-small) {
-    display: none;
-  }
-}
-
-.inline-drawing {
-  display: block;
-  max-height: 200px;
-  width: auto;
-  border: 10px hotpink solid;
-  margin: 0 auto;
-
-  @media (min-width: $breakpoint-small) {
-    display: none;
+    @media (min-width: $breakpoint-small) {
+      max-height: unset;
+      border-width: 15px;
+    }
   }
 }
 
@@ -161,13 +153,11 @@ h2 {
   line-height: 1em;
   margin-top: 0px;
   margin-bottom: 20px;
+  font-size: 48px;
 
   @media (max-width: $breakpoint-small) {
+    font-size: 30px;
     text-align: center;
-    font-size: 48px;
-  }
-  @media (min-width: $breakpoint-small) {
-    font-size: 72px;
   }
 }
 
