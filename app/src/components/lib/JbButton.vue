@@ -85,5 +85,9 @@ export default {
       color: rgba(255, 255, 255, 0.5);
     }
   }
+
+  &.full-width {
+    width: 100%;
+  }
 }
 </style>

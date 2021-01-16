@@ -1,16 +1,25 @@
 <template>
-  <form @submit="handleSubmit">
-    <input
-      type="email"
-      v-model="email"
-      placeholder="enter ur email..."
-      aria-label="Email"
-    />
+  <div>
+    <h2>sign up or log in</h2>
+    <form @submit="handleSubmit">
+      <input
+        type="email"
+        v-model="email"
+        placeholder="enter ur email..."
+        aria-label="Email"
+      />
 
-    <button type="submit" class="submit" :disabled="requestInFlight">
-      let's go!
-    </button>
-  </form>
+      <button type="submit" class="submit" :disabled="requestInFlight">
+        let's go!
+      </button>
+    </form>
+
+    <p class="email-note">
+      (fyi: your email stays with us, and will only be used for authentication
+      unless you opt-in to other emails, like our infrequently-published
+      newsletter)
+    </p>
+  </div>
 </template>
 
 <script>
@@ -100,5 +109,10 @@ input {
   background: yellow;
   color: black;
   font-weight: bold;
+}
+
+.email-note {
+  font-size: 12px;
+  margin-top: 12px;
 }
 </style>

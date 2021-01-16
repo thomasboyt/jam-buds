@@ -2,48 +2,26 @@
   <div class="logged-out-home" :style="{ background: gradient }">
     <logged-out-header :show-mobile="true" />
     <div class="logged-out-main">
-      <div class="drawing">
+      <div class="drawing desktop">
         <img :src="corgi" />
       </div>
 
       <div class="content">
-        <div v-if="sentMailAddress">
-          <h2>check ur mail!</h2>
-          <p>
-            Check your inbox at
-            <strong>{{ sentMailAddress }}</strong>
-            for a link to sign in or sign up.
-          </p>
-          <p class="email-note">
-            please allow up to 15 minutes for the email to arrive. due to
-            strange forces of computers outside of our control, sometimes our
-            emails may go to your "spam" folder, or, in Gmail, the "Promotions"
-            tab.
-          </p>
-        </div>
+        <sign-in-flow>
+          <template #initial-copy>
+            <div class="drawing mobile">
+              <img :src="corgi" />
+            </div>
 
-        <div v-else>
-          <h2>music sounds better with friends</h2>
+            <h2>music sounds better with friends</h2>
 
-          <p>
-            no algorithms, no payola playlists. just what you and your friends
-            are listening to. optionally connect spotify or apple music for
-            seamless playback.
-          </p>
-
-          <p>
-            want to get started?
-            <strong>sign up or log in below:</strong>
-          </p>
-
-          <sign-in-form @sentMail="handleSentMail" />
-
-          <p class="email-note">
-            (fyi: your email stays with us, and will only be used for
-            authentication unless you opt-in to other emails, like our
-            infrequently-published newsletter)
-          </p>
-        </div>
+            <p>
+              no algorithms, no payola playlists. just what you and your friends
+              are listening to. optionally connect spotify or apple music for
+              seamless playback.
+            </p>
+          </template>
+        </sign-in-flow>
       </div>
     </div>
 
@@ -60,19 +38,18 @@
 </template>
 
 <script>
-import SignInForm from './SignInForm.vue';
 import LoggedOutHeader from './LoggedOutHeader.vue';
 import corgi from '~/assets/ghettoblaster_corgi.png';
 import getGradient from '../util/gradients';
+import SignInFlow from './sign-in-flow/SignInFlow.vue';
 
 export default {
-  components: { SignInForm, LoggedOutHeader },
+  components: { LoggedOutHeader, SignInFlow },
 
   data() {
     return {
       corgi,
       gradient: getGradient('jam buds'),
-      sentMailAddress: null,
     };
   },
 
@@ -84,12 +61,6 @@ export default {
       );
       this.$router.replace(this.$route.path);
     }
-  },
-
-  methods: {
-    handleSentMail(emailAddress) {
-      this.sentMailAddress = emailAddress;
-    },
   },
 };
 </script>
@@ -120,7 +91,7 @@ export default {
   .content {
     flex: 1 1 auto;
     margin-left: 70px;
-    max-width: 400px;
+    max-width: 460px;
   }
 }
 
@@ -130,10 +101,28 @@ export default {
 
   transform: rotate(10deg);
   margin-bottom: 30px;
-  @media (min-width: $breakpoint-small) {
+
+  &.desktop {
     flex: 0 1 auto;
     transform: rotate(-10deg);
     margin: 0;
+
+    img {
+      max-height: unset;
+      border-width: 15px;
+    }
+
+    display: none;
+    @media (min-width: $breakpoint-small) {
+      display: block;
+    }
+  }
+
+  &.mobile {
+    display: block;
+    @media (min-width: $breakpoint-small) {
+      display: none;
+    }
   }
 
   img {
@@ -141,11 +130,6 @@ export default {
     max-width: 100%;
     height: auto;
     border: 5px hotpink solid;
-
-    @media (min-width: $breakpoint-small) {
-      max-height: unset;
-      border-width: 15px;
-    }
   }
 }
 
@@ -158,6 +142,16 @@ h2 {
   @media (max-width: $breakpoint-small) {
     font-size: 30px;
     text-align: center;
+  }
+}
+
+p {
+  font-size: 16px;
+  line-height: 20px;
+  margin-bottom: 36px;
+  @media (min-width: $breakpoint-small) {
+    font-size: 18px;
+    line-height: 24px;
   }
 }
 
