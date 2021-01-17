@@ -51,4 +51,13 @@ interface SongDao {
 
     @SqlQuery
     fun getSongExistsById(songId: Int): Boolean
+
+    @SqlQuery
+    fun hasSongListenedEntry(userId: Int, songId: Int): Boolean
+
+    @SqlUpdate
+    fun createSongListenedEntry(userId: Int, songId: Int)
+
+    @SqlUpdate
+    fun deleteSongListenedEntry(userId: Int, songId: Int)
 }
