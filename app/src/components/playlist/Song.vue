@@ -18,7 +18,7 @@
 
         <div class="playlist-song--label">
           <div class="label-content">
-            <div class="label-artist">{{ song.artists.join(', ') }}</div>
+            <div class="label-artist">{{ artistsLabel }}</div>
             <div class="label-title">{{ song.title }}</div>
           </div>
           <song-like-action :mobile="true" :song="song" />
@@ -139,6 +139,16 @@ export default {
 
     showYoutube() {
       return this.streamingService === null;
+    },
+
+    artistsLabel() {
+      // filter out artists mentioned in the song title, except for the first artist
+      // so "Disclosure, Kelis - Watch Your Step (Disclosure VIP Remix)" still shows "Disclosure, Kelis"
+      // but "Disclosure, Kelis - Watch Your Step (ft. Kelis)" just says "Disclosure"
+      const artistsToShow = this.song.artists.filter(
+        (artist, idx) => idx === 0 || !this.song.title.includes(artist)
+      );
+      return artistsToShow.join(', ');
     },
   },
 
