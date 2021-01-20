@@ -29,6 +29,7 @@ import club.jambuds.service.PlaylistService
 import club.jambuds.service.PostService
 import club.jambuds.service.ReportService
 import club.jambuds.service.SearchService
+import club.jambuds.service.SongService
 import club.jambuds.service.SpotifyApiService
 import club.jambuds.service.SpotifyAuthService
 import club.jambuds.service.TwitterAuthService
@@ -47,6 +48,7 @@ import club.jambuds.web.PlaylistRoutes
 import club.jambuds.web.PostRoutes
 import club.jambuds.web.SearchRoutes
 import club.jambuds.web.SettingsRoutes
+import club.jambuds.web.SongRoutes
 import club.jambuds.web.SpotifyAuthRoutes
 import club.jambuds.web.TwitterAuthRoutes
 import club.jambuds.web.UserRoutes
@@ -253,6 +255,8 @@ private fun wire(app: Javalin, config: Config) {
 
     val twitterAuthService = TwitterAuthService(userDao, twitterApiKey, twitterApiSecret)
 
+    val songService = SongService(songDao)
+
     // Routes
     app.routes {
         AuthHandlers(userDao).register()
@@ -273,6 +277,7 @@ private fun wire(app: Javalin, config: Config) {
             oAuthStateDao,
             config.getString("appUrl")
         ).register()
+        SongRoutes(songService).register()
     }
 }
 

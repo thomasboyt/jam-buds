@@ -52,6 +52,10 @@ const streaming = {
       context.commit('setStreamingService', serviceName);
     },
 
+    updateSessionStreamingService(context, serviceName) {
+      context.commit('setStreamingService', serviceName);
+    },
+
     unsetStreamingService(context) {
       localStorage.removeItem('streamingService');
       context.commit('setStreamingService', null);

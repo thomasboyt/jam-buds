@@ -3,10 +3,10 @@
     <img v-if="albumArt" class="album-art" :src="albumArt" />
     <icon v-else class="album-art -placeholder" :glyph="albumPlaceholderIcon" />
 
-    <div v-if="isPlaying || (isHovering && canPlay)" class="album-art-overlay">
+    <div v-if="overlayIcon" class="album-art-overlay">
       <icon
         :class="['playing-icon', { 'is-playing': isPlaying }]"
-        :glyph="playIcon"
+        :glyph="overlayIcon"
       />
     </div>
   </div>
@@ -16,17 +16,29 @@
 import Icon from '../Icon.vue';
 const albumPlaceholderIcon = require('~/assets/record.svg');
 const playIcon = require('~/assets/play-filled.svg');
+const youtubeIcon = require('~/assets/youtube.svg');
 
 export default {
   components: { Icon },
 
-  props: ['albumArt', 'isPlaying', 'isHovering', 'canPlay'],
+  props: ['albumArt', 'isPlaying', 'isHovering', 'canPlay', 'streamingService'],
 
   data() {
     return {
       albumPlaceholderIcon,
-      playIcon,
     };
+  },
+
+  computed: {
+    overlayIcon() {
+      if (this.isHovering && this.streamingService === 'youtube') {
+        return youtubeIcon;
+      }
+      if (this.isPlaying || (this.isHovering && this.canPlay)) {
+        return playIcon;
+      }
+      return null;
+    },
   },
 };
 </script>

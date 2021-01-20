@@ -26,6 +26,7 @@ import club.jambuds.service.PlaylistService
 import club.jambuds.service.PostService
 import club.jambuds.service.ReportService
 import club.jambuds.service.SearchService
+import club.jambuds.service.SongService
 import club.jambuds.service.SpotifyApiService
 import club.jambuds.service.TwitterService
 import club.jambuds.service.UserService
@@ -39,6 +40,7 @@ import club.jambuds.web.PlaylistRoutes
 import club.jambuds.web.PostRoutes
 import club.jambuds.web.SearchRoutes
 import club.jambuds.web.SettingsRoutes
+import club.jambuds.web.SongRoutes
 import club.jambuds.web.UserRoutes
 import com.nhaarman.mockitokotlin2.mock
 import io.javalin.Javalin
@@ -79,6 +81,7 @@ open class AppTest {
     lateinit var mockEmailClient: EmailClient
     lateinit var mockButtondownService: ButtondownService
 
+    lateinit var songDao: SongDao
     lateinit var userDao: UserDao
     lateinit var searchCacheDao: SearchCacheDao
     lateinit var followingService: FollowingService
@@ -96,7 +99,7 @@ open class AppTest {
         mockButtondownService = mock()
 
         val postDao = txn.attach(PostDao::class.java)
-        val songDao = txn.attach(SongDao::class.java)
+        songDao = txn.attach(SongDao::class.java)
         val mixtapeDao = txn.attach(MixtapeDao::class.java)
         userDao = txn.attach(UserDao::class.java)
         val colorSchemeDao = txn.attach(ColorSchemeDao::class.java)
@@ -144,6 +147,7 @@ open class AppTest {
             appUrl = config.getString("appUrl"),
             skipAuth = false
         )
+        val songService = SongService(songDao)
 
         app.routes {
             AuthHandlers(userDao).register()
@@ -157,6 +161,7 @@ open class AppTest {
             FollowingRoutes(followingService).register()
             AuthRoutes(authService, appUrl = config.getString("appUrl")).register()
             SettingsRoutes(mockButtondownService, userDao, colorSchemeDao).register()
+            SongRoutes(songService).register()
         }
     }
 

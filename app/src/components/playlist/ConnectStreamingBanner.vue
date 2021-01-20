@@ -18,8 +18,12 @@
         </p>
         <p class="close-line">
           or
-          <button type="button" @click="handleClose" class="link-button">
-            continue using youtube search
+          <button
+            type="button"
+            @click="handleSelectYoutube"
+            class="link-button"
+          >
+            just use youtube search
           </button>
         </p>
       </div>
@@ -49,6 +53,10 @@ export default {
 
   methods: {
     handleConnected() {
+      this.$emit('connected');
+    },
+    handleSelectYoutube() {
+      this.$store.dispatch('updateSessionStreamingService', 'youtube');
       this.$emit('connected');
     },
     handleClose() {

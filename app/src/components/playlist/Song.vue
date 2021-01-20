@@ -12,6 +12,7 @@
         <album-art
           :album-art="song.albumArt"
           :can-play="canRequestPlay"
+          :streaming-service="streamingService"
           :is-playing="isPlaying"
           :is-hovering="isHovering"
         />
@@ -26,7 +27,6 @@
 
         <span class="playlist-song--actions">
           <slot name="actions">
-            <song-youtube-action v-if="showYoutube" :song="song" />
             <song-like-action :song="song" />
             <song-dropdown-menu
               :song="song"
@@ -49,16 +49,15 @@ import { mapState, mapGetters } from 'vuex';
 
 import AlbumArt from './AlbumArt.vue';
 import SongLikeAction from './SongLikeAction.vue';
-import SongYoutubeAction from './SongYoutubeAction.vue';
 import SongDropdownMenu from './SongDropdownMenu.vue';
 import ConnectStreamingBanner from './ConnectStreamingBanner';
 import getSpotifyUrl from '~/util/getSpotifyUrl';
+import getYoutubeSearchUrl from '~/util/getYoutubeSearchUrl';
 
 export default {
   components: {
     AlbumArt,
     SongLikeAction,
-    SongYoutubeAction,
     SongDropdownMenu,
     ConnectStreamingBanner,
   },
@@ -137,10 +136,6 @@ export default {
       return this.currentSong && this.currentSong.id === this.song.id;
     },
 
-    showYoutube() {
-      return this.streamingService === null;
-    },
-
     artistsLabel() {
       // filter out artists mentioned in the song title, except for the first artist
       // so "Disclosure, Kelis - Watch Your Step (Disclosure VIP Remix)" still shows "Disclosure, Kelis"
@@ -177,7 +172,10 @@ export default {
         window.open(getSpotifyUrl(this.song.spotifyId));
       } else if (this.streamingService === 'appleMusic') {
         window.open(this.song.appleMusicUrl);
+      } else if (this.streamingService === 'youtube') {
+        window.open(getYoutubeSearchUrl(this.song));
       }
+      this.$store.dispatch('markSongPlayed', this.songId);
     },
     handleConnectedFromStreamingBanner() {
       this.showConnectStreamingBanner = false;
