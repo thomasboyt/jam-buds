@@ -175,6 +175,7 @@ export default {
       } else if (this.streamingService === 'youtube') {
         window.open(getYoutubeSearchUrl(this.song));
       }
+      this.$store.dispatch('markSongPlayed', this.songId);
     },
     handleConnectedFromStreamingBanner() {
       this.showConnectStreamingBanner = false;

@@ -50,6 +50,13 @@ const songs = {
         currentUserName: context.rootState.currentUser.name,
       });
     },
+
+    async markSongPlayed(context, id) {
+      await this.$axios({
+        url: `/songs/${id}/listened`,
+        method: 'PUT',
+      });
+    },
   },
 };
 
