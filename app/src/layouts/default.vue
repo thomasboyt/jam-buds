@@ -104,3 +104,12 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.page-container {
+  display: flex;
+  flex-flow: column;
+  margin: 0 auto;
+  min-height: 100vh;
+}
+</style>

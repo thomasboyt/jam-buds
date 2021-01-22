@@ -54,14 +54,14 @@
           >+ add a song</add-song-button
         >
       </template>
-      <div v-else class="main-placeholder">
+      <page-placeholder v-else>
         <add-song-button
           :style="{ margin: '0 auto' }"
           @click="handleAddSongOpen"
           v-if="isEditing"
           >+ add a song</add-song-button
         >
-      </div>
+      </page-placeholder>
 
       <add-song-modal
         v-if="isEditing"
@@ -81,6 +81,7 @@ import EditableTitle from '../../components/mixtapes/EditableTitle.vue';
 import PublishButton from '../../components/mixtapes/PublishButton.vue';
 import Panel from '../../components/Panel.vue';
 import ShareLandingBanner from '../../components/ShareLandingBanner.vue';
+import PagePlaceholder from '../../components/PagePlaceholder.vue';
 import getMixtapeArt from '../../util/getMixtapeArt';
 import { showModal } from '~/util/modal';
 
@@ -94,6 +95,7 @@ export default {
     PublishButton,
     Panel,
     ShareLandingBanner,
+    PagePlaceholder,
   },
 
   head() {

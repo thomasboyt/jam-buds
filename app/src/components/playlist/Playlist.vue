@@ -1,11 +1,11 @@
 <template>
-  <div v-if="isLoading && !hasLoadedInitialItems" class="main-placeholder">
+  <page-placeholder v-if="isLoading && !hasLoadedInitialItems">
     <!-- TODO: spinner go here? -->
-  </div>
+  </page-placeholder>
 
-  <div v-else-if="!items.length" class="main-placeholder">
+  <page-placeholder v-else-if="!items.length">
     <slot name="placeholder" />
-  </div>
+  </page-placeholder>
 
   <div v-else>
     <ul class="playlist-entries">
@@ -28,9 +28,10 @@
 <script>
 import { mapState } from 'vuex';
 import JbButton from '../lib/JbButton';
+import PagePlaceholder from '../PagePlaceholder.vue';
 
 export default {
-  components: { JbButton },
+  components: { JbButton, PagePlaceholder },
 
   props: ['playlistKey', 'loadingNextPage', 'isLoading'],
 

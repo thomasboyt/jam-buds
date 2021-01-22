@@ -78,6 +78,9 @@ export default {
 
 .logged-out-main {
   flex: 1;
+  padding: 10px;
+  padding-top: 20px;
+  padding-bottom: calc(var(--mobile-bottom-bar-height) + #{$player-bar-height});
 }
 
 // Desktop two-column layout

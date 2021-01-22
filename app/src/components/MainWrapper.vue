@@ -127,23 +127,42 @@ export default {
 }
 
 .main {
+  padding: 10px;
+  padding-top: 20px;
+  padding-bottom: calc(var(--mobile-bottom-bar-height) + #{$player-bar-height});
+  width: 100%;
+
   color: var(--theme-text-color);
+
   a {
     color: var(--theme-text-color);
   }
 
   @media (max-width: $breakpoint-small) {
     background: transparent;
+    padding-top: var(--mobile-header-height);
   }
 
   @media (min-width: $breakpoint-small) {
     background: var(--theme-body-background);
     background-attachment: fixed;
+    padding-top: 40px;
 
     &.with-sidebar {
       margin-left: $sidebar-width;
     }
   }
+}
+
+.container {
+  flex: 1 0 auto;
+  display: flex;
+  align-items: stretch;
+}
+
+.main-inner {
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 .error-page {
