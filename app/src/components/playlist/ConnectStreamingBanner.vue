@@ -4,7 +4,10 @@
     v-if="show"
     :duration="{ enter: 200, leave: 200 }"
   >
-    <div class="modal-overlay -streaming-banner" @click="handleClose">
+    <modal-overlay
+      class="connect-streaming-banner-overlay"
+      @click="handleClose"
+    >
       <div class="connect-streaming-banner">
         <p class="title">
           hey! to listen to music, select a streaming service:
@@ -27,7 +30,7 @@
           </button>
         </p>
       </div>
-    </div>
+    </modal-overlay>
   </transition>
 </template>
 
@@ -35,9 +38,10 @@
 import { enableBodyScroll, disableBodyScroll } from 'body-scroll-lock';
 import SpotifyConnectButton from '~/components/settings//SpotifyConnectButton.vue';
 import AppleMusicConnectButton from '~/components/settings/AppleMusicConnectButton.vue';
+import ModalOverlay from '../ModalOverlay.vue';
 
 export default {
-  components: { AppleMusicConnectButton, SpotifyConnectButton },
+  components: { AppleMusicConnectButton, SpotifyConnectButton, ModalOverlay },
 
   props: ['show'],
 
@@ -90,6 +94,10 @@ $banner-mobile-height: 330px;
   @media (max-width: $breakpoint-small) {
     height: $banner-mobile-height;
   }
+}
+
+.connect-streaming-banner-overlay {
+  z-index: $z-streaming-banner-overlay;
 }
 
 .connect-streaming-open-enter-active,

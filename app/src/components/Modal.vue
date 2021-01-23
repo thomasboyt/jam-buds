@@ -1,6 +1,6 @@
 <template>
   <transition name="modal-open" :duration="{ enter: 400, leave: 400 }">
-    <div v-if="isOpen" class="modal-overlay" @click="handleCloseModal">
+    <modal-overlay v-if="isOpen" @click="handleCloseModal">
       <div class="modal" @click="handleModalClick">
         <div class="modal-content">
           <div class="modal-top-row">
@@ -22,7 +22,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </modal-overlay>
   </transition>
 </template>
 
@@ -30,11 +30,12 @@
 import { enableBodyScroll, disableBodyScroll } from 'body-scroll-lock';
 import Icon from './Icon.vue';
 import { closeModal } from '~/util/modal';
+import ModalOverlay from './ModalOverlay.vue';
 
 const closeIcon = require('~/assets/close.svg');
 
 export default {
-  components: { Icon },
+  components: { Icon, ModalOverlay },
 
   props: ['title', 'isOpen'],
 
