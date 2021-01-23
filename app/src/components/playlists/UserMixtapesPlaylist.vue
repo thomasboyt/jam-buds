@@ -1,0 +1,63 @@
+<template>
+  <playlist
+    :playlist-key="playlistKey"
+    :loading-next-page="loadingNextPage"
+    :error="initialFetchState.error"
+    :is-loading="initialFetchState.pending"
+    @requestNextPage="handleRequestNextPage"
+  >
+    <template v-slot:item="{ item }">
+      <mixtape-item :timestamp="item.timestamp" :mixtape="item.mixtape" />
+      <entry-details
+        type="userPlaylist"
+        :id="item.postId"
+        :name="userName"
+        :note="item.noteText"
+        :date="item.timestamp"
+      />
+    </template>
+
+    <template #placeholder>
+      <p>This user does not have any mixtapes yet :(</p>
+    </template>
+  </playlist>
+</template>
+
+<script>
+import Playlist from '~/components/playlist/Playlist.vue';
+import MixtapeItem from '~/components/playlist/MixtapeItem.vue';
+import EntryDetails from '~/components/playlist/EntryDetails.vue';
+
+export default {
+  components: {
+    Playlist,
+    MixtapeItem,
+    EntryDetails,
+  },
+
+  props: ['userName', 'initialFetchState'],
+
+  computed: {
+    playlistKey() {
+      return `${this.userName}/mixtapes`;
+    },
+  },
+
+  methods: {
+    async handleRequestNextPage() {
+      this.loadingNextPage = true;
+
+      try {
+        await this.$store.dispatch('loadNextPlaylistPage', {
+          key: this.playlistKey,
+        });
+      } catch (err) {
+        this.$store.commit('showErrorModal');
+        throw err;
+      } finally {
+        this.loadingNextPage = false;
+      }
+    },
+  },
+};
+</script>

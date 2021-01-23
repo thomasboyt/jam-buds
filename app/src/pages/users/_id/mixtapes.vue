@@ -8,48 +8,27 @@
 
     <draft-mixtapes-list v-if="showDraftMixtapes" :mixtapes="draftMixtapes" />
 
-    <playlist
-      :playlist-key="playlistKey"
-      :loading-next-page="loadingNextPage"
-      :error="$fetchState.error"
-      :is-loading="$fetchState.pending"
-      @requestNextPage="handleRequestNextPage"
-    >
-      <template v-slot:item="{ item }">
-        <mixtape-item :timestamp="item.timestamp" :mixtape="item.mixtape" />
-        <entry-details
-          type="userPlaylist"
-          :id="item.postId"
-          :name="name"
-          :note="item.noteText"
-          :date="item.timestamp"
-        />
-      </template>
-
-      <template #placeholder>
-        <p>This user does not have any mixtapes yet :(</p>
-      </template>
-    </playlist>
+    <user-mixtapes-playlist
+      :user-name="name"
+      :initial-fetch-state="$fetchState"
+    />
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex';
+
 import ProfileNav from '~/components/profile/ProfileNav.vue';
 import DraftMixtapesList from '~/components/profile/DraftMixtapesList.vue';
 import CreateMixtapeButton from '~/components/profile/CreateMixtapeButton.vue';
-import Playlist from '~/components/playlist/Playlist.vue';
-import MixtapeItem from '~/components/playlist/MixtapeItem.vue';
-import EntryDetails from '~/components/playlist/EntryDetails.vue';
+import UserMixtapesPlaylist from '~/components/playlists/UserMixtapesPlaylist.vue';
 
 export default {
   components: {
     ProfileNav,
-    Playlist,
-    MixtapeItem,
     DraftMixtapesList,
     CreateMixtapeButton,
-    EntryDetails,
+    UserMixtapesPlaylist,
   },
 
   head() {
@@ -73,25 +52,15 @@ export default {
     return Promise.all(requests);
   },
 
-  data() {
-    return {
-      loadingNextPage: false,
-    };
-  },
-
   computed: {
     ...mapState({
       draftMixtapes: (state) => state.currentUser.draftMixtapes,
-
       isCurrentUserPage(state) {
         return state.auth.authenticated && state.currentUser.name === this.name;
       },
     }),
     name() {
       return this.$route.params.id;
-    },
-    playlistKey() {
-      return `${this.name}/mixtapes`;
     },
     title() {
       return `${this.name}'s mixtapes`;
@@ -103,23 +72,6 @@ export default {
         !this.$fetchState.error &&
         this.draftMixtapes.length
       );
-    },
-  },
-
-  methods: {
-    async handleRequestNextPage() {
-      this.loadingNextPage = true;
-
-      try {
-        await this.$store.dispatch('loadNextPlaylistPage', {
-          key: this.playlistKey,
-        });
-      } catch (err) {
-        this.$store.commit('showErrorModal');
-        throw err;
-      } finally {
-        this.loadingNextPage = false;
-      }
     },
   },
 };

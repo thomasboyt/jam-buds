@@ -1,6 +1,6 @@
 <template>
   <main-wrapper v-if="authenticated">
-    <feed />
+    <logged-in-home />
   </main-wrapper>
 
   <logged-out-home v-else />
@@ -8,14 +8,14 @@
 
 <script>
 import { mapState } from 'vuex';
-import Feed from '../components/Feed.vue';
+import LoggedInHome from '../components/LoggedInHome.vue';
 import LoggedOutHome from '../components/LoggedOutHome.vue';
 import MainWrapper from '../components/MainWrapper.vue';
 
 export default {
   components: {
-    Feed,
     MainWrapper,
+    LoggedInHome,
     LoggedOutHome,
   },
 

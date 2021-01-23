@@ -1,47 +1,18 @@
 <template>
   <div>
     <profile-nav :title="title" />
-    <playlist
-      :playlist-key="playlistKey"
-      :loading-next-page="loadingNextPage"
-      :error="$fetchState.error"
-      :is-loading="$fetchState.pending"
-      @requestNextPage="handleRequestNextPage"
-    >
-      <template v-slot:item="{ item }">
-        <playlist-entry
-          :item="item"
-          :user-name="name"
-          @requestPlay="handleRequestPlay"
-        />
-        <entry-details
-          type="userPlaylist"
-          :id="item.postId"
-          :name="name"
-          :note="item.noteText"
-          :date="item.timestamp"
-        />
-      </template>
-
-      <template v-slot:placeholder>
-        <p>This user has not posted any songs yet :(</p>
-      </template>
-    </playlist>
+    <user-playlist :user-name="name" />
   </div>
 </template>
 
 <script>
 import ProfileNav from '~/components/profile/ProfileNav.vue';
-import Playlist from '~/components/playlist/Playlist.vue';
-import PlaylistEntry from '~/components/playlist/PlaylistEntry.vue';
-import EntryDetails from '~/components/playlist/EntryDetails.vue';
+import UserPlaylist from '~/components/playlists/UserPlaylist.vue';
 
 export default {
   components: {
     ProfileNav,
-    Playlist,
-    PlaylistEntry,
-    EntryDetails,
+    UserPlaylist,
   },
 
   head() {
@@ -80,63 +51,12 @@ export default {
     };
   },
 
-  fetch() {
-    return this.$store.dispatch(
-      'loadProfilePostsPlaylist',
-      this.$route.params.id
-    );
-  },
-
-  data() {
-    return {
-      loadingNextPage: false,
-    };
-  },
-
   computed: {
     name() {
       return this.$route.params.id;
     },
-    playlistKey() {
-      return `${this.name}/posts`;
-    },
-    items() {
-      return this.$store.getters.playlistItems(this.playlistKey);
-    },
-    itemsExhausted() {
-      return this.$store.state.playlists[this.playlistKey].itemsExhausted;
-    },
-    playbackSourcePath() {
-      return `/users/${this.name}`;
-    },
     title() {
       return `${this.name}'s playlist`;
-    },
-  },
-
-  methods: {
-    async handleRequestNextPage() {
-      this.loadingNextPage = true;
-
-      try {
-        await this.$store.dispatch('loadNextPlaylistPage', {
-          key: this.playlistKey,
-        });
-      } catch (err) {
-        this.$store.commit('showErrorModal');
-        throw err;
-      } finally {
-        this.loadingNextPage = false;
-      }
-    },
-
-    handleRequestPlay(songId) {
-      this.$store.dispatch('playback/playFromPlaylist', {
-        songId,
-        playlistKey: this.playlistKey,
-        playbackSourceLabel: this.title,
-        playbackSourcePath: this.playbackSourcePath,
-      });
     },
   },
 };
