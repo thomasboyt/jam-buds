@@ -37,9 +37,7 @@ export default {
 
 <style lang="scss" scoped>
 ul {
-  list-style: none;
-  padding-left: 0;
-
+  padding: 20px 0;
   a {
     display: block;
     margin-bottom: 10px;

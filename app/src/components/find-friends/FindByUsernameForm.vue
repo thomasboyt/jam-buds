@@ -58,6 +58,7 @@ button {
   height: 45px;
   padding: 0 5px;
   font-family: 'Work Sans', sans-serif;
+  color: black;
 }
 
 button {

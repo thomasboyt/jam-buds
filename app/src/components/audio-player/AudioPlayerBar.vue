@@ -245,13 +245,9 @@ export default {
   }
 
   ::v-deep .icon {
-    width: 100%;
-    height: 100%;
-  }
-
-  button.play .icon {
-    // idk why this makes it seem more centered but it does
-    margin-left: 1px;
+    width: 20px;
+    height: 20px;
+    margin: 0 auto;
   }
 }
 </style>

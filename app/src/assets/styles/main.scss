@@ -1,8 +1,9 @@
+@import './normalize.css';
+@import './zero.css';
 @import './mixins';
-@import './z-index';
 
-* {
-  box-sizing: border-box;
+form {
+  margin: 0px;
 }
 
 :root {
@@ -41,8 +42,8 @@ p {
   margin-bottom: 1em;
 }
 
-form {
-  margin-bottom: 0px;
+a {
+  text-decoration: underline;
 }
 
 a:hover,
@@ -58,6 +59,7 @@ button,
   cursor: pointer;
   background: none;
   font-family: inherit;
+  line-height: 1.15em;
 }
 
 button:active,
