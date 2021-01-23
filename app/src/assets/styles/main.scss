@@ -71,3 +71,8 @@ button:active,
     transform: none;
   }
 }
+
+input::placeholder, textarea::placeholder {
+  color: inherit;
+  opacity: 0.5;
+}
