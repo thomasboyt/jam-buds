@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2>sign up or log in</h2>
+    <sign-in-header>sign up or log in</sign-in-header>
     <form @submit="handleSubmit">
       <input
         type="email"
@@ -23,7 +23,11 @@
 </template>
 
 <script>
+import SignInHeader from './SignInHeader.vue';
+
 export default {
+  components: { SignInHeader },
+
   data() {
     return {
       email: '',

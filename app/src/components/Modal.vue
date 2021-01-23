@@ -132,6 +132,7 @@ $modal-height: 550px;
     margin-top: 0;
     margin-bottom: 25px;
     font-size: 32px;
+    font-weight: 600;
     line-height: 40px;
     background: $post-song-gradient;
     -webkit-background-clip: text;

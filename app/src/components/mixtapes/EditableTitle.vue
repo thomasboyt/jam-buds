@@ -1,22 +1,22 @@
 <template>
-  <form v-if="editing" @submit="handleSubmit">
-    <h2 v-if="editing">
+  <header class="editable-title">
+    <form v-if="editing" @submit="handleSubmit">
       <input
         class="title-input"
         v-model="value"
         ref="titleInput"
         :disabled="requestInFlight"
       />
-    </h2>
 
-    <button type="submit" class="save-button" :disabled="requestInFlight">
-      Save
+      <button type="submit" class="save-button" :disabled="requestInFlight">
+        Save
+      </button>
+    </form>
+
+    <button v-else class="enter-button" type="button" @click="enterEditMode">
+      <h1>{{ mixtape.title }}</h1>
     </button>
-  </form>
-
-  <button v-else class="enter-button" type="button" @click="enterEditMode">
-    <h2>{{ mixtape.title }}</h2>
-  </button>
+  </header>
 </template>
 
 <script>
@@ -82,6 +82,10 @@ export default {
 <style scoped lang="scss">
 @import '~/assets/styles/mixins.scss';
 
+.editable-title {
+  margin-bottom: 32px;
+}
+
 form {
   display: flex;
   // width: 100%;
@@ -124,14 +128,15 @@ form {
   }
 }
 
+h1 {
+  @include page-header();
+}
+
 .title-input {
   border: 0;
   padding: 0;
   padding: 5px 5px;
   margin: -5px -5px;
-  font-family: inherit;
-  font-weight: inherit;
-  font-size: inherit;
-  line-height: inherit;
+  @include page-header();
 }
 </style>

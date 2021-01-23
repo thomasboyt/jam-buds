@@ -5,14 +5,13 @@
       <strong>{{ name }}</strong> is listening to, and share your own jams!
     </share-landing-banner>
 
-    <div class="user-header-top">
-      <page-header :title="name" />
-      <div class="cta-container">
+    <page-header :title="name">
+      <template #cta>
         <slot name="cta">
           <follow-toggle v-if="showFollowToggle" :name="name" />
         </slot>
-      </div>
-    </div>
+      </template>
+    </page-header>
 
     <link-tabs :link-prefix="`/users/${name}`" :links="links" />
   </div>
@@ -71,30 +70,6 @@ export default {
 @import '~/assets/styles/mixins.scss';
 
 .user-header {
-  h2 {
-    margin-bottom: 0px;
-  }
-
   margin-bottom: 16px;
-
-  .user-header-top {
-    display: flex;
-    align-items: center; // vertical align
-    margin-bottom: 16px;
-
-    > * {
-      flex: 0 0 auto;
-    }
-
-    .cta-container {
-      margin-left: auto;
-    }
-  }
-
-  @media (min-width: $breakpoint-small) {
-    .user-header-top {
-      margin-bottom: 32px;
-    }
-  }
 }
 </style>

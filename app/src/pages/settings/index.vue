@@ -2,46 +2,54 @@
   <main-wrapper>
     <page-header title="settings" />
 
-    <h3>connections</h3>
+    <div class="section">
+      <h2>connections</h2>
 
-    <streaming-service-panel />
-    <twitter-connect-panel />
+      <streaming-service-panel />
+      <twitter-connect-panel />
+    </div>
 
-    <h3>profile</h3>
+    <div class="section">
+      <h2>profile</h2>
 
-    <feed-privacy-panel />
-    <nuxt-link class="link-wrapper" to="/settings/color-scheme">
-      <settings-panel title="Color scheme" :is-link="true">
-        set the color scheme of your profile
-      </settings-panel>
-    </nuxt-link>
+      <feed-privacy-panel />
+      <nuxt-link class="link-wrapper" to="/settings/color-scheme">
+        <settings-panel title="Color scheme" :is-link="true">
+          set the color scheme of your profile
+        </settings-panel>
+      </nuxt-link>
+    </div>
 
-    <h3>notifications</h3>
+    <div class="section">
+      <h2>notifications</h2>
 
-    <notifications-panel />
+      <notifications-panel />
+    </div>
 
-    <h3>helpful links</h3>
+    <div class="section">
+      <h2>helpful links</h2>
 
-    <a class="link-wrapper" href="mailto:hello@jambuds.club">
-      <settings-panel title="Support" :is-link="true">
-        need to change your email or username or delete your account? just shoot
-        us a friendly email at <strong>hello@jambuds.club</strong> and we'll get
-        you sorted
-      </settings-panel>
-    </a>
+      <a class="link-wrapper" href="mailto:hello@jambuds.club">
+        <settings-panel title="Support" :is-link="true">
+          need to change your email or username or delete your account? just
+          shoot us a friendly email at <strong>hello@jambuds.club</strong> and
+          we'll get you sorted
+        </settings-panel>
+      </a>
 
-    <nuxt-link class="link-wrapper" to="/about">
-      <settings-panel title="About" :is-link="true">
-        in case you forgot what this thing you're using right now is (or if you
-        want a refresher on the rules of the place)
-      </settings-panel>
-    </nuxt-link>
+      <nuxt-link class="link-wrapper" to="/about">
+        <settings-panel title="About" :is-link="true">
+          in case you forgot what this thing you're using right now is (or if
+          you want a refresher on the rules of the place)
+        </settings-panel>
+      </nuxt-link>
 
-    <a href="#" class="link-wrapper" @click="handleSignOut">
-      <settings-panel title="Sign out" :is-link="true">
-        sign out of jam buds on this device
-      </settings-panel>
-    </a>
+      <a href="#" class="link-wrapper" @click="handleSignOut">
+        <settings-panel title="Sign out" :is-link="true">
+          sign out of jam buds on this device
+        </settings-panel>
+      </a>
+    </div>
   </main-wrapper>
 </template>
 
@@ -93,8 +101,18 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '~/assets/styles/mixins.scss';
+
 a.link-wrapper {
   display: block;
   text-decoration: none;
+}
+
+h2 {
+  @include heading-md();
+}
+
+.section {
+  margin-bottom: 2rem;
 }
 </style>

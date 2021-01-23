@@ -108,8 +108,8 @@ a.settings-panel {
   }
 
   h3 {
-    margin: 0;
-    margin-bottom: 8px;
+    @include heading-sm();
+    margin-bottom: 0.5rem;
   }
 
   button.expand-row {

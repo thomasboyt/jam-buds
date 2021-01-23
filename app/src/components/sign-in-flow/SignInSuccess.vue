@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2>check ur mail!</h2>
+    <sign-in-header>check ur mail!</sign-in-header>
     <p>
       Check your inbox at
       <strong>{{ sentEmail }}</strong>
@@ -15,7 +15,11 @@
 </template>
 
 <script>
+import SignInHeader from './SignInHeader.vue';
+
 export default {
+  components: { SignInHeader },
+
   props: ['sentEmail'],
 };
 </script>

@@ -8,7 +8,7 @@
       <div class="header-center">
         <transition name="title-fade" mode="out-in">
           <div v-if="pageTitle" class="page-title-container" key="title">
-            <h2>{{ pageTitle }}</h2>
+            <h1>{{ pageTitle }}</h1>
           </div>
 
           <div v-else-if="!authenticated" class="logo-container" key="logo">
@@ -157,7 +157,7 @@ export default {
     margin-top: -5px;
   }
 
-  .page-title-container h2 {
+  .page-title-container h1 {
     font-size: 22px;
     font-weight: 700;
     margin-bottom: 0;

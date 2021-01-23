@@ -2,10 +2,10 @@
   <div class="welcome-page-wrapper" :style="{ background: gradient }">
     <logged-out-header :show-mobile="true" />
 
-    <h2>
+    <h1>
       <span v-if="name">welcome, {{ name }}!</span>
       <span v-else>welcome!</span>
-    </h2>
+    </h1>
 
     <transition name="fade">
       <nuxt-child class="fade-page" />
@@ -42,11 +42,10 @@ export default {
 <style lang="scss" scoped>
 @import '~/assets/styles/mixins.scss';
 
-h2 {
+h1 {
+  @include page-header();
   text-align: center;
-  font-size: 48px;
-  line-height: 1em;
-  margin-bottom: 24px;
+  margin-bottom: 32px;
 }
 
 .welcome-page-wrapper {

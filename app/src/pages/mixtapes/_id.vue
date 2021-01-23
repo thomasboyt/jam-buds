@@ -14,7 +14,7 @@
         @exit="handleExitEditTitle"
       />
 
-      <h2 v-else>{{ mixtape.title }}</h2>
+      <page-header v-else :title="mixtape.title" />
 
       <p class="mixtape-meta">
         <span v-if="isOwnMixtape">your mixtape</span>
@@ -82,6 +82,7 @@ import PublishButton from '../../components/mixtapes/PublishButton.vue';
 import Panel from '../../components/Panel.vue';
 import ShareLandingBanner from '../../components/ShareLandingBanner.vue';
 import PagePlaceholder from '../../components/PagePlaceholder.vue';
+import PageHeader from '~/components/PageHeader.vue';
 import getMixtapeArt from '../../util/getMixtapeArt';
 import { showModal } from '~/util/modal';
 
@@ -96,6 +97,7 @@ export default {
     Panel,
     ShareLandingBanner,
     PagePlaceholder,
+    PageHeader,
   },
 
   head() {

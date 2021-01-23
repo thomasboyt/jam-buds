@@ -84,12 +84,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '~/assets/styles/mixins.scss';
+
 .header-row {
   display: flex;
   align-items: center;
   margin: 24px 0;
 
   h3 {
+    @include heading-md();
     margin: 0;
   }
 

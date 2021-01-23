@@ -1,13 +1,12 @@
 <template>
   <div class="playlist">
-    <div class="header-row">
-      <page-header title="your feed" />
-      <div class="header-row-button-container">
+    <page-header title="your feed">
+      <template #cta>
         <add-song-button @click="handleAddSongClick">
           + post a song
         </add-song-button>
-      </div>
-    </div>
+      </template>
+    </page-header>
 
     <playlist
       playlist-key="feed"
@@ -121,17 +120,3 @@ export default {
   },
 };
 </script>
-
-<style lang="scss" scoped>
-.header-row {
-  display: flex;
-  margin-bottom: 30px;
-  h2 {
-    margin-bottom: 0px;
-  }
-}
-.header-row-button-container {
-  margin-left: auto;
-  display: flex;
-}
-</style>

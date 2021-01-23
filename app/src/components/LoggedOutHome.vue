@@ -13,7 +13,7 @@
               <img :src="corgi" />
             </div>
 
-            <h2>music sounds better with friends</h2>
+            <sign-in-header>music sounds better with friends</sign-in-header>
 
             <p>
               no algorithms, no payola playlists. just what you and your friends
@@ -42,9 +42,10 @@ import LoggedOutHeader from './LoggedOutHeader.vue';
 import corgi from '~/assets/ghettoblaster_corgi.png';
 import getGradient from '../util/gradients';
 import SignInFlow from './sign-in-flow/SignInFlow.vue';
+import SignInHeader from './sign-in-flow/SignInHeader.vue';
 
 export default {
-  components: { LoggedOutHeader, SignInFlow },
+  components: { LoggedOutHeader, SignInFlow, SignInHeader },
 
   data() {
     return {
@@ -100,8 +101,6 @@ export default {
 
 .drawing {
   margin: 0 auto;
-  text-align: center;
-
   transform: rotate(10deg);
   margin-bottom: 30px;
 
@@ -133,18 +132,7 @@ export default {
     max-width: 100%;
     height: auto;
     border: 5px hotpink solid;
-  }
-}
-
-h2 {
-  line-height: 1em;
-  margin-top: 0px;
-  margin-bottom: 20px;
-  font-size: 48px;
-
-  @media (max-width: $breakpoint-small) {
-    font-size: 30px;
-    text-align: center;
+    margin: 0 auto;
   }
 }
 

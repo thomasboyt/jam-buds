@@ -33,3 +33,27 @@ $player-bar-height: 80px;
   white-space: nowrap !important;
   border: 0 !important;
 }
+
+@mixin page-header() {
+  font-weight: 600;
+  font-size: 40px;
+  line-height: 1em;
+
+  @media (max-width: $breakpoint-small) {
+    font-size: 32px;
+  }
+}
+
+@mixin heading-md {
+  font-size: 24px;
+  line-height: 30px;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+@mixin heading-sm {
+  font-size: 18px;
+  line-height: 24px;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}

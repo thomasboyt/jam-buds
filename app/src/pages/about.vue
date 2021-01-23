@@ -1,8 +1,8 @@
 <template>
   <main-wrapper>
-    <h2>about jam buds</h2>
+    <page-header title="about jam buds" />
 
-    <h3>what is this thing</h3>
+    <h2>what is this thing</h2>
 
     <p>
       this is
@@ -14,7 +14,7 @@
       everyone you know is listening to.
     </p>
 
-    <h3>the rules of the place</h3>
+    <h2>the rules of the place</h2>
 
     <ul>
       <li>
@@ -48,7 +48,7 @@
 
     <p>I reserve the right to remove any user from the site at any time.</p>
 
-    <h3>something's broken / I have an idea</h3>
+    <h2>something's broken / I have an idea</h2>
 
     <p>
       jam buds is under active development and exists in a constant state of
@@ -62,7 +62,7 @@
       <a href="mailto:hello@jambuds.club">hello@jambuds.club</a>!
     </p>
 
-    <h3>who's responsible for this mess</h3>
+    <h2>who's responsible for this mess</h2>
 
     <p>
       this site was built by
@@ -74,7 +74,7 @@
 
     <p>in addition, this site uses the following assets:</p>
 
-    <h4>images</h4>
+    <h3>images</h3>
 
     <ul>
       <li>
@@ -83,7 +83,7 @@
       </li>
     </ul>
 
-    <h4>icons</h4>
+    <h3>icons</h3>
 
     <ul>
       <li>Record by Clayton Meador from the Noun Project</li>
@@ -93,7 +93,7 @@
       <li>menu by Ismael Ruiz from the Noun Project</li>
     </ul>
 
-    <h3>nerd things</h3>
+    <h2>nerd things</h2>
 
     <p>
       the code for jam buds is open source and viewable
@@ -105,10 +105,11 @@
 </template>
 
 <script>
+import PageHeader from '~/components/PageHeader.vue';
 import MainWrapper from '../components/MainWrapper.vue';
 
 export default {
-  components: { MainWrapper },
+  components: { MainWrapper, PageHeader },
 
   head() {
     return {
@@ -117,3 +118,21 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+@import '~/assets/styles/mixins.scss';
+
+h2 {
+  @include heading-md();
+}
+
+h3 {
+  @include heading-sm();
+}
+
+ul {
+  list-style-type: disc;
+  padding-left: 1em;
+  margin-bottom: 1em;
+}
+</style>

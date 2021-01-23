@@ -1,5 +1,5 @@
 <template>
-  <h2>
+  <header>
     <intersect
       :threshold="[0.1, 0]"
       :root-margin="rootMargin"
@@ -8,8 +8,15 @@
     >
       <div class="intersect-bar" />
     </intersect>
-    {{ title }}
-  </h2>
+
+    <h1>
+      {{ title }}
+    </h1>
+
+    <div class="cta-container">
+      <slot name="cta" />
+    </div>
+  </header>
 </template>
 
 <script>
@@ -44,8 +51,25 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-h2 {
+@import '~/assets/styles/mixins.scss';
+
+header {
   position: relative;
+  display: flex;
+  align-items: center;
+  margin-bottom: 24px;
+
+  > * {
+    flex: 0 0 auto;
+  }
+
+  .cta-container {
+    margin-left: auto;
+  }
+}
+
+h1 {
+  @include page-header();
 }
 
 .intersect-bar {
