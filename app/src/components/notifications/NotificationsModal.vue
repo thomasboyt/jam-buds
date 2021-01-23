@@ -92,30 +92,24 @@ export default {
   padding: 8px 12px;
 }
 
-ul {
-  list-style-type: none;
-  padding-left: 0;
-  margin: 0;
+ul li a {
+  color: #e1e1e1;
+  display: block;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 10px;
+  margin-bottom: 8px;
+  text-decoration: none;
 
-  li a {
-    color: #e1e1e1;
-    display: block;
-    background: rgba(0, 0, 0, 0.4);
-    padding: 10px;
-    margin-bottom: 8px;
-    text-decoration: none;
+  &.read {
+    color: #bbb;
+  }
 
-    &.read {
-      color: #bbb;
-    }
+  .timestamp {
+    font-size: 12px;
+    margin-top: 5px;
 
-    .timestamp {
-      font-size: 12px;
-      margin-top: 5px;
-
-      @media (min-width: $breakpoint-small) {
-        font-size: 14px;
-      }
+    @media (min-width: $breakpoint-small) {
+      font-size: 14px;
     }
   }
 }

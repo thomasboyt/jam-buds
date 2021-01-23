@@ -135,27 +135,22 @@ export default {
     color: #ccc;
   }
 
-  ul {
-    list-style-type: none;
-    padding-left: 0;
+  ul li a {
+    display: block;
+    width: 100%;
+    text-decoration: none;
+    padding: 8px 0;
 
-    li a {
-      display: block;
-      width: 100%;
-      text-decoration: none;
-      padding: 8px 0;
-
-      &.nuxt-link-exact-active,
+    &.nuxt-link-exact-active,
       // 1) prevent "your feed" from always being highlighted!
       // 2) special case so profile is always highlighted unless "your mixtapes" is active
       &.nuxt-link-active:not([href='/']):not(.profile-link),
       &.profile-link-active {
-        color: white;
-        font-weight: 600;
-      }
-      &:hover {
-        color: white;
-      }
+      color: white;
+      font-weight: 600;
+    }
+    &:hover {
+      color: white;
     }
   }
 }

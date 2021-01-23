@@ -219,11 +219,6 @@ export default {
 <style lang="scss" scoped>
 @import '~/assets/styles/mixins.scss';
 
-ul.playlist-entries {
-  list-style-type: none;
-  padding-left: 0px;
-}
-
 .mixtape-meta {
   font-size: 18px;
 

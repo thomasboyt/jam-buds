@@ -91,12 +91,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-ul {
-  list-style-type: none;
-  margin-left: 0px;
-  padding-left: 0px;
-}
-
 .checkbox-option {
   background: rgba(0, 0, 0, 0.05);
   border-radius: 10px;

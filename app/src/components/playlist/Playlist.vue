@@ -8,7 +8,7 @@
   </page-placeholder>
 
   <div v-else>
-    <ul class="playlist-entries">
+    <ul>
       <li v-for="item in items" :key="item.id">
         <slot name="item" :item="item" />
       </li>
@@ -59,12 +59,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-ul.playlist-entries {
-  list-style-type: none;
-  padding-left: 0px;
-  margin-top: 0px;
-}
-
 .load-page-button {
   width: 100%;
   padding: 20px 0;

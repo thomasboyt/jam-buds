@@ -39,15 +39,11 @@ export default {
   text-align: left;
 
   ul {
-    margin: 0;
-    padding-left: 0px;
-
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
 
     li {
-      list-style-type: none;
       margin-left: 20px;
 
       &:first-child {

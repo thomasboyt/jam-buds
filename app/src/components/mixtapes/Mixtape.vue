@@ -1,11 +1,6 @@
 <template>
   <div>
-    <draggable
-      v-model="mixtapeTracks"
-      handle=".drag-handle"
-      tag="ul"
-      class="playlist-entries"
-    >
+    <draggable v-model="mixtapeTracks" handle=".drag-handle" tag="ul">
       <li v-for="songId in mixtapeTracks" :key="songId">
         <song
           :song-id="songId"
@@ -87,10 +82,3 @@ export default {
   },
 };
 </script>
-
-<style lang="scss" scoped>
-ul.playlist-entries {
-  list-style-type: none;
-  padding-left: 0px;
-}
-</style>

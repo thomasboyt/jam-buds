@@ -33,10 +33,6 @@ export default {
 
 <style scoped lang="scss">
 ul {
-  list-style-type: none;
-  margin-left: 0px;
-  padding-left: 0px;
-
   display: flex;
   flex-wrap: wrap;
 }
