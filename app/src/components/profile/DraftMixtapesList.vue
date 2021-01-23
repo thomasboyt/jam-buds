@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import Panel from './Panel';
+import Panel from '~/components/Panel';
 
 export default {
   components: { Panel },

@@ -31,10 +31,10 @@
 </template>
 
 <script>
-import ProfileNav from '../../../components/ProfileNav.vue';
-import Playlist from '../../../components/playlist/Playlist.vue';
-import PlaylistEntry from '../../../components/playlist/PlaylistEntry.vue';
-import EntryDetails from '../../../components/playlist/EntryDetails.vue';
+import ProfileNav from '~/components/profile/ProfileNav.vue';
+import Playlist from '~/components/playlist/Playlist.vue';
+import PlaylistEntry from '~/components/playlist/PlaylistEntry.vue';
+import EntryDetails from '~/components/playlist/EntryDetails.vue';
 
 export default {
   components: {

@@ -35,12 +35,12 @@
 
 <script>
 import { mapState } from 'vuex';
-import ProfileNav from '../../../components/ProfileNav.vue';
-import Playlist from '../../../components/playlist/Playlist.vue';
-import MixtapeItem from '../../../components/playlist/MixtapeItem.vue';
-import EntryDetails from '../../../components/playlist/EntryDetails.vue';
-import DraftMixtapesList from '../../../components/DraftMixtapesList.vue';
-import CreateMixtapeButton from '../../../components/CreateMixtapeButton.vue';
+import ProfileNav from '~/components/profile/ProfileNav.vue';
+import DraftMixtapesList from '~/components/profile/DraftMixtapesList.vue';
+import CreateMixtapeButton from '~/components/profile/CreateMixtapeButton.vue';
+import Playlist from '~/components/playlist/Playlist.vue';
+import MixtapeItem from '~/components/playlist/MixtapeItem.vue';
+import EntryDetails from '~/components/playlist/EntryDetails.vue';
 
 export default {
   components: {

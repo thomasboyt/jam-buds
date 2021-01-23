@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import AddSongButton from './AddSongButton.vue';
+import AddSongButton from '~/components/AddSongButton.vue';
 
 export default {
   components: { AddSongButton },

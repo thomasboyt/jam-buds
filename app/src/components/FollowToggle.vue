@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import JbButton from './lib/JbButton';
+import JbButton from '~/components/lib/JbButton';
 
 export default {
   components: { JbButton },

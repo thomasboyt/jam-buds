@@ -19,10 +19,10 @@
 
 <script>
 import { mapState } from 'vuex';
-import FollowToggle from './FollowToggle.vue';
 import LinkTabs from './LinkTabs.vue';
-import ShareLandingBanner from './ShareLandingBanner.vue';
-import PageHeader from './PageHeader.vue';
+import FollowToggle from '~/components/FollowToggle.vue';
+import ShareLandingBanner from '~/components/ShareLandingBanner.vue';
+import PageHeader from '~/components/PageHeader.vue';
 
 export default {
   components: { FollowToggle, LinkTabs, ShareLandingBanner, PageHeader },

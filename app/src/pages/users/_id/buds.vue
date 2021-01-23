@@ -27,8 +27,8 @@
 </template>
 
 <script>
-import ProfileNav from '~/components/ProfileNav.vue';
-import UsersList from '~/components/UsersList.vue';
+import ProfileNav from '~/components/profile/ProfileNav.vue';
+import UsersList from '~/components/profile/UsersList.vue';
 import FindFriendsModal from '~/components/find-friends/FindFriendsModal';
 
 export default {
