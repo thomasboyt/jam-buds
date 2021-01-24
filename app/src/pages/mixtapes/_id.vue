@@ -220,17 +220,11 @@ export default {
 @import '~/assets/styles/mixins.scss';
 
 .mixtape-meta {
-  font-size: 18px;
+  font-size: $text-md;
 
   @media (max-width: $breakpoint-small) {
-    font-size: 16px;
+    font-size: $text-base;
   }
-}
-
-.rename-button {
-  margin-left: 6px;
-  margin-bottom: 12px;
-  text-decoration: underline;
 }
 
 .link-button {

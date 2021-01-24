@@ -128,7 +128,6 @@ export default {
 
 .main {
   padding: 10px;
-  padding-top: 20px;
   padding-bottom: calc(var(--mobile-bottom-bar-height) + #{$player-bar-height});
   width: 100%;
 
@@ -146,7 +145,7 @@ export default {
   @media (min-width: $breakpoint-small) {
     background: var(--theme-body-background);
     background-attachment: fixed;
-    padding-top: 40px;
+    padding-top: $spacing-pg-top-desktop;
 
     &.with-sidebar {
       margin-left: $sidebar-width;

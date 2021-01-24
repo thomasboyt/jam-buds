@@ -91,13 +91,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '~/assets/styles/mixins.scss';
+
 .checkbox-option {
   background: rgba(0, 0, 0, 0.05);
   border-radius: 10px;
-  margin-bottom: 10px;
+  margin-bottom: $spacing-sm;
 
   label {
-    padding: 10px 10px;
+    padding: $spacing-sm;
     display: flex;
 
     .label-content {

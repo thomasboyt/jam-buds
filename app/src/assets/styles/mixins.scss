@@ -57,3 +57,25 @@ $player-bar-height: 80px;
   font-weight: bold;
   margin-bottom: 1rem;
 }
+
+$text-xs: 0.75rem; // 12px
+$text-sm: 0.875rem; // 14px
+$text-base: 1rem; // 16px
+$text-md: 1.125rem; // 18px
+$text-lg: 1.5rem; // 24px
+$text-xl: 2rem; // 32px
+$text-2xl: 2rem; // 40px
+
+$leading-none: 1em;
+$leading-normal: 1.25em;
+$leading-relaxed: 1.375em;
+
+$spacing-2xs: 0.25rem; // 4px
+$spacing-xs: 0.5rem; // 8px
+$spacing-sm: 0.75rem; // 12px
+$spacing-md: 1rem; // 16px
+$spacing-lg: 1.5rem; // 24px
+$spacing-2xl: 2rem; // 32px
+$spacing-3xl: 3rem; // 48px
+$spacing-4xl: 4rem; // 64px
+$spacing-pg-top-desktop: 2.5rem; // 40px

@@ -89,7 +89,7 @@ export default {
 .header-row {
   display: flex;
   align-items: center;
-  margin: 24px 0;
+  margin: $spacing-lg 0;
 
   h3 {
     @include heading-md();

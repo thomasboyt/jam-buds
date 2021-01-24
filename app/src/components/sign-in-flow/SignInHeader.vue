@@ -6,14 +6,14 @@
 @import '~/assets/styles/mixins.scss';
 
 h1 {
-  line-height: 1em;
+  line-height: $leading-none;
   margin-top: 0px;
-  margin-bottom: 20px;
-  font-size: 48px;
+  margin-bottom: $spacing-md;
+  font-size: $text-2xl;
   font-weight: 600;
 
   @media (max-width: $breakpoint-small) {
-    font-size: 30px;
+    font-size: $text-xl;
     text-align: center;
   }
 }

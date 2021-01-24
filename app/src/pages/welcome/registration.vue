@@ -90,36 +90,27 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '~/assets/styles/mixins.scss';
+
 .registration-page {
   max-width: 600px;
   margin: 0 auto;
-  padding: 0 10px;
+  padding: 0 $spacing-sm;
   text-align: center;
 }
 
 form {
-  margin-top: 24px;
+  margin-top: $spacing-lg;
 }
 
 .check-options {
   max-width: 420px;
-  margin: 20px auto 50px;
+  margin: $spacing-lg auto $spacing-3xl;
 
   label {
     display: block;
-    margin-bottom: 10px;
+    margin-bottom: $spacing-xs;
     text-align: left;
   }
-}
-
-.submit {
-  flex: 0 0 auto;
-  width: 100px;
-  padding: 10px 5px;
-  margin-top: 20px;
-  font-size: 22px;
-  background: yellow;
-  color: black;
-  font-weight: bold;
 }
 </style>

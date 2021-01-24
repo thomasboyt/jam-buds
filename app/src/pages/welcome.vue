@@ -44,17 +44,15 @@ export default {
 
 h1 {
   @include page-header();
+  margin-bottom: $spacing-2xl;
   text-align: center;
-  margin-bottom: 32px;
 }
 
 .welcome-page-wrapper {
   --theme-text-color: black;
   background-attachment: fixed;
-
+  padding-top: $spacing-2xl;
   flex: 1;
-
-  padding-top: 40px;
 }
 
 .fade-page {

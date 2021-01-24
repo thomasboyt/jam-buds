@@ -57,13 +57,13 @@ export default {
 
 .sign-in-wrapper {
   flex: 1;
-  padding: 10px;
+  padding: $spacing-sm;
 
   @media (max-width: $breakpoint-small) {
-    padding-top: 100px;
+    padding-top: $spacing-4xl;
   }
   @media (min-width: $breakpoint-small) {
-    padding-top: 25px;
+    padding-top: $spacing-lg;
   }
 }
 </style>

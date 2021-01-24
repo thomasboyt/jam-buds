@@ -132,7 +132,7 @@ h3 {
 
 ul {
   list-style-type: disc;
-  padding-left: 1em;
-  margin-bottom: 1em;
+  padding-left: $spacing-md;
+  margin-bottom: $spacing-md;
 }
 </style>

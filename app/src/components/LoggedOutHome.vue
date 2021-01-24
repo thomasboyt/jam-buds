@@ -74,13 +74,13 @@ export default {
   display: flex;
   flex: 1;
   flex-flow: column;
-  padding: 20px 20px;
+  padding: $spacing-pg-top-desktop;
 }
 
 .logged-out-main {
   flex: 1;
-  padding: 10px;
-  padding-top: 20px;
+  padding: $spacing-sm;
+  padding-top: $spacing-md;
   padding-bottom: calc(var(--mobile-bottom-bar-height) + #{$player-bar-height});
 }
 
@@ -94,7 +94,7 @@ export default {
 
   .content {
     flex: 1 1 auto;
-    margin-left: 70px;
+    margin-left: $spacing-4xl;
     max-width: 460px;
   }
 }
@@ -102,7 +102,7 @@ export default {
 .drawing {
   margin: 0 auto;
   transform: rotate(10deg);
-  margin-bottom: 30px;
+  margin-bottom: $spacing-2xl;
 
   &.desktop {
     flex: 0 1 auto;
@@ -137,22 +137,16 @@ export default {
 }
 
 p {
-  font-size: 16px;
-  line-height: 20px;
-  margin-bottom: 36px;
+  font-size: $text-base;
   @media (min-width: $breakpoint-small) {
-    font-size: 18px;
-    line-height: 24px;
+    font-size: $text-md;
   }
-}
-
-.email-note {
-  font-size: 12px;
-  margin-top: 12px;
+  line-height: $leading-normal;
+  margin-bottom: $spacing-2xl;
 }
 
 footer {
-  font-size: 14px;
+  font-size: $text-sm;
   text-align: center;
 
   a,

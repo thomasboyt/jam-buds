@@ -113,6 +113,6 @@ h2 {
 }
 
 .section {
-  margin-bottom: 2rem;
+  margin-bottom: $spacing-lg;
 }
 </style>

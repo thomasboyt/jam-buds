@@ -69,10 +69,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '~/assets/styles/mixins.scss';
+
 .connect-page {
   max-width: 800px;
   margin: 0 auto;
-  padding: 0 10px;
+  padding: 0 $spacing-sm;
   text-align: center;
 }
 
@@ -81,13 +83,13 @@ a {
 }
 
 h3 {
-  font-size: 32px;
-  line-height: 1em;
-  margin-bottom: 24px;
+  font-size: $text-lg;
+  line-height: $leading-none;
+  margin-bottom: $spacing-lg;
   font-weight: normal;
 }
 
 .lower {
-  margin-top: 50px;
+  margin-top: $spacing-2xl;
 }
 </style>

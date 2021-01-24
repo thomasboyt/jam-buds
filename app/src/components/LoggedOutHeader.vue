@@ -1,5 +1,5 @@
 <template>
-  <div :class="['logged-out-header', {'hide-mobile': !showMobile}]">
+  <div :class="['logged-out-header', { 'hide-mobile': !showMobile }]">
     <div class="logo-container">
       <logo />
     </div>
@@ -18,7 +18,7 @@ export default {
 @import '~/assets/styles/mixins.scss';
 
 .logged-out-header {
-  margin-bottom: 40px;
+  margin-bottom: $spacing-2xl;
   text-align: center;
 
   &.hide-mobile {

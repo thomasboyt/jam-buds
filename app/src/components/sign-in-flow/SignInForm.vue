@@ -81,42 +81,40 @@ form {
 }
 
 input {
-  flex: 1 1 auto;
-  min-width: 0px;
-  padding: 0px 5px;
-  margin-right: 5px;
+  min-width: 0;
+  flex-basis: 100%;
+  padding: 0px $spacing-2xs;
+  margin-right: $spacing-2xs;
 }
 
 .submit {
   flex: 0 0 auto;
-  width: 100px;
-  padding: 0px;
+  padding: 0 $spacing-xs;
 }
 
 input,
 .submit {
-  height: 45px;
-  font-family: 'Work Sans', sans-serif;
+  height: $spacing-3xl;
 }
 
 input {
   @media (max-width: $breakpoint-small) {
-    font-size: 16px;
+    font-size: $text-base;
   }
   @media (min-width: $breakpoint-small) {
-    font-size: 22px;
+    font-size: $text-lg;
   }
 }
 
 .submit {
-  font-size: 22px;
+  font-size: $text-lg;
   background: yellow;
   color: black;
   font-weight: bold;
 }
 
 .email-note {
-  font-size: 12px;
-  margin-top: 12px;
+  font-size: $text-xs;
+  margin-top: $spacing-sm;
 }
 </style>

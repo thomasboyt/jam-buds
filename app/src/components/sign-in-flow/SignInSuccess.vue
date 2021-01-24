@@ -25,8 +25,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '~/assets/styles/mixins.scss';
+
 .email-note {
-  font-size: 12px;
-  margin-top: 12px;
+  font-size: $text-xs;
+  margin-top: $spacing-sm;
 }
 </style>
