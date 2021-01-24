@@ -37,6 +37,12 @@ export default {
 
   props: ['userName', 'initialFetchState'],
 
+  data() {
+    return {
+      loadingNextPage: false,
+    };
+  },
+
   computed: {
     playlistKey() {
       return `${this.userName}/mixtapes`;
