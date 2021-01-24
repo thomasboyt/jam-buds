@@ -3,7 +3,7 @@ describe('viewing feed', () => {
     cy.login('jeff@jambuds.club');
     cy.visit('/');
 
-    cy.get('.playlist-entries li')
+    cy.get('[data-test="playlist-entry"]')
       .should('contain', 'Drive')
       .and('contain', 'jeff')
       .and('contain', 'vinny');

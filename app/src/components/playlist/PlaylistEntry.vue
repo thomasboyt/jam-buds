@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div data-test="playlist-entry">
     <song
       v-if="item.type === 'song'"
       :song-id="item.songId"

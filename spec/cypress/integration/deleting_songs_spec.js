@@ -1,6 +1,6 @@
 describe('deleting songs', () => {
   function deleteSong(search) {
-    cy.contains('ul.playlist-entries li', search)
+    cy.contains('[data-test="playlist-entry"]', search)
       .as('post')
       .find('.menu-container .action-button')
       .click();
@@ -16,7 +16,7 @@ describe('deleting songs', () => {
 
     deleteSong('The Chemical Brothers');
 
-    cy.contains('ul.playlist-entries li', 'The Chemical Brothers').should(
+    cy.contains('[data-test="playlist-entry"]', 'The Chemical Brothers').should(
       'not.exist'
     );
   });
@@ -29,7 +29,7 @@ describe('deleting songs', () => {
 
     deleteSong('Drive');
 
-    cy.contains('ul.playlist-entries li', 'Drive')
+    cy.contains('[data-test="playlist-entry"]', 'Drive')
       .find('.entry-details')
       .and('contain', 'vinny')
       .and('not.contain', 'You');
@@ -43,7 +43,7 @@ describe('deleting songs', () => {
 
     deleteSong('The Chemical Brothers');
 
-    cy.contains('ul.playlist-entries li', 'The Chemical Brothers').should(
+    cy.contains('[data-test="playlist-entry"]', 'The Chemical Brothers').should(
       'not.exist'
     );
   });
