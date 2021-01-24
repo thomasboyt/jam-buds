@@ -23,7 +23,7 @@
     "eslint-plugin-vue": "^6.2.2"
   },
   "dependencies": {
-    "@nuxtjs/axios": "^5.12.2",
+    "@nuxtjs/axios": "^5.12.5",
     "@nuxtjs/proxy": "^2.0.1",
     "@nuxtjs/sentry": "^4.3.4",
     "@tboyt/music-kit-jwt": "^0.1.2",
