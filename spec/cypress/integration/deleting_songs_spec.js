@@ -29,9 +29,8 @@ describe('deleting songs', () => {
 
     deleteSong('Drive');
 
-    cy.contains('[data-test="playlist-entry"]', 'Drive')
-      .find('.entry-details')
-      .and('contain', 'vinny')
+    cy.contains('[data-test="feed-entry-group"]', 'Drive')
+      .contains('contain', 'vinny')
       .and('not.contain', 'You');
   });
 

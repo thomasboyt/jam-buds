@@ -7,16 +7,18 @@
     @requestNextPage="handleRequestNextPage"
   >
     <template v-slot:item="{ item }">
-      <playlist-entry :item="item" @requestPlay="handleRequestPlay" />
-      <entry-details
-        v-for="post in sortPosts(item.posts)"
-        type="feed"
-        :id="post.id"
-        :name="post.userName"
-        :note="post.noteText"
-        :date="post.timestamp"
-        :key="post.id"
-      />
+      <div data-test="feed-entry-group">
+        <playlist-entry :item="item" @requestPlay="handleRequestPlay" />
+        <entry-details
+          v-for="post in sortPosts(item.posts)"
+          type="feed"
+          :id="post.id"
+          :name="post.userName"
+          :note="post.noteText"
+          :date="post.timestamp"
+          :key="post.id"
+        />
+      </div>
     </template>
 
     <template #placeholder>

@@ -3,9 +3,9 @@ describe('viewing feed', () => {
     cy.login('jeff@jambuds.club');
     cy.visit('/');
 
-    cy.get('[data-test="playlist-entry"]')
-      .should('contain', 'Drive')
-      .and('contain', 'jeff')
+    const entry = cy
+      .contains('[data-test="feed-entry-group"]', 'Drive')
+      .should('contain', 'jeff')
       .and('contain', 'vinny');
   });
 
