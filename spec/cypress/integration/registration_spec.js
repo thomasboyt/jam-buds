@@ -14,7 +14,7 @@ describe('registration', () => {
     cy.contains('connect a streaming service');
     cy.contains('continue without connecting').click();
 
-    cy.get('.connect-twitter')
+    cy.get('[data-test="connect-twitter"]')
       .should('contain', 'connect to twitter')
       .contains('continue without connecting')
       .click();

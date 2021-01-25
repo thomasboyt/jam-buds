@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div data-test="connect-twitter">
     <welcome-step-panel>
       <h3>
         connect to twitter
