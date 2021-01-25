@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="connect-page connect-twitter">
+    <welcome-step-panel>
       <h3>
         connect to twitter
         <small>(optional!)</small>
@@ -37,7 +37,7 @@
           </p>
         </div>
       </template>
-    </div>
+    </welcome-step-panel>
   </div>
 </template>
 
@@ -46,9 +46,10 @@ import { mapState } from 'vuex';
 
 import TwitterConnectButton from '~/components/settings/TwitterConnectButton.vue';
 import JbButton from '~/components/lib/JbButton.vue';
+import WelcomeStepPanel from '~/components/WelcomeStepPanel';
 
 export default {
-  components: { TwitterConnectButton, JbButton },
+  components: { TwitterConnectButton, JbButton, WelcomeStepPanel },
 
   data() {
     return {
@@ -70,14 +71,6 @@ export default {
 
 <style lang="scss" scoped>
 @import '~/assets/styles/mixins.scss';
-
-.connect-page {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 0 $spacing-sm;
-  text-align: center;
-}
-
 a {
   color: black;
 }

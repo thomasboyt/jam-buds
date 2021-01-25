@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="connect-page">
+    <welcome-step-panel>
       <template v-if="serviceName">
         <h3>you've connected {{ serviceName }}!</h3>
       </template>
@@ -36,7 +36,7 @@
           </p>
         </template>
       </div>
-    </div>
+    </welcome-step-panel>
   </div>
 </template>
 
@@ -44,9 +44,15 @@
 import SpotifyConnectButton from '~/components/settings/SpotifyConnectButton.vue';
 import AppleMusicConnectButton from '~/components/settings/AppleMusicConnectButton.vue';
 import JbButton from '~/components/lib/JbButton.vue';
+import WelcomeStepPanel from '~/components/WelcomeStepPanel';
 
 export default {
-  components: { SpotifyConnectButton, AppleMusicConnectButton, JbButton },
+  components: {
+    SpotifyConnectButton,
+    AppleMusicConnectButton,
+    JbButton,
+    WelcomeStepPanel,
+  },
 
   data() {
     return {
@@ -70,13 +76,6 @@ export default {
 
 <style lang="scss" scoped>
 @import '~/assets/styles/mixins.scss';
-
-.connect-page {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 0 $spacing-sm;
-  text-align: center;
-}
 
 a {
   color: black;

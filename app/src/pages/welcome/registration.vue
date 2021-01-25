@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="registration-page">
+    <welcome-step-panel>
       <form @submit="handleSubmit">
         <registration-name-url-field v-model="name" />
 
@@ -26,7 +26,7 @@
           continue
         </jb-button>
       </form>
-    </div>
+    </welcome-step-panel>
   </div>
 </template>
 
@@ -34,9 +34,15 @@
 import FieldErrorDisplay from '~/components/FieldErrorDisplay.vue';
 import RegistrationNameUrlField from '~/components/RegistrationNameUrlField.vue';
 import JbButton from '~/components/lib/JbButton.vue';
+import WelcomeStepPanel from '~/components/WelcomeStepPanel';
 
 export default {
-  components: { FieldErrorDisplay, RegistrationNameUrlField, JbButton },
+  components: {
+    FieldErrorDisplay,
+    RegistrationNameUrlField,
+    JbButton,
+    WelcomeStepPanel,
+  },
 
   data() {
     return {
@@ -91,13 +97,6 @@ export default {
 
 <style lang="scss" scoped>
 @import '~/assets/styles/mixins.scss';
-
-.registration-page {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 0 $spacing-sm;
-  text-align: center;
-}
 
 form {
   margin-top: $spacing-lg;
