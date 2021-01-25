@@ -16,7 +16,7 @@
             <sign-in-header>music sounds better with friends</sign-in-header>
 
             <p>
-              no algorithms, no payola playlists. just what you and your friends
+              no algorithms, no influencer-curated playlists. just what you and your friends
               are listening to. optionally connect spotify or apple music for
               seamless playback.
             </p>
