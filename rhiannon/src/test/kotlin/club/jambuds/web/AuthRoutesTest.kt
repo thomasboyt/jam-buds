@@ -5,6 +5,7 @@ import club.jambuds.getGson
 import club.jambuds.helpers.TestDataFactories
 import club.jambuds.responses.GetCurrentUserResponse
 import club.jambuds.responses.SignInResponse
+import club.jambuds.responses.ValidateSignInCodeResponse
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.argForWhich
 import com.nhaarman.mockitokotlin2.check
@@ -31,8 +32,14 @@ class AuthRoutesTest : AppTest() {
         return txn.createQuery(query).bind("userId", userId).mapTo(String::class.java).one()
     }
 
+    private data class SignInTokenAndCode(val token: String, val shortCode: String)
+    private fun getSignInTokenAndCode(email: String): SignInTokenAndCode {
+        val query = "select token, short_code from sign_in_tokens where email=:email"
+        return txn.createQuery(query).bind("email", email).mapTo(SignInTokenAndCode::class.java).one()
+    }
+
     private fun createSignInToken(email: String): String {
-        var resp = Unirest
+        val resp = Unirest
             .post("$appUrl/sign-in-token")
             .body(JSONObject(mapOf("email" to email)))
             .asString()
@@ -159,6 +166,39 @@ class AuthRoutesTest : AppTest() {
         val authToken = getAuthToken(user.id)
         val respBody = gson.fromJson(resp.body, SignInResponse::class.java)
         assertEquals(authToken, respBody.authToken)
+    }
+
+    @Test
+    fun `POST validate-sign-in-code - returns redirect url with sign-in route and sign in token for returning user`() {
+        val user = TestDataFactories.createUser(txn, "jeff", true)
+        createSignInToken(user.email)
+        val signInTokenAndCode = getSignInTokenAndCode(user.email)
+
+        val body = JSONObject(mapOf("email" to user.email, "code" to signInTokenAndCode.shortCode))
+        val resp = Unirest.post("$appUrl/validate-sign-in-code").body(body).asString()
+        assertEquals(200, resp.status)
+        val respBody = gson.fromJson(resp.body, ValidateSignInCodeResponse::class.java)
+        assertTrue(respBody.redirect.contains("sign-in"))
+        assertTrue(respBody.redirect.contains(signInTokenAndCode.token))
+    }
+
+    @Test
+    fun `POST validate-sign-in-code - returns redirect url with registration route and sign in token for new user`() {
+        val email = "newuser@jambuds.club"
+        createSignInToken(email)
+        val signInTokenAndCode = getSignInTokenAndCode(email)
+
+        val body = JSONObject(mapOf(
+            "email" to email,
+            "code" to signInTokenAndCode.shortCode,
+            "signupReferral" to "jeff"
+        ))
+        val resp = Unirest.post("$appUrl/validate-sign-in-code").body(body).asString()
+        assertEquals(200, resp.status)
+        val respBody = gson.fromJson(resp.body, ValidateSignInCodeResponse::class.java)
+        assertTrue(respBody.redirect.contains("registration"))
+        assertTrue(respBody.redirect.contains("jeff"), "includes referring user")
+        assertTrue(respBody.redirect.contains(signInTokenAndCode.token))
     }
 
     @Test

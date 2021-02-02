@@ -1,5 +1,10 @@
 Hey {{name}}!
 
-Welcome back to Jam Buds! Just click this link to sign back in:
+Welcome back to Jam Buds! {% if sendCodeInsteadOfLink == true %}Just enter this code to continue:
+
+{{ shortCode }}
+{% else %}Just click this link to sign back in:
 
 {{signInLink}}
+{% endif %}
+
