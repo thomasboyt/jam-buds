@@ -1,6 +1,7 @@
 <template>
   <div>
     <sign-in-header>sign up or log in</sign-in-header>
+
     <form @submit="handleSubmit">
       <input
         type="email"
@@ -35,6 +36,21 @@ export default {
     };
   },
 
+  computed: {
+    // send code instead of magic link on mobile
+    shouldSendCode() {
+      const ua = navigator.userAgent;
+      return (
+        (ua.match(/iPhone|iPad|iPod/) ||
+          ua.match(/Android/) ||
+          // iPad Safari sometimes pretends to be desktop Safari
+          (ua.match(/Safari/) &&
+            !ua.match(/Edg\//) &&
+            navigator.maxTouchPoints > 1)) !== null
+      );
+    },
+  },
+
   methods: {
     async handleSubmit(evt) {
       evt.preventDefault();
@@ -48,6 +64,7 @@ export default {
         resp = await this.$axios.post('sign-in-token', {
           email,
           signupReferral: this.$route.query['signup-ref'],
+          sendCodeInsteadOfLink: this.shouldSendCode,
         });
       } catch (err) {
         this.requestInFlight = false;
@@ -56,9 +73,7 @@ export default {
         throw err;
       }
 
-      this.didSignIn = true;
-
-      this.$emit('sentMail', email);
+      this.$emit('sentMail', { email, sentCode: this.shouldSendCode });
 
       if (this.$config.DANGER_SKIP_AUTH) {
         if (resp.data.isRegistration) {
