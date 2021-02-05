@@ -1,6 +1,6 @@
 Hey {{name}}!
 
-Welcome back to Jam Buds! {% if sendCodeInsteadOfLink == true %}Just enter this code to continue:
+Welcome back to Jam Buds! {% if sendCodeInsteadOfLink == true %}Just enter this code in your browser to continue:
 
 {{ shortCode }}
 {% else %}Just click this link to sign back in:
