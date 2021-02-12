@@ -15,13 +15,12 @@
         placeholder="enter code..."
         aria-label="Code"
       />
-
       <button type="submit" class="submit" :disabled="requestInFlight">
         next
       </button>
     </form>
 
-    <p v-if="error">{{ error }}</p>
+    <field-error-display name="code" :errors="errors" />
 
     <p class="email-note">
       please allow up to 5 minutes for the email to arrive. due to strange
@@ -33,9 +32,10 @@
 
 <script>
 import SignInHeader from './SignInHeader.vue';
+import FieldErrorDisplay from '../FieldErrorDisplay.vue';
 
 export default {
-  components: { SignInHeader },
+  components: { SignInHeader, FieldErrorDisplay },
 
   props: ['sentEmail'],
 
@@ -43,7 +43,7 @@ export default {
     return {
       code: '',
       requestInFlight: false,
-      error: null,
+      errors: null,
     };
   },
 
@@ -62,8 +62,9 @@ export default {
       } catch (err) {
         this.requestInFlight = false;
 
-        if (err.response?.status === 400 && err.response?.data?.error) {
-          this.error = err.response.data.error;
+        if (err.response?.status === 400 && err.response?.data?.details) {
+          this.errors = err.response.data.details[0];
+          return;
         } else {
           this.$store.commit('showErrorModal');
           throw err;
@@ -83,6 +84,7 @@ export default {
 form {
   display: flex;
   width: 100%;
+  margin-bottom: $spacing-md;
 }
 
 input {
