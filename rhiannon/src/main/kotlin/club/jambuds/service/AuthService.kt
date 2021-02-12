@@ -89,7 +89,7 @@ class AuthService(
         referral: String?
     ): ValidateSignInCodeResponse {
         val token = signInTokenDao.getSignInTokenFromEmailAndShortCode(email, shortCode)
-            ?: throw BadRequestResponse("Invalid code.")
+            ?: throw FormValidationErrorResponse(listOf("code" to "Invalid code."))
         val user = userDao.getUserByEmail(email)
         val redirect = if (user == null) {
             getRegistrationLink(token, referral, null)
