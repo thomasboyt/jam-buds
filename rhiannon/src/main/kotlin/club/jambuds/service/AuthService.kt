@@ -55,9 +55,14 @@ class AuthService(
         } else {
             // sign in
             val link = getSignInLink(token, dest)
+            val subject = if (sendCodeInsteadOfLink) {
+                "Your sign in code for jambuds.club"
+            } else {
+                "Your sign in link for jambuds.club"
+            }
             emailService.sendEmail(
                 email = email,
-                subject = "Your sign-in link for jambuds.club",
+                subject = subject,
                 templateName = "sign-in",
                 data = mapOf(
                     "name" to user.name,

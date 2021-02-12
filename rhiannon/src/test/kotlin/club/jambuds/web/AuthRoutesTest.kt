@@ -143,7 +143,7 @@ class AuthRoutesTest : AppTest() {
             fromEmail = any(),
             fromName = any(),
             toEmail = eq(email),
-            subject = argForWhich { contains("sign-in") },
+            subject = argForWhich { contains("sign in") },
             textContent = check {
                 assertTrue(it.contains("Welcome back"))
                 assertTrue(it.contains(url))
