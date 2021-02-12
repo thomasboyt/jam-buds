@@ -12,3 +12,14 @@ fun generateRandomString(len: Int): String {
     }
     return sb.toString()
 }
+
+// via https://stackoverflow.com/a/157202
+fun generateRandomNumberString(len: Int): String {
+    val ab = "0123456789"
+    val rnd = SecureRandom()
+    val sb = StringBuilder(len)
+    for (i in 0 until len) {
+        sb.append(ab[rnd.nextInt(ab.length)])
+    }
+    return sb.toString()
+}

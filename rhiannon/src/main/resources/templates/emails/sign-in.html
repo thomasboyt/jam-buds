@@ -1,5 +1,6 @@
 {% extends "base" %}
 {% import "cta" %}
+{% import "bigcode" %}
 
 {% block preheader %}
 Click here to sign in.
@@ -10,6 +11,11 @@ Click here to sign in.
 {% endblock %}
 
 {% block main %}
-<p>Welcome back! Just click the link below to sign back in:</p>
-{{ cta(ctaUrl=signInLink, ctaText='Log in!') }}
+{% if sendCodeInsteadOfLink == true %}
+    <p>Welcome back! Just copy-paste the code below into your browser and you'll be good to go:</p>
+    {{ bigcode(code = shortCode) }}
+{% else %}
+    <p>Welcome back! Just click the link below to sign back in:</p>
+    {{ cta(ctaUrl=signInLink, ctaText='Log in!') }}
+{% endif %}
 {% endblock %}

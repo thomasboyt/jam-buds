@@ -12,6 +12,13 @@
       <div class="fade-screen" v-if="state === FORM_STEP" key="form">
         <sign-in-form @sentMail="handleSentMail" />
       </div>
+      <div
+        class="fade-screen"
+        v-if="state === CODE_ENTRY_STEP"
+        key="code-entry"
+      >
+        <sign-in-code-entry :sent-email="sentEmail" />
+      </div>
       <div class="fade-screen" v-if="state === SUCCESS_STEP" key="success">
         <sign-in-success :sent-email="sentEmail" />
       </div>
@@ -20,16 +27,18 @@
 </template>
 
 <script>
-import SignInForm from './SignInForm.vue';
 import SignInInitial from './SignInInitial.vue';
+import SignInForm from './SignInForm.vue';
+import SignInCodeEntry from './SignInCodeEntry.vue';
 import SignInSuccess from './SignInSuccess.vue';
 
 const INITIAL_STEP = 'initial';
 const FORM_STEP = 'form';
+const CODE_ENTRY_STEP = 'code-entry';
 const SUCCESS_STEP = 'success';
 
 export default {
-  components: { SignInInitial, SignInForm, SignInSuccess },
+  components: { SignInInitial, SignInForm, SignInCodeEntry, SignInSuccess },
 
   data() {
     return {
@@ -37,6 +46,7 @@ export default {
       sentEmail: null,
       INITIAL_STEP,
       FORM_STEP,
+      CODE_ENTRY_STEP,
       SUCCESS_STEP,
     };
   },
@@ -46,9 +56,9 @@ export default {
       this.state = FORM_STEP;
     },
 
-    handleSentMail(email) {
+    handleSentMail({ email, sentCode }) {
       this.sentEmail = email;
-      this.state = SUCCESS_STEP;
+      this.state = sentCode ? CODE_ENTRY_STEP : SUCCESS_STEP;
     },
   },
 };

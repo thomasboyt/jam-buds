@@ -20,6 +20,7 @@ const val USERNAME_RE =
 class AuthRoutes(private val authService: AuthService, private val appUrl: String) {
     fun register() {
         ApiBuilder.post("/api/sign-in-token", this::sendSignInToken)
+        ApiBuilder.post("/api/validate-sign-in-code", this::validateSignInCode)
         ApiBuilder.post("/api/registration", this::register)
         ApiBuilder.post("/api/sign-in", this::signIn)
         ApiBuilder.post("/api/sign-out", this::signOut)
@@ -33,17 +34,44 @@ class AuthRoutes(private val authService: AuthService, private val appUrl: Strin
         )
         @Expose val email: String,
         @Expose val signupReferral: String?,
-        @Expose val dest: String?
+        @Expose val dest: String?,
+        @Expose val sendCodeInsteadOfLink: Boolean?
     )
 
     private fun sendSignInToken(ctx: Context) {
         val body = ctx.validateJsonBody(SendSignInTokenBody::class.java)
-        val resp = authService.sendSignInToken(body.email, body.signupReferral, body.dest)
+        val resp = authService.sendSignInToken(
+            email = body.email,
+            signUpReferral = body.signupReferral,
+            dest = body.dest,
+            sendCodeInsteadOfLink = body.sendCodeInsteadOfLink == true
+        )
         if (resp != null) {
             ctx.json(resp)
         } else {
             ctx.status(204)
         }
+    }
+
+    data class ValidateSignInCodeBody(
+        @field:NotNull
+        @field:Pattern(
+            regexp = EMAIL_RE,
+            message = "Invalid email format"
+        )
+        @Expose val email: String,
+        @field:NotNull @Expose val code: String,
+        @Expose val signupReferral: String?
+    )
+
+    private fun validateSignInCode(ctx: Context) {
+        val body = ctx.validateJsonBody(ValidateSignInCodeBody::class.java)
+        val resp = authService.validateSignInCode(
+            body.email,
+            body.code,
+            body.signupReferral
+        )
+        ctx.json(resp)
     }
 
     data class SignInBody(

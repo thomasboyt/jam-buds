@@ -1,3 +1,7 @@
-Welcome to Jam Buds! Just click the link below to get started:
+Welcome to Jam Buds! {% if sendCodeInsteadOfLink == true %}Just enter this code in your browser to get started:
+
+{{ shortCode }}
+{% else %}Just click the link below to get started:
 
 {{registrationLink}}
+{% endif %}

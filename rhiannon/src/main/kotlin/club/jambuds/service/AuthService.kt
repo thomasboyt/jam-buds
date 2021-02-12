@@ -4,7 +4,9 @@ import club.jambuds.dao.AuthTokenDao
 import club.jambuds.dao.SignInTokenDao
 import club.jambuds.dao.UserDao
 import club.jambuds.responses.SendSignInTokenSkipAuthResponse
+import club.jambuds.responses.ValidateSignInCodeResponse
 import club.jambuds.util.FormValidationErrorResponse
+import club.jambuds.util.generateRandomNumberString
 import club.jambuds.util.generateRandomString
 import io.javalin.http.BadRequestResponse
 import io.sentry.Sentry
@@ -25,40 +27,49 @@ class AuthService(
     fun sendSignInToken(
         email: String,
         signUpReferral: String?,
-        dest: String?
+        dest: String?,
+        sendCodeInsteadOfLink: Boolean
     ): SendSignInTokenSkipAuthResponse? {
+        // ensure a user only has one active sign in token at a time
+        signInTokenDao.deleteSignInTokensForUser(email)
+
         val token = generateRandomString(24)
-        signInTokenDao.createSignInToken(email, token)
+        val shortCode = generateRandomNumberString(6)
+        signInTokenDao.createSignInToken(email, token, shortCode)
+
         val user = userDao.getUserByEmail(email)
-
-        val linkSuffix = if (dest != null) {
-            "&dest=$dest"
-        } else {
-            ""
-        }
-
         if (user == null) {
             // sign up
-            var link = "$appUrl/welcome/registration?t=$token" + linkSuffix
-
-            if (signUpReferral != null) {
-                link += "&referral=$signUpReferral"
-            }
+            val link = getRegistrationLink(token, signUpReferral, dest)
 
             emailService.sendEmail(
                 email = email,
                 subject = "Welcome to jambuds.club!",
                 templateName = "sign-up",
-                data = mapOf("registrationLink" to link)
+                data = mapOf(
+                    "sendCodeInsteadOfLink" to sendCodeInsteadOfLink,
+                    "registrationLink" to link,
+                    "shortCode" to shortCode
+                )
             )
         } else {
             // sign in
-            val link = "$appUrl/sign-in?t=$token" + linkSuffix
+            val link = getSignInLink(token, dest)
+            val subject = if (sendCodeInsteadOfLink) {
+                "Your sign in code for jambuds.club"
+            } else {
+                "Your sign in link for jambuds.club"
+            }
             emailService.sendEmail(
                 email = email,
-                subject = "Your sign-in link for jambuds.club",
+                subject = subject,
                 templateName = "sign-in",
-                data = mapOf("name" to user.name, "signInLink" to link)
+                data = mapOf(
+                    "name" to user.name,
+                    "signInLink" to link,
+                    "sendCodeInsteadOfLink" to sendCodeInsteadOfLink,
+                    "shortCode" to shortCode
+                )
             )
         }
 
@@ -72,6 +83,27 @@ class AuthService(
         return null
     }
 
+    fun validateSignInCode(
+        email: String,
+        shortCode: String,
+        referral: String?
+    ): ValidateSignInCodeResponse {
+        val token = signInTokenDao.getSignInTokenFromEmailAndShortCode(email, shortCode)
+            ?: throw FormValidationErrorResponse(listOf("code" to "Invalid code."))
+        val user = userDao.getUserByEmail(email)
+        val redirect = if (user == null) {
+            getRegistrationLink(token, referral, null)
+        } else {
+            getSignInLink(token, null)
+        }
+
+        return ValidateSignInCodeResponse(
+            signInToken = token,
+            isRegistration = user == null,
+            redirect = redirect
+        )
+    }
+
     fun signIn(token: String): String {
         val email = signInTokenDao.getEmailFromSignInToken(token)
             ?: throw BadRequestResponse("Invalid sign-in token")
@@ -83,6 +115,32 @@ class AuthService(
             )
 
         return createAuthTokenForUserId(user.id)
+    }
+
+    private fun getSignInLink(token: String, dest: String?): String {
+        val linkSuffix = if (dest != null) {
+            "&dest=$dest"
+        } else {
+            ""
+        }
+
+        return "$appUrl/sign-in?t=$token" + linkSuffix
+    }
+
+    private fun getRegistrationLink(token: String, referral: String?, dest: String?): String {
+        val linkSuffix = if (dest != null) {
+            "&dest=$dest"
+        } else {
+            ""
+        }
+
+        var link = "$appUrl/welcome/registration?t=$token" + linkSuffix
+
+        if (referral != null) {
+            link += "&referral=$referral"
+        }
+
+        return link
     }
 
     private fun createAuthTokenForUserId(id: Int): String {

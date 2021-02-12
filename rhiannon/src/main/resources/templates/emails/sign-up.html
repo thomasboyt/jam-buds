@@ -10,6 +10,11 @@ Click here to sign up.
 {% endblock %}
 
 {% block main %}
-<p>Welcome to Jam Buds! Just click the link below to get started:</p>
-{{ cta(ctaUrl=registrationLink, ctaText='Sign up now!') }}
+{% if sendCodeInsteadOfLink == true %}
+    <p>Welcome to Jam Buds! Just paste the following code back into your browser to continue:</p>
+    {{ cta(ctaUrl=registrationLink, ctaText='Sign up now!') }}
+{% else %}
+    <p>Welcome to Jam Buds! Just click the link below to get started:</p>
+    {{ cta(ctaUrl=registrationLink, ctaText='Sign up now!') }}
+{% endif %}
 {% endblock %}
