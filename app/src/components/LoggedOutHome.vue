@@ -9,16 +9,16 @@
       <div class="content">
         <sign-in-flow>
           <template #initial-copy>
+            <sign-in-header>music sounds better with friends</sign-in-header>
+
             <div class="drawing mobile">
               <img :src="corgi" />
             </div>
 
-            <sign-in-header>music sounds better with friends</sign-in-header>
-
-            <p>
-              no algorithms, no influencer-curated playlists. just what you and your friends
-              are listening to. optionally connect spotify or apple music for
-              seamless playback.
+            <p class="tagline">
+              no algorithms, no influencer-curated playlists. just what you and
+              your friends are listening to. optionally connect spotify or apple
+              music for seamless playback.
             </p>
           </template>
         </sign-in-flow>
@@ -74,18 +74,20 @@ export default {
   display: flex;
   flex: 1;
   flex-flow: column;
-  padding: $spacing-pg-top-desktop;
+  padding: $spacing-md;
 }
 
 .logged-out-main {
   flex: 1;
-  padding: $spacing-sm;
-  padding-top: $spacing-md;
   padding-bottom: calc(var(--mobile-bottom-bar-height) + #{$player-bar-height});
 }
 
 // Desktop two-column layout
 @media (min-width: $breakpoint-small) {
+  .logged-out-home {
+    padding-top: $spacing-pg-top-desktop;
+  }
+
   .logged-out-main {
     display: flex;
     align-items: center;
@@ -101,18 +103,11 @@ export default {
 
 .drawing {
   margin: 0 auto;
-  transform: rotate(10deg);
   margin-bottom: $spacing-2xl;
 
   &.desktop {
     flex: 0 1 auto;
-    transform: rotate(-10deg);
     margin: 0;
-
-    img {
-      max-height: unset;
-      border-width: 15px;
-    }
 
     display: none;
     @media (min-width: $breakpoint-small) {
@@ -133,16 +128,28 @@ export default {
     height: auto;
     border: 5px hotpink solid;
     margin: 0 auto;
+    transform: rotate(-3deg);
+  }
+
+  &.desktop img {
+    transform: rotate(-10deg);
+    max-height: unset;
+    border-width: 15px;
   }
 }
 
-p {
+.tagline {
   font-size: $text-base;
-  @media (min-width: $breakpoint-small) {
-    font-size: $text-md;
-  }
   line-height: $leading-normal;
+  margin-top: $spacing-lg;
   margin-bottom: $spacing-2xl;
+  display: none;
+
+  @media (min-width: $breakpoint-small) {
+    margin-top: 0;
+    font-size: $text-md;
+    display: block;
+  }
 }
 
 footer {
