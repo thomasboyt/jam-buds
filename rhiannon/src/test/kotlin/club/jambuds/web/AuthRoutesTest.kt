@@ -169,6 +169,23 @@ class AuthRoutesTest : AppTest() {
     }
 
     @Test
+    fun `POST validate-sign-in-code - returns 400 for invalid code`() {
+        val user = TestDataFactories.createUser(txn, "jeff", true)
+
+        // with no token
+        var body = JSONObject(mapOf("email" to user.email, "code" to "123456"))
+        var resp = Unirest.post("$appUrl/validate-sign-in-code").body(body).asString()
+        assertEquals(400, resp.status)
+
+        // with invalid token
+        createSignInToken(user.email)
+
+        body = JSONObject(mapOf("email" to user.email, "code" to "123456"))
+        resp = Unirest.post("$appUrl/validate-sign-in-code").body(body).asString()
+        assertEquals(400, resp.status)
+    }
+
+    @Test
     fun `POST validate-sign-in-code - returns redirect url with sign-in route and sign in token for returning user`() {
         val user = TestDataFactories.createUser(txn, "jeff", true)
         createSignInToken(user.email)
