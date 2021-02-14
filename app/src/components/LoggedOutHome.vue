@@ -79,19 +79,19 @@ export default {
 
 .logged-out-main {
   flex: 1;
-  padding-bottom: calc(var(--mobile-bottom-bar-height) + #{$player-bar-height});
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.content {
+  flex: 1 1 auto;
 }
 
 // Desktop two-column layout
 @media (min-width: $breakpoint-small) {
   .logged-out-home {
     padding-top: $spacing-pg-top-desktop;
-  }
-
-  .logged-out-main {
-    display: flex;
-    align-items: center;
-    justify-content: center;
   }
 
   .content {

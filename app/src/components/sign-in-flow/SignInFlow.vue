@@ -73,12 +73,9 @@ export default {
 
 .fade-screen {
   position: absolute;
-
-  // needed for vertical align in two column view for some reason
-  @media (min-width: $breakpoint-small) {
-    top: 50%;
-    transform: translate(0, -50%);
-  }
+  top: 50%;
+  transform: translate(0, -50%);
+  width: 100%;
 }
 
 .fade-enter-active {

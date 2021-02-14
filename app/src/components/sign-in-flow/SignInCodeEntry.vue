@@ -2,25 +2,36 @@
   <div>
     <sign-in-header>enter sign-in code</sign-in-header>
 
-    <p>
+    <p class="label">
       Check your inbox at
       <strong>{{ sentEmail }}</strong>
       for a 6-digit code.
     </p>
 
     <form @submit="handleSubmit">
-      <input
-        type="text"
-        v-model="code"
-        placeholder="enter code..."
-        aria-label="Code"
-      />
-      <button type="submit" class="submit" :disabled="requestInFlight">
-        next
-      </button>
-    </form>
+      <div class="field-group">
+        <input
+          type="text"
+          v-model="code"
+          placeholder="enter code..."
+          aria-label="Code"
+        />
 
-    <field-error-display name="code" :errors="errors" />
+        <field-error-display
+          name="code"
+          :errors="errors"
+          class="field-errors"
+        />
+      </div>
+
+      <jb-button
+        button-style="page-action full-width"
+        type="submit"
+        :disabled="requestInFlight"
+      >
+        next
+      </jb-button>
+    </form>
 
     <p class="email-note">
       please allow up to 5 minutes for the email to arrive. due to strange
@@ -33,9 +44,10 @@
 <script>
 import SignInHeader from './SignInHeader.vue';
 import FieldErrorDisplay from '../FieldErrorDisplay.vue';
+import JbButton from '../lib/JbButton.vue';
 
 export default {
-  components: { SignInHeader, FieldErrorDisplay },
+  components: { SignInHeader, FieldErrorDisplay, JbButton },
 
   props: ['sentEmail'],
 
@@ -81,30 +93,25 @@ export default {
 <style lang="scss" scoped>
 @import '~/assets/styles/mixins.scss';
 
+.label {
+  font-size: $text-md;
+  line-height: $leading-normal;
+  margin-bottom: $spacing-lg;
+
+  @media (max-width: $breakpoint-small) {
+    text-align: center;
+  }
+}
+
 form {
-  display: flex;
+  margin: 0 auto;
+}
+
+input {
   width: 100%;
-  margin-bottom: $spacing-md;
-}
-
-input {
-  min-width: 0;
-  flex-basis: 100%;
   padding: 0px $spacing-2xs;
-  margin-right: $spacing-2xs;
-}
-
-.submit {
-  flex: 0 0 auto;
-  padding: 0 $spacing-xs;
-}
-
-input,
-.submit {
   height: $spacing-3xl;
-}
 
-input {
   @media (max-width: $breakpoint-small) {
     font-size: $text-base;
   }
@@ -113,11 +120,12 @@ input {
   }
 }
 
-.submit {
-  font-size: $text-lg;
-  background: yellow;
-  color: black;
-  font-weight: bold;
+.field-group {
+  margin-bottom: $spacing-lg;
+}
+
+.field-errors {
+  margin-top: $spacing-md;
 }
 
 .email-note {

@@ -1,6 +1,11 @@
 <template>
   <div>
-    <sign-in-header>sign up or log in</sign-in-header>
+    <sign-in-header>hiya!</sign-in-header>
+
+    <p class="label">
+      enter your email here and we'll send you a
+      {{ codeOrLink }} to sign up or log back in:
+    </p>
 
     <form @submit="handleSubmit">
       <input
@@ -10,9 +15,13 @@
         aria-label="Email"
       />
 
-      <button type="submit" class="submit" :disabled="requestInFlight">
-        let's go!
-      </button>
+      <jb-button
+        button-style="page-action full-width"
+        type="submit"
+        :disabled="requestInFlight"
+      >
+        continue
+      </jb-button>
     </form>
 
     <p class="email-note">
@@ -24,10 +33,11 @@
 </template>
 
 <script>
+import JbButton from '../lib/JbButton.vue';
 import SignInHeader from './SignInHeader.vue';
 
 export default {
-  components: { SignInHeader },
+  components: { JbButton, SignInHeader },
 
   data() {
     return {
@@ -48,6 +58,9 @@ export default {
             !ua.match(/Edg\//) &&
             navigator.maxTouchPoints > 1)) !== null
       );
+    },
+    codeOrLink() {
+      return this.shouldSendCode ? 'code' : 'link';
     },
   },
 
@@ -90,42 +103,32 @@ export default {
 <style lang="scss" scoped>
 @import '~/assets/styles/mixins.scss';
 
+.label {
+  font-size: $text-md;
+  line-height: $leading-normal;
+  margin-bottom: $spacing-lg;
+
+  @media (max-width: $breakpoint-small) {
+    text-align: center;
+  }
+}
+
 form {
-  display: flex;
+  margin: 0 auto;
+}
+
+input {
   width: 100%;
-}
-
-input {
-  min-width: 0;
-  flex-basis: 100%;
   padding: 0px $spacing-2xs;
-  margin-right: $spacing-2xs;
-}
-
-.submit {
-  flex: 0 0 auto;
-  padding: 0 $spacing-xs;
-}
-
-input,
-.submit {
+  margin-bottom: $spacing-lg;
   height: $spacing-3xl;
-}
 
-input {
   @media (max-width: $breakpoint-small) {
     font-size: $text-base;
   }
   @media (min-width: $breakpoint-small) {
     font-size: $text-lg;
   }
-}
-
-.submit {
-  font-size: $text-lg;
-  background: yellow;
-  color: black;
-  font-weight: bold;
 }
 
 .email-note {
