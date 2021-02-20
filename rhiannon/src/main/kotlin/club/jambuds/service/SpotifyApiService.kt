@@ -3,6 +3,8 @@ package club.jambuds.service
 import com.wrapper.spotify.SpotifyApi
 import com.wrapper.spotify.exceptions.SpotifyWebApiException
 import com.wrapper.spotify.exceptions.detailed.NotFoundException
+import com.wrapper.spotify.model_objects.specification.Album
+import com.wrapper.spotify.model_objects.specification.AlbumSimplified
 import com.wrapper.spotify.model_objects.specification.Track
 import org.slf4j.LoggerFactory
 import java.io.PrintWriter
@@ -52,7 +54,23 @@ open class SpotifyApiService(clientId: String, clientSecret: String) {
         }
     }
 
-    open fun search(query: String): Array<Track> {
+    open fun searchTracks(query: String): Array<Track> {
         return spotifyApi.searchTracks(query).build().execute().items
+    }
+
+    open fun searchAlbums(query: String): Array<AlbumSimplified> {
+        return spotifyApi.searchAlbums(query).build().execute().items
+    }
+
+    open fun getAlbumById(id: String): Album? {
+        return try {
+            spotifyApi.getAlbum(id).build().execute()
+        } catch (err: SpotifyWebApiException) {
+            if (err is NotFoundException) {
+                null
+            } else {
+                throw err
+            }
+        }
     }
 }

@@ -4,7 +4,7 @@ import club.jambuds.AppTest
 import club.jambuds.getGson
 import club.jambuds.helpers.TestDataFactories
 import club.jambuds.model.SongWithMeta
-import club.jambuds.model.cache.SearchCacheEntry
+import club.jambuds.model.cache.SpotifyTrackSearchCache
 import club.jambuds.responses.FeedPlaylistResponse
 import club.jambuds.responses.GetDraftMixtapesResponse
 import club.jambuds.responses.MixtapeWithSongsReponse
@@ -113,7 +113,7 @@ class MixtapeRoutesTest : AppTest() {
 
         val track = TestDataFactories.createSpotifyTrack()
 
-        val cacheEntry = SearchCacheEntry(
+        val cacheEntry = SpotifyTrackSearchCache(
             spotify = track,
             isrc = "abcde",
             didHydrateExternalIds = true,
@@ -121,7 +121,7 @@ class MixtapeRoutesTest : AppTest() {
             appleMusicId = "12345"
         )
 
-        searchCacheDao.setSearchCacheEntry(track.id, cacheEntry)
+        searchCacheDao.setSpotifyTrackSearchCache(track.id, cacheEntry)
         val resp = Unirest.post("$appUrl/mixtapes/$mixtapeId/songs")
             .header("X-Auth-Token", authToken)
             .body(JSONObject(mapOf("spotifyId" to track.id)))

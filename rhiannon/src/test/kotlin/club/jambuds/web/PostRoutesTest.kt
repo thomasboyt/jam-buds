@@ -5,7 +5,7 @@ import club.jambuds.getGson
 import club.jambuds.helpers.TestDataFactories
 import club.jambuds.model.PostReport
 import club.jambuds.model.SongWithMeta
-import club.jambuds.model.cache.SearchCacheEntry
+import club.jambuds.model.cache.SpotifyTrackSearchCache
 import club.jambuds.responses.UserPlaylistResponse
 import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
@@ -24,14 +24,14 @@ class PostRoutesTest : AppTest() {
         val authToken = TestDataFactories.createAuthToken(txn, jeff.id)
         val track = TestDataFactories.createSpotifyTrack()
 
-        val cacheEntry = SearchCacheEntry(
+        val cacheEntry = SpotifyTrackSearchCache(
             spotify = track,
             isrc = "abcde",
             didHydrateExternalIds = true,
             appleMusicUrl = "12345",
             appleMusicId = "12345"
         )
-        searchCacheDao.setSearchCacheEntry(track.id, cacheEntry)
+        searchCacheDao.setSpotifyTrackSearchCache(track.id, cacheEntry)
 
         val resp = Unirest.post("$appUrl/posts")
             .header("X-Auth-Token", authToken)
@@ -64,14 +64,14 @@ class PostRoutesTest : AppTest() {
         val authToken = TestDataFactories.createAuthToken(txn, jeff.id)
         val track = TestDataFactories.createSpotifyTrack()
 
-        val cacheEntry = SearchCacheEntry(
+        val cacheEntry = SpotifyTrackSearchCache(
             spotify = track,
             isrc = "abcde",
             didHydrateExternalIds = true,
             appleMusicUrl = "12345",
             appleMusicId = "12345"
         )
-        searchCacheDao.setSearchCacheEntry(track.id, cacheEntry)
+        searchCacheDao.setSpotifyTrackSearchCache(track.id, cacheEntry)
 
         val resp = Unirest.post("$appUrl/posts")
             .header("X-Auth-Token", authToken)
@@ -92,14 +92,14 @@ class PostRoutesTest : AppTest() {
         val authToken = TestDataFactories.createAuthToken(txn, jeff.id)
         val track = TestDataFactories.createSpotifyTrack()
 
-        val cacheEntry = SearchCacheEntry(
+        val cacheEntry = SpotifyTrackSearchCache(
             spotify = track,
             isrc = "abcde",
             didHydrateExternalIds = true,
             appleMusicUrl = "12345",
             appleMusicId = "12345"
         )
-        searchCacheDao.setSearchCacheEntry(track.id, cacheEntry)
+        searchCacheDao.setSpotifyTrackSearchCache(track.id, cacheEntry)
 
         val resp = Unirest.post("$appUrl/posts")
             .header("X-Auth-Token", authToken)

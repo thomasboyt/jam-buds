@@ -1,13 +1,13 @@
 package club.jambuds.web
 
 import club.jambuds.AppTest
-import club.jambuds.clients.AppleMusicSearchResult
+import club.jambuds.clients.AppleMusicSearchSongItem
 import club.jambuds.clients.AppleMusicSongAttributes
 import club.jambuds.getGson
-import club.jambuds.model.cache.SearchCacheEntry
+import club.jambuds.model.cache.SpotifyTrackSearchCache
 import club.jambuds.responses.SearchDetailsResponse
 import club.jambuds.responses.SpotifySearchResponse
-import club.jambuds.responses.SpotifySearchResult
+import club.jambuds.responses.SongSearchResult
 import com.nhaarman.mockitokotlin2.whenever
 import com.wrapper.spotify.model_objects.specification.AlbumSimplified
 import com.wrapper.spotify.model_objects.specification.ArtistSimplified
@@ -22,12 +22,12 @@ class SearchRoutesTest : AppTest() {
     private val gson = getGson()
 
     @Test
-    fun `GET spotify-search - works`() {
+    fun `GET search - works`() {
         val track = createTrack()
 
-        whenever(mockSpotifyApiService.search("Hello")).thenReturn(arrayOf(track))
+        whenever(mockSpotifyApiService.searchTracks("Hello")).thenReturn(arrayOf(track))
 
-        val expectedResult = SpotifySearchResult(
+        val expectedResult = SongSearchResult(
             spotifyId = "abcde",
             title = "Live Like We're Dancing",
             artists = listOf("Mura Masa", "Georgia"),
@@ -35,27 +35,29 @@ class SearchRoutesTest : AppTest() {
             albumArt = "/some/image.jpg"
         )
 
-        val resp = Unirest.get("$appUrl/spotify-search")
+        val resp = Unirest.get("$appUrl/search")
             .queryString("query", "Hello")
+            .queryString("type", "songs")
             .asString()
         assertEquals(200, resp.status)
 
         val body = gson.fromJson(resp.body, SpotifySearchResponse::class.java)
 
-        assertEquals(expectedResult, body.songs[0])
+        assertEquals(expectedResult, body.songs!![0])
     }
 
     @Test
-    fun `GET spotify-search - stores results in song cache`() {
+    fun `GET search - stores results in song cache`() {
         val track = createTrack()
-        whenever(mockSpotifyApiService.search("Hello")).thenReturn(arrayOf(track))
+        whenever(mockSpotifyApiService.searchTracks("Hello")).thenReturn(arrayOf(track))
 
-        val resp = Unirest.get("$appUrl/spotify-search")
+        val resp = Unirest.get("$appUrl/search")
             .queryString("query", "Hello")
+            .queryString("type", "songs")
             .asString()
         assertEquals(200, resp.status)
 
-        val cache = searchCacheDao.getSearchCacheEntry("abcde")
+        val cache = searchCacheDao.getSpotifyTrackSearchCache("abcde")
         assertEquals(track.id, cache!!.spotify.id)
         assertEquals("abcde", cache.isrc)
         assertEquals(false, cache.didHydrateExternalIds)
@@ -64,14 +66,14 @@ class SearchRoutesTest : AppTest() {
     }
 
     @Test
-    fun `GET spotify-search - deduplicates by ISRC`() {
+    fun `GET search - deduplicates songs by ISRC`() {
         val track1 = createTrack("abcdef")
         val track2 = createTrack("abcdef")
         val track3 = createTrack("foo")
         val track4 = createTrack(null)
         val track5 = createTrack(null)
 
-        whenever(mockSpotifyApiService.search("Hello")).thenReturn(
+        whenever(mockSpotifyApiService.searchTracks("Hello")).thenReturn(
             arrayOf(
                 track1,
                 track2,
@@ -81,18 +83,19 @@ class SearchRoutesTest : AppTest() {
             )
         )
 
-        val resp = Unirest.get("$appUrl/spotify-search")
+        val resp = Unirest.get("$appUrl/search")
             .queryString("query", "Hello")
+            .queryString("type", "songs")
             .asString()
         assertEquals(200, resp.status)
         val body = gson.fromJson(resp.body, SpotifySearchResponse::class.java)
-        assertEquals(4, body.songs.size)
+        assertEquals(4, body.songs!!.size)
     }
 
     @Test
-    fun `GET spotify-details_(spotifyId) - uses the search cache to skip spotify lookup`() {
+    fun `GET search-details_songs_(spotifyId) - uses the search cache to skip spotify lookup`() {
         val track = createTrack()
-        val cacheEntry = SearchCacheEntry(
+        val cacheEntry = SpotifyTrackSearchCache(
             spotify = track,
             isrc = "abcde",
             didHydrateExternalIds = false,
@@ -100,16 +103,16 @@ class SearchRoutesTest : AppTest() {
             appleMusicId = null
         )
 
-        searchCacheDao.setSearchCacheEntry(track.id, cacheEntry)
+        searchCacheDao.setSpotifyTrackSearchCache(track.id, cacheEntry)
 
         whenever(mockAppleMusicService.getSongDetailsByIsrc("abcde")).thenReturn(
-            AppleMusicSearchResult(
+            AppleMusicSearchSongItem(
                 id = "hijkl",
                 attributes = AppleMusicSongAttributes(url = "asdf", playParams = emptyMap())
             )
         )
 
-        val resp = Unirest.get("$appUrl/spotify-details/abcde")
+        val resp = Unirest.get("$appUrl/search-details/songs/abcde")
             .asString()
         assertEquals(200, resp.status)
 
@@ -118,9 +121,9 @@ class SearchRoutesTest : AppTest() {
     }
 
     @Test
-    fun `GET spotify-details_(spotifyId) - uses the search cache to skip apple music lookup`() {
+    fun `GET search-details_songs_(spotifyId) - uses the search cache to skip apple music lookup`() {
         val track = createTrack()
-        val cacheEntry = SearchCacheEntry(
+        val cacheEntry = SpotifyTrackSearchCache(
             spotify = track,
             isrc = "abcde",
             didHydrateExternalIds = true,
@@ -128,9 +131,9 @@ class SearchRoutesTest : AppTest() {
             appleMusicId = "12345"
         )
 
-        searchCacheDao.setSearchCacheEntry(track.id, cacheEntry)
+        searchCacheDao.setSpotifyTrackSearchCache(track.id, cacheEntry)
 
-        val resp = Unirest.get("$appUrl/spotify-details/abcde")
+        val resp = Unirest.get("$appUrl/search-details/songs/abcde")
             .asString()
         assertEquals(200, resp.status)
 
