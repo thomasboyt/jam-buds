@@ -7,6 +7,7 @@ data class Like(
     val createdAt: Instant,
     override val songId: Int?,
     override val mixtapeId: Int?,
+    override val albumId: Int?,
     val userId: Int
 ) : PlaylistPost {
     override val timestamp: Instant
