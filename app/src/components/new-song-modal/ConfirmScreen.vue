@@ -79,7 +79,7 @@ export default {
 
       try {
         resp = await this.$axios({
-          url: `/spotify-details/${this.selectedSong.spotifyId}`,
+          url: `/search-details/songs/${this.selectedSong.spotifyId}`,
           method: 'GET',
         });
       } catch (err) {
