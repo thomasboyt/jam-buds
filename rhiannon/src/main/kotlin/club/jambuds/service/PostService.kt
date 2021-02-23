@@ -5,6 +5,7 @@ import club.jambuds.model.SongWithMeta
 import club.jambuds.model.User
 import io.javalin.http.BadRequestResponse
 import io.javalin.http.NotFoundResponse
+import io.javalin.http.UnauthorizedResponse
 
 class PostService(
     private val postDao: PostDao,
@@ -36,14 +37,15 @@ class PostService(
         return song
     }
 
-    fun deleteSongPost(currentUser: User, songId: Int) {
-        if (postDao.getUserPostForSongId(songId = songId, userId = currentUser.id) == null) {
-            throw NotFoundResponse(
-                "No post found for user id ${currentUser.id} and song id $songId"
-            )
+    fun deletePost(currentUser: User, postId: Int) {
+        val post = postDao.getPostById(postId)
+            ?: throw NotFoundResponse("No post found with id $postId")
+
+        if (post.userId != currentUser.id) {
+            throw UnauthorizedResponse("Cannot delete someone else's post")
         }
 
-        postDao.deleteSongPost(userId = currentUser.id, songId = songId)
+        postDao.deletePostById(postId)
     }
 
     private fun getTweetContent(currentUser: User, song: SongWithMeta, noteText: String?): String {

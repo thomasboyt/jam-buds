@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull
 class PostRoutes(private val postService: PostService, private val reportService: ReportService) {
     fun register() {
         ApiBuilder.post("/api/posts", this::postSong)
-        ApiBuilder.delete("/api/posts/:songId", this::deleteSongPost)
+        ApiBuilder.delete("/api/posts/:postId", this::deletePost)
         ApiBuilder.put("/api/posts/:postId/report", this::reportPost)
     }
 
@@ -35,12 +35,12 @@ class PostRoutes(private val postService: PostService, private val reportService
         ctx.json(song)
     }
 
-    private fun deleteSongPost(ctx: Context) {
+    private fun deletePost(ctx: Context) {
         val user = ctx.requireUser()
-        val songId = ctx.pathParam<Int>("songId").get()
-        postService.deleteSongPost(
+        val postId = ctx.pathParam<Int>("postId").get()
+        postService.deletePost(
             user,
-            songId = songId
+            postId = postId
         )
         ctx.status(204)
     }
