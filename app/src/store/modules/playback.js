@@ -37,9 +37,6 @@ const playback = {
       playlistKey: null,
       mixtapeId: null,
       currentSongPlaylistTimestamp: null,
-
-      /** list of song IDs */
-      queue: [],
     };
   },
 
@@ -68,10 +65,6 @@ const playback = {
       state.currentSongId = songId;
       state.currentSongPlaylistTimestamp = songPlaylistTimestamp;
       state.isPlaying = true;
-    },
-
-    setQueue(state, songIds) {
-      state.queue = [...songIds];
     },
 
     togglePlayback(state) {
@@ -138,7 +131,7 @@ const playback = {
     },
 
     /**
-     * Go to the next song in the current queue or playlist.
+     * Go to the next song in the current mixtape or playlist.
      */
     async nextSong(context) {
       if (context.state.isPlaying) {
