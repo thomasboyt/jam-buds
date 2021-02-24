@@ -40,17 +40,6 @@ const songs = {
       context.commit('unlikeSong', id);
     },
 
-    async deleteSong(context, { id }) {
-      await this.$axios({
-        url: `/posts/${id}`,
-        method: 'DELETE',
-      });
-      context.commit('deleteOwnPlaylistSong', {
-        songId: id,
-        currentUserName: context.rootState.currentUser.name,
-      });
-    },
-
     async markSongPlayed(context, id) {
       await this.$axios({
         url: `/songs/${id}/listened`,

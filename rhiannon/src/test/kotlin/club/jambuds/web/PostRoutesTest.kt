@@ -125,9 +125,9 @@ class PostRoutesTest : AppTest() {
         val jeff = TestDataFactories.createUser(txn, "jeff", true)
         val authToken = TestDataFactories.createAuthToken(txn, jeff.id)
         val songId = TestDataFactories.createSong(txn, spotifyId = "someSongId")
-        TestDataFactories.createSongPost(txn, songId = songId, userId = jeff.id)
+        val post = TestDataFactories.createSongPost(txn, songId = songId, userId = jeff.id)
 
-        val resp = Unirest.delete("$appUrl/posts/$songId")
+        val resp = Unirest.delete("$appUrl/posts/${post.id}")
             .header("X-Auth-Token", authToken)
             .asString()
         assertEquals(204, resp.status)
@@ -140,7 +140,21 @@ class PostRoutesTest : AppTest() {
     }
 
     @Test
-    fun `DELETE posts_(postId) - returns 404 when post does not exist`() {
+    fun `DELETE posts_(postId) - returns 401 when deleting someone else's post`() {
+        val jeff = TestDataFactories.createUser(txn, "jeff", true)
+        val vinny = TestDataFactories.createUser(txn, "vinny", true)
+        val authToken = TestDataFactories.createAuthToken(txn, vinny.id)
+        val songId = TestDataFactories.createSong(txn, spotifyId = "someSongId")
+        val post = TestDataFactories.createSongPost(txn, songId = songId, userId = jeff.id)
+
+        val resp = Unirest.delete("$appUrl/posts/${post.id}")
+            .header("X-Auth-Token", authToken)
+            .asString()
+        assertEquals(401, resp.status)
+    }
+
+    @Test
+    fun `DELETE posts_(postId) - returns 404 when deleting nonexistent post`() {
         val jeff = TestDataFactories.createUser(txn, "jeff", true)
         val authToken = TestDataFactories.createAuthToken(txn, jeff.id)
 

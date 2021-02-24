@@ -28,10 +28,7 @@
         <span class="playlist-song--actions">
           <slot name="actions">
             <song-like-action :song="song" />
-            <song-dropdown-menu
-              :song="song"
-              :show-delete="showDeleteMenuItem"
-            />
+            <song-dropdown-menu :song="song" :own-post-id="ownPostId" />
           </slot>
         </span>
       </div>
@@ -67,8 +64,11 @@ export default {
       type: Number,
       required: true,
     },
-    postedUserNames: {
+    posts: {
       type: Array,
+    },
+    ownPostId: {
+      type: Number,
     },
   },
 
@@ -91,25 +91,6 @@ export default {
 
       song(state) {
         return state.songs[this.songId];
-      },
-
-      // users can't delete other ppl's posts
-      showDeleteMenuItem(state) {
-        if (!state.auth.authenticated) {
-          return false;
-        }
-
-        if (this.postedUserNames) {
-          return this.postedUserNames.includes(state.currentUser.name);
-        }
-
-        // HACK: This should probably use props passed down instead of going off
-        // of route
-        if (this.$route.path === `/users/${state.currentUser.name}`) {
-          return true;
-        }
-
-        return false;
       },
     }),
 

@@ -1,1 +1,0 @@
-DELETE FROM posts WHERE song_id = :songId AND user_id = :userId;

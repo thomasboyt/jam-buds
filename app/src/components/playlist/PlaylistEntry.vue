@@ -3,7 +3,7 @@
     <song
       v-if="item.type === 'song'"
       :song-id="item.songId"
-      :posted-user-names="postedUserNames"
+      :own-post-id="ownPostId"
       @requestPlay="handleRequestPlay"
     />
     <mixtape-item v-else-if="item.type === 'mixtape'" :mixtape="item.mixtape" />
@@ -11,6 +11,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import Song from './Song.vue';
 import MixtapeItem from './MixtapeItem.vue';
 
@@ -20,9 +21,27 @@ export default {
   props: ['item'],
 
   computed: {
-    postedUserNames() {
-      return this.item.posts && this.item.posts.map((post) => post.userName);
-    },
+    ...mapState({
+      ownPostId(state) {
+        if (!state.auth.authenticated) {
+          return null;
+        }
+
+        if (this.item.posts) {
+          return this.item.posts.find(
+            (post) => post.userName === state.currentUser.name
+          )?.postId;
+        }
+
+        // HACK: This should probably use props passed down instead of going off
+        // of route
+        if (this.$route.path === `/users/${state.currentUser.name}`) {
+          return this.item.postId;
+        }
+
+        return null;
+      },
+    }),
   },
 
   methods: {

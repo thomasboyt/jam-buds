@@ -50,9 +50,13 @@ interface PostDao {
     @UseClasspathSqlLocator
     fun getUserPostForSongId(userId: Int, songId: Int): Post?
 
+    @SqlQuery
+    @UseClasspathSqlLocator
+    fun getPostById(postId: Int): Post?
+
     @SqlUpdate
     @UseClasspathSqlLocator
-    fun deleteSongPost(userId: Int, songId: Int)
+    fun deletePostById(postId: Int)
 
     @SqlQuery("SELECT EXISTS(SELECT * FROM posts WHERE id=:postId)")
     fun getPostExistsById(postId: Int): Boolean

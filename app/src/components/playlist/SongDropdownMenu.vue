@@ -27,7 +27,7 @@
         <li class="menu-item">
           <youtube-search-link :song="song" @click.native="handleClickItem" />
         </li>
-        <li class="menu-item" v-if="showDelete">
+        <li class="menu-item" v-if="!!ownPostId">
           <button data-test="delete-song" @click="handleClickDelete">
             Delete
           </button>
@@ -46,7 +46,7 @@ import dropdownIcon from '~/assets/kebab-vertical.svg';
 export default {
   components: { Icon, YoutubeSearchLink },
 
-  props: ['song', 'showDelete'],
+  props: ['song', 'ownPostId'],
 
   data() {
     return {
@@ -93,15 +93,15 @@ export default {
       e.stopPropagation();
 
       const confirmedDelete = window.confirm(
-        'Are you sure you want to remove your post of this song?'
+        'Are you sure you want to remove your post?'
       );
 
       this.isOpen = false;
 
       if (confirmedDelete) {
         try {
-          await this.$store.dispatch('deleteSong', {
-            id: this.song.id,
+          await this.$store.dispatch('deletePost', {
+            id: this.ownPostId,
           });
         } catch (err) {
           this.$store.commit('showErrorModal');

@@ -81,12 +81,14 @@ const playlists = {
       }
     },
 
-    deleteOwnPlaylistSong(state, { songId, currentUserName }) {
-      // After you delete your post of a song, remove the song from any playlist
-      // where the only poster was you
+    deletedPost(state, { id }) {
+      // After you delete a post, remove the post from any playlist, including
+      // aggregate items where yours was the only post
       for (let key of Object.keys(state)) {
         const existingIdx = state[key].items.findIndex(
-          (entry) => entry.songId === songId
+          (entry) =>
+            entry.postId === id ||
+            entry.posts?.find((post) => post.postId === id)
         );
 
         if (existingIdx !== -1) {
@@ -96,11 +98,11 @@ const playlists = {
             !items[existingIdx].posts ||
             items[existingIdx].posts.length === 1
           ) {
-            // current user was the only poster, so remove
+            // remove this post since it's the only post
             items.splice(existingIdx, 1);
           } else {
             items[existingIdx].posts = items[existingIdx].posts.filter(
-              (post) => post.userName !== currentUserName
+              (post) => post.postId !== id
             );
           }
 
@@ -207,6 +209,14 @@ const playlists = {
         key: `${userName}/mixtapes`,
         url: `/playlists/${userName}?onlyMixtapes=true`,
       });
+    },
+
+    async deletePost(context, { id }) {
+      await this.$axios({
+        url: `/posts/${id}`,
+        method: 'DELETE',
+      });
+      context.commit('deletedPost', { id });
     },
   },
 
