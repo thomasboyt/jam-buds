@@ -4,11 +4,12 @@
       class="action-button"
       @click="handleToggleLike"
       :disabled="requestInFlight || !authenticated"
+      data-test="like-button"
     >
       <icon v-if="song.meta.isLiked" :glyph="heartFilledIcon" />
       <icon v-else :glyph="heartOpenIcon" />
     </button>
-    <span class="like-count">{{ likeCount }}</span>
+    <span class="like-count" data-test="like-count">{{ likeCount }}</span>
   </div>
 </template>
 
