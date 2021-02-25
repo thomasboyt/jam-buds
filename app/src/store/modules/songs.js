@@ -24,7 +24,7 @@ const songs = {
   actions: {
     async likeSong(context, { id }) {
       await this.$axios({
-        url: `/likes/${id}`,
+        url: `/likes/songs/${id}`,
         method: 'PUT',
       });
 
@@ -33,7 +33,7 @@ const songs = {
 
     async unlikeSong(context, { id }) {
       await this.$axios({
-        url: `/likes/${id}`,
+        url: `/likes/songs/${id}`,
         method: 'DELETE',
       });
 
