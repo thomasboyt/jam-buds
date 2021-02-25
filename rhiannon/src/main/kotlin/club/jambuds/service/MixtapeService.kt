@@ -136,7 +136,7 @@ class MixtapeService(
         }
     }
 
-    fun getDraftMixtapesByUser(currentUser: User): List<MixtapePreview> {
+    fun getDraftMixtapesByUser(currentUser: User): List<Mixtape> {
         return mixtapeDao.getDraftMixtapePreviewsByUserId(currentUser.id)
     }
 }

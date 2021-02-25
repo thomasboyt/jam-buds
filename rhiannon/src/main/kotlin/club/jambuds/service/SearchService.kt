@@ -2,6 +2,7 @@ package club.jambuds.service
 
 import club.jambuds.dao.SongDao
 import club.jambuds.dao.cache.SearchCacheDao
+import club.jambuds.model.ItemMeta
 import club.jambuds.model.SongWithMeta
 import club.jambuds.model.User
 import club.jambuds.model.cache.SearchCacheEntry
@@ -56,7 +57,7 @@ class SearchService(
         return SongWithMeta(
             s.id, s.createdAt, s.title, s.artists, s.album, s.albumArt,
             s.spotifyId, s.isrcId, s.appleMusicId, s.appleMusicUrl,
-            likeCount = 0, isLiked = false
+            ItemMeta(likeCount = 0, isLiked = false)
         )
     }
 

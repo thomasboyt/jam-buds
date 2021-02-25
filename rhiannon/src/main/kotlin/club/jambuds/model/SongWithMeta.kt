@@ -2,6 +2,7 @@ package club.jambuds.model
 
 import com.google.gson.annotations.Expose
 import java.time.Instant
+import org.jdbi.v3.core.mapper.Nested
 
 data class SongWithMeta(
     @Expose val id: Int,
@@ -14,7 +15,5 @@ data class SongWithMeta(
     @Expose val isrcId: String?,
     @Expose val appleMusicId: String?,
     @Expose val appleMusicUrl: String?,
-    // Meta
-    @Expose val likeCount: Int,
-    @Expose val isLiked: Boolean
+    @Expose @Nested("meta") val meta: ItemMeta
 )

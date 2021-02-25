@@ -56,8 +56,8 @@ class PlaylistRoutesTest : AppTest() {
                 .getJSONArray("items")
                 .getJSONObject(0)
                 .getJSONObject("song")
-            assertEquals(likeCount, song.getInt("likeCount"))
-            assertEquals(isLiked, song.getBoolean("isLiked"))
+            assertEquals(likeCount, song.getJSONObject("meta").getInt("likeCount"))
+            assertEquals(isLiked, song.getJSONObject("meta").getBoolean("isLiked"))
         }
 
         forEachPlaylist(jeff) { url ->
