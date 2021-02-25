@@ -7,7 +7,7 @@ this is copied in large part from SongLikeAction.vue and maybe should be shared?
     @click="handleToggleLike"
     :disabled="requestInFlight"
   >
-    <icon v-if="song.isLiked" :glyph="heartFilledIcon" />
+    <icon v-if="song.meta.isLiked" :glyph="heartFilledIcon" />
     <icon v-else :glyph="heartOpenIcon" />
   </button>
 </template>
@@ -42,7 +42,7 @@ export default {
     async handleToggleLike(e) {
       e.preventDefault();
 
-      const action = this.song.isLiked ? 'unlikeSong' : 'likeSong';
+      const action = this.song.meta.isLiked ? 'unlikeSong' : 'likeSong';
 
       this.requestInFlight = true;
 

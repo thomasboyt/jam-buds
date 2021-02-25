@@ -12,12 +12,12 @@ const songs = {
       }
     },
     likeSong(state, id) {
-      state[id].isLiked = true;
-      state[id].likeCount += 1;
+      state[id].meta.isLiked = true;
+      state[id].meta.likeCount += 1;
     },
     unlikeSong(state, id) {
-      state[id].isLiked = false;
-      state[id].likeCount -= 1;
+      state[id].meta.isLiked = false;
+      state[id].meta.likeCount -= 1;
     },
   },
 

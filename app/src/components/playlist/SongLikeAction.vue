@@ -5,7 +5,7 @@
       @click="handleToggleLike"
       :disabled="requestInFlight || !authenticated"
     >
-      <icon v-if="song.isLiked" :glyph="heartFilledIcon" />
+      <icon v-if="song.meta.isLiked" :glyph="heartFilledIcon" />
       <icon v-else :glyph="heartOpenIcon" />
     </button>
     <span class="like-count">{{ likeCount }}</span>
@@ -38,7 +38,7 @@ export default {
     }),
 
     likeCount() {
-      return this.song.likeCount || '';
+      return this.song.meta.likeCount || '';
     },
   },
 
@@ -46,7 +46,7 @@ export default {
     async handleToggleLike(e) {
       e.preventDefault();
 
-      const action = this.song.isLiked ? 'unlikeSong' : 'likeSong';
+      const action = this.song.meta.isLiked ? 'unlikeSong' : 'likeSong';
 
       this.requestInFlight = true;
 
