@@ -38,6 +38,7 @@ class PostRoutesTest : AppTest() {
             .body(
                 JSONObject(
                     mapOf(
+                        "type" to "song",
                         "spotifyId" to track.id,
                         "noteText" to "Hello world",
                         "postTweet" to false
@@ -75,13 +76,13 @@ class PostRoutesTest : AppTest() {
 
         val resp = Unirest.post("$appUrl/posts")
             .header("X-Auth-Token", authToken)
-            .body(JSONObject(mapOf("spotifyId" to track.id, "postTweet" to false)))
+            .body(JSONObject(mapOf("spotifyId" to track.id, "postTweet" to false, "type" to "song")))
             .asString()
         assertEquals(200, resp.status)
 
         val redoResp = Unirest.post("$appUrl/posts")
             .header("X-Auth-Token", authToken)
-            .body(JSONObject(mapOf("spotifyId" to track.id, "postTweet" to false)))
+            .body(JSONObject(mapOf("spotifyId" to track.id, "postTweet" to false, "type" to "song")))
             .asString()
         assertEquals(400, redoResp.status)
     }
@@ -106,6 +107,7 @@ class PostRoutesTest : AppTest() {
             .body(
                 JSONObject(
                     mapOf(
+                        "type" to "song",
                         "spotifyId" to track.id,
                         "noteText" to "Hello world",
                         "postTweet" to true

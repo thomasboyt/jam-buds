@@ -1,7 +1,9 @@
 package club.jambuds.service
 
+import club.jambuds.dao.AlbumDao
 import club.jambuds.dao.SongDao
 import club.jambuds.dao.cache.SearchCacheDao
+import club.jambuds.model.Album
 import club.jambuds.model.ItemMeta
 import club.jambuds.model.SongWithMeta
 import club.jambuds.model.User
@@ -19,6 +21,7 @@ class SearchService(
     private val spotifyApiService: SpotifyApiService,
     private val appleMusicService: AppleMusicService,
     private val songDao: SongDao,
+    private val albumDao: AlbumDao,
     private val searchCacheDao: SearchCacheDao,
     private val disableAppleMusic: Boolean = false
 ) {
@@ -82,6 +85,19 @@ class SearchService(
             s.spotifyId, s.isrcId, s.appleMusicId, s.appleMusicUrl,
             ItemMeta(likeCount = 0, isLiked = false)
         )
+    }
+
+    fun getOrCreateAlbum(spotifyId: String, currentUser: User): Album {
+        val existingAlbum = albumDao.getAlbumBySpotifyId(spotifyId, currentUserId = currentUser.id)
+
+        if (existingAlbum != null) {
+            return existingAlbum
+        }
+
+        val cacheEntry = getOrHydrateAlbumCache(spotifyId)
+            ?: throw BadRequestResponse("Could not find album with Spotify ID $spotifyId")
+
+        return albumDao.createAlbumFromCacheEntry(cacheEntry)
     }
 
     private fun createSearchCacheFromTrack(track: Track): SpotifyTrackSearchCache {

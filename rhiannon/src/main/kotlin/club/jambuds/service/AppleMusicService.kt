@@ -108,8 +108,10 @@ open class AppleMusicService(musickitToken: String, private val disabled: Boolea
         return result
     }
 
-    fun search(query: String): AppleMusicSearchResults {
-        val resp = client.search(term = query, types = "artists,albums").execute()
+    private fun search(query: String): AppleMusicSearchResults {
+        // this is stupid, but this is a load-bearing `types` param - removing artists or songs
+        // causes albums[].relationships.artists[].attributes to not be filled in for some reason
+        val resp = client.search(term = query, types = "artists,albums,songs").execute()
 
         if (!resp.isSuccessful) {
             println(resp.errorBody()!!.string())

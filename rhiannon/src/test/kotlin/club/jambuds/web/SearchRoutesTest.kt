@@ -37,7 +37,7 @@ class SearchRoutesTest : AppTest() {
 
         val resp = Unirest.get("$appUrl/search")
             .queryString("query", "Hello")
-            .queryString("type", "songs")
+            .queryString("type", "song")
             .asString()
         assertEquals(200, resp.status)
 
@@ -53,7 +53,7 @@ class SearchRoutesTest : AppTest() {
 
         val resp = Unirest.get("$appUrl/search")
             .queryString("query", "Hello")
-            .queryString("type", "songs")
+            .queryString("type", "song")
             .asString()
         assertEquals(200, resp.status)
 
@@ -85,7 +85,7 @@ class SearchRoutesTest : AppTest() {
 
         val resp = Unirest.get("$appUrl/search")
             .queryString("query", "Hello")
-            .queryString("type", "songs")
+            .queryString("type", "song")
             .asString()
         assertEquals(200, resp.status)
         val body = gson.fromJson(resp.body, SpotifySearchResponse::class.java)

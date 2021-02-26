@@ -13,4 +13,13 @@ private fun transformErrors(errors: List<Pair<String, String>>): Map<String, Str
 }
 
 class FormValidationErrorResponse(errors: List<Pair<String, String>>) :
-    HttpResponseException(HttpStatus.BAD_REQUEST_400, "Bad request", transformErrors(errors))
+    HttpResponseException(HttpStatus.BAD_REQUEST_400, "Bad request", transformErrors(errors)) {
+    constructor(fieldName: String, errorMessage: String) : this(
+        listOf(
+            Pair(
+                fieldName,
+                errorMessage
+            )
+        )
+    )
+}
