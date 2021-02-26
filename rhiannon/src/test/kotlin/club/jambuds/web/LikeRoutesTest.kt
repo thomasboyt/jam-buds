@@ -31,6 +31,37 @@ class LikeRoutesTest : AppTest() {
     }
 
     @Test
+    fun `PUT likes_mixtapes_(songId) - creates a like for a mixtape`() {
+        val jeff = TestDataFactories.createUser(txn, "jeff", true)
+        val authToken = TestDataFactories.createAuthToken(txn, jeff.id)
+        val mixtapeId = TestDataFactories.createMixtape(txn, jeff.id, true)
+
+        val resp = Unirest.put("$appUrl/likes/mixtapes/$mixtapeId")
+            .header("X-Auth-Token", authToken)
+            .asString()
+        assertEquals(204, resp.status)
+
+        val playlistResp = Unirest.get("$appUrl/playlists/jeff/liked")
+            .header("X-Auth-Token", authToken)
+            .asString()
+        val playlist = gson.fromJson(playlistResp.body, UserPlaylistResponse::class.java)
+        assertEquals(1, playlist.items.size)
+        assertEquals(mixtapeId, playlist.items[0].mixtape!!.id)
+    }
+
+    @Test
+    fun `PUT likes_mixtapes_(songId) - prevents liking an unpublished mixtape`() {
+        val jeff = TestDataFactories.createUser(txn, "jeff", true)
+        val authToken = TestDataFactories.createAuthToken(txn, jeff.id)
+        val mixtapeId = TestDataFactories.createMixtape(txn, jeff.id, false)
+
+        val resp = Unirest.put("$appUrl/likes/mixtapes/$mixtapeId")
+            .header("X-Auth-Token", authToken)
+            .asString()
+        assertEquals(400, resp.status)
+    }
+
+    @Test
     fun `PUT likes_songs_(songId) - 404s for nonexistent song`() {
         val jeff = TestDataFactories.createUser(txn, "jeff", true)
         val authToken = TestDataFactories.createAuthToken(txn, jeff.id)
@@ -63,7 +94,7 @@ class LikeRoutesTest : AppTest() {
         val jeff = TestDataFactories.createUser(txn, "jeff", true)
         val authToken = TestDataFactories.createAuthToken(txn, jeff.id)
         val songId = TestDataFactories.createSong(txn)
-        TestDataFactories.createLike(txn, userId = jeff.id, songId = songId)
+        TestDataFactories.createSongLike(txn, userId = jeff.id, songId = songId)
 
         val resp = Unirest.delete("$appUrl/likes/songs/$songId")
             .header("X-Auth-Token", authToken)

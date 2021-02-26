@@ -2,7 +2,7 @@ package club.jambuds.web
 
 import club.jambuds.service.LikeService
 import club.jambuds.web.extensions.requireUser
-import club.jambuds.util.ItemType
+import club.jambuds.model.ItemType
 import io.javalin.apibuilder.ApiBuilder.delete
 import io.javalin.apibuilder.ApiBuilder.put
 import io.javalin.http.Context

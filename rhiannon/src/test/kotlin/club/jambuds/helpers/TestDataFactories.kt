@@ -92,7 +92,7 @@ object TestDataFactories {
             .execute()
     }
 
-    fun createLike(txn: Handle, userId: Int, songId: Int): Int {
+    fun createSongLike(txn: Handle, userId: Int, songId: Int): Int {
         val query =
             """
             insert into likes (user_id, song_id) values (:userId, :songId)
@@ -100,6 +100,17 @@ object TestDataFactories {
         return txn.createUpdate(query)
             .bind("userId", userId)
             .bind("songId", songId)
+            .execute()
+    }
+
+    fun createMixtapeLike(txn: Handle, userId: Int, mixtapeId: Int): Int {
+        val query =
+            """
+            insert into likes (user_id, mixtape_id) values (:userId, :mixtapeId)
+            """.trimIndent()
+        return txn.createUpdate(query)
+            .bind("userId", userId)
+            .bind("mixtapeId", mixtapeId)
             .execute()
     }
 

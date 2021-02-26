@@ -110,7 +110,7 @@ class PlaylistService(
         includeNotes: Boolean = true
     ): List<FeedPlaylistEntry> {
         val songsMap = getSongsMap(posts, currentUserId)
-        val mixtapesMap = getMixtapesMap(posts)
+        val mixtapesMap = getMixtapesMap(posts, currentUserId)
 
         return posts.map {
             FeedPlaylistEntry(
@@ -142,7 +142,7 @@ class PlaylistService(
         currentUserId: Int?
     ): List<UserPlaylistEntry> {
         val songsMap = getSongsMap(posts, currentUserId)
-        val mixtapesMap = getMixtapesMap(posts)
+        val mixtapesMap = getMixtapesMap(posts, currentUserId)
 
         return posts.map {
             UserPlaylistEntry(
@@ -170,10 +170,10 @@ class PlaylistService(
         }
     }
 
-    private fun getMixtapesMap(posts: List<PlaylistPost>): Map<Int, MixtapePreview> {
+    private fun getMixtapesMap(posts: List<PlaylistPost>, currentUserId: Int?): Map<Int, MixtapePreview> {
         val mixtapeIds = posts.mapNotNull { it.mixtapeId }
         return if (mixtapeIds.isNotEmpty()) {
-            val mixtapesList = mixtapeDao.getMixtapePreviewsByIds(mixtapeIds)
+            val mixtapesList = mixtapeDao.getMixtapePreviewsByIds(mixtapeIds, currentUserId)
             mixtapesList.map { it.id to it }.toMap()
         } else {
             emptyMap()

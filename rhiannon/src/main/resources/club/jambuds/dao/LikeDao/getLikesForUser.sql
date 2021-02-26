@@ -1,6 +1,5 @@
 SELECT
     likes.*
---    NULL as "mixtape_id",
 FROM likes
 WHERE
     likes.user_id = :userId
