@@ -1,7 +1,7 @@
 <template>
   <div class="confirm-screen">
     <div :style="{ marginBottom: '24px' }">
-      <song-preview :song="selectedSong" />
+      <search-item-preview :item="selectedSong" />
     </div>
 
     <template v-if="loadedDetails">
@@ -33,11 +33,11 @@ import _get from 'lodash/get';
 
 import serializeSongLabel from '../../util/serializeSongLabel';
 import ServiceList from './ServiceList.vue';
-import SongPreview from './SongPreview.vue';
+import SearchItemPreview from './SearchItemPreview.vue';
 import JbButton from '../lib/JbButton';
 
 export default {
-  components: { ServiceList, SongPreview, JbButton },
+  components: { ServiceList, SearchItemPreview, JbButton },
 
   props: ['selectedSong', 'mixtapeId'],
 

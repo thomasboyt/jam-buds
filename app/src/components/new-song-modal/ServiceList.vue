@@ -5,8 +5,15 @@
         <span v-if="details.spotifyId">✅</span><span v-else>❌</span> spotify
       </li>
       <li>
-        <span v-if="details.appleMusicId">✅</span><span v-else>❌</span> apple
-        music
+        <span v-if="details.appleMusicId"
+          >✅
+          <a
+            :href="details.appleMusicUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+            >apple music</a
+          ></span
+        ><span v-else>❌ apple music</span>
       </li>
       <li>
         ✅

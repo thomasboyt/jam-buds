@@ -5,16 +5,13 @@
         >Open in Spotify</a
       >
     </playlist-item-dropdown-menu-item>
-    <playlist-item-dropdown-menu-item v-if="song.appleMusicUrl">
-      <a :href="song.appleMusicUrl" target="_blank" rel="noopener noreferrer"
+    <playlist-item-dropdown-menu-item v-if="album.appleMusicUrl">
+      <a :href="album.appleMusicUrl" target="_blank" rel="noopener noreferrer"
         >Open in Apple Music</a
       >
     </playlist-item-dropdown-menu-item>
-    <playlist-item-dropdown-menu-item>
-      <youtube-search-link :song="song" />
-    </playlist-item-dropdown-menu-item>
     <playlist-item-dropdown-menu-item v-if="!!ownPostId">
-      <button type="button" data-test="delete-song" @click="handleClickDelete">
+      <button type="button" data-test="delete-post" @click="handleClickDelete">
         Delete
       </button>
     </playlist-item-dropdown-menu-item>
@@ -22,23 +19,21 @@
 </template>
 
 <script>
-import YoutubeSearchLink from './YoutubeSearchLink.vue';
-import { getSpotifySongUrl } from '~/util/getSpotifyUrl';
+import { getSpotifyAlbumUrl } from '~/util/getSpotifyUrl';
 import PlaylistItemDropdownMenu from './PlaylistItemDropdownMenu.vue';
 import PlaylistItemDropdownMenuItem from './PlaylistItemDropdownMenuItem.vue';
 
 export default {
   components: {
-    YoutubeSearchLink,
     PlaylistItemDropdownMenu,
     PlaylistItemDropdownMenuItem,
   },
 
-  props: ['song', 'ownPostId'],
+  props: ['album', 'ownPostId'],
 
   computed: {
     spotifyUrl() {
-      return getSpotifySongUrl(this.song.spotifyId);
+      return getSpotifyAlbumUrl(this.album.spotifyId);
     },
   },
 

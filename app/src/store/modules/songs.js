@@ -22,24 +22,6 @@ const songs = {
   },
 
   actions: {
-    async likeSong(context, { id }) {
-      await this.$axios({
-        url: `/likes/songs/${id}`,
-        method: 'PUT',
-      });
-
-      context.commit('likeSong', id);
-    },
-
-    async unlikeSong(context, { id }) {
-      await this.$axios({
-        url: `/likes/songs/${id}`,
-        method: 'DELETE',
-      });
-
-      context.commit('unlikeSong', id);
-    },
-
     async markSongPlayed(context, id) {
       await this.$axios({
         url: `/songs/${id}/listened`,

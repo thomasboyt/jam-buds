@@ -1,13 +1,13 @@
 <template>
   <div class="song">
     <div class="album-art-container">
-      <img :src="song.albumArt" class="album-art" />
+      <img :src="item.albumArt" class="album-art" />
     </div>
     <div class="song-label">
       <div class="song-label-content">
-        <span class="artist">{{ song.artists.join(', ') }}</span>
+        <span class="artist">{{ item.artists.join(', ') }}</span>
         <br />
-        <span class="title">{{ song.title }}</span>
+        <span class="title">{{ item.title }}</span>
       </div>
     </div>
   </div>
@@ -15,7 +15,7 @@
 
 <script>
 export default {
-  props: ['song'],
+  props: ['item'],
 };
 </script>
 

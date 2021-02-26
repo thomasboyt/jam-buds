@@ -1,19 +1,21 @@
 <template>
   <div>
-    <nuxt-link
-      class="playlist-mixtape"
+    <playlist-item-row
+      component="nuxt-link"
       :to="mixtapeLink"
       @click.native="setColorScheme"
+      :is-link="true"
     >
       <album-art :album-art="art" />
 
-      <div class="label">
-        <div class="label-content">
-          <span class="title">{{ mixtape.title }}</span
-          ><br />
+      <playlist-item-label>
+        <template #line-one>
+          {{ mixtape.title }}
+        </template>
+        <template #line-two>
           a mixtape by {{ mixtape.authorName }} with
           {{ mixtape.songCount }} tracks
-        </div>
+        </template>
         <like-action
           :mobile="true"
           item-type="mixtape"
@@ -21,7 +23,7 @@
           :is-liked="mixtape.meta.isLiked"
           :like-count="mixtape.meta.likeCount"
         />
-      </div>
+      </playlist-item-label>
 
       <playlist-item-actions>
         <like-action
@@ -32,22 +34,37 @@
         />
         <div class="dropdown-action-placeholder" />
       </playlist-item-actions>
-    </nuxt-link>
+    </playlist-item-row>
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import getMixtapeArt from '../../util/getMixtapeArt';
 import AlbumArt from './AlbumArt.vue';
 import LikeAction from './LikeAction.vue';
 import PlaylistItemActions from './PlaylistItemActions';
+import PlaylistItemLabel from './PlaylistItemLabel.vue';
+import PlaylistItemRow from './PlaylistItemRow.vue';
 
 export default {
-  components: { AlbumArt, LikeAction, PlaylistItemActions },
+  components: {
+    AlbumArt,
+    LikeAction,
+    PlaylistItemActions,
+    PlaylistItemLabel,
+    PlaylistItemRow,
+  },
 
-  props: ['mixtape'],
+  props: ['mixtapeId'],
 
   computed: {
+    ...mapState({
+      mixtape(state) {
+        return state.mixtapes.mixtapesById[this.mixtapeId];
+      },
+    }),
+
     art() {
       return getMixtapeArt(this.mixtape.id);
     },
@@ -70,52 +87,6 @@ export default {
 
 <style lang="scss" scoped>
 @import '~/assets/styles/mixins.scss';
-
-.playlist-mixtape {
-  padding: 10px;
-  margin: 0 -10px 10px -10px;
-
-  display: flex;
-  align-items: center;
-  color: var(--theme-text-color);
-  text-decoration: none;
-
-  &:hover {
-    background: rgba(0, 0, 0, 0.1);
-  }
-}
-
-.label {
-  line-height: 1.5em;
-  flex: 1 1 auto;
-  overflow-x: hidden;
-
-  > .label-content {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .title {
-    font-weight: 500;
-  }
-}
-
-@media (max-width: $breakpoint-small) {
-  .playlist-mixtape {
-    padding: 5px;
-    margin: 0 -5px 15px -5px;
-  }
-
-  .actions ::v-deep .action-button {
-    margin-left: 5px;
-
-    .icon {
-      width: 20px;
-      height: 20px;
-    }
-  }
-}
 
 .dropdown-action-placeholder {
   // magic numbers match size of dropdown button

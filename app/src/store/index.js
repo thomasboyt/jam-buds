@@ -14,6 +14,7 @@ import notifications from './modules/notifications';
 import streaming from './modules/streaming';
 import colorScheme from './modules/colorScheme';
 import likes from './modules/likes';
+import albums from './modules/albums';
 
 const root = {
   modules: {
@@ -29,6 +30,7 @@ const root = {
     streaming,
     colorScheme,
     likes,
+    albums,
   },
 
   state() {

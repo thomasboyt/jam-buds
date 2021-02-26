@@ -1,11 +1,16 @@
 <template>
   <div>
+    <search-type-filter
+      v-if="!isMixtapeSearch"
+      :search-type="searchType"
+      @changeSearchType="handleChangeSearchType"
+    />
     <search-form @submit="handleSubmit" />
 
     <spotify-results
       v-if="searchResults"
       :search-results="searchResults"
-      @selectedSong="handleSelectSong"
+      @selectItem="handleSelectItem"
     />
     <div v-else class="search-placeholder">
       <p>Search for a song or artist you like!</p>
@@ -16,20 +21,32 @@
 <script>
 import SpotifyResults from './SpotifyResults.vue';
 import SearchForm from './SearchForm.vue';
+import SearchTypeFilter from './SearchTypeFilter.vue';
 
 export default {
-  components: { SpotifyResults, SearchForm },
+  components: { SpotifyResults, SearchForm, SearchTypeFilter },
+
+  props: ['isMixtapeSearch'],
 
   data() {
     return {
       requestInFlight: false,
       searchResults: null,
+      searchType: 'song',
     };
   },
 
   methods: {
-    handleSelectSong(song) {
-      this.$emit('selectedSong', song);
+    handleChangeSearchType(type) {
+      this.searchType = type;
+      this.searchResults = null;
+    },
+
+    handleSelectItem(item) {
+      this.$emit('selectItem', {
+        item,
+        type: this.searchType,
+      });
     },
 
     async handleSubmit(query) {
@@ -45,7 +62,7 @@ export default {
         resp = await this.$axios({
           url: '/search',
           method: 'GET',
-          params: { query, type: 'songs' },
+          params: { query, type: this.searchType },
         });
       } catch (err) {
         this.$store.commit('showErrorModal');
@@ -53,7 +70,7 @@ export default {
         throw err;
       }
 
-      this.searchResults = resp.data.songs;
+      this.searchResults = resp.data.albums || resp.data.songs;
 
       this.requestInFlight = false;
     },
