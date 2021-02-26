@@ -17,11 +17,14 @@ interface MixtapeDao : SqlObject {
 
     @SqlQuery
     @UseClasspathSqlLocator
-    fun getMixtapePreviewById(mixtapeId: Int): MixtapePreview?
+    fun getMixtapePreviewById(mixtapeId: Int, currentUserId: Int? = -1): MixtapePreview?
 
     @SqlQuery
     @UseClasspathSqlLocator
-    fun getMixtapePreviewsByIds(@BindList("mixtapeIds") mixtapeIds: List<Int>): List<MixtapePreview>
+    fun getMixtapePreviewsByIds(
+        @BindList("mixtapeIds") mixtapeIds: List<Int>,
+        currentUserId: Int? = -1
+    ): List<MixtapePreview>
 
     @SqlUpdate
     @GetGeneratedKeys
@@ -94,5 +97,5 @@ interface MixtapeDao : SqlObject {
 
     @SqlQuery
     @UseClasspathSqlLocator
-    fun getDraftMixtapePreviewsByUserId(userId: Int): List<MixtapePreview>
+    fun getDraftMixtapePreviewsByUserId(userId: Int): List<Mixtape>
 }

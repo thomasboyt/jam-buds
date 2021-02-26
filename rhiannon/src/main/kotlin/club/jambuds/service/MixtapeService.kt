@@ -3,7 +3,6 @@ package club.jambuds.service
 import club.jambuds.dao.MixtapeDao
 import club.jambuds.dao.SongDao
 import club.jambuds.model.Mixtape
-import club.jambuds.model.MixtapePreview
 import club.jambuds.model.SongWithMeta
 import club.jambuds.model.User
 import club.jambuds.responses.MixtapeWithSongsReponse
@@ -26,7 +25,7 @@ class MixtapeService(
 
         val slug = toSlug(title)
         val mixtape = mixtapeDao.createMixtape(currentUserId, title, slug)
-        val mixtapePreview = mixtapeDao.getMixtapePreviewById(mixtape.id)!!
+        val mixtapePreview = mixtapeDao.getMixtapePreviewById(mixtape.id, currentUserId)!!
 
         return MixtapeWithSongsReponse(
             mixtape = mixtapePreview,
@@ -50,7 +49,7 @@ class MixtapeService(
     }
 
     fun getMixtapeById(id: Int, currentUserId: Int?): MixtapeWithSongsReponse? {
-        val mixtape = mixtapeDao.getMixtapePreviewById(id) ?: return null
+        val mixtape = mixtapeDao.getMixtapePreviewById(id, currentUserId) ?: return null
 
         // Users cannot access draft mixtapes that are not their own
         if (mixtape.publishedAt == null && mixtape.userId != currentUserId) {
@@ -136,7 +135,7 @@ class MixtapeService(
         }
     }
 
-    fun getDraftMixtapesByUser(currentUser: User): List<MixtapePreview> {
+    fun getDraftMixtapesByUser(currentUser: User): List<Mixtape> {
         return mixtapeDao.getDraftMixtapePreviewsByUserId(currentUser.id)
     }
 }

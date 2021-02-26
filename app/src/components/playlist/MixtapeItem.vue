@@ -5,7 +5,7 @@
       :to="mixtapeLink"
       @click.native="setColorScheme"
     >
-      <img class="art" :src="art" />
+      <album-art :album-art="art" />
 
       <div class="label">
         <div class="label-content">
@@ -14,15 +14,37 @@
           a mixtape by {{ mixtape.authorName }} with
           {{ mixtape.songCount }} tracks
         </div>
+        <like-action
+          :mobile="true"
+          item-type="mixtape"
+          :item-id="mixtape.id"
+          :is-liked="mixtape.meta.isLiked"
+          :like-count="mixtape.meta.likeCount"
+        />
       </div>
+
+      <playlist-item-actions>
+        <like-action
+          item-type="mixtape"
+          :item-id="mixtape.id"
+          :is-liked="mixtape.meta.isLiked"
+          :like-count="mixtape.meta.likeCount"
+        />
+        <div class="dropdown-action-placeholder" />
+      </playlist-item-actions>
     </nuxt-link>
   </div>
 </template>
 
 <script>
 import getMixtapeArt from '../../util/getMixtapeArt';
+import AlbumArt from './AlbumArt.vue';
+import LikeAction from './LikeAction.vue';
+import PlaylistItemActions from './PlaylistItemActions';
 
 export default {
+  components: { AlbumArt, LikeAction, PlaylistItemActions },
+
   props: ['mixtape'],
 
   computed: {
@@ -63,13 +85,6 @@ export default {
   }
 }
 
-.art {
-  flex: 0 0 auto;
-  width: 64px;
-  height: auto;
-  margin-right: 20px;
-}
-
 .label {
   line-height: 1.5em;
   flex: 1 1 auto;
@@ -92,11 +107,6 @@ export default {
     margin: 0 -5px 15px -5px;
   }
 
-  .art {
-    margin-right: 10px;
-    width: 54px;
-  }
-
   .actions ::v-deep .action-button {
     margin-left: 5px;
 
@@ -104,6 +114,16 @@ export default {
       width: 20px;
       height: 20px;
     }
+  }
+}
+
+.dropdown-action-placeholder {
+  // magic numbers match size of dropdown button
+  width: 41px;
+  height: 41px;
+
+  @media (max-width: $breakpoint-small) {
+    display: none;
   }
 }
 </style>

@@ -4,11 +4,12 @@
       class="action-button"
       @click="handleToggleLike"
       :disabled="requestInFlight || !authenticated"
+      data-test="like-button"
     >
-      <icon v-if="song.isLiked" :glyph="heartFilledIcon" />
+      <icon v-if="isLiked" :glyph="heartFilledIcon" />
       <icon v-else :glyph="heartOpenIcon" />
     </button>
-    <span class="like-count">{{ likeCount }}</span>
+    <span class="like-count" data-test="like-count">{{ likeCount || '' }}</span>
   </div>
 </template>
 
@@ -22,7 +23,7 @@ const heartFilledIcon = require('~/assets/heart_filled.svg');
 export default {
   components: { Icon },
 
-  props: ['song', 'mobile'],
+  props: ['itemType', 'itemId', 'isLiked', 'likeCount', 'mobile'],
 
   data() {
     return {
@@ -36,22 +37,21 @@ export default {
     ...mapState({
       authenticated: (state) => state.auth.authenticated,
     }),
-
-    likeCount() {
-      return this.song.likeCount || '';
-    },
   },
 
   methods: {
     async handleToggleLike(e) {
       e.preventDefault();
 
-      const action = this.song.isLiked ? 'unlikeSong' : 'likeSong';
+      const action = this.isLiked ? 'unlikeItem' : 'likeItem';
 
       this.requestInFlight = true;
 
       try {
-        await this.$store.dispatch(`${action}`, { id: this.song.id });
+        await this.$store.dispatch(action, {
+          itemId: this.itemId,
+          itemType: this.itemType,
+        });
       } catch (err) {
         this.$store.commit('showErrorModal');
         throw err;

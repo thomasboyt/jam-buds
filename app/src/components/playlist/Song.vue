@@ -7,31 +7,41 @@
       ]"
       @mouseover="isHovering = true"
       @mouseleave="isHovering = false"
+      @click="handleClick"
     >
-      <div class="playlist-song--main" @click="handleClick">
-        <album-art
-          :album-art="song.albumArt"
-          :can-play="canRequestPlay"
-          :streaming-service="streamingService"
-          :is-playing="isPlaying"
-          :is-hovering="isHovering"
-        />
+      <album-art
+        :album-art="song.albumArt"
+        :can-play="canRequestPlay"
+        :streaming-service="streamingService"
+        :is-playing="isPlaying"
+        :is-hovering="isHovering"
+      />
 
-        <div class="playlist-song--label">
-          <div class="label-content">
-            <div class="label-artist">{{ artistsLabel }}</div>
-            <div class="label-title">{{ song.title }}</div>
-          </div>
-          <song-like-action :mobile="true" :song="song" />
+      <div class="playlist-song--label">
+        <div class="label-content">
+          <div class="label-artist">{{ artistsLabel }}</div>
+          <div class="label-title">{{ song.title }}</div>
         </div>
-
-        <span class="playlist-song--actions">
-          <slot name="actions">
-            <song-like-action :song="song" />
-            <song-dropdown-menu :song="song" :own-post-id="ownPostId" />
-          </slot>
-        </span>
+        <like-action
+          :mobile="true"
+          item-type="song"
+          :item-id="song.id"
+          :is-liked="song.meta.isLiked"
+          :like-count="song.meta.likeCount"
+        />
       </div>
+
+      <playlist-item-actions>
+        <slot name="actions">
+          <like-action
+            item-type="song"
+            :item-id="song.id"
+            :is-liked="song.meta.isLiked"
+            :like-count="song.meta.likeCount"
+          />
+          <song-dropdown-menu :song="song" :own-post-id="ownPostId" />
+        </slot>
+      </playlist-item-actions>
     </div>
     <connect-streaming-banner
       :show="showConnectStreamingBanner"
@@ -45,18 +55,20 @@
 import { mapState, mapGetters } from 'vuex';
 
 import AlbumArt from './AlbumArt.vue';
-import SongLikeAction from './SongLikeAction.vue';
 import SongDropdownMenu from './SongDropdownMenu.vue';
 import ConnectStreamingBanner from './ConnectStreamingBanner';
+import LikeAction from './LikeAction.vue';
+import PlaylistItemActions from './PlaylistItemActions';
 import getSpotifyUrl from '~/util/getSpotifyUrl';
 import getYoutubeSearchUrl from '~/util/getYoutubeSearchUrl';
 
 export default {
   components: {
     AlbumArt,
-    SongLikeAction,
     SongDropdownMenu,
     ConnectStreamingBanner,
+    LikeAction,
+    PlaylistItemActions,
   },
 
   props: {
@@ -182,34 +194,22 @@ export default {
   padding: 10px;
   margin: 0 -10px 10px -10px;
 
-  &:hover {
-    // background: rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  color: var(--theme-text-color);
+  text-decoration: none;
 
+  &:hover {
     &.can-play {
       cursor: pointer;
     }
   }
 }
 
-.playlist-song--main {
-  display: flex;
-  align-items: center;
-  color: var(--theme-text-color);
-  text-decoration: none;
-}
-
 .playlist-song--label {
-  flex-shrink: 1;
-  flex-grow: 1;
-  max-width: 100%;
-  min-width: 0;
-  margin-right: 10px;
-
   line-height: 1.5em;
-
-  .label-artist {
-    font-weight: 500;
-  }
+  flex: 1 1 auto;
+  overflow-x: hidden;
 
   .label-artist,
   .label-title {
@@ -217,43 +217,9 @@ export default {
     overflow: hidden;
     text-overflow: ellipsis;
   }
-}
 
-.playlist-song--actions {
-  flex-grow: 0;
-  flex-shrink: 0;
-  margin-left: auto;
-
-  display: flex;
-
-  > * {
-    flex: 0 0 auto;
-  }
-}
-
-::v-deep .action-button {
-  border-radius: 500px;
-  padding: 8px;
-
-  .icon {
-    display: block;
-    width: 25px;
-    height: 25px;
-  }
-
-  svg {
-    color: var(--theme-text-color);
-  }
-
-  &:hover {
-    background: rgba(0, 0, 0, 0.1);
-  }
-
-  &:disabled {
-    cursor: default;
-    &:hover {
-      background: none;
-    }
+  .label-artist {
+    font-weight: 500;
   }
 }
 
@@ -261,18 +227,6 @@ export default {
   .playlist-song {
     padding: 5px;
     margin: 0 -5px 15px -5px;
-  }
-
-  .playlist-song--actions > * {
-    margin-left: 10px;
-  }
-
-  ::v-deep .action-button {
-    padding: 0;
-
-    &:hover {
-      background: none;
-    }
   }
 }
 </style>

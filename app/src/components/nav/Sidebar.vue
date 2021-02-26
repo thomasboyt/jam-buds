@@ -18,6 +18,7 @@
             'profile-link': true,
             'profile-link-active': profileActive,
           }"
+          data-test="sidebar-link-profile"
         >
           your profile
         </nuxt-link>

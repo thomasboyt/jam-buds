@@ -30,8 +30,8 @@ describe('deleting songs', () => {
     deleteSong('Drive');
 
     cy.contains('[data-test="feed-entry-group"]', 'Drive')
-      .contains('contain', 'vinny')
-      .and('not.contain', 'You');
+      .and('not.contain', 'jeff')
+      .and('contain', 'vinny');
   });
 
   it('removes song from your playlist when deleted from playlist screen', () => {

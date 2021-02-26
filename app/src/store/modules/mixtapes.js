@@ -61,6 +61,16 @@ const mixtapes = {
       Vue.delete(state.mixtapesById, mixtapeId);
       Vue.delete(state.tracksByMixtapeId, mixtapeId);
     },
+
+    likeMixtape(state, id) {
+      state.mixtapesById[id].meta.isLiked = true;
+      state.mixtapesById[id].meta.likeCount += 1;
+    },
+
+    unlikeMixtape(state, id) {
+      state.mixtapesById[id].meta.isLiked = false;
+      state.mixtapesById[id].meta.likeCount -= 1;
+    },
   },
 
   actions: {

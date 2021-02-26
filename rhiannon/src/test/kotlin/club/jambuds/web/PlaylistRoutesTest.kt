@@ -50,14 +50,23 @@ class PlaylistRoutesTest : AppTest() {
         val jeff = TestDataFactories.createUser(txn, "jeff", true)
         val songId = TestDataFactories.createSong(txn)
         TestDataFactories.createSongPost(txn, userId = jeff.id, songId = songId)
+        val mixtapeId = TestDataFactories.createMixtape(txn, jeff.id, true)
+        TestDataFactories.createMixtapePost(txn, userId = jeff.id, mixtapeId = mixtapeId)
 
         fun assertLikes(req: GetRequest, likeCount: Int, isLiked: Boolean) {
-            val song = req.asJson().body.`object`
+            val mixtape = req.asJson().body.`object`
                 .getJSONArray("items")
                 .getJSONObject(0)
+                .getJSONObject("mixtape")
+            assertEquals(likeCount, mixtape.getJSONObject("meta").getInt("likeCount"))
+            assertEquals(isLiked, mixtape.getJSONObject("meta").getBoolean("isLiked"))
+
+            val song = req.asJson().body.`object`
+                .getJSONArray("items")
+                .getJSONObject(1)
                 .getJSONObject("song")
-            assertEquals(likeCount, song.getInt("likeCount"))
-            assertEquals(isLiked, song.getBoolean("isLiked"))
+            assertEquals(likeCount, song.getJSONObject("meta").getInt("likeCount"))
+            assertEquals(isLiked, song.getJSONObject("meta").getBoolean("isLiked"))
         }
 
         forEachPlaylist(jeff) { url ->
@@ -69,7 +78,8 @@ class PlaylistRoutesTest : AppTest() {
             assertLikes(req, 0, false)
         }
 
-        TestDataFactories.createLike(txn, userId = jeff.id, songId = songId)
+        TestDataFactories.createSongLike(txn, userId = jeff.id, songId = songId)
+        TestDataFactories.createMixtapeLike(txn, userId = jeff.id, mixtapeId = mixtapeId)
 
         forEachPlaylist(jeff) { url ->
             val req = getUserRequest(jeff, url)
@@ -115,7 +125,7 @@ class PlaylistRoutesTest : AppTest() {
             Thread.sleep(1) // prevent creating songs at the "same time"
             val songId = TestDataFactories.createSong(txn)
             TestDataFactories.createSongPost(txn, userId = jeff.id, songId = songId)
-            TestDataFactories.createLike(txn, userId = jeff.id, songId = songId)
+            TestDataFactories.createSongLike(txn, userId = jeff.id, songId = songId)
             songId
         }
 
@@ -152,7 +162,7 @@ class PlaylistRoutesTest : AppTest() {
         val songIds = (1..50).map {
             val songId = TestDataFactories.createSong(txn)
             TestDataFactories.createSongPost(txn, userId = jeff.id, songId = songId)
-            TestDataFactories.createLike(txn, userId = jeff.id, songId = songId)
+            TestDataFactories.createSongLike(txn, userId = jeff.id, songId = songId)
             songId
         }
 
@@ -442,7 +452,7 @@ class PlaylistRoutesTest : AppTest() {
         val vinny = TestDataFactories.createUser(txn, "vinny", true)
         val vinnySongId = TestDataFactories.createSong(txn)
         TestDataFactories.createSongPost(txn, userId = vinny.id, songId = vinnySongId)
-        TestDataFactories.createLike(txn, userId = jeff.id, songId = vinnySongId)
+        TestDataFactories.createSongLike(txn, userId = jeff.id, songId = vinnySongId)
 
         val resp = Unirest.get("$appUrl/playlists/jeff/liked").asJson()
 
