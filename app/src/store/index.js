@@ -13,6 +13,7 @@ import mixtapes from './modules/mixtapes';
 import notifications from './modules/notifications';
 import streaming from './modules/streaming';
 import colorScheme from './modules/colorScheme';
+import likes from './modules/likes';
 
 const root = {
   modules: {
@@ -27,6 +28,7 @@ const root = {
     notifications,
     streaming,
     colorScheme,
+    likes,
   },
 
   state() {

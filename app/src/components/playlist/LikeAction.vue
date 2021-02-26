@@ -6,10 +6,10 @@
       :disabled="requestInFlight || !authenticated"
       data-test="like-button"
     >
-      <icon v-if="song.meta.isLiked" :glyph="heartFilledIcon" />
+      <icon v-if="isLiked" :glyph="heartFilledIcon" />
       <icon v-else :glyph="heartOpenIcon" />
     </button>
-    <span class="like-count" data-test="like-count">{{ likeCount }}</span>
+    <span class="like-count" data-test="like-count">{{ likeCount || '' }}</span>
   </div>
 </template>
 
@@ -23,7 +23,7 @@ const heartFilledIcon = require('~/assets/heart_filled.svg');
 export default {
   components: { Icon },
 
-  props: ['song', 'mobile'],
+  props: ['itemType', 'itemId', 'isLiked', 'likeCount', 'mobile'],
 
   data() {
     return {
@@ -37,22 +37,21 @@ export default {
     ...mapState({
       authenticated: (state) => state.auth.authenticated,
     }),
-
-    likeCount() {
-      return this.song.meta.likeCount || '';
-    },
   },
 
   methods: {
     async handleToggleLike(e) {
       e.preventDefault();
 
-      const action = this.song.meta.isLiked ? 'unlikeSong' : 'likeSong';
+      const action = this.isLiked ? 'unlikeItem' : 'likeItem';
 
       this.requestInFlight = true;
 
       try {
-        await this.$store.dispatch(`${action}`, { id: this.song.id });
+        await this.$store.dispatch(action, {
+          itemId: this.itemId,
+          itemType: this.itemType,
+        });
       } catch (err) {
         this.$store.commit('showErrorModal');
         throw err;
