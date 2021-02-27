@@ -31,6 +31,15 @@ export default {
           image: song.albumArt,
         };
       }
+    } else if (this.$route.query.album) {
+      const album = this.$store.state.albums[this.$route.query.album];
+      if (album) {
+        meta = {
+          title: album.title,
+          description: `${this.name} posted ${album.title} by ${album.artists[0]} on Jam Buds!`,
+          image: album.albumArt,
+        };
+      }
     }
 
     return {
