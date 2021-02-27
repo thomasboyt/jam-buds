@@ -9,7 +9,7 @@
           {{ artistsLabel }}
         </template>
         <template #line-two>
-          {{ album.title }}
+          <em>{{ album.title }}</em>
         </template>
         <like-action
           :mobile="true"
