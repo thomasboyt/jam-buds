@@ -40,7 +40,7 @@ class PostService(
         )
 
         if (postTweet) {
-            val tweetContent = getTweetContent(currentUser, song, noteText)
+            val tweetContent = getTweetContent(currentUser, ItemType.SONG, song.id, noteText)
             twitterService.postTweet(currentUser, tweetContent)
         }
 
@@ -70,10 +70,10 @@ class PostService(
             note = noteText
         )
 
-        // if (postTweet) {
-        //     val tweetContent = getTweetContent(currentUser, song, noteText)
-        //     twitterService.postTweet(currentUser, tweetContent)
-        // }
+        if (postTweet) {
+            val tweetContent = getTweetContent(currentUser, ItemType.ALBUM, album.id, noteText)
+            twitterService.postTweet(currentUser, tweetContent)
+        }
 
         return album
     }
@@ -89,11 +89,17 @@ class PostService(
         postDao.deletePostById(postId)
     }
 
-    private fun getTweetContent(currentUser: User, song: SongWithMeta, noteText: String?): String {
-        val tweetLink = "$appUrl/users/${currentUser.name}?song=${song.id}"
+    private fun getTweetContent(
+        currentUser: User,
+        itemType: ItemType,
+        itemId: Int,
+        noteText: String?
+    ): String {
+        val itemTypeParam = itemType.type
+        val tweetLink = "$appUrl/users/${currentUser.name}?$itemTypeParam=$itemId"
 
         return if (noteText == null) {
-            "I just posted a song to Jam Buds! $tweetLink"
+            "I just posted a new jam to Jam Buds! $tweetLink"
         } else {
             val noteContent = truncateNoteForTweet(noteText)
             "$noteContent $tweetLink"

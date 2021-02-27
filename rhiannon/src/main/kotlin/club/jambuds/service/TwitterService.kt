@@ -29,6 +29,11 @@ open class TwitterService(
     }
 
     open fun postTweet(user: User, tweetContent: String) {
+        if (disableTwitter) {
+            logger.info("Posted tweet: $tweetContent")
+            return
+        }
+
         val resp = getTwitterClient(user).postStatus(tweetContent).execute()
 
         if (!resp.isSuccessful) {
