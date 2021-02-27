@@ -107,9 +107,8 @@ export default {
         noteText: this.noteText === '' ? null : this.noteText,
       };
 
-      let resp;
       try {
-        resp = await this.$axios({
+        await this.$axios({
           url: '/posts',
           method: 'POST',
           data: params,
@@ -124,10 +123,18 @@ export default {
         return;
       }
 
-      this.$store.dispatch('didSubmitSong', {
-        song: resp.data,
-        currentPath: this.$route.path,
-      });
+      const userName = this.$store.state.currentUser.name;
+      const currentPath = this.$route.path;
+      const profilePath = `/users/${userName}`;
+      if (currentPath === '/') {
+        this.$store.dispatch('loadNewPlaylistEntries', {
+          key: 'feed',
+        });
+      } else if (currentPath === profilePath) {
+        this.$store.dispatch('loadNewPlaylistEntries', {
+          key: `${userName}/posts`,
+        });
+      }
 
       this.$emit('finished');
     },

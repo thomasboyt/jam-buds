@@ -8,7 +8,6 @@ import songs from './modules/songs';
 import playback from './modules/playback';
 import playlists from './modules/playlists';
 import profiles from './modules/profiles';
-import addSong from './modules/addSong';
 import mixtapes from './modules/mixtapes';
 import notifications from './modules/notifications';
 import streaming from './modules/streaming';
@@ -24,7 +23,6 @@ const root = {
     playback,
     playlists,
     profiles,
-    addSong,
     mixtapes,
     notifications,
     streaming,
