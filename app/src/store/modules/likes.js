@@ -10,6 +10,8 @@ const likes = {
         context.commit('likeSong', itemId);
       } else if (itemType === 'mixtape') {
         context.commit('likeMixtape', itemId);
+      } else if (itemType === 'album') {
+        context.commit('likeAlbum', itemId);
       }
     },
 
@@ -23,6 +25,8 @@ const likes = {
         context.commit('unlikeSong', itemId);
       } else if (itemType === 'mixtape') {
         context.commit('unlikeMixtape', itemId);
+      } else if (itemType === 'album') {
+        context.commit('unlikeAlbum', itemId);
       }
     },
   },
