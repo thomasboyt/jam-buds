@@ -13,7 +13,7 @@ describe('viewing feed', () => {
     cy.login('jeff@jambuds.club');
     cy.visit('/');
 
-    cy.get('.playlist-mixtape')
+    cy.get('.playlist-item-row')
       .should('contain', "vinny's mixtape")
       .get('a[href="/mixtapes/1/vinny-s-mixtape"]');
   });
