@@ -7,7 +7,7 @@
     @requestNextPage="handleRequestNextPage"
   >
     <template v-slot:item="{ item }">
-      <mixtape-item :timestamp="item.timestamp" :mixtape="item.mixtape" />
+      <mixtape-item :mixtape-id="item.mixtapeId" />
       <entry-details
         type="userPlaylist"
         :id="item.postId"
