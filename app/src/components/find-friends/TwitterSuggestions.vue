@@ -1,7 +1,9 @@
-
 <template>
   <div v-if="showTwitterSuggestions">
     <div v-if="$fetchState.pending" class="friends-placeholder">Loading...</div>
+    <div v-else-if="$fetchState.error" class="friends-placeholder">
+      Error loading friend suggestions.
+    </div>
     <template v-else>
       <div v-if="friendSuggestions.length === 0" class="friends-placeholder">
         No suggestions found! Try inviting your Twitter friends to Jam Buds!
@@ -32,13 +34,23 @@ export default {
 
   async fetch() {
     if (this.$store.state.currentUser.twitterName) {
-      await this.$store.dispatch('loadFriendSuggestions');
+      const resp = await this.$axios({
+        url: `/friend-suggestions`,
+        method: 'GET',
+      });
+
+      this.friendSuggestions = resp.data.users;
     }
+  },
+
+  data() {
+    return {
+      friendSuggestions: null,
+    };
   },
 
   computed: {
     ...mapState({
-      friendSuggestions: (state) => state.currentUser.friendSuggestions,
       showTwitterSuggestions: (state) => state.currentUser.twitterName,
     }),
     redirect() {

@@ -1,5 +1,3 @@
-import Vue from 'vue';
-
 const currentUser = {
   state() {
     return {};
@@ -14,10 +12,6 @@ const currentUser = {
     },
     removeFollowedUser(state, name) {
       state.following = state.following.filter((user) => user.name !== name);
-    },
-    setFriendSuggestions(state, suggestions) {
-      // XXX: is there a reason this uses Vue.set?
-      Vue.set(state, 'friendSuggestions', suggestions);
     },
     disconnectedTwitter(state) {
       state.twitterName = null;
@@ -49,15 +43,6 @@ const currentUser = {
       });
 
       context.commit('removeFollowedUser', name);
-    },
-
-    async loadFriendSuggestions(context) {
-      const resp = await this.$axios({
-        url: `/friend-suggestions`,
-        method: 'GET',
-      });
-
-      context.commit('setFriendSuggestions', resp.data.users);
     },
 
     async loadDraftMixtapes(context) {
