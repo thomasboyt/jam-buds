@@ -19,8 +19,8 @@
       >
         <mixtape-confirm-screen
           v-if="mixtapeId"
+          selected-type="song"
           :selected-item="selectedItem"
-          :selected-type="selectedType"
           :mixtape-id="mixtapeId"
           @finished="handleCloseModal"
         />
