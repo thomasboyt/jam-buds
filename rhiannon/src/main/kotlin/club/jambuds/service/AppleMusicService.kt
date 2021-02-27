@@ -80,8 +80,9 @@ open class AppleMusicService(musickitToken: String, private val disabled: Boolea
             // concerned about how Apple combines artists names - what Spotify has as
             // (St Vincent, David Byrne) becomes "David Byrne & St Vincent", and I need to make sure
             // both are present in the string and, ideally, nothing else is present...
-            val spotifyArtists = spotifyAlbum.artists.map { it.name }.toSet()
-            val appleMusicArtists = result.relationships.artists.data.map { it.attributes.name }.toSet()
+            val spotifyArtists = spotifyAlbum.artists.map { it.name.toLowerCase() }.toSet()
+            val appleMusicArtists =
+                result.relationships.artists.data.map { it.attributes.name.toLowerCase() }.toSet()
             return spotifyArtists == appleMusicArtists
         }
 
@@ -92,7 +93,7 @@ open class AppleMusicService(musickitToken: String, private val disabled: Boolea
 
         var results = searchWithTitle(spotifyAlbum.name)
         var result = results.albums?.data?.find {
-            it.attributes.name == spotifyAlbum.name && testArtistsMatch(it)
+            it.attributes.name.equals(spotifyAlbum.name, ignoreCase = true) && testArtistsMatch(it)
         }
 
         if (result != null) {
@@ -103,7 +104,7 @@ open class AppleMusicService(musickitToken: String, private val disabled: Boolea
         val cleanedTitle = cleanAlbumTitle(spotifyAlbum.name)
         results = searchWithTitle(cleanedTitle)
         result = results.albums?.data?.find {
-            it.attributes.name.contains(cleanedTitle) && testArtistsMatch(it)
+            it.attributes.name.contains(cleanedTitle, ignoreCase = true) && testArtistsMatch(it)
         }
         return result
     }
