@@ -3,6 +3,7 @@ package club.jambuds.service
 import club.jambuds.dao.MixtapeDao
 import club.jambuds.dao.SongDao
 import club.jambuds.model.Mixtape
+import club.jambuds.model.MixtapePreview
 import club.jambuds.model.SongWithMeta
 import club.jambuds.model.User
 import club.jambuds.responses.MixtapeWithSongsReponse
@@ -135,7 +136,7 @@ class MixtapeService(
         }
     }
 
-    fun getDraftMixtapesByUser(currentUser: User): List<Mixtape> {
+    fun getDraftMixtapesByUser(currentUser: User): List<MixtapePreview> {
         return mixtapeDao.getDraftMixtapePreviewsByUserId(currentUser.id)
     }
 }

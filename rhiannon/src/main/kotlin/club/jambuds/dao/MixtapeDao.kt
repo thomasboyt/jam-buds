@@ -97,5 +97,5 @@ interface MixtapeDao : SqlObject {
 
     @SqlQuery
     @UseClasspathSqlLocator
-    fun getDraftMixtapePreviewsByUserId(userId: Int): List<Mixtape>
+    fun getDraftMixtapePreviewsByUserId(userId: Int): List<MixtapePreview>
 }
