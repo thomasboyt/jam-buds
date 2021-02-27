@@ -35,6 +35,7 @@ class LikeRoutes(private val likeService: LikeService) {
         return when (type) {
             "songs" -> ItemType.SONG
             "mixtapes" -> ItemType.MIXTAPE
+            "albums" -> ItemType.ALBUM
             else -> throw NotFoundResponse()
         }
     }
