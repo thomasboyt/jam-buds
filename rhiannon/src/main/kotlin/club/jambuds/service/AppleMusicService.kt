@@ -67,7 +67,7 @@ open class AppleMusicService(musickitToken: String, private val disabled: Boolea
         return body.data[0]
     }
 
-    fun getAlbumBySpotifyDetails(spotifyAlbum: AlbumSimplified): AppleMusicSearchAlbumItem? {
+    open fun getAlbumBySpotifyDetails(spotifyAlbum: AlbumSimplified): AppleMusicSearchAlbumItem? {
         if (disabled) {
             throw Error(
                 "Attempted to use AppleMusicService even though it was configured as disabled"

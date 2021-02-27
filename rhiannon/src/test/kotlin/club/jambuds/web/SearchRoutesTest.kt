@@ -1,13 +1,22 @@
 package club.jambuds.web
 
 import club.jambuds.AppTest
+import club.jambuds.clients.AppleMusicAlbumAttributes
+import club.jambuds.clients.AppleMusicAlbumRelationships
+import club.jambuds.clients.AppleMusicArtist
+import club.jambuds.clients.AppleMusicArtistAttributes
+import club.jambuds.clients.AppleMusicArtistRelationship
+import club.jambuds.clients.AppleMusicSearchAlbumItem
 import club.jambuds.clients.AppleMusicSearchSongItem
 import club.jambuds.clients.AppleMusicSongAttributes
 import club.jambuds.getGson
+import club.jambuds.model.cache.SpotifyAlbumSearchCache
 import club.jambuds.model.cache.SpotifyTrackSearchCache
+import club.jambuds.responses.AlbumSearchResult
 import club.jambuds.responses.SearchDetailsResponse
 import club.jambuds.responses.SpotifySearchResponse
 import club.jambuds.responses.SongSearchResult
+import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.whenever
 import com.wrapper.spotify.model_objects.specification.AlbumSimplified
 import com.wrapper.spotify.model_objects.specification.ArtistSimplified
@@ -22,9 +31,8 @@ class SearchRoutesTest : AppTest() {
     private val gson = getGson()
 
     @Test
-    fun `GET search - works`() {
+    fun `GET search - works for songs`() {
         val track = createTrack()
-
         whenever(mockSpotifyApiService.searchTracks("Hello")).thenReturn(arrayOf(track))
 
         val expectedResult = SongSearchResult(
@@ -47,6 +55,29 @@ class SearchRoutesTest : AppTest() {
     }
 
     @Test
+    fun `GET search - works for albums`() {
+        val album = createAlbum()
+        whenever(mockSpotifyApiService.searchAlbums("Hello")).thenReturn(arrayOf(album))
+
+        val expectedResult = AlbumSearchResult(
+            spotifyId = "abcde",
+            title = "Sound of Silver",
+            artists = listOf("LCD Soundsystem"),
+            albumArt = "/some/image.jpg"
+        )
+
+        val resp = Unirest.get("$appUrl/search")
+            .queryString("query", "Hello")
+            .queryString("type", "album")
+            .asString()
+        assertEquals(200, resp.status)
+
+        val body = gson.fromJson(resp.body, SpotifySearchResponse::class.java)
+
+        assertEquals(expectedResult, body.albums!![0])
+    }
+
+    @Test
     fun `GET search - stores results in song cache`() {
         val track = createTrack()
         whenever(mockSpotifyApiService.searchTracks("Hello")).thenReturn(arrayOf(track))
@@ -60,6 +91,24 @@ class SearchRoutesTest : AppTest() {
         val cache = searchCacheDao.getSpotifyTrackSearchCache("abcde")
         assertEquals(track.id, cache!!.spotify.id)
         assertEquals("abcde", cache.isrc)
+        assertEquals(false, cache.didHydrateExternalIds)
+        assertEquals(null, cache.appleMusicId)
+        assertEquals(null, cache.appleMusicUrl)
+    }
+
+    @Test
+    fun `GET search - stores results in album cache`() {
+        val album = createAlbum()
+        whenever(mockSpotifyApiService.searchAlbums("Hello")).thenReturn(arrayOf(album))
+
+        val resp = Unirest.get("$appUrl/search")
+            .queryString("query", "Hello")
+            .queryString("type", "album")
+            .asString()
+        assertEquals(200, resp.status)
+
+        val cache = searchCacheDao.getSpotifyAlbumSearchCache("abcde")
+        assertEquals(album.id, cache!!.spotify.id)
         assertEquals(false, cache.didHydrateExternalIds)
         assertEquals(null, cache.appleMusicId)
         assertEquals(null, cache.appleMusicUrl)
@@ -118,6 +167,7 @@ class SearchRoutesTest : AppTest() {
 
         val body = gson.fromJson(resp.body, SearchDetailsResponse::class.java)
         assertEquals(track.id, body.spotifyId)
+        assertEquals("hijkl", body.appleMusicId)
     }
 
     @Test
@@ -142,6 +192,46 @@ class SearchRoutesTest : AppTest() {
         assertEquals("12345", body.appleMusicId)
     }
 
+    @Test
+    fun `GET search-details_albums_(spotifyId) - uses the search cache to skip spotify lookup and finds on apple music`() {
+        val album = createAlbum()
+        val cacheEntry = SpotifyAlbumSearchCache(
+            spotify = album,
+            didHydrateExternalIds = false,
+            appleMusicUrl = null,
+            appleMusicId = null
+        )
+
+        searchCacheDao.setSpotifyAlbumSearchCache(album.id, cacheEntry)
+
+        val mockAlbum = AppleMusicSearchAlbumItem(
+            id = "hijkl",
+            attributes = AppleMusicAlbumAttributes(
+                url = "asdf",
+                playParams = emptyMap(),
+                name = "Sound of Silver",
+                artistName = "LCD Soundsystem"
+            ),
+            relationships = AppleMusicAlbumRelationships(
+                AppleMusicArtistRelationship(
+                    listOf(
+                        AppleMusicArtist(AppleMusicArtistAttributes("LCD Soundsystem"))
+                    )
+                )
+            )
+        )
+
+        whenever(mockAppleMusicService.getAlbumBySpotifyDetails(any())).thenReturn(mockAlbum)
+
+        val resp = Unirest.get("$appUrl/search-details/albums/abcde")
+            .asString()
+        assertEquals(200, resp.status)
+
+        val body = gson.fromJson(resp.body, SearchDetailsResponse::class.java)
+        assertEquals(album.id, body.spotifyId)
+        assertEquals("hijkl", body.appleMusicId)
+    }
+
     private fun createTrack(externalId: String? = "abcde"): Track {
         return Track.Builder()
             .setId("abcde")
@@ -159,6 +249,17 @@ class SearchRoutesTest : AppTest() {
             .setExternalIds(
                 ExternalId.Builder().setExternalIds(mapOf("isrc" to externalId)).build()
             )
+            .build()
+    }
+
+    private fun createAlbum(): AlbumSimplified {
+        return AlbumSimplified.Builder()
+            .setId("abcde")
+            .setName("Sound of Silver")
+            .setArtists(
+                ArtistSimplified.Builder().setName("LCD Soundsystem").build()
+            )
+            .setImages(Image.Builder().setUrl("/some/image.jpg").build())
             .build()
     }
 }
