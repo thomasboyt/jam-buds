@@ -3,14 +3,14 @@ describe("viewing a user's profile", () => {
     cy.login('jeff@jambuds.club');
     cy.visit('/users/vinny');
 
-    cy.get('.playlist-song').contains('Drive');
+    cy.get('.playlist-item-row').contains('Drive');
   });
 
   it('includes mixtapes', () => {
     cy.login('jeff@jambuds.club');
     cy.visit('/users/vinny');
 
-    cy.get('.playlist-mixtape')
+    cy.get('.playlist-item-row')
       .should('contain', "vinny's mixtape")
       .get('a[href="/mixtapes/1/vinny-s-mixtape"]');
   });
@@ -18,6 +18,6 @@ describe("viewing a user's profile", () => {
   it('works for logged-out users', () => {
     cy.visit('/users/vinny');
     cy.get('.share-banner').should('exist');
-    cy.get('.playlist-song').contains('Drive');
+    cy.get('.playlist-item-row').contains('Drive');
   });
 });

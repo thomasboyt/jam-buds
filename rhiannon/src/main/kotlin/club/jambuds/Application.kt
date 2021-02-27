@@ -3,6 +3,7 @@ package club.jambuds
 import club.jambuds.clients.DevEmailClient
 import club.jambuds.clients.SendgridClient
 import club.jambuds.clients.createButtondownClient
+import club.jambuds.dao.AlbumDao
 import club.jambuds.dao.AuthTokenDao
 import club.jambuds.dao.ColorSchemeDao
 import club.jambuds.dao.FollowingDao
@@ -181,6 +182,7 @@ private fun wire(app: Javalin, config: Config) {
     // DAOs
     val postDao = jdbi.onDemand<PostDao>()
     val songDao = jdbi.onDemand<SongDao>()
+    val albumDao = jdbi.onDemand<AlbumDao>()
     val mixtapeDao = jdbi.onDemand<MixtapeDao>()
     val userDao = jdbi.onDemand<UserDao>()
     val colorSchemeDao = jdbi.onDemand<ColorSchemeDao>()
@@ -197,7 +199,7 @@ private fun wire(app: Javalin, config: Config) {
 
     // Services
     val playlistService =
-        PlaylistService(postDao, songDao, mixtapeDao, likeDao)
+        PlaylistService(postDao, songDao, mixtapeDao, albumDao, likeDao)
     val userService = UserService(
         userDao,
         colorSchemeDao,
@@ -209,6 +211,7 @@ private fun wire(app: Javalin, config: Config) {
         spotifyApiService,
         appleMusicService,
         songDao,
+        albumDao,
         searchCacheDao,
         disableAppleMusic = disableAppleMusic
     )

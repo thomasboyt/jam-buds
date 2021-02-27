@@ -1,12 +1,12 @@
 <template>
   <div class="confirm-screen">
     <div :style="{ marginBottom: '24px' }">
-      <song-preview :song="selectedSong" />
+      <search-item-preview :item="selectedItem" />
     </div>
 
     <template v-if="loadedDetails">
       <div :style="{ marginBottom: '36px' }">
-        <service-list :details="details" :song="selectedSong" />
+        <service-list :details="details" :song="selectedItem" />
       </div>
 
       <p v-if="error" class="error">
@@ -33,19 +33,19 @@ import _get from 'lodash/get';
 
 import serializeSongLabel from '../../util/serializeSongLabel';
 import ServiceList from './ServiceList.vue';
-import SongPreview from './SongPreview.vue';
+import SearchItemPreview from './SearchItemPreview.vue';
 import JbButton from '../lib/JbButton';
 
 export default {
-  components: { ServiceList, SongPreview, JbButton },
+  components: { ServiceList, SearchItemPreview, JbButton },
 
-  props: ['selectedSong', 'mixtapeId'],
+  props: ['selectedItem', 'mixtapeId'],
 
   data() {
     return {
       loadedDetails: false,
       details: null,
-      songLabel: serializeSongLabel(this.selectedSong),
+      songLabel: serializeSongLabel(this.selectedItem),
       error: null,
     };
   },
@@ -61,7 +61,7 @@ export default {
 
       try {
         resp = await this.$axios({
-          url: `/spotify-details/${this.selectedSong.spotifyId}`,
+          url: `/search-details/songs/${this.selectedItem.spotifyId}`,
           method: 'GET',
         });
       } catch (err) {
@@ -78,7 +78,7 @@ export default {
 
       const params = {
         source: 'spotify',
-        spotifyId: this.selectedSong.spotifyId,
+        spotifyId: this.selectedItem.spotifyId,
       };
 
       let resp;

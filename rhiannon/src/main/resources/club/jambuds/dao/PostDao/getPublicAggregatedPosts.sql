@@ -8,6 +8,7 @@
 SELECT
     posts.song_id,
     posts.mixtape_id,
+    posts.album_id,
     MIN(posts.created_at) as "agg_timestamp",
     jsonb_agg(json_build_object(
         'id', posts.id,
@@ -19,7 +20,7 @@ FROM posts
 JOIN users ON users.id = posts.user_id
 WHERE
     users.show_in_public_feed = true
-GROUP BY posts.song_id, posts.mixtape_id
+GROUP BY posts.song_id, posts.mixtape_id, posts.album_id
 HAVING
     (COALESCE(NULL, :beforeTimestamp) IS NULL OR MIN(posts.created_at) < :beforeTimestamp)
     AND (COALESCE(NULL, :afterTimestamp) IS NULL OR MIN(posts.created_at) > :afterTimestamp)

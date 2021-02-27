@@ -5,6 +5,7 @@ import java.time.Instant
 interface PlaylistPost {
     val songId: Int?
     val mixtapeId: Int?
+    val albumId: Int?
     val timestamp: Instant
 }
 
@@ -13,6 +14,7 @@ data class Post(
     val createdAt: Instant,
     override val songId: Int?,
     override val mixtapeId: Int?,
+    override val albumId: Int?,
     val userId: Int,
     val note: String?
 ) : PlaylistPost {
@@ -30,6 +32,7 @@ data class AggregatedPostItem(
 data class AggregatedPost(
     override val songId: Int?,
     override val mixtapeId: Int?,
+    override val albumId: Int?,
     override val timestamp: Instant,
     val posts: List<AggregatedPostItem>
 ) : PlaylistPost

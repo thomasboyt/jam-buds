@@ -6,7 +6,10 @@
         v-if="state === INITIAL_STATE"
         key="initial"
       >
-        <initial-screen @selectedSong="handleSelectedSong" />
+        <initial-screen
+          :is-mixtape-search="!!mixtapeId"
+          @selectItem="handleSelectedItem"
+        />
       </div>
 
       <div
@@ -16,13 +19,15 @@
       >
         <mixtape-confirm-screen
           v-if="mixtapeId"
-          :selected-song="selectedSong"
+          selected-type="song"
+          :selected-item="selectedItem"
           :mixtape-id="mixtapeId"
           @finished="handleCloseModal"
         />
         <confirm-screen
           v-else
-          :selected-song="selectedSong"
+          :selected-item="selectedItem"
+          :selected-type="selectedType"
           @finished="handleCloseModal"
         />
       </div>
@@ -50,7 +55,8 @@ export default {
       state: INITIAL_STATE,
       INITIAL_STATE,
       CONFIRM_STATE,
-      selectedSong: null,
+      selectedItem: null,
+      selectedType: null,
     };
   },
 
@@ -70,8 +76,9 @@ export default {
   },
 
   methods: {
-    handleSelectedSong(song) {
-      this.selectedSong = song;
+    handleSelectedItem({ type, item }) {
+      this.selectedItem = item;
+      this.selectedType = type;
       this.state = CONFIRM_STATE;
     },
 

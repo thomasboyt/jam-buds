@@ -1,6 +1,8 @@
 package club.jambuds.service
 
 import club.jambuds.dao.PostDao
+import club.jambuds.model.Album
+import club.jambuds.model.ItemType
 import club.jambuds.model.SongWithMeta
 import club.jambuds.model.User
 import io.javalin.http.BadRequestResponse
@@ -21,13 +23,21 @@ class PostService(
     ): SongWithMeta {
         val song = searchService.getOrCreateSong(spotifyId, currentUser)
 
-        val existingPost =
-            postDao.getUserPostForSongId(songId = song.id, userId = currentUser.id)
+        val existingPost = postDao.getUserPostForItem(
+            userId = currentUser.id,
+            itemType = ItemType.SONG,
+            itemId = song.id
+        )
         if (existingPost != null) {
             throw BadRequestResponse("You have already posted this song")
         }
 
-        postDao.createPost(userId = currentUser.id, songId = song.id, note = noteText)
+        postDao.createPost(
+            userId = currentUser.id,
+            itemType = ItemType.SONG,
+            itemId = song.id,
+            note = noteText
+        )
 
         if (postTweet) {
             val tweetContent = getTweetContent(currentUser, song, noteText)
@@ -35,6 +45,37 @@ class PostService(
         }
 
         return song
+    }
+
+    fun createPostForAlbum(
+        currentUser: User,
+        spotifyId: String,
+        noteText: String?,
+        postTweet: Boolean
+    ): Album {
+        val album = searchService.getOrCreateAlbum(spotifyId, currentUser)
+        val existingPost = postDao.getUserPostForItem(
+            userId = currentUser.id,
+            itemType = ItemType.ALBUM,
+            itemId = album.id
+        )
+        if (existingPost != null) {
+            throw BadRequestResponse("You have already posted this song")
+        }
+
+        postDao.createPost(
+            userId = currentUser.id,
+            itemType = ItemType.ALBUM,
+            itemId = album.id,
+            note = noteText
+        )
+
+        // if (postTweet) {
+        //     val tweetContent = getTweetContent(currentUser, song, noteText)
+        //     twitterService.postTweet(currentUser, tweetContent)
+        // }
+
+        return album
     }
 
     fun deletePost(currentUser: User, postId: Int) {

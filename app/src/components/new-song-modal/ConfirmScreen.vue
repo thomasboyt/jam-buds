@@ -1,11 +1,11 @@
 <template>
   <div class="confirm-screen">
     <div :style="{ marginBottom: '12px' }">
-      <song-preview :song="selectedSong" />
+      <search-item-preview :item="selectedItem" />
     </div>
 
     <template v-if="loadedDetails">
-      <service-list :details="details" :song="selectedSong" />
+      <service-list :details="details" :song="selectedItem" />
 
       <div :style="{ margin: '36px 0' }">
         <note-field v-model="noteText" />
@@ -41,16 +41,15 @@
 import _get from 'lodash/get';
 import { mapState } from 'vuex';
 
-import serializeSongLabel from '../../util/serializeSongLabel';
 import NoteField, { MAX_POST_LENGTH } from './NoteField.vue';
 import ServiceList from './ServiceList.vue';
-import SongPreview from './SongPreview.vue';
+import SearchItemPreview from './SearchItemPreview.vue';
 import JbButton from '../lib/JbButton';
 
 export default {
-  components: { NoteField, ServiceList, SongPreview, JbButton },
+  components: { NoteField, ServiceList, SearchItemPreview, JbButton },
 
-  props: ['selectedSong'],
+  props: ['selectedItem', 'selectedType'],
 
   data() {
     return {
@@ -58,7 +57,6 @@ export default {
       details: null,
       noteText: '',
       twitterPostEnabled: false,
-      songLabel: serializeSongLabel(this.selectedSong),
       error: null,
     };
   },
@@ -70,20 +68,23 @@ export default {
   },
 
   mounted() {
-    this.loadSongDetails();
+    this.loadItemDetails();
   },
 
   methods: {
-    async loadSongDetails() {
+    async loadItemDetails() {
       let resp;
+
+      const urlPrefix = this.selectedType === 'album' ? 'albums' : 'songs';
 
       try {
         resp = await this.$axios({
-          url: `/spotify-details/${this.selectedSong.spotifyId}`,
+          url: `/search-details/${urlPrefix}/${this.selectedItem.spotifyId}`,
           method: 'GET',
         });
       } catch (err) {
         this.$store.commit('showErrorModal');
+        return;
       }
 
       this.details = resp.data;
@@ -100,14 +101,14 @@ export default {
       }
 
       const params = {
-        spotifyId: this.selectedSong.spotifyId,
+        spotifyId: this.selectedItem.spotifyId,
+        type: this.selectedType,
         postTweet: this.twitterPostEnabled,
         noteText: this.noteText === '' ? null : this.noteText,
       };
 
-      let resp;
       try {
-        resp = await this.$axios({
+        await this.$axios({
           url: '/posts',
           method: 'POST',
           data: params,
@@ -122,10 +123,18 @@ export default {
         return;
       }
 
-      this.$store.dispatch('didSubmitSong', {
-        song: resp.data,
-        currentPath: this.$route.path,
-      });
+      const userName = this.$store.state.currentUser.name;
+      const currentPath = this.$route.path;
+      const profilePath = `/users/${userName}`;
+      if (currentPath === '/') {
+        this.$store.dispatch('loadNewPlaylistEntries', {
+          key: 'feed',
+        });
+      } else if (currentPath === profilePath) {
+        this.$store.dispatch('loadNewPlaylistEntries', {
+          key: `${userName}/posts`,
+        });
+      }
 
       this.$emit('finished');
     },

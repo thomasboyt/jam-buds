@@ -1,6 +1,7 @@
 package club.jambuds
 
 import club.jambuds.clients.EmailClient
+import club.jambuds.dao.AlbumDao
 import club.jambuds.dao.AuthTokenDao
 import club.jambuds.dao.ColorSchemeDao
 import club.jambuds.dao.FollowingDao
@@ -101,6 +102,7 @@ open class AppTest {
         val postDao = txn.attach(PostDao::class.java)
         songDao = txn.attach(SongDao::class.java)
         val mixtapeDao = txn.attach(MixtapeDao::class.java)
+        val albumDao = txn.attach(AlbumDao::class.java)
         userDao = txn.attach(UserDao::class.java)
         val colorSchemeDao = txn.attach(ColorSchemeDao::class.java)
         val likeDao = txn.attach(LikeDao::class.java)
@@ -114,17 +116,21 @@ open class AppTest {
         val twitterFollowingCacheDao = TwitterFollowingCacheDao(redis)
 
         val playlistService =
-            PlaylistService(postDao, songDao, mixtapeDao, likeDao)
-        val userService =
-            UserService(
-                userDao,
-                colorSchemeDao,
-                notificationsDao,
-                mockTwitterService,
-                twitterFollowingCacheDao
-            )
-        val searchService =
-            SearchService(mockSpotifyApiService, mockAppleMusicService, songDao, searchCacheDao)
+            PlaylistService(postDao, songDao, mixtapeDao, albumDao, likeDao)
+        val userService = UserService(
+            userDao,
+            colorSchemeDao,
+            notificationsDao,
+            mockTwitterService,
+            twitterFollowingCacheDao
+        )
+        val searchService = SearchService(
+            mockSpotifyApiService,
+            mockAppleMusicService,
+            songDao,
+            albumDao,
+            searchCacheDao
+        )
         val mixtapeService = MixtapeService(mixtapeDao, songDao, userService, searchService)
         val postService = PostService(
             postDao,

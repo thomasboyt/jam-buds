@@ -2,6 +2,7 @@ package club.jambuds.dao
 
 import club.jambuds.dao.mappers.AggregatedPostRowMapper
 import club.jambuds.model.AggregatedPost
+import club.jambuds.model.ItemType
 import club.jambuds.model.Post
 import org.jdbi.v3.sqlobject.config.RegisterRowMapper
 import org.jdbi.v3.sqlobject.customizer.Bind
@@ -10,6 +11,7 @@ import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.jdbi.v3.sqlobject.statement.SqlUpdate
 import java.time.Instant
+import org.jdbi.v3.sqlobject.customizer.Define
 
 interface PostDao {
     @SqlQuery
@@ -41,14 +43,16 @@ interface PostDao {
         afterTimestamp: Instant?
     ): List<Post>
 
-    @SqlUpdate
+    @SqlUpdate(
+        """
+        insert into posts (user_id, <itemType>_id, note) values (:userId, :itemId, :note)
+        """
+    )
     @GetGeneratedKeys
-    @UseClasspathSqlLocator
-    fun createPost(userId: Int, songId: Int, note: String?): Post
+    fun createPost(userId: Int, @Define("itemType") itemType: ItemType, itemId: Int, note: String?): Post
 
-    @SqlQuery
-    @UseClasspathSqlLocator
-    fun getUserPostForSongId(userId: Int, songId: Int): Post?
+    @SqlQuery("select * from posts where user_id = :userId and <itemType>_id = :itemId")
+    fun getUserPostForItem(userId: Int, @Define("itemType") itemType: ItemType, itemId: Int): Post?
 
     @SqlQuery
     @UseClasspathSqlLocator

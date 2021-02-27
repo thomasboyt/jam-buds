@@ -6,7 +6,15 @@
       :own-post-id="ownPostId"
       @requestPlay="handleRequestPlay"
     />
-    <mixtape-item v-else-if="item.type === 'mixtape'" :mixtape="item.mixtape" />
+    <mixtape-item
+      v-else-if="item.type === 'mixtape'"
+      :mixtape-id="item.mixtapeId"
+    />
+    <album-item
+      v-else-if="item.type === 'album'"
+      :album-id="item.albumId"
+      :own-post-id="ownPostId"
+    />
   </div>
 </template>
 
@@ -14,9 +22,10 @@
 import { mapState } from 'vuex';
 import Song from './Song.vue';
 import MixtapeItem from './MixtapeItem.vue';
+import AlbumItem from './AlbumItem.vue';
 
 export default {
-  components: { Song, MixtapeItem },
+  components: { Song, MixtapeItem, AlbumItem },
 
   props: ['item'],
 

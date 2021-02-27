@@ -31,6 +31,7 @@ class AggregatedPostRowMapper : RowMapper<AggregatedPost> {
             // lmao resultset is a terrible api
             songId = rs.getObject("song_id") as Int?,
             mixtapeId = rs.getObject("mixtape_id") as Int?,
+            albumId = rs.getObject("album_id") as Int?,
             timestamp = rs.getTimestamp("agg_timestamp").toInstant(),
             posts = posts
         )

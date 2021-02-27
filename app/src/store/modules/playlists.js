@@ -3,17 +3,26 @@ import Vue from 'vue';
 const mixtapeKey = (id) => `mixtape:${id}`;
 
 function denormalizeItem(entry) {
-  const entryId = entry.song
-    ? `song:${entry.song.id}`
-    : mixtapeKey(entry.mixtape.id);
+  let id;
+  if (entry.type === 'song') {
+    id = `song:${entry.song.id}`;
+  } else if (entry.type === 'album') {
+    id = `album:${entry.album.id}`;
+  } else {
+    id = `mixtape:${entry.mixtape.id}`;
+  }
 
   const denormalizedItem = {
     ...entry,
-    songId: entry.song && entry.song.id,
-    id: entryId,
+    songId: entry.song?.id,
+    albumId: entry.album?.id,
+    mixtapeId: entry.mixtape?.id,
+    id,
   };
 
   delete denormalizedItem.song;
+  delete denormalizedItem.mixtape;
+  delete denormalizedItem.album;
 
   return denormalizedItem;
 }
@@ -184,6 +193,10 @@ const playlists = {
       context.commit(
         'addMixtapes',
         items.map((item) => item.mixtape).filter((mixtape) => mixtape)
+      );
+      context.commit(
+        'addAlbums',
+        items.map((item) => item.album).filter((album) => album)
       );
       if (profiles) {
         context.commit('addProfiles', profiles);

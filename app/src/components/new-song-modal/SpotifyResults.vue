@@ -8,9 +8,9 @@
     </div>
 
     <ul v-else data-test="search-results">
-      <li v-for="song of searchResults" :key="song.spotifyId">
-        <a href="#" @click="(evt) => handleSelectSong(evt, song)">
-          <song-preview :song="song" />
+      <li v-for="item of searchResults" :key="item.spotifyId">
+        <a href="#" @click="(evt) => handleSelectItem(evt, item)">
+          <search-item-preview :item="item" />
         </a>
       </li>
     </ul>
@@ -18,18 +18,18 @@
 </template>
 
 <script>
-import SongPreview from './SongPreview.vue';
+import SearchItemPreview from './SearchItemPreview.vue';
 
 export default {
-  components: { SongPreview },
+  components: { SearchItemPreview },
 
   props: ['searchResults'],
 
   methods: {
-    handleSelectSong(evt, song) {
+    handleSelectItem(evt, item) {
       evt.preventDefault();
 
-      this.$emit('selectedSong', song);
+      this.$emit('selectItem', item);
     },
   },
 };

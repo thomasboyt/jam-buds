@@ -1,13 +1,11 @@
 <template>
   <div>
-    <div
-      :class="[
-        'playlist-song',
-        { 'is-playing': isPlaying, 'can-play': canRequestPlay },
-      ]"
+    <playlist-item-row
+      component="div"
       @mouseover="isHovering = true"
       @mouseleave="isHovering = false"
       @click="handleClick"
+      :can-play="canRequestPlay"
     >
       <album-art
         :album-art="song.albumArt"
@@ -17,11 +15,13 @@
         :is-hovering="isHovering"
       />
 
-      <div class="playlist-song--label">
-        <div class="label-content">
-          <div class="label-artist">{{ artistsLabel }}</div>
-          <div class="label-title">{{ song.title }}</div>
-        </div>
+      <playlist-item-label>
+        <template #line-one>
+          {{ artistsLabel }}
+        </template>
+        <template #line-two>
+          {{ song.title }}
+        </template>
         <like-action
           :mobile="true"
           item-type="song"
@@ -29,7 +29,7 @@
           :is-liked="song.meta.isLiked"
           :like-count="song.meta.likeCount"
         />
-      </div>
+      </playlist-item-label>
 
       <playlist-item-actions>
         <slot name="actions">
@@ -42,7 +42,7 @@
           <song-dropdown-menu :song="song" :own-post-id="ownPostId" />
         </slot>
       </playlist-item-actions>
-    </div>
+    </playlist-item-row>
     <connect-streaming-banner
       :show="showConnectStreamingBanner"
       @close="handleCloseStreamingBanner"
@@ -59,7 +59,9 @@ import SongDropdownMenu from './SongDropdownMenu.vue';
 import ConnectStreamingBanner from './ConnectStreamingBanner';
 import LikeAction from './LikeAction.vue';
 import PlaylistItemActions from './PlaylistItemActions';
-import getSpotifyUrl from '~/util/getSpotifyUrl';
+import PlaylistItemLabel from './PlaylistItemLabel.vue';
+import PlaylistItemRow from './PlaylistItemRow.vue';
+import { getSpotifySongUrl } from '~/util/getSpotifyUrl';
 import getYoutubeSearchUrl from '~/util/getYoutubeSearchUrl';
 
 export default {
@@ -69,6 +71,8 @@ export default {
     ConnectStreamingBanner,
     LikeAction,
     PlaylistItemActions,
+    PlaylistItemLabel,
+    PlaylistItemRow,
   },
 
   props: {
@@ -162,7 +166,7 @@ export default {
     },
     openInPreferredService() {
       if (this.streamingService === 'spotify') {
-        window.open(getSpotifyUrl(this.song.spotifyId));
+        window.open(getSpotifySongUrl(this.song.spotifyId));
       } else if (this.streamingService === 'appleMusic') {
         window.open(this.song.appleMusicUrl);
       } else if (this.streamingService === 'youtube') {
@@ -186,47 +190,3 @@ export default {
   },
 };
 </script>
-
-<style scoped lang="scss">
-@import '~/assets/styles/mixins.scss';
-
-.playlist-song {
-  padding: 10px;
-  margin: 0 -10px 10px -10px;
-
-  display: flex;
-  align-items: center;
-  color: var(--theme-text-color);
-  text-decoration: none;
-
-  &:hover {
-    &.can-play {
-      cursor: pointer;
-    }
-  }
-}
-
-.playlist-song--label {
-  line-height: 1.5em;
-  flex: 1 1 auto;
-  overflow-x: hidden;
-
-  .label-artist,
-  .label-title {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .label-artist {
-    font-weight: 500;
-  }
-}
-
-@media (max-width: $breakpoint-small) {
-  .playlist-song {
-    padding: 5px;
-    margin: 0 -5px 15px -5px;
-  }
-}
-</style>

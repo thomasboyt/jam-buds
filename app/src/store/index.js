@@ -8,12 +8,12 @@ import songs from './modules/songs';
 import playback from './modules/playback';
 import playlists from './modules/playlists';
 import profiles from './modules/profiles';
-import addSong from './modules/addSong';
 import mixtapes from './modules/mixtapes';
 import notifications from './modules/notifications';
 import streaming from './modules/streaming';
 import colorScheme from './modules/colorScheme';
 import likes from './modules/likes';
+import albums from './modules/albums';
 
 const root = {
   modules: {
@@ -23,12 +23,12 @@ const root = {
     playback,
     playlists,
     profiles,
-    addSong,
     mixtapes,
     notifications,
     streaming,
     colorScheme,
     likes,
+    albums,
   },
 
   state() {
