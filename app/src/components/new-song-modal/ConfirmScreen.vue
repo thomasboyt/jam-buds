@@ -11,7 +11,7 @@
         <note-field v-model="noteText" />
       </div>
 
-      <p>
+      <p v-if="hasTwitter">
         <label>
           <input type="checkbox" v-model="twitterPostEnabled" />
           cross-post to twitter
