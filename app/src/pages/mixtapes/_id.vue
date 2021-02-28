@@ -50,16 +50,16 @@
       <template v-else-if="mixtape.tracks.length > 0">
         <mixtape :mixtape-id="$route.params.id" :is-editing="isEditing" />
 
-        <add-song-button @click="handleAddSongOpen" v-if="isEditing"
-          >+ add a song</add-song-button
+        <post-jam-button @click="handleAddSongOpen" v-if="isEditing"
+          >+ add a song</post-jam-button
         >
       </template>
       <page-placeholder v-else>
-        <add-song-button
+        <post-jam-button
           :style="{ margin: '0 auto' }"
           @click="handleAddSongOpen"
           v-if="isEditing"
-          >+ add a song</add-song-button
+          >+ add a song</post-jam-button
         >
       </page-placeholder>
 
@@ -75,7 +75,7 @@
 <script>
 import Mixtape from '../../components/mixtapes/Mixtape.vue';
 import MainWrapper from '../../components/MainWrapper.vue';
-import AddSongButton from '../../components/AddSongButton.vue';
+import PostJamButton from '../../components/PostJamButton.vue';
 import NewJamModal from '../../components/new-jam-modal/NewJamModal.vue';
 import EditableTitle from '../../components/mixtapes/EditableTitle.vue';
 import PublishButton from '../../components/mixtapes/PublishButton.vue';
@@ -90,7 +90,7 @@ export default {
   components: {
     Mixtape,
     MainWrapper,
-    AddSongButton,
+    PostJamButton,
     NewJamModal,
     EditableTitle,
     PublishButton,
@@ -177,7 +177,7 @@ export default {
 
   methods: {
     handleAddSongOpen() {
-      showModal(this.$router, this.$route, 'add-song');
+      showModal(this.$router, this.$route, 'new-jam');
     },
 
     handleEnterEditTitle() {

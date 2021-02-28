@@ -62,7 +62,7 @@ export default {
 
   computed: {
     isOpen() {
-      return this.$route.query.modal === 'add-song';
+      return this.$route.query.modal === 'new-jam';
     },
   },
 

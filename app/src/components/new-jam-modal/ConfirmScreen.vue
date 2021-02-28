@@ -25,7 +25,7 @@
       <jb-button
         @click="handleSubmit"
         class="post-button"
-        data-test="add-song-confirm"
+        data-test="new-jam-confirm"
         button-style="solid"
       >
         post it!!

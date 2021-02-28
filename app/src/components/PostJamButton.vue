@@ -1,8 +1,8 @@
 <template>
   <jb-button
     @click="handleClick"
-    class="add-song"
-    data-test="add-song"
+    class="post-jam-button"
+    data-test="post-jam-button"
     button-style="page-action"
   >
     <slot />
@@ -27,19 +27,12 @@ export default {
 @import '~/assets/styles/mixins.scss';
 @import '~/assets/styles/z-index.scss';
 
-button.add-song {
+button.post-jam-button {
   padding: 10px 15px;
-
-  &.add-song-form-button {
-    @media (min-width: $breakpoint-small) {
-      border-top-left-radius: 0px;
-      border-bottom-left-radius: 0px;
-    }
-  }
 }
 
 @media (max-width: $breakpoint-small) {
-  button.add-song {
+  button.post-jam-button {
     position: fixed;
     bottom: calc(20px + var(--mobile-bottom-bar-height));
     right: 20px;
@@ -51,7 +44,7 @@ button.add-song {
     transition: 0.2s bottom cubic-bezier(0, 0, 0.2, 1);
   }
 
-  body.with-audio-player button.add-song {
+  body.with-audio-player button.post-jam-button {
     bottom: calc(
       20px + var(--mobile-bottom-bar-height) + #{$player-bar-height}
     );

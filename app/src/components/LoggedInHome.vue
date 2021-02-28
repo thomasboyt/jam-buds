@@ -2,9 +2,9 @@
   <div>
     <page-header title="your feed">
       <template #cta>
-        <add-song-button @click="handleAddSongClick">
+        <post-jam-button @click="handlePostJamClick">
           + post ur jam
-        </add-song-button>
+        </post-jam-button>
       </template>
     </page-header>
 
@@ -16,13 +16,13 @@
 
 <script>
 import Feed from '~/components/playlists/Feed.vue';
-import AddSongButton from './AddSongButton.vue';
+import PostJamButton from './PostJamButton.vue';
 import NewJamModal from './new-jam-modal/NewJamModal.vue';
 import PageHeader from './PageHeader.vue';
 import { showModal } from '~/util/modal';
 
 export default {
-  components: { Feed, NewJamModal, PageHeader, AddSongButton },
+  components: { Feed, NewJamModal, PageHeader, PostJamButton },
 
   head() {
     return {
@@ -31,8 +31,8 @@ export default {
   },
 
   methods: {
-    handleAddSongClick() {
-      showModal(this.$router, this.$route, 'add-song');
+    handlePostJamClick() {
+      showModal(this.$router, this.$route, 'new-jam');
     },
   },
 };
