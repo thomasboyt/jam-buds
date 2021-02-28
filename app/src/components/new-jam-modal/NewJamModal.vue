@@ -2,7 +2,7 @@
   <modal :title="title" :is-open="isOpen" @close="handleCloseModal">
     <transition name="fade">
       <div
-        class="add-song-modal fade-screen"
+        class="new-jam-modal fade-screen"
         v-if="state === INITIAL_STATE"
         key="initial"
       >
@@ -13,7 +13,7 @@
       </div>
 
       <div
-        class="add-song-modal fade-screen"
+        class="new-jam-modal fade-screen"
         v-if="state === CONFIRM_STATE"
         key="confirm"
       >

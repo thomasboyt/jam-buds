@@ -1,12 +1,9 @@
 <template>
   <div>
-    <profile-nav :title="title">
-      <template #cta v-if="isCurrentUserPage">
-        <create-mixtape-button />
-      </template>
-    </profile-nav>
-
-    <draft-mixtapes-list v-if="showDraftMixtapes" :mixtapes="draftMixtapes" />
+    <profile-nav :title="title" />
+    <panel v-if="showDraftMixtapes">
+      <draft-mixtapes-list :mixtapes="draftMixtapes" />
+    </panel>
 
     <user-mixtapes-playlist
       :user-name="name"
@@ -19,16 +16,16 @@
 import { mapState } from 'vuex';
 
 import ProfileNav from '~/components/profile/ProfileNav.vue';
-import DraftMixtapesList from '~/components/profile/DraftMixtapesList.vue';
-import CreateMixtapeButton from '~/components/profile/CreateMixtapeButton.vue';
+import DraftMixtapesList from '~/components/DraftMixtapesList.vue';
 import UserMixtapesPlaylist from '~/components/playlists/UserMixtapesPlaylist.vue';
+import Panel from '~/components/Panel.vue';
 
 export default {
   components: {
     ProfileNav,
     DraftMixtapesList,
-    CreateMixtapeButton,
     UserMixtapesPlaylist,
+    Panel,
   },
 
   head() {

@@ -3,33 +3,41 @@
     <button
       :class="buttonClass('song')"
       type="button"
-      @click="setSearchType('song')"
+      @click="setJamType('song')"
     >
       songs
     </button>
     <button
       :class="buttonClass('album')"
       type="button"
-      @click="setSearchType('album')"
+      @click="setJamType('album')"
     >
       albums
+    </button>
+    <button
+      :class="buttonClass('mixtape')"
+      type="button"
+      @click="setJamType('mixtape')"
+    >
+      mixtapes
     </button>
   </div>
 </template>
 
 <script>
 export default {
-  props: ['searchType'],
+  props: ['jamType'],
 
   methods: {
-    setSearchType(type) {
-      this.$emit('changeSearchType', type);
+    setJamType(type) {
+      this.$emit('changeJamType', type);
     },
 
     buttonClass(type) {
       return {
         'filter-button': true,
-        active: type === this.searchType,
+        [type]: true,
+        active: type === this.jamType,
       };
     },
   },
@@ -50,7 +58,7 @@ export default {
 
 .filter-button {
   display: block;
-  flex: 1 1 auto;
+  flex: 1 1 0px;
   padding: $spacing-2xs;
   text-align: center;
   border-bottom: 4px transparent solid;
@@ -58,6 +66,12 @@ export default {
   &.active {
     font-weight: 600;
     border-bottom-color: #777;
+  }
+
+  &.mixtape {
+    @media (max-width: $breakpoint-small) {
+      display: none;
+    }
   }
 }
 </style>

@@ -63,7 +63,7 @@
         >
       </page-placeholder>
 
-      <add-song-modal
+      <new-jam-modal
         v-if="isEditing"
         title="add to mixtape"
         :mixtape-id="mixtapeId"
@@ -76,7 +76,7 @@
 import Mixtape from '../../components/mixtapes/Mixtape.vue';
 import MainWrapper from '../../components/MainWrapper.vue';
 import AddSongButton from '../../components/AddSongButton.vue';
-import AddSongModal from '../../components/new-song-modal/AddSongModal.vue';
+import NewJamModal from '../../components/new-jam-modal/NewJamModal.vue';
 import EditableTitle from '../../components/mixtapes/EditableTitle.vue';
 import PublishButton from '../../components/mixtapes/PublishButton.vue';
 import Panel from '../../components/Panel.vue';
@@ -91,7 +91,7 @@ export default {
     Mixtape,
     MainWrapper,
     AddSongButton,
-    AddSongModal,
+    NewJamModal,
     EditableTitle,
     PublishButton,
     Panel,

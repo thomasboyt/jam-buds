@@ -1,5 +1,5 @@
 <template>
-  <panel>
+  <div>
     <p>You've started on the following draft mixtapes:</p>
     <ul>
       <li v-for="mixtape of mixtapes" :key="mixtape.id">
@@ -11,15 +11,11 @@
         </nuxt-link>
       </li>
     </ul>
-  </panel>
+  </div>
 </template>
 
 <script>
-import Panel from '~/components/Panel';
-
 export default {
-  components: { Panel },
-
   props: ['mixtapes'],
 
   methods: {

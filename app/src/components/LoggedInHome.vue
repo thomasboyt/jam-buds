@@ -3,26 +3,26 @@
     <page-header title="your feed">
       <template #cta>
         <add-song-button @click="handleAddSongClick">
-          + post a song
+          + post ur jam
         </add-song-button>
       </template>
     </page-header>
 
     <feed />
 
-    <add-song-modal title="share a jam!" />
+    <new-jam-modal title="share a jam!" />
   </div>
 </template>
 
 <script>
 import Feed from '~/components/playlists/Feed.vue';
 import AddSongButton from './AddSongButton.vue';
-import AddSongModal from './new-song-modal/AddSongModal.vue';
+import NewJamModal from './new-jam-modal/NewJamModal.vue';
 import PageHeader from './PageHeader.vue';
 import { showModal } from '~/util/modal';
 
 export default {
-  components: { Feed, AddSongModal, PageHeader, AddSongButton },
+  components: { Feed, NewJamModal, PageHeader, AddSongButton },
 
   head() {
     return {

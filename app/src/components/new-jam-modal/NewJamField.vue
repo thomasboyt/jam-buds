@@ -1,22 +1,21 @@
 <template>
-  <form
-    :class="['search-box', { focused: searchFocused }]"
-    @submit="handleSubmit"
-  >
+  <div :class="['new-jam-field', { focused }]">
     <input
       type="text"
-      v-model="searchInput"
-      placeholder="Search..."
-      data-test="song-url-field"
+      data-test="new-jam-field"
       ref="input"
-      @focus="handleFocus"
-      @blur="handleBlur"
+      :value="value"
+      :aria-label="label"
+      :placeholder="placeholder"
+      @input="$emit('input', $event.target.value)"
+      @focus="focused = true"
+      @blur="focused = false"
     />
 
-    <button class="search-button" type="submit">
+    <button v-if="isSearch" class="search-button" type="submit">
       <icon :glyph="searchIcon" />
     </button>
-  </form>
+  </div>
 </template>
 
 <script>
@@ -26,12 +25,29 @@ const searchIcon = require('~/assets/search.svg');
 export default {
   components: { Icon },
 
+  props: {
+    value: {
+      type: String,
+    },
+    isSearch: {
+      type: Boolean,
+    },
+  },
+
   data() {
     return {
+      focused: false,
       searchIcon,
-      searchInput: '',
-      searchFocused: false,
     };
+  },
+
+  computed: {
+    placeholder() {
+      return this.isSearch ? 'Search...' : 'Your mixtape title';
+    },
+    label() {
+      return this.isSearch ? 'Search query' : 'Mixtape title';
+    },
   },
 
   mounted() {
@@ -49,26 +65,11 @@ export default {
       this.$refs.input.focus();
     }
   },
-
-  methods: {
-    handleSubmit(e) {
-      e.preventDefault();
-      this.$emit('submit', this.searchInput);
-    },
-
-    handleFocus() {
-      this.searchFocused = true;
-    },
-
-    handleBlur() {
-      this.searchFocused = false;
-    },
-  },
 };
 </script>
 
 <style lang="scss" scoped>
-.search-box {
+.new-jam-field {
   display: flex;
   height: 50px;
 
