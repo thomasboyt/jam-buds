@@ -17,6 +17,9 @@
   "author": "Thomas Boyt <me@thomasboyt.com>",
   "license": "Parity-6.0.0",
   "devDependencies": {
+    "@nuxt/types": "^2.15.3",
+    "@nuxt/typescript-build": "^2.1.0",
+    "@nuxtjs/eslint-config-typescript": "^6.0.0",
     "dotenv": "^8.2.0",
     "eslint": "^7.22.0",
     "eslint-config-prettier": "^8.1.0",

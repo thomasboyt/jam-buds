@@ -2,7 +2,8 @@
   "extends": [
     "plugin:vue/strongly-recommended",
     "eslint:recommended",
-    "prettier"
+    "prettier",
+    "@nuxtjs/eslint-config-typescript"
   ],
   "env": {
     "browser": true,
