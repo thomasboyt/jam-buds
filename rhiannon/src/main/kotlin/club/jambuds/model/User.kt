@@ -1,5 +1,8 @@
 package club.jambuds.model
 
+import com.fasterxml.jackson.annotation.JsonIgnoreType
+
+@JsonIgnoreType
 data class User(
     val id: Int,
     val name: String,

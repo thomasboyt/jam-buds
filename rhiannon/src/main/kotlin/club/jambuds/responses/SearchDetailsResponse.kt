@@ -1,9 +1,9 @@
 package club.jambuds.responses
 
-import com.google.gson.annotations.Expose
+
 
 data class SearchDetailsResponse(
-    @Expose val spotifyId: String,
-    @Expose val appleMusicId: String?,
-    @Expose val appleMusicUrl: String?
+    val spotifyId: String,
+    val appleMusicId: String?,
+    val appleMusicUrl: String?
 )

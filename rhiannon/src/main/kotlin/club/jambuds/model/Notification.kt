@@ -1,19 +1,12 @@
 package club.jambuds.model
 
-import com.google.gson.annotations.SerializedName
+import com.fasterxml.jackson.annotation.JsonValue
 import java.time.Instant
 
-enum class NotificationType(val sqlVal: String) {
-    @SerializedName("like")
+enum class NotificationType(@JsonValue val sqlVal: String) {
     LIKE("like"),
-
-    @SerializedName("follow")
     FOLLOW("follow"),
-
-    @SerializedName("join")
     JOIN("join"),
-
-    @SerializedName("system")
     SYSTEM("system")
 }
 

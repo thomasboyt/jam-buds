@@ -9,7 +9,6 @@ import club.jambuds.clients.AppleMusicArtistRelationship
 import club.jambuds.clients.AppleMusicSearchAlbumItem
 import club.jambuds.clients.AppleMusicSearchSongItem
 import club.jambuds.clients.AppleMusicSongAttributes
-import club.jambuds.getGson
 import club.jambuds.model.cache.SpotifyAlbumSearchCache
 import club.jambuds.model.cache.SpotifyTrackSearchCache
 import club.jambuds.responses.AlbumSearchResult
@@ -28,8 +27,6 @@ import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
 class SearchRoutesTest : AppTest() {
-    private val gson = getGson()
-
     @Test
     fun `GET search - works for songs`() {
         val track = createTrack()
@@ -49,7 +46,7 @@ class SearchRoutesTest : AppTest() {
             .asString()
         assertEquals(200, resp.status)
 
-        val body = gson.fromJson(resp.body, SpotifySearchResponse::class.java)
+        val body = objectMapper.readValue(resp.body, SpotifySearchResponse::class.java)
 
         assertEquals(expectedResult, body.songs!![0])
     }
@@ -72,7 +69,7 @@ class SearchRoutesTest : AppTest() {
             .asString()
         assertEquals(200, resp.status)
 
-        val body = gson.fromJson(resp.body, SpotifySearchResponse::class.java)
+        val body = objectMapper.readValue(resp.body, SpotifySearchResponse::class.java)
 
         assertEquals(expectedResult, body.albums!![0])
     }
@@ -137,7 +134,7 @@ class SearchRoutesTest : AppTest() {
             .queryString("type", "song")
             .asString()
         assertEquals(200, resp.status)
-        val body = gson.fromJson(resp.body, SpotifySearchResponse::class.java)
+        val body = objectMapper.readValue(resp.body, SpotifySearchResponse::class.java)
         assertEquals(4, body.songs!!.size)
     }
 
@@ -165,7 +162,7 @@ class SearchRoutesTest : AppTest() {
             .asString()
         assertEquals(200, resp.status)
 
-        val body = gson.fromJson(resp.body, SearchDetailsResponse::class.java)
+        val body = objectMapper.readValue(resp.body, SearchDetailsResponse::class.java)
         assertEquals(track.id, body.spotifyId)
         assertEquals("hijkl", body.appleMusicId)
     }
@@ -187,7 +184,7 @@ class SearchRoutesTest : AppTest() {
             .asString()
         assertEquals(200, resp.status)
 
-        val body = gson.fromJson(resp.body, SearchDetailsResponse::class.java)
+        val body = objectMapper.readValue(resp.body, SearchDetailsResponse::class.java)
         assertEquals(track.id, body.spotifyId)
         assertEquals("12345", body.appleMusicId)
     }
@@ -227,7 +224,7 @@ class SearchRoutesTest : AppTest() {
             .asString()
         assertEquals(200, resp.status)
 
-        val body = gson.fromJson(resp.body, SearchDetailsResponse::class.java)
+        val body = objectMapper.readValue(resp.body, SearchDetailsResponse::class.java)
         assertEquals(album.id, body.spotifyId)
         assertEquals("hijkl", body.appleMusicId)
     }

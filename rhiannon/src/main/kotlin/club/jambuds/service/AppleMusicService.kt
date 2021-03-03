@@ -4,7 +4,7 @@ import club.jambuds.clients.AppleMusicClient
 import club.jambuds.clients.AppleMusicSearchAlbumItem
 import club.jambuds.clients.AppleMusicSearchResults
 import club.jambuds.clients.AppleMusicSearchSongItem
-import club.jambuds.clients.getAppleMusicGson
+import club.jambuds.clients.getAppleMusicObjectMapper
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.wrapper.spotify.model_objects.specification.AlbumSimplified
@@ -13,13 +13,13 @@ import org.bouncycastle.asn1.pkcs.PrivateKeyInfo
 import org.bouncycastle.openssl.PEMParser
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import java.io.File
 import java.io.FileReader
 import java.security.interfaces.ECPrivateKey
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 import java.util.Date
+import retrofit2.converter.jackson.JacksonConverterFactory
 
 open class AppleMusicService(musickitToken: String, private val disabled: Boolean = false) {
     private val okHttpClient = OkHttpClient.Builder().addInterceptor { chain ->
@@ -32,7 +32,7 @@ open class AppleMusicService(musickitToken: String, private val disabled: Boolea
 
     private val retrofit = Retrofit.Builder()
         .baseUrl("https://api.music.apple.com")
-        .addConverterFactory(GsonConverterFactory.create(getAppleMusicGson()))
+        .addConverterFactory(JacksonConverterFactory.create(getAppleMusicObjectMapper()))
         .client(okHttpClient)
         .build()
 

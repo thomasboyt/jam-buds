@@ -51,7 +51,9 @@ dependencies {
     implementation 'io.javalin:javalin:3.12.0'
     implementation 'io.javalin:javalin-openapi:3.12.0'
     implementation "com.typesafe:config:1.4.0"
-    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.10.1'
+    implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.10.1'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.10.1'
 
     // swagger/openapi
     implementation 'io.swagger.core.v3:swagger-annotations:2.1.6'
@@ -71,7 +73,7 @@ dependencies {
     // third-party apis
     implementation 'se.michaelthelin.spotify:spotify-web-api-java:4.2.1'
     implementation 'com.squareup.retrofit2:retrofit:2.7.1'
-    implementation 'com.squareup.retrofit2:converter-gson:2.7.1'
+    implementation 'com.squareup.retrofit2:converter-jackson:2.7.1'
     implementation 'com.squareup.retrofit2:converter-scalars:2.7.1'
     // used for third party api auth (twitter, apple music)
     implementation "com.auth0:java-jwt:3.10.0"

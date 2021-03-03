@@ -58,6 +58,7 @@ import org.junit.jupiter.api.extension.Extensions
 import org.junit.jupiter.api.extension.InvocationInterceptor
 import org.junit.jupiter.api.extension.ReflectiveInvocationContext
 import java.lang.reflect.Method
+import kong.unirest.ObjectMapper
 
 /**
  * AppTest starts an actual instance of the server. It wires up DAOs, services,
@@ -186,6 +187,7 @@ open class AppTest {
         val config = getConfig()
         val jdbi = createJdbi(config.getString("databaseUrl"))
         val redis = RedisClient.create(config.getString("redisUrl")).connect()
+        val objectMapper = createObjectMapper()
 
         init {
             resetDatabase()

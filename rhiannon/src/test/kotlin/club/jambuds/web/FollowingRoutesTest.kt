@@ -1,7 +1,6 @@
 package club.jambuds.web
 
 import club.jambuds.AppTest
-import club.jambuds.getGson
 import club.jambuds.helpers.TestDataFactories
 import club.jambuds.responses.FollowUserResponse
 import club.jambuds.responses.GetCurrentUserResponse
@@ -11,8 +10,6 @@ import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
 class FollowingRoutesTest : AppTest() {
-    private val gson = getGson()
-
     @Test
     fun `PUT following_(userName) - follows a user`() {
         TestDataFactories.createUser(txn, "jeff", true)
@@ -23,14 +20,14 @@ class FollowingRoutesTest : AppTest() {
             .header("X-Auth-Token", vinnyAuthToken)
             .asString()
         assertEquals(200, resp.status)
-        val body = gson.fromJson(resp.body, FollowUserResponse::class.java)
+        val body = objectMapper.readValue(resp.body, FollowUserResponse::class.java)
         assertEquals("jeff", body.user.name)
 
         val meResp = Unirest.get("$appUrl/me")
             .header("X-Auth-Token", vinnyAuthToken)
             .asString()
         assertEquals(200, meResp.status)
-        val me = gson.fromJson(meResp.body, GetCurrentUserResponse::class.java)
+        val me = objectMapper.readValue(meResp.body, GetCurrentUserResponse::class.java)
         assertEquals("jeff", me.user!!.following[0].name)
     }
 
@@ -73,7 +70,7 @@ class FollowingRoutesTest : AppTest() {
             .header("X-Auth-Token", jeffAuthToken)
             .asString()
         assertEquals(200, meResp.status)
-        val me = gson.fromJson(meResp.body, GetCurrentUserResponse::class.java)
+        val me = objectMapper.readValue(meResp.body, GetCurrentUserResponse::class.java)
         assertEquals(0, me.user!!.following.size)
     }
 
@@ -104,8 +101,8 @@ class FollowingRoutesTest : AppTest() {
             .asString()
         assertEquals(200, initialNotificationsResp.status)
 
-        return gson
-            .fromJson(initialNotificationsResp.body, Array<NotificationItem>::class.java)
+        return objectMapper
+            .readValue(initialNotificationsResp.body, Array<NotificationItem>::class.java)
             .toList()
     }
 }

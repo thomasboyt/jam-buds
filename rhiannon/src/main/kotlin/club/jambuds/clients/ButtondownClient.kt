@@ -1,12 +1,13 @@
 package club.jambuds.clients
 
-import com.google.gson.FieldNamingPolicy
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.PropertyNamingStrategies
+import com.fasterxml.jackson.module.kotlin.KotlinModule
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.jackson.JacksonConverterFactory
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -57,15 +58,16 @@ fun createButtondownClient(apiKey: String): ButtondownClient {
 
     val retrofit = Retrofit.Builder()
         .baseUrl("https://api.buttondown.email")
-        .addConverterFactory(GsonConverterFactory.create(getButtondownGson()))
+        .addConverterFactory(JacksonConverterFactory.create(getButtondownObjectMapper()))
         .client(okHttpClient)
         .build()
 
     return retrofit.create(ButtondownClient::class.java)
 }
 
-private fun getButtondownGson(): Gson {
-    return GsonBuilder()
-        .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-        .create()
+private fun getButtondownObjectMapper(): ObjectMapper {
+    return ObjectMapper()
+        .registerModule(KotlinModule())
+        .setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE)
+        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
 }

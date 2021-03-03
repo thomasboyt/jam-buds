@@ -1,12 +1,9 @@
 package club.jambuds.model
 
-import com.google.gson.annotations.SerializedName
+import com.fasterxml.jackson.annotation.JsonValue
 
-enum class ItemType(val type: String) {
-    @SerializedName("song")
+enum class ItemType(@get:JsonValue val type: String) {
     SONG("song"),
-    @SerializedName("mixtape")
     MIXTAPE("mixtape"),
-    @SerializedName("album")
     ALBUM("album")
 }

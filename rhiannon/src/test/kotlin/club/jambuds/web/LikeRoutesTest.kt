@@ -1,7 +1,6 @@
 package club.jambuds.web
 
 import club.jambuds.AppTest
-import club.jambuds.getGson
 import club.jambuds.helpers.TestDataFactories
 import club.jambuds.responses.UserPlaylistResponse
 import kong.unirest.Unirest
@@ -9,8 +8,6 @@ import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
 class LikeRoutesTest : AppTest() {
-    private val gson = getGson()
-
     @Test
     fun `PUT likes_songs_(songId) - creates a like for a song`() {
         val jeff = TestDataFactories.createUser(txn, "jeff", true)
@@ -25,7 +22,7 @@ class LikeRoutesTest : AppTest() {
         val playlistResp = Unirest.get("$appUrl/playlists/jeff/liked")
             .header("X-Auth-Token", authToken)
             .asString()
-        val playlist = gson.fromJson(playlistResp.body, UserPlaylistResponse::class.java)
+        val playlist = objectMapper.readValue(playlistResp.body, UserPlaylistResponse::class.java)
         assertEquals(1, playlist.items.size)
         assertEquals(songId, playlist.items[0].song!!.id)
     }
@@ -44,7 +41,7 @@ class LikeRoutesTest : AppTest() {
         val playlistResp = Unirest.get("$appUrl/playlists/jeff/liked")
             .header("X-Auth-Token", authToken)
             .asString()
-        val playlist = gson.fromJson(playlistResp.body, UserPlaylistResponse::class.java)
+        val playlist = objectMapper.readValue(playlistResp.body, UserPlaylistResponse::class.java)
         assertEquals(1, playlist.items.size)
         assertEquals(mixtapeId, playlist.items[0].mixtape!!.id)
     }
@@ -104,7 +101,7 @@ class LikeRoutesTest : AppTest() {
         val playlistResp = Unirest.get("$appUrl/playlists/jeff/liked")
             .header("X-Auth-Token", authToken)
             .asString()
-        val playlist = gson.fromJson(playlistResp.body, UserPlaylistResponse::class.java)
+        val playlist = objectMapper.readValue(playlistResp.body, UserPlaylistResponse::class.java)
         assertEquals(0, playlist.items.size)
     }
 

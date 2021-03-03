@@ -6,11 +6,9 @@ import club.jambuds.responses.GetNewsletterSubscriptionStatusResponse
 import club.jambuds.service.ButtondownService
 import club.jambuds.web.extensions.requireUser
 import club.jambuds.web.extensions.validateJsonBody
-import com.google.gson.annotations.Expose
 import io.javalin.apibuilder.ApiBuilder
 import io.javalin.http.Context
 import io.javalin.plugin.openapi.annotations.OpenApi
-import org.jetbrains.annotations.NotNull
 
 class SettingsRoutes(
     private val buttondownService: ButtondownService,
@@ -59,8 +57,8 @@ class SettingsRoutes(
     }
 
     data class UpdateColorSchemeBody(
-        @field:NotNull @Expose val backgroundGradientName: String,
-        @field:NotNull @Expose val textColor: String
+        val backgroundGradientName: String,
+        val textColor: String
     )
 
     @OpenApi(ignore = true)

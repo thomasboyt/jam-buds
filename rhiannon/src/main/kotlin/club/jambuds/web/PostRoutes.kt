@@ -2,14 +2,12 @@ package club.jambuds.web
 
 import club.jambuds.service.PostService
 import club.jambuds.service.ReportService
-import club.jambuds.util.FormValidationErrorResponse
 import club.jambuds.web.extensions.requireUser
 import club.jambuds.web.extensions.validateJsonBody
-import com.google.gson.annotations.Expose
+import com.fasterxml.jackson.annotation.JsonValue
 import io.javalin.apibuilder.ApiBuilder
 import io.javalin.http.Context
 import io.javalin.plugin.openapi.annotations.OpenApi
-import javax.validation.constraints.NotNull
 
 class PostRoutes(private val postService: PostService, private val reportService: ReportService) {
     fun register() {
@@ -18,38 +16,41 @@ class PostRoutes(private val postService: PostService, private val reportService
         ApiBuilder.put("/api/posts/:postId/report", this::reportPost)
     }
 
-    data class PostSongBody(
-        @field:NotNull
-        @Expose val type: String,
-        @field:NotNull
-        @Expose val spotifyId: String,
+    enum class PostItemType(@get:JsonValue val type: String) {
+        SONG("song"),
+        ALBUM("album")
+    }
 
-        @Expose val noteText: String?,
-        @Expose val postTweet: Boolean
+    data class PostSongBody(
+        val type: PostItemType,
+        val spotifyId: String,
+        val noteText: String?,
+        val postTweet: Boolean
     )
 
     @OpenApi(ignore = true)
     private fun createPost(ctx: Context) {
         val user = ctx.requireUser()
         val body = ctx.validateJsonBody(PostSongBody::class.java)
-        if (body.type == "album") {
-            val song = postService.createPostForAlbum(
-                user,
-                spotifyId = body.spotifyId,
-                noteText = body.noteText,
-                postTweet = body.postTweet
-            )
-            ctx.json(song)
-        } else if (body.type == "song") {
-            val song = postService.createPostForSong(
-                user,
-                spotifyId = body.spotifyId,
-                noteText = body.noteText,
-                postTweet = body.postTweet
-            )
-            ctx.json(song)
-        } else {
-            throw FormValidationErrorResponse("type", "must be 'album' or 'song'")
+        when (body.type) {
+            PostItemType.ALBUM -> {
+                val album = postService.createPostForAlbum(
+                    user,
+                    spotifyId = body.spotifyId,
+                    noteText = body.noteText,
+                    postTweet = body.postTweet
+                )
+                ctx.json(album)
+            }
+            PostItemType.SONG -> {
+                val song = postService.createPostForSong(
+                    user,
+                    spotifyId = body.spotifyId,
+                    noteText = body.noteText,
+                    postTweet = body.postTweet
+                )
+                ctx.json(song)
+            }
         }
     }
 

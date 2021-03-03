@@ -1,7 +1,6 @@
 package club.jambuds.web
 
 import club.jambuds.AppTest
-import club.jambuds.getGson
 import club.jambuds.helpers.TestDataFactories
 import club.jambuds.model.User
 import club.jambuds.responses.FeedPlaylistResponse
@@ -14,8 +13,6 @@ import java.time.format.DateTimeFormatter
 import kotlin.test.assertEquals
 
 class PlaylistRoutesTest : AppTest() {
-    private val gson = getGson()
-
     private fun forEachPlaylist(user: User, cb: (url: String) -> Unit) {
         val urls =
             listOf("feed", "public-feed", "playlists/${user.name}", "playlists/${user.name}/liked")
@@ -237,7 +234,7 @@ class PlaylistRoutesTest : AppTest() {
 
         val resp = Unirest.get("$appUrl/public-feed").asString()
         assertEquals(200, resp.status)
-        val body = gson.fromJson(resp.body, FeedPlaylistResponse::class.java)
+        val body = objectMapper.readValue(resp.body, FeedPlaylistResponse::class.java)
 
         assertEquals(1, body.items.size)
         val item = body.items[0]
@@ -274,7 +271,7 @@ class PlaylistRoutesTest : AppTest() {
         TestDataFactories.createSongPost(txn, userId = jeff.id, songId = reusedSongId)
 
         val resp = Unirest.get("$appUrl/public-feed").asString()
-        val body = gson.fromJson(resp.body, FeedPlaylistResponse::class.java)
+        val body = objectMapper.readValue(resp.body, FeedPlaylistResponse::class.java)
         assertEquals(3, body.profiles.size)
         assertEquals(setOf(vinny.id, jeff.id, brad.id), body.profiles.map { it.id }.toSet())
     }
@@ -311,7 +308,7 @@ class PlaylistRoutesTest : AppTest() {
         )
 
         val resp = getUserRequest(jeff, "feed").asString()
-        val body = gson.fromJson(resp.body, FeedPlaylistResponse::class.java)
+        val body = objectMapper.readValue(resp.body, FeedPlaylistResponse::class.java)
 
         assertEquals(3, body.items.size)
         assertEquals(
@@ -382,7 +379,7 @@ class PlaylistRoutesTest : AppTest() {
 
         val resp = getUserRequest(jeff, "feed").asString()
         assertEquals(200, resp.status)
-        val body = gson.fromJson(resp.body, FeedPlaylistResponse::class.java)
+        val body = objectMapper.readValue(resp.body, FeedPlaylistResponse::class.java)
 
         assertEquals(1, body.items.size)
         assertEquals(jeffPost.createdAt, body.items[0].timestamp)

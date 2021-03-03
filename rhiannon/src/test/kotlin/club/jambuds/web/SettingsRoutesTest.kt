@@ -1,7 +1,6 @@
 package club.jambuds.web
 
 import club.jambuds.AppTest
-import club.jambuds.getGson
 import club.jambuds.helpers.TestDataFactories
 import club.jambuds.responses.GetCurrentUserResponse
 import kong.unirest.Unirest
@@ -10,8 +9,6 @@ import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
 class SettingsRoutesTest : AppTest() {
-    private val gson = getGson()
-
     @Test
     fun `POST settings_color-scheme - creates or updates color scheme`() {
         val jeff = TestDataFactories.createUser(txn, "jeff", true, hasTwitter = true)
@@ -29,7 +26,7 @@ class SettingsRoutesTest : AppTest() {
             .asString()
         assertEquals(200, resp.status)
 
-        var meBody = gson.fromJson(resp.body, GetCurrentUserResponse::class.java)
+        var meBody = objectMapper.readValue(resp.body, GetCurrentUserResponse::class.java)
         assertEquals("rainbow", meBody.user!!.profile.colorScheme.backgroundGradientName)
         assertEquals("black", meBody.user!!.profile.colorScheme.textColor)
 
@@ -52,7 +49,7 @@ class SettingsRoutesTest : AppTest() {
             .asString()
         assertEquals(200, resp.status)
 
-        meBody = gson.fromJson(resp.body, GetCurrentUserResponse::class.java)
+        meBody = objectMapper.readValue(resp.body, GetCurrentUserResponse::class.java)
         assertEquals("darkRainbow", meBody.user!!.profile.colorScheme.backgroundGradientName)
         assertEquals("white", meBody.user!!.profile.colorScheme.textColor)
     }

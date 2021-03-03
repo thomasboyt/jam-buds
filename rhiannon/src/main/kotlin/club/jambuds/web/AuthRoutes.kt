@@ -3,12 +3,10 @@ package club.jambuds.web
 import club.jambuds.responses.SignInResponse
 import club.jambuds.service.AuthService
 import club.jambuds.web.extensions.validateJsonBody
-import com.google.gson.annotations.Expose
 import io.javalin.apibuilder.ApiBuilder
 import io.javalin.http.Context
 import io.javalin.plugin.openapi.annotations.OpenApi
 import javax.servlet.http.Cookie
-import javax.validation.constraints.NotNull
 import javax.validation.constraints.Pattern
 import javax.validation.constraints.Size
 
@@ -28,15 +26,14 @@ class AuthRoutes(private val authService: AuthService, private val appUrl: Strin
     }
 
     data class SendSignInTokenBody(
-        @field:NotNull
         @field:Pattern(
             regexp = EMAIL_RE,
             message = "Invalid email format"
         )
-        @Expose val email: String,
-        @Expose val signupReferral: String?,
-        @Expose val dest: String?,
-        @Expose val sendCodeInsteadOfLink: Boolean?
+        val email: String,
+        val signupReferral: String?,
+        val dest: String?,
+        val sendCodeInsteadOfLink: Boolean?
     )
 
     @OpenApi(ignore = true)
@@ -56,14 +53,13 @@ class AuthRoutes(private val authService: AuthService, private val appUrl: Strin
     }
 
     data class ValidateSignInCodeBody(
-        @field:NotNull
         @field:Pattern(
             regexp = EMAIL_RE,
             message = "Invalid email format"
         )
-        @Expose val email: String,
-        @field:NotNull @Expose val code: String,
-        @Expose val signupReferral: String?
+        val email: String,
+        val code: String,
+        val signupReferral: String?
     )
 
     private fun validateSignInCode(ctx: Context) {
@@ -77,8 +73,7 @@ class AuthRoutes(private val authService: AuthService, private val appUrl: Strin
     }
 
     data class SignInBody(
-        @field:NotNull
-        @Expose val signInToken: String
+        val signInToken: String
     )
 
     @OpenApi(ignore = true)
@@ -92,24 +87,16 @@ class AuthRoutes(private val authService: AuthService, private val appUrl: Strin
     }
 
     data class RegisterBody(
-        @field:NotNull
-        @Expose val token: String,
-
-        @field:NotNull
+        val token: String,
         @field:Pattern(
             regexp = USERNAME_RE,
             message = "Username has invalid characters. Stick to A-z, 0-9, and underscores, please!"
         )
         @field:Size(min = 3, max = 16, message = "Username must be between 3 and 16 characters.")
-        @Expose val name: String,
-
-        @field:NotNull
-        @Expose val subscribeToNewsletter: Boolean,
-
-        @field:NotNull
-        @Expose val showInPublicFeed: Boolean,
-
-        @Expose val referral: String
+        val name: String,
+        val subscribeToNewsletter: Boolean,
+        val showInPublicFeed: Boolean,
+        val referral: String?
     )
 
     @OpenApi(ignore = true)

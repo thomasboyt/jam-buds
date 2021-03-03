@@ -2,7 +2,6 @@ package club.jambuds.web
 
 import club.jambuds.AppTest
 import club.jambuds.clients.TwitterUserObject
-import club.jambuds.getGson
 import club.jambuds.helpers.TestDataFactories
 import club.jambuds.responses.CurrentUser
 import club.jambuds.responses.GetCurrentUserResponse
@@ -20,15 +19,13 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class UserRoutesTest : AppTest() {
-    private val gson = getGson()
-
     @Test
     fun `GET me - returns null when logged out`() {
         val resp = Unirest.get("$appUrl/me")
             .asString()
         assertEquals(200, resp.status)
 
-        val body = gson.fromJson(resp.body, GetCurrentUserResponse::class.java)
+        val body = objectMapper.readValue(resp.body, GetCurrentUserResponse::class.java)
         assertEquals(null, body.user)
     }
 
@@ -46,7 +43,7 @@ class UserRoutesTest : AppTest() {
             .asString()
         assertEquals(200, resp.status)
 
-        val body = gson.fromJson(resp.body, GetCurrentUserResponse::class.java)
+        val body = objectMapper.readValue(resp.body, GetCurrentUserResponse::class.java)
         val expectedUser = CurrentUser(
             id = jeff.id,
             name = "jeff",
@@ -95,7 +92,7 @@ class UserRoutesTest : AppTest() {
             .header("X-Auth-Token", authToken)
             .asString()
         assertEquals(200, resp.status)
-        var body = gson.fromJson(resp.body, TwitterFriendSuggestionsResponse::class.java)
+        var body = objectMapper.readValue(resp.body, TwitterFriendSuggestionsResponse::class.java)
         assertEquals(1, body.users.size)
         assertEquals(vinny.id, body.users[0].profile.id)
         assertEquals("VinnyCaravella", body.users[0].twitterName)
@@ -106,7 +103,7 @@ class UserRoutesTest : AppTest() {
             .header("X-Auth-Token", authToken)
             .asString()
         assertEquals(200, secondResp.status)
-        body = gson.fromJson(resp.body, TwitterFriendSuggestionsResponse::class.java)
+        body = objectMapper.readValue(resp.body, TwitterFriendSuggestionsResponse::class.java)
         assertEquals(1, body.users.size)
         assertEquals(vinny.id, body.users[0].profile.id)
         verify(mockTwitterService, times(1)).getTwitterFriendIds(jeff)
@@ -127,7 +124,7 @@ class UserRoutesTest : AppTest() {
 
         val resp = Unirest.get("$appUrl/users/jeff/followers").asString()
         assertEquals(200, resp.status)
-        var body = gson.fromJson(resp.body, UserFollowingResponse::class.java)
+        var body = objectMapper.readValue(resp.body, UserFollowingResponse::class.java)
         assertEquals(2, body.users.size)
         println(body.users)
         assertTrue(body.users.map { it.id }.contains(brad.id))
@@ -149,7 +146,7 @@ class UserRoutesTest : AppTest() {
 
         val resp = Unirest.get("$appUrl/users/jeff/following").asString()
         assertEquals(200, resp.status)
-        var body = gson.fromJson(resp.body, UserFollowingResponse::class.java)
+        var body = objectMapper.readValue(resp.body, UserFollowingResponse::class.java)
         assertEquals(2, body.users.size)
         assertTrue(body.users.map { it.id }.contains(brad.id))
         assertTrue(body.users.map { it.id }.contains(alex.id))

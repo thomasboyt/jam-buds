@@ -6,12 +6,10 @@ import club.jambuds.service.MixtapeService
 import club.jambuds.web.extensions.currentUser
 import club.jambuds.web.extensions.requireUser
 import club.jambuds.web.extensions.validateJsonBody
-import com.google.gson.annotations.Expose
 import io.javalin.apibuilder.ApiBuilder
 import io.javalin.http.Context
 import io.javalin.http.NotFoundResponse
 import io.javalin.plugin.openapi.annotations.OpenApi
-import javax.validation.constraints.NotNull
 
 class MixtapeRoutes(private val mixtapeService: MixtapeService) {
     fun register() {
@@ -29,8 +27,7 @@ class MixtapeRoutes(private val mixtapeService: MixtapeService) {
     }
 
     data class CreateBody(
-        @field:NotNull
-        @Expose val title: String
+        val title: String
     )
 
     @OpenApi(ignore = true)
@@ -63,8 +60,7 @@ class MixtapeRoutes(private val mixtapeService: MixtapeService) {
     }
 
     data class AddSongBody(
-        @field:NotNull
-        @Expose val spotifyId: String
+        val spotifyId: String
     )
 
     @OpenApi(ignore = true)
@@ -98,8 +94,7 @@ class MixtapeRoutes(private val mixtapeService: MixtapeService) {
     }
 
     data class ReorderSongsBody(
-        @field:NotNull
-        @Expose val songOrder: List<Int>
+        val songOrder: List<Int>
     )
 
     @OpenApi(ignore = true)
@@ -118,8 +113,7 @@ class MixtapeRoutes(private val mixtapeService: MixtapeService) {
     }
 
     data class RenameMixtapeBody(
-        @field:NotNull
-        @Expose val title: String
+        val title: String
     )
 
     @OpenApi(ignore = true)

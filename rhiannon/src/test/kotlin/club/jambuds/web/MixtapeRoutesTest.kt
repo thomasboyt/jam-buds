@@ -1,7 +1,6 @@
 package club.jambuds.web
 
 import club.jambuds.AppTest
-import club.jambuds.getGson
 import club.jambuds.helpers.TestDataFactories
 import club.jambuds.model.SongWithMeta
 import club.jambuds.model.cache.SpotifyTrackSearchCache
@@ -9,6 +8,7 @@ import club.jambuds.responses.FeedPlaylistResponse
 import club.jambuds.responses.GetDraftMixtapesResponse
 import club.jambuds.responses.MixtapeWithSongsReponse
 import club.jambuds.responses.RenameMixtapeResponse
+import com.fasterxml.jackson.module.kotlin.readValue
 import kong.unirest.HttpRequest
 import kong.unirest.Unirest
 import kong.unirest.json.JSONObject
@@ -17,8 +17,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
 class MixtapeRoutesTest : AppTest() {
-    val gson = getGson()
-
     @Test
     fun `GET mixtapes_(id) - works`() {
         val jeff = TestDataFactories.createUser(txn, "jeff", true)
@@ -29,7 +27,7 @@ class MixtapeRoutesTest : AppTest() {
         val resp = Unirest.get("$appUrl/mixtapes/$mixtapeId")
             .asString()
         assertEquals(200, resp.status)
-        val body = gson.fromJson(resp.body, MixtapeWithSongsReponse::class.java)
+        val body = objectMapper.readValue(resp.body, MixtapeWithSongsReponse::class.java)
         assertEquals(1, body.tracks.size)
         assertEquals("jeff", body.author.name)
         assertEquals(mixtapeId, body.mixtape.id)
@@ -61,7 +59,7 @@ class MixtapeRoutesTest : AppTest() {
             .asString()
         assertEquals(200, resp.status)
 
-        val body = gson.fromJson(resp.body, MixtapeWithSongsReponse::class.java)
+        val body = objectMapper.readValue<MixtapeWithSongsReponse>(resp.body)
         assertEquals("jeff", body.author.name)
         assertEquals("A mixtape", body.mixtape.title)
         assertEquals("a-mixtape", body.mixtape.slug)
@@ -128,14 +126,14 @@ class MixtapeRoutesTest : AppTest() {
             .asString()
         assertEquals(200, resp.status)
 
-        val body = gson.fromJson(resp.body, SongWithMeta::class.java)
+        val body = objectMapper.readValue(resp.body, SongWithMeta::class.java)
         assertEquals(track.id, body.spotifyId)
 
         val mixtapeResp = Unirest.get("$appUrl/mixtapes/$mixtapeId")
             .header("X-Auth-Token", authToken)
             .asString()
         assertEquals(200, mixtapeResp.status)
-        val mixtapeBody = gson.fromJson(mixtapeResp.body, MixtapeWithSongsReponse::class.java)
+        val mixtapeBody = objectMapper.readValue(mixtapeResp.body, MixtapeWithSongsReponse::class.java)
 
         assertEquals(2, mixtapeBody.tracks.size)
         assertEquals(track.id, mixtapeBody.tracks[1].spotifyId)
@@ -189,7 +187,7 @@ class MixtapeRoutesTest : AppTest() {
             .header("X-Auth-Token", authToken)
             .asString()
         assertEquals(200, mixtapeResp.status)
-        val mixtapeBody = gson.fromJson(mixtapeResp.body, MixtapeWithSongsReponse::class.java)
+        val mixtapeBody = objectMapper.readValue(mixtapeResp.body, MixtapeWithSongsReponse::class.java)
         assertEquals(0, mixtapeBody.tracks.size)
     }
 
@@ -241,7 +239,7 @@ class MixtapeRoutesTest : AppTest() {
             .header("X-Auth-Token", authToken)
             .asString()
         assertEquals(200, mixtapeResp.status)
-        val mixtapeBody = gson.fromJson(mixtapeResp.body, MixtapeWithSongsReponse::class.java)
+        val mixtapeBody = objectMapper.readValue(mixtapeResp.body, MixtapeWithSongsReponse::class.java)
         assertEquals(listOf(songId2, songId), mixtapeBody.tracks.map { it.id })
     }
 
@@ -271,7 +269,7 @@ class MixtapeRoutesTest : AppTest() {
             .header("X-Auth-Token", authToken)
             .body(JSONObject(mapOf("title" to "A better mixtape title")))
             .asString()
-        val body = gson.fromJson(resp.body, RenameMixtapeResponse::class.java)
+        val body = objectMapper.readValue(resp.body, RenameMixtapeResponse::class.java)
         assertEquals(200, resp.status)
         assertEquals("a-better-mixtape-title", body.newSlug)
 
@@ -279,7 +277,7 @@ class MixtapeRoutesTest : AppTest() {
             .header("X-Auth-Token", authToken)
             .asString()
         assertEquals(200, mixtapeResp.status)
-        val mixtapeBody = gson.fromJson(mixtapeResp.body, MixtapeWithSongsReponse::class.java)
+        val mixtapeBody = objectMapper.readValue(mixtapeResp.body, MixtapeWithSongsReponse::class.java)
         assertEquals("A better mixtape title", mixtapeBody.mixtape.title)
     }
 
@@ -316,7 +314,7 @@ class MixtapeRoutesTest : AppTest() {
             .header("X-Auth-Token", authToken)
             .asString()
         assertEquals(200, playlistResp.status)
-        val playlistBody = gson.fromJson(playlistResp.body, FeedPlaylistResponse::class.java)
+        val playlistBody = objectMapper.readValue(playlistResp.body, FeedPlaylistResponse::class.java)
 
         assertEquals("title", playlistBody.items[0].mixtape!!.title)
         assertEquals(1, playlistBody.items[0].mixtape!!.songCount)
@@ -374,7 +372,7 @@ class MixtapeRoutesTest : AppTest() {
             .header("X-Auth-Token", authToken)
             .asString()
         assertEquals(200, resp.status)
-        val body = gson.fromJson(resp.body, GetDraftMixtapesResponse::class.java)
+        val body = objectMapper.readValue(resp.body, GetDraftMixtapesResponse::class.java)
         assertEquals(1, body.mixtapes.size)
         assertEquals(draftId, body.mixtapes[0].id)
     }
