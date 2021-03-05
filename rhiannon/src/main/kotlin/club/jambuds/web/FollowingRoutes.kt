@@ -6,6 +6,9 @@ import club.jambuds.web.extensions.requireUser
 import io.javalin.apibuilder.ApiBuilder
 import io.javalin.http.Context
 import io.javalin.plugin.openapi.annotations.OpenApi
+import io.javalin.plugin.openapi.annotations.OpenApiContent
+import io.javalin.plugin.openapi.annotations.OpenApiParam
+import io.javalin.plugin.openapi.annotations.OpenApiResponse
 
 class FollowingRoutes(private val followingService: FollowingService) {
     fun register() {
@@ -13,7 +16,12 @@ class FollowingRoutes(private val followingService: FollowingService) {
         ApiBuilder.delete("/api/following/:followName", this::unfollowUser)
     }
 
-    @OpenApi(ignore = true)
+    @OpenApi(
+        tags = ["Following"],
+        summary = "Follow a user by name",
+        responses = [OpenApiResponse("200", [OpenApiContent(FollowUserResponse::class)])],
+        pathParams = [OpenApiParam(name = "followName")]
+    )
     private fun followUser(ctx: Context) {
         val currentUser = ctx.requireUser()
         val followName = ctx.pathParam<String>("followName").get()
@@ -21,7 +29,12 @@ class FollowingRoutes(private val followingService: FollowingService) {
         ctx.json(FollowUserResponse(followingUser))
     }
 
-    @OpenApi(ignore = true)
+    @OpenApi(
+        tags = ["Following"],
+        summary = "Unfollow a user by name",
+        responses = [OpenApiResponse("204")],
+        pathParams = [OpenApiParam(name = "followName")]
+    )
     private fun unfollowUser(ctx: Context) {
         val currentUser = ctx.requireUser()
         val followName = ctx.pathParam<String>("followName").get()

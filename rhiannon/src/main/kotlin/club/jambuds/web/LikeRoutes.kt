@@ -8,6 +8,8 @@ import io.javalin.apibuilder.ApiBuilder.put
 import io.javalin.http.Context
 import io.javalin.http.NotFoundResponse
 import io.javalin.plugin.openapi.annotations.OpenApi
+import io.javalin.plugin.openapi.annotations.OpenApiParam
+import io.javalin.plugin.openapi.annotations.OpenApiResponse
 
 class LikeRoutes(private val likeService: LikeService) {
     fun register() {
@@ -15,7 +17,19 @@ class LikeRoutes(private val likeService: LikeService) {
         delete("/api/likes/:type/:itemId", this::deleteLike)
     }
 
-    @OpenApi(ignore = true)
+    @OpenApi(
+        tags = ["Likes"],
+        summary = "Like an item",
+        responses = [OpenApiResponse("204")],
+        pathParams = [
+            OpenApiParam(
+                name = "type",
+                type = String::class,
+                description = "One of 'songs', 'mixtapes, or 'albums'"
+            ),
+            OpenApiParam(name = "itemId",  type = Int::class)
+        ]
+    )
     private fun createLike(ctx: Context) {
         val currentUser = ctx.requireUser()
         val itemType = getItemType(ctx)
@@ -24,7 +38,19 @@ class LikeRoutes(private val likeService: LikeService) {
         ctx.status(204)
     }
 
-    @OpenApi(ignore = true)
+    @OpenApi(
+        tags = ["Likes"],
+        summary = "Unlike an item",
+        responses = [OpenApiResponse("204")],
+        pathParams = [
+            OpenApiParam(
+                name = "type",
+                type = String::class,
+                description = "One of 'songs', 'mixtapes, or 'albums'"
+            ),
+            OpenApiParam(name = "itemId",  type = Int::class)
+        ]
+    )
     private fun deleteLike(ctx: Context) {
         val currentUser = ctx.requireUser()
         val itemType = getItemType(ctx)

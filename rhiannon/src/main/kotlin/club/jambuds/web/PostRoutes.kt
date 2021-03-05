@@ -1,5 +1,7 @@
 package club.jambuds.web
 
+import club.jambuds.model.Album
+import club.jambuds.model.SongWithMeta
 import club.jambuds.service.PostService
 import club.jambuds.service.ReportService
 import club.jambuds.web.extensions.requireUser
@@ -8,6 +10,10 @@ import com.fasterxml.jackson.annotation.JsonValue
 import io.javalin.apibuilder.ApiBuilder
 import io.javalin.http.Context
 import io.javalin.plugin.openapi.annotations.OpenApi
+import io.javalin.plugin.openapi.annotations.OpenApiContent
+import io.javalin.plugin.openapi.annotations.OpenApiParam
+import io.javalin.plugin.openapi.annotations.OpenApiRequestBody
+import io.javalin.plugin.openapi.annotations.OpenApiResponse
 
 class PostRoutes(private val postService: PostService, private val reportService: ReportService) {
     fun register() {
@@ -28,7 +34,15 @@ class PostRoutes(private val postService: PostService, private val reportService
         val postTweet: Boolean
     )
 
-    @OpenApi(ignore = true)
+    @OpenApi(
+        tags = ["Posts"],
+        summary = "Post a new item",
+        requestBody = OpenApiRequestBody([OpenApiContent(PostSongBody::class)]),
+        responses = [OpenApiResponse(
+            "200",
+            [OpenApiContent(Album::class), OpenApiContent(SongWithMeta::class)]
+        )]
+    )
     private fun createPost(ctx: Context) {
         val user = ctx.requireUser()
         val body = ctx.validateJsonBody(PostSongBody::class.java)
@@ -54,7 +68,12 @@ class PostRoutes(private val postService: PostService, private val reportService
         }
     }
 
-    @OpenApi(ignore = true)
+    @OpenApi(
+        tags = ["Posts"],
+        summary = "Delete a post by ID",
+        pathParams = [OpenApiParam(name = "postId",  type = Int::class)],
+        responses = [OpenApiResponse("204")]
+    )
     private fun deletePost(ctx: Context) {
         val user = ctx.requireUser()
         val postId = ctx.pathParam<Int>("postId").get()
@@ -65,7 +84,12 @@ class PostRoutes(private val postService: PostService, private val reportService
         ctx.status(204)
     }
 
-    @OpenApi(ignore = true)
+    @OpenApi(
+        tags = ["Posts"],
+        summary = "Report a post by ID",
+        pathParams = [OpenApiParam(name = "postId",  type = Int::class)],
+        responses = [OpenApiResponse("204")]
+    )
     private fun reportPost(ctx: Context) {
         val user = ctx.requireUser()
         val postId = ctx.pathParam<Int>("postId").get()

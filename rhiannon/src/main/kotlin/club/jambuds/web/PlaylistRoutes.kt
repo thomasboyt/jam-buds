@@ -26,7 +26,15 @@ class PlaylistRoutes(
         get("/api/playlists/:userName/liked", this::getUserLikesPlaylist)
     }
 
-    @OpenApi(ignore = true)
+    @OpenApi(
+        tags = ["Playlists"],
+        summary = "Fetch the public feed.",
+        responses = [OpenApiResponse("200", [OpenApiContent(FeedPlaylistResponse::class)])],
+        queryParams = [
+            OpenApiParam(name = "before", description = "Filter to only entries before this timestamp"),
+            OpenApiParam(name = "after", description = "Filter to only entries after this timestamp")
+        ]
+    )
     private fun getPublicFeed(ctx: Context) {
         val currentUserId = ctx.currentUser?.id
         val timestamps = getTimestamps(ctx)
@@ -46,8 +54,8 @@ class PlaylistRoutes(
     }
 
     @OpenApi(
-        summary = "Fetch the current user's feed.",
         tags = ["Playlists"],
+        summary = "Fetch the current user's feed.",
         responses = [OpenApiResponse("200", [OpenApiContent(FeedPlaylistResponse::class)])],
         queryParams = [
             OpenApiParam(name = "before", description = "Filter to only entries before this timestamp"),
@@ -72,7 +80,17 @@ class PlaylistRoutes(
         ctx.json(resp)
     }
 
-    @OpenApi(ignore = true)
+    @OpenApi(
+        tags = ["Playlists"],
+        summary = "Fetch the playlist (recent posts) of a specific user.",
+        responses = [OpenApiResponse("200", [OpenApiContent(UserPlaylistResponse::class)])],
+        pathParams = [OpenApiParam(name = "userName")],
+        queryParams = [
+            OpenApiParam(name = "before", description = "Filter to only entries before this timestamp"),
+            OpenApiParam(name = "after", description = "Filter to only entries after this timestamp"),
+            OpenApiParam(name = "onlyMixtapes", description = "If true, only returns mixtapes", type = Boolean::class)
+        ]
+    )
     private fun getUserPlaylist(ctx: Context) {
         val currentUserId = ctx.currentUser?.id
         val timestamps = getTimestamps(ctx)
@@ -96,7 +114,16 @@ class PlaylistRoutes(
         ctx.json(resp)
     }
 
-    @OpenApi(ignore = true)
+    @OpenApi(
+        tags = ["Playlists"],
+        summary = "Fetch the likes of a specific user.",
+        responses = [OpenApiResponse("200", [OpenApiContent(UserPlaylistResponse::class)])],
+        pathParams = [OpenApiParam(name = "userName")],
+        queryParams = [
+            OpenApiParam(name = "before", description = "Filter to only entries before this timestamp"),
+            OpenApiParam(name = "after", description = "Filter to only entries after this timestamp")
+        ]
+    )
     private fun getUserLikesPlaylist(ctx: Context) {
         val currentUserId = ctx.currentUser?.id
         val timestamps = getTimestamps(ctx)

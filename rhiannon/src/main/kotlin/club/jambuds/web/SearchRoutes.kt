@@ -1,10 +1,14 @@
 package club.jambuds.web
 
+import club.jambuds.responses.SearchDetailsResponse
 import club.jambuds.responses.SpotifySearchResponse
 import club.jambuds.service.SearchService
 import io.javalin.apibuilder.ApiBuilder
 import io.javalin.http.Context
 import io.javalin.plugin.openapi.annotations.OpenApi
+import io.javalin.plugin.openapi.annotations.OpenApiContent
+import io.javalin.plugin.openapi.annotations.OpenApiParam
+import io.javalin.plugin.openapi.annotations.OpenApiResponse
 
 class SearchRoutes(private val searchService: SearchService) {
     fun register() {
@@ -13,7 +17,18 @@ class SearchRoutes(private val searchService: SearchService) {
         ApiBuilder.get("/api/search-details/albums/:spotifyId", this::albumDetails)
     }
 
-    @OpenApi(ignore = true)
+    @OpenApi(
+        tags = ["Search"],
+        summary = "Search for an item through Spotify",
+        queryParams = [
+            OpenApiParam(name = "type", description = "What type of item to search for ('song' or 'album')"),
+            OpenApiParam(name = "query", description = "The search query")
+        ],
+        responses = [OpenApiResponse(
+            "200",
+            [OpenApiContent(SpotifySearchResponse::class)]
+        )]
+    )
     private fun search(ctx: Context) {
         val query = ctx.queryParam<String>("query").get()
         val type = ctx.queryParam<String>("type")
@@ -31,14 +46,30 @@ class SearchRoutes(private val searchService: SearchService) {
         }
     }
 
-    @OpenApi(ignore = true)
+    @OpenApi(
+        tags = ["Search"],
+        summary = "Find additional song details for a Spotify ID",
+        pathParams = [OpenApiParam(name = "spotifyId")],
+        responses = [OpenApiResponse(
+            "200",
+            [OpenApiContent(SearchDetailsResponse::class)]
+        )]
+    )
     private fun songDetails(ctx: Context) {
         val spotifyId = ctx.pathParam<String>("spotifyId").get()
         val details = searchService.getSongSearchDetails(spotifyId)
         ctx.json(details)
     }
 
-    @OpenApi(ignore = true)
+    @OpenApi(
+        tags = ["Search"],
+        summary = "Find additional album details for a Spotify ID",
+        pathParams = [OpenApiParam(name = "spotifyId")],
+        responses = [OpenApiResponse(
+            "200",
+            [OpenApiContent(SearchDetailsResponse::class)]
+        )]
+    )
     private fun albumDetails(ctx: Context) {
         val spotifyId = ctx.pathParam<String>("spotifyId").get()
         val details = searchService.getAlbumSearchDetails(spotifyId)

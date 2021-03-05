@@ -4,6 +4,9 @@ import club.jambuds.service.SongService
 import club.jambuds.web.extensions.requireUser
 import io.javalin.apibuilder.ApiBuilder
 import io.javalin.http.Context
+import io.javalin.plugin.openapi.annotations.OpenApi
+import io.javalin.plugin.openapi.annotations.OpenApiParam
+import io.javalin.plugin.openapi.annotations.OpenApiResponse
 
 class SongRoutes(private val songService: SongService) {
     fun register() {
@@ -11,6 +14,12 @@ class SongRoutes(private val songService: SongService) {
         ApiBuilder.delete("/api/songs/:songId/listened", this::unmarkSongListened)
     }
 
+    @OpenApi(
+        tags = ["Listened status"],
+        summary = "Mark song as listened",
+        pathParams = [OpenApiParam(name = "songId", type = Int::class)],
+        responses = [OpenApiResponse("204")]
+    )
     private fun markSongListened(ctx: Context) {
         val currentUser = ctx.requireUser()
         val songId = ctx.pathParam<Int>("songId").get()
@@ -18,6 +27,12 @@ class SongRoutes(private val songService: SongService) {
         ctx.status(204)
     }
 
+    @OpenApi(
+        tags = ["Listened status"],
+        summary = "Mark song as unlistened",
+        pathParams = [OpenApiParam(name = "songId", type = Int::class)],
+        responses = [OpenApiResponse("204")]
+    )
     private fun unmarkSongListened(ctx: Context) {
         val currentUser = ctx.requireUser()
         val songId = ctx.pathParam<Int>("songId").get()
