@@ -23,7 +23,7 @@ export default {
     disableInteraction: Boolean,
   },
   methods: {
-    toggle: function() {
+    toggle() {
       this.$emit('toggle', !this.isEnabled);
     },
   },

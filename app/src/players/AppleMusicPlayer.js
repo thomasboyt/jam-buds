@@ -58,7 +58,7 @@ export default class AppleMusicPlayer {
 
   onPlaybackStateChange(evt) {
     const stateKeyForState = (state) => {
-      for (let key of Object.keys(MusicKit.PlaybackStates)) {
+      for (const key of Object.keys(MusicKit.PlaybackStates)) {
         if (MusicKit.PlaybackStates[key] === state) {
           return key;
         }

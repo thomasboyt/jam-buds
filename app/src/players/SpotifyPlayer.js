@@ -145,7 +145,7 @@ export default class SpotifyPlayer {
       const connected = await this._spotifyPlayer.connect();
 
       if (!connected) {
-        reject();
+        reject(new Error('failed to connect to spotify player'));
       }
     });
   }
@@ -167,7 +167,7 @@ export default class SpotifyPlayer {
     if (!resp.data.spotifyConnected) {
       // TODO: handle this better
       alert('Lost connection to Spotify!');
-      throw Error('Lost connection to Spotify');
+      throw new Error('Lost connection to Spotify');
     }
 
     this._token = resp.data.accessToken;

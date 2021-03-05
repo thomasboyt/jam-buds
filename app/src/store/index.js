@@ -1,4 +1,5 @@
 import { parse as parseCookie } from 'cookie';
+// eslint-disable-next-line node/no-deprecated-api
 import { parse as parseUrl } from 'url';
 
 export const state = () => {

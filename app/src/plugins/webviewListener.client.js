@@ -34,12 +34,10 @@ class NativeBridge {
     if (msg.type === 'nativeBack') {
       if (isRootPage(this.context.store, this.context.route)) {
         this.escapeNativeBack();
+      } else if (history.state.fromApp) {
+        history.back();
       } else {
-        if (history.state.fromApp) {
-          history.back();
-        } else {
-          history.push('/');
-        }
+        history.push('/');
       }
     }
   }
