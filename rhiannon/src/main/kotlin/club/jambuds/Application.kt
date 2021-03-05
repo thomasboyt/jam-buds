@@ -127,9 +127,6 @@ fun createOpenApiPlugin(): OpenApiPlugin {
     }.apply {
         path("/swagger-docs")
         swagger(SwaggerOptions("/swagger-ui"))
-        defaultDocumentation { doc ->
-            // TODO
-        }
     }
     return OpenApiPlugin(opts)
 }
@@ -309,7 +306,7 @@ fun main() {
     }
 
     val config = getConfig()
-    val app = createJavalinApp(true) // TODO
+    val app = createJavalinApp(config.getBoolean("hostDocs"))
     wire(app, config)
     app.start(config.getInt("port"))
 }
