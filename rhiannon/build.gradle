@@ -12,6 +12,7 @@ plugins {
     id "org.flywaydb.flyway" version "6.1.4"
     id 'com.google.cloud.tools.jib' version '2.5.0'
     id "org.jlleitschuh.gradle.ktlint" version "9.4.0"
+    id "io.swagger.core.v3.swagger-gradle-plugin" version "2.1.6"
 }
 
 apply plugin: 'kotlin'
@@ -47,9 +48,19 @@ repositories {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 
-    implementation 'io.javalin:javalin:3.7.0'
+    implementation 'io.javalin:javalin:3.12.0'
+    implementation 'io.javalin:javalin-openapi:3.12.0'
     implementation "com.typesafe:config:1.4.0"
-    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.10.1'
+    implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.10.1'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.10.1'
+
+    // swagger/openapi
+    implementation 'io.swagger.core.v3:swagger-annotations:2.1.6'
+    implementation 'io.swagger.core.v3:swagger-core:2.1.6'
+    implementation 'io.swagger.core.v3:swagger-models:2.1.6'
+    implementation 'org.webjars:swagger-ui:3.24.3'
+    implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.12.0'
 
     // email stuff
     implementation "io.pebbletemplates:pebble:3.1.4"
@@ -62,7 +73,7 @@ dependencies {
     // third-party apis
     implementation 'se.michaelthelin.spotify:spotify-web-api-java:4.2.1'
     implementation 'com.squareup.retrofit2:retrofit:2.7.1'
-    implementation 'com.squareup.retrofit2:converter-gson:2.7.1'
+    implementation 'com.squareup.retrofit2:converter-jackson:2.7.1'
     implementation 'com.squareup.retrofit2:converter-scalars:2.7.1'
     // used for third party api auth (twitter, apple music)
     implementation "com.auth0:java-jwt:3.10.0"

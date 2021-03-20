@@ -60,7 +60,7 @@ class MixtapeService(
 
         val songs = songDao.getSongsByMixtapeId(mixtape.id, currentUserId)
 
-        val userProfile = userService.getUserProfileByUserId(mixtape.userId)
+        val userProfile = userService.getUserProfileByUserId(mixtape.userId!!)
             ?: throw Error("could not find user with id ${mixtape.userId}")
 
         return MixtapeWithSongsReponse(

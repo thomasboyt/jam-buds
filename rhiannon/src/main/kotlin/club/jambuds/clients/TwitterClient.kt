@@ -1,14 +1,15 @@
 package club.jambuds.clients
 
 import club.jambuds.util.generateRandomString
-import com.google.gson.Gson
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.KotlinModule
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okio.Buffer
 import okio.ByteString
 import retrofit2.Call
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -18,6 +19,7 @@ import java.nio.charset.StandardCharsets
 import java.time.Instant
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
+import retrofit2.converter.jackson.JacksonConverterFactory
 
 interface TwitterClient {
     @POST("statuses/update.json")
@@ -43,7 +45,7 @@ interface TwitterOauthClient {
     ): Call<String>
 }
 
-data class TwitterPostResponse(private val id_str: String)
+data class TwitterPostResponse(val id_str: String)
 
 data class FriendIdsResponse(val ids: List<String>)
 
@@ -90,6 +92,12 @@ fun createSignedHttpClient(
     }.build()
 }
 
+fun createTwitterObjectMapper(): ObjectMapper {
+    return ObjectMapper()
+        .registerModule(KotlinModule())
+        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+}
+
 fun createTwitterClient(
     consumerKey: String,
     consumerSecret: String,
@@ -107,7 +115,7 @@ fun createTwitterClient(
     val retrofit = Retrofit.Builder()
         .baseUrl("https://api.twitter.com/1.1/")
         .client(okHttpClient)
-        .addConverterFactory(GsonConverterFactory.create(Gson()))
+        .addConverterFactory(JacksonConverterFactory.create(createTwitterObjectMapper()))
         .build()
 
     return retrofit.create(TwitterClient::class.java)

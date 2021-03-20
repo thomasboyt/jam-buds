@@ -1,14 +1,12 @@
 package club.jambuds.responses
 
-import com.google.gson.annotations.Expose
-
 data class CurrentUser(
-    @Expose val id: Int,
-    @Expose val name: String,
-    @Expose val following: List<PublicUser>,
-    @Expose val twitterName: String?,
-    @Expose val showInPublicFeed: Boolean,
-    @Expose val email: String,
-    @Expose val unreadNotificationCount: Int,
-    @Expose val profile: UserProfile
+    val id: Int,
+    val name: String,
+    val following: List<PublicUser>,
+    val twitterName: String?,
+    val showInPublicFeed: Boolean,
+    val email: String,
+    val unreadNotificationCount: Int,
+    val profile: UserProfile
 )

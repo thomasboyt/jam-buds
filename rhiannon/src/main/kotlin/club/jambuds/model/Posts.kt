@@ -1,5 +1,7 @@
 package club.jambuds.model
 
+import club.jambuds.util.ZonedTsToInstantJsonDeserializer
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import java.time.Instant
 
 interface PlaylistPost {
@@ -26,6 +28,7 @@ data class AggregatedPostItem(
     val id: Int,
     val userName: String,
     val note: String?,
+    @JsonDeserialize(using = ZonedTsToInstantJsonDeserializer::class)
     val createdAt: Instant
 )
 

@@ -2,15 +2,12 @@ package club.jambuds.dao.mappers
 
 import club.jambuds.model.AggregatedPost
 import club.jambuds.model.AggregatedPostItem
-import com.google.gson.GsonBuilder
-import com.google.gson.TypeAdapter
-import com.google.gson.stream.JsonReader
-import com.google.gson.stream.JsonWriter
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.KotlinModule
 import org.jdbi.v3.core.mapper.RowMapper
 import org.jdbi.v3.core.statement.StatementContext
 import java.sql.ResultSet
-import java.time.Instant
-import java.time.ZonedDateTime
 
 /**
  * Aggregate posts collect the individual posts into a JSON aggregate array, which gets parsed here.
@@ -21,11 +18,11 @@ class AggregatedPostRowMapper : RowMapper<AggregatedPost> {
     override fun map(rs: ResultSet, ctx: StatementContext): AggregatedPost {
         val postsJson = rs.getString("agg_posts")
 
-        val gson = GsonBuilder()
-            .registerTypeAdapter(Instant::class.java, ZonedTsToInstantTypeAdapter())
-            .create()
+        val mapper = ObjectMapper()
+            .registerModule(KotlinModule())
+            .registerModule(JavaTimeModule())
 
-        val posts = gson.fromJson(postsJson, Array<AggregatedPostItem>::class.java).toList()
+        val posts = mapper.readValue(postsJson, Array<AggregatedPostItem>::class.java).toList()
 
         return AggregatedPost(
             // lmao resultset is a terrible api
@@ -35,16 +32,5 @@ class AggregatedPostRowMapper : RowMapper<AggregatedPost> {
             timestamp = rs.getTimestamp("agg_timestamp").toInstant(),
             posts = posts
         )
-    }
-
-    /**
-     * Casts a Postgres JSONB-serialized timestamp-with-timezone to an Instant
-     */
-    private class ZonedTsToInstantTypeAdapter : TypeAdapter<Instant>() {
-        override fun read(input: JsonReader): Instant {
-            return ZonedDateTime.parse(input.nextString()).toInstant()
-        }
-
-        override fun write(out: JsonWriter, value: Instant?) = throw NotImplementedError()
     }
 }

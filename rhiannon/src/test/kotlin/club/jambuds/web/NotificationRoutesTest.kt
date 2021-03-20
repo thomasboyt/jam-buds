@@ -1,7 +1,6 @@
 package club.jambuds.web
 
 import club.jambuds.AppTest
-import club.jambuds.getGson
 import club.jambuds.helpers.TestDataFactories
 import club.jambuds.responses.NotificationItem
 import kong.unirest.Unirest
@@ -9,16 +8,14 @@ import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
 class NotificationRoutesTest : AppTest() {
-    private val gson = getGson()
-
     private fun getNotifications(authToken: String): List<NotificationItem> {
         val initialNotificationsResp = Unirest.get("$appUrl/notifications")
             .header("X-Auth-Token", authToken)
             .asString()
         assertEquals(200, initialNotificationsResp.status)
 
-        return gson
-            .fromJson(initialNotificationsResp.body, Array<NotificationItem>::class.java)
+        return objectMapper
+            .readValue(initialNotificationsResp.body, Array<NotificationItem>::class.java)
             .toList()
     }
 
@@ -88,7 +85,7 @@ class NotificationRoutesTest : AppTest() {
             .asString()
         assertEquals(200, jeffResp.status)
 
-        val jeffItems = gson.fromJson(jeffResp.body, Array<NotificationItem>::class.java).toList()
+        val jeffItems = objectMapper.readValue(jeffResp.body, Array<NotificationItem>::class.java).toList()
         assertEquals(0, jeffItems.size)
 
         // ...while brad still has one
@@ -97,7 +94,7 @@ class NotificationRoutesTest : AppTest() {
             .asString()
         assertEquals(200, bradResp.status)
 
-        val bradItems = gson.fromJson(bradResp.body, Array<NotificationItem>::class.java).toList()
+        val bradItems = objectMapper.readValue(bradResp.body, Array<NotificationItem>::class.java).toList()
         assertEquals(1, bradItems.size)
     }
 
@@ -117,7 +114,7 @@ class NotificationRoutesTest : AppTest() {
             .asString()
         assertEquals(200, initResp.status)
 
-        val initItems = gson.fromJson(initResp.body, Array<NotificationItem>::class.java).toList()
+        val initItems = objectMapper.readValue(initResp.body, Array<NotificationItem>::class.java).toList()
         assertEquals(2, initItems.size)
 
         val firstItemId = initItems[0].id
@@ -133,7 +130,7 @@ class NotificationRoutesTest : AppTest() {
             .asString()
         assertEquals(200, afterResp.status)
 
-        val afterItems = gson.fromJson(afterResp.body, Array<NotificationItem>::class.java).toList()
+        val afterItems = objectMapper.readValue(afterResp.body, Array<NotificationItem>::class.java).toList()
         assertEquals(1, afterItems.size)
         assertEquals(secondItemId, afterItems[0].id)
     }
@@ -150,7 +147,7 @@ class NotificationRoutesTest : AppTest() {
             .header("X-Auth-Token", jeffAuthToken)
             .asString()
         assertEquals(200, initResp.status)
-        val items = gson.fromJson(initResp.body, Array<NotificationItem>::class.java).toList()
+        val items = objectMapper.readValue(initResp.body, Array<NotificationItem>::class.java).toList()
         val notificationId = items[0].id
 
         val resp = Unirest.post("$appUrl/notifications/$notificationId/read")

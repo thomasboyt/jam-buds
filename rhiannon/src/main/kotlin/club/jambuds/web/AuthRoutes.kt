@@ -1,13 +1,16 @@
 package club.jambuds.web
 
+import club.jambuds.responses.SendSignInTokenSkipAuthResponse
 import club.jambuds.responses.SignInResponse
 import club.jambuds.service.AuthService
 import club.jambuds.web.extensions.validateJsonBody
-import com.google.gson.annotations.Expose
 import io.javalin.apibuilder.ApiBuilder
 import io.javalin.http.Context
+import io.javalin.plugin.openapi.annotations.OpenApi
+import io.javalin.plugin.openapi.annotations.OpenApiContent
+import io.javalin.plugin.openapi.annotations.OpenApiRequestBody
+import io.javalin.plugin.openapi.annotations.OpenApiResponse
 import javax.servlet.http.Cookie
-import javax.validation.constraints.NotNull
 import javax.validation.constraints.Pattern
 import javax.validation.constraints.Size
 
@@ -27,17 +30,26 @@ class AuthRoutes(private val authService: AuthService, private val appUrl: Strin
     }
 
     data class SendSignInTokenBody(
-        @field:NotNull
         @field:Pattern(
             regexp = EMAIL_RE,
             message = "Invalid email format"
         )
-        @Expose val email: String,
-        @Expose val signupReferral: String?,
-        @Expose val dest: String?,
-        @Expose val sendCodeInsteadOfLink: Boolean?
+        val email: String,
+        val signupReferral: String?,
+        val dest: String?,
+        val sendCodeInsteadOfLink: Boolean?
     )
 
+    @OpenApi(
+        tags = ["Authentication"],
+        summary = "Send a sign-in token to a given user",
+        requestBody = OpenApiRequestBody([OpenApiContent(SendSignInTokenBody::class)]),
+        responses = [OpenApiResponse(
+            "200",
+            description = "Skip-auth response sent for debugging in dev mode only",
+            content = [OpenApiContent(SendSignInTokenSkipAuthResponse::class)]
+        ), OpenApiResponse("204")]
+    )
     private fun sendSignInToken(ctx: Context) {
         val body = ctx.validateJsonBody(SendSignInTokenBody::class.java)
         val resp = authService.sendSignInToken(
@@ -54,16 +66,21 @@ class AuthRoutes(private val authService: AuthService, private val appUrl: Strin
     }
 
     data class ValidateSignInCodeBody(
-        @field:NotNull
         @field:Pattern(
             regexp = EMAIL_RE,
             message = "Invalid email format"
         )
-        @Expose val email: String,
-        @field:NotNull @Expose val code: String,
-        @Expose val signupReferral: String?
+        val email: String,
+        val code: String,
+        val signupReferral: String?
     )
 
+    @OpenApi(
+        tags = ["Authentication"],
+        summary = "Validate a sign in code, returning a sign-in token if valid",
+        requestBody = OpenApiRequestBody([OpenApiContent(ValidateSignInCodeBody::class)]),
+        responses = [OpenApiResponse("200", [OpenApiContent(ValidateSignInCodeBody::class)])]
+    )
     private fun validateSignInCode(ctx: Context) {
         val body = ctx.validateJsonBody(ValidateSignInCodeBody::class.java)
         val resp = authService.validateSignInCode(
@@ -75,10 +92,15 @@ class AuthRoutes(private val authService: AuthService, private val appUrl: Strin
     }
 
     data class SignInBody(
-        @field:NotNull
-        @Expose val signInToken: String
+        val signInToken: String
     )
 
+    @OpenApi(
+        tags = ["Authentication"],
+        summary = "Sign in with a given sign-in token, returning an auth token if valid",
+        requestBody = OpenApiRequestBody([OpenApiContent(SignInBody::class)]),
+        responses = [OpenApiResponse("200", [OpenApiContent(SignInResponse::class)])]
+    )
     private fun signIn(ctx: Context) {
         val body = ctx.validateJsonBody(SignInBody::class.java)
         val authToken = authService.signIn(body.signInToken)
@@ -89,26 +111,24 @@ class AuthRoutes(private val authService: AuthService, private val appUrl: Strin
     }
 
     data class RegisterBody(
-        @field:NotNull
-        @Expose val token: String,
-
-        @field:NotNull
+        val token: String,
         @field:Pattern(
             regexp = USERNAME_RE,
             message = "Username has invalid characters. Stick to A-z, 0-9, and underscores, please!"
         )
         @field:Size(min = 3, max = 16, message = "Username must be between 3 and 16 characters.")
-        @Expose val name: String,
-
-        @field:NotNull
-        @Expose val subscribeToNewsletter: Boolean,
-
-        @field:NotNull
-        @Expose val showInPublicFeed: Boolean,
-
-        @Expose val referral: String
+        val name: String,
+        val subscribeToNewsletter: Boolean,
+        val showInPublicFeed: Boolean,
+        val referral: String?
     )
 
+    @OpenApi(
+        tags = ["Registration"],
+        summary = "Register a new user account",
+        requestBody = OpenApiRequestBody([OpenApiContent(RegisterBody::class)]),
+        responses = [OpenApiResponse("204")]
+    )
     private fun register(ctx: Context) {
         val body = ctx.validateJsonBody(RegisterBody::class.java)
         val authToken = authService.registerUser(
@@ -123,6 +143,11 @@ class AuthRoutes(private val authService: AuthService, private val appUrl: Strin
         ctx.status(204)
     }
 
+    @OpenApi(
+        tags = ["Authentication"],
+        summary = "Sign out of a user account, clearing cookies and auth tokens",
+        responses = [OpenApiResponse("204")]
+    )
     private fun signOut(ctx: Context) {
         val token = ctx.cookie(AUTH_TOKEN_COOKIE)
         if (token != null) {

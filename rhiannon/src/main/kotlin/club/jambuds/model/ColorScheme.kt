@@ -1,10 +1,10 @@
 package club.jambuds.model
 
-import com.google.gson.annotations.Expose
+import com.fasterxml.jackson.annotation.JsonIgnore
 
 data class ColorScheme(
-    val id: Int,
-    val userId: Int,
-    @Expose val backgroundGradientName: String,
-    @Expose val textColor: String
+    @JsonIgnore val id: Int,
+    @JsonIgnore val userId: Int,
+    val backgroundGradientName: String,
+    val textColor: String
 )

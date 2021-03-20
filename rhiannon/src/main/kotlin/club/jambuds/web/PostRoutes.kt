@@ -1,14 +1,19 @@
 package club.jambuds.web
 
+import club.jambuds.model.Album
+import club.jambuds.model.SongWithMeta
 import club.jambuds.service.PostService
 import club.jambuds.service.ReportService
-import club.jambuds.util.FormValidationErrorResponse
 import club.jambuds.web.extensions.requireUser
 import club.jambuds.web.extensions.validateJsonBody
-import com.google.gson.annotations.Expose
+import com.fasterxml.jackson.annotation.JsonValue
 import io.javalin.apibuilder.ApiBuilder
 import io.javalin.http.Context
-import javax.validation.constraints.NotNull
+import io.javalin.plugin.openapi.annotations.OpenApi
+import io.javalin.plugin.openapi.annotations.OpenApiContent
+import io.javalin.plugin.openapi.annotations.OpenApiParam
+import io.javalin.plugin.openapi.annotations.OpenApiRequestBody
+import io.javalin.plugin.openapi.annotations.OpenApiResponse
 
 class PostRoutes(private val postService: PostService, private val reportService: ReportService) {
     fun register() {
@@ -17,40 +22,58 @@ class PostRoutes(private val postService: PostService, private val reportService
         ApiBuilder.put("/api/posts/:postId/report", this::reportPost)
     }
 
-    data class PostSongBody(
-        @field:NotNull
-        @Expose val type: String,
-        @field:NotNull
-        @Expose val spotifyId: String,
+    enum class PostItemType(@get:JsonValue val type: String) {
+        SONG("song"),
+        ALBUM("album")
+    }
 
-        @Expose val noteText: String?,
-        @Expose val postTweet: Boolean
+    data class PostSongBody(
+        val type: PostItemType,
+        val spotifyId: String,
+        val noteText: String?,
+        val postTweet: Boolean
     )
 
+    @OpenApi(
+        tags = ["Posts"],
+        summary = "Post a new item",
+        requestBody = OpenApiRequestBody([OpenApiContent(PostSongBody::class)]),
+        responses = [OpenApiResponse(
+            "200",
+            [OpenApiContent(Album::class), OpenApiContent(SongWithMeta::class)]
+        )]
+    )
     private fun createPost(ctx: Context) {
         val user = ctx.requireUser()
         val body = ctx.validateJsonBody(PostSongBody::class.java)
-        if (body.type == "album") {
-            val song = postService.createPostForAlbum(
-                user,
-                spotifyId = body.spotifyId,
-                noteText = body.noteText,
-                postTweet = body.postTweet
-            )
-            ctx.json(song)
-        } else if (body.type == "song") {
-            val song = postService.createPostForSong(
-                user,
-                spotifyId = body.spotifyId,
-                noteText = body.noteText,
-                postTweet = body.postTweet
-            )
-            ctx.json(song)
-        } else {
-            throw FormValidationErrorResponse("type", "must be 'album' or 'song'")
+        when (body.type) {
+            PostItemType.ALBUM -> {
+                val album = postService.createPostForAlbum(
+                    user,
+                    spotifyId = body.spotifyId,
+                    noteText = body.noteText,
+                    postTweet = body.postTweet
+                )
+                ctx.json(album)
+            }
+            PostItemType.SONG -> {
+                val song = postService.createPostForSong(
+                    user,
+                    spotifyId = body.spotifyId,
+                    noteText = body.noteText,
+                    postTweet = body.postTweet
+                )
+                ctx.json(song)
+            }
         }
     }
 
+    @OpenApi(
+        tags = ["Posts"],
+        summary = "Delete a post by ID",
+        pathParams = [OpenApiParam(name = "postId",  type = Int::class)],
+        responses = [OpenApiResponse("204")]
+    )
     private fun deletePost(ctx: Context) {
         val user = ctx.requireUser()
         val postId = ctx.pathParam<Int>("postId").get()
@@ -61,6 +84,12 @@ class PostRoutes(private val postService: PostService, private val reportService
         ctx.status(204)
     }
 
+    @OpenApi(
+        tags = ["Posts"],
+        summary = "Report a post by ID",
+        pathParams = [OpenApiParam(name = "postId",  type = Int::class)],
+        responses = [OpenApiResponse("204")]
+    )
     private fun reportPost(ctx: Context) {
         val user = ctx.requireUser()
         val postId = ctx.pathParam<Int>("postId").get()

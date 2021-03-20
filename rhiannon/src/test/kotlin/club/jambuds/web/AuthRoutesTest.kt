@@ -1,7 +1,6 @@
 package club.jambuds.web
 
 import club.jambuds.AppTest
-import club.jambuds.getGson
 import club.jambuds.helpers.TestDataFactories
 import club.jambuds.responses.GetCurrentUserResponse
 import club.jambuds.responses.SignInResponse
@@ -20,8 +19,6 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 class AuthRoutesTest : AppTest() {
-    private val gson = getGson()
-
     private fun getSignInToken(email: String): String {
         val query = "select token from sign_in_tokens where email=:email"
         return txn.createQuery(query).bind("email", email).mapTo(String::class.java).one()
@@ -164,7 +161,7 @@ class AuthRoutesTest : AppTest() {
         assertEquals(200, resp.status)
 
         val authToken = getAuthToken(user.id)
-        val respBody = gson.fromJson(resp.body, SignInResponse::class.java)
+        val respBody = objectMapper.readValue(resp.body, SignInResponse::class.java)
         assertEquals(authToken, respBody.authToken)
     }
 
@@ -194,7 +191,7 @@ class AuthRoutesTest : AppTest() {
         val body = JSONObject(mapOf("email" to user.email, "code" to signInTokenAndCode.shortCode))
         val resp = Unirest.post("$appUrl/validate-sign-in-code").body(body).asString()
         assertEquals(200, resp.status)
-        val respBody = gson.fromJson(resp.body, ValidateSignInCodeResponse::class.java)
+        val respBody = objectMapper.readValue(resp.body, ValidateSignInCodeResponse::class.java)
         assertTrue(respBody.redirect.contains("sign-in"))
         assertTrue(respBody.redirect.contains(signInTokenAndCode.token))
     }
@@ -212,7 +209,7 @@ class AuthRoutesTest : AppTest() {
         ))
         val resp = Unirest.post("$appUrl/validate-sign-in-code").body(body).asString()
         assertEquals(200, resp.status)
-        val respBody = gson.fromJson(resp.body, ValidateSignInCodeResponse::class.java)
+        val respBody = objectMapper.readValue(resp.body, ValidateSignInCodeResponse::class.java)
         assertTrue(respBody.redirect.contains("registration"))
         assertTrue(respBody.redirect.contains("jeff"), "includes referring user")
         assertTrue(respBody.redirect.contains(signInTokenAndCode.token))
@@ -252,7 +249,7 @@ class AuthRoutesTest : AppTest() {
             .header("X-Auth-Token", authToken)
             .asString()
         assertEquals(200, meResp.status)
-        val me = gson.fromJson(meResp.body, GetCurrentUserResponse::class.java)
+        val me = objectMapper.readValue(meResp.body, GetCurrentUserResponse::class.java)
         assertEquals(
             "vinny",
             me.user!!.following[0].name,

@@ -36,8 +36,6 @@ import club.jambuds.service.SpotifyAuthService
 import club.jambuds.service.TwitterAuthService
 import club.jambuds.service.TwitterService
 import club.jambuds.service.UserService
-import club.jambuds.util.InstantTypeAdapter
-import club.jambuds.util.LocalDateTimeTypeAdapter
 import club.jambuds.util.NewRelicPlugin
 import club.jambuds.web.AuthHandlers
 import club.jambuds.web.AuthRoutes
@@ -53,18 +51,27 @@ import club.jambuds.web.SongRoutes
 import club.jambuds.web.SpotifyAuthRoutes
 import club.jambuds.web.TwitterAuthRoutes
 import club.jambuds.web.UserRoutes
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
 import com.zaxxer.hikari.HikariDataSource
 import io.javalin.Javalin
 import io.javalin.core.validation.JavalinValidation
-import io.javalin.plugin.json.FromJsonMapper
-import io.javalin.plugin.json.JavalinJson
-import io.javalin.plugin.json.ToJsonMapper
+import io.javalin.plugin.json.JavalinJackson
+import io.javalin.plugin.openapi.OpenApiOptions
+import io.javalin.plugin.openapi.OpenApiPlugin
+import io.javalin.plugin.openapi.ui.SwaggerOptions
 import io.lettuce.core.RedisClient
 import io.sentry.Sentry
+import io.swagger.v3.oas.models.Components
+import io.swagger.v3.oas.models.OpenAPI
+import io.swagger.v3.oas.models.info.Info
+import io.swagger.v3.oas.models.security.SecurityRequirement
+import io.swagger.v3.oas.models.security.SecurityScheme
+import java.text.SimpleDateFormat
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.kotlin.KotlinPlugin
 import org.jdbi.v3.postgres.PostgresPlugin
@@ -84,34 +91,6 @@ fun createJdbi(databaseUrl: String): Jdbi {
     return jdbi
 }
 
-fun getGson(): Gson {
-    return GsonBuilder()
-        .setPrettyPrinting()
-        .setDateFormat("yyyy-MM-dd'T'HH:mmX")
-        .excludeFieldsWithoutExposeAnnotation()
-        .registerTypeAdapter(
-            Instant::class.java,
-            InstantTypeAdapter()
-        )
-        .registerTypeAdapter(
-            LocalDateTimeTypeAdapter::class.java,
-            LocalDateTimeTypeAdapter()
-        )
-        .create()
-}
-
-private fun configureJsonMapper() {
-    val gson = getGson()
-
-    JavalinJson.fromJsonMapper = object : FromJsonMapper {
-        override fun <T> map(json: String, targetClass: Class<T>) = gson.fromJson(json, targetClass)
-    }
-
-    JavalinJson.toJsonMapper = object : ToJsonMapper {
-        override fun map(obj: Any): String = gson.toJson(obj)
-    }
-}
-
 private fun configureValidation() {
     JavalinValidation.register(Instant::class.java) { Instant.parse(it) }
 }
@@ -128,14 +107,50 @@ fun getConfig(): Config {
         .getConfig("rhiannon")
 }
 
-fun createJavalinApp(): Javalin {
+fun createOpenApiPlugin(): OpenApiPlugin {
+    val scheme = SecurityScheme().apply {
+        type = SecurityScheme.Type.APIKEY
+        `in` = SecurityScheme.In.HEADER
+        name = "X-Auth-Token"
+    }
+    val opts = OpenApiOptions {
+        OpenAPI()
+            .components(Components().apply {
+                addSecuritySchemes("token", scheme)
+            })
+            .security(listOf(SecurityRequirement().addList("token")))
+            .info(Info().apply {
+                version("1.0")
+                title("Jam Buds API")
+                description("Jam Buds API")
+            })
+    }.apply {
+        path("/swagger-docs")
+        swagger(SwaggerOptions("/swagger-ui"))
+    }
+    return OpenApiPlugin(opts)
+}
+
+fun createObjectMapper(): ObjectMapper {
+    val df = SimpleDateFormat("yyyy-MM-dd'T'HH:mmX")
+    return ObjectMapper()
+        .registerModule(KotlinModule())
+        .registerModule(JavaTimeModule())
+        .setDateFormat(df)
+        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+}
+
+fun createJavalinApp(generateOpenApi: Boolean): Javalin {
     val app = Javalin.create { config ->
         config.defaultContentType = "application/json"
         config.showJavalinBanner = false // would be fun to turn this back on for not tests
         config.registerPlugin(NewRelicPlugin())
+        if (generateOpenApi) {
+            config.registerPlugin(createOpenApiPlugin())
+        }
     }
 
-    configureJsonMapper()
+    JavalinJackson.configure(createObjectMapper())
     configureValidation()
 
     return app
@@ -291,7 +306,7 @@ fun main() {
     }
 
     val config = getConfig()
-    val app = createJavalinApp()
+    val app = createJavalinApp(config.getBoolean("hostDocs"))
     wire(app, config)
     app.start(config.getInt("port"))
 }

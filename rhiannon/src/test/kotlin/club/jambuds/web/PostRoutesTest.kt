@@ -1,7 +1,6 @@
 package club.jambuds.web
 
 import club.jambuds.AppTest
-import club.jambuds.getGson
 import club.jambuds.helpers.TestDataFactories
 import club.jambuds.model.PostReport
 import club.jambuds.model.SongWithMeta
@@ -16,8 +15,6 @@ import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
 class PostRoutesTest : AppTest() {
-    private val gson = getGson()
-
     @Test
     fun `POST posts - works`() {
         val jeff = TestDataFactories.createUser(txn, "jeff", true)
@@ -47,13 +44,13 @@ class PostRoutesTest : AppTest() {
             )
             .asString()
         assertEquals(200, resp.status)
-        val song = gson.fromJson(resp.body, SongWithMeta::class.java)
+        val song = objectMapper.readValue(resp.body, SongWithMeta::class.java)
 
         val playlistResp = Unirest.get("$appUrl/playlists/jeff")
             .header("X-Auth-Token", authToken)
             .asString()
         assertEquals(200, playlistResp.status)
-        val playlist = gson.fromJson(playlistResp.body, UserPlaylistResponse::class.java)
+        val playlist = objectMapper.readValue(playlistResp.body, UserPlaylistResponse::class.java)
         assertEquals(1, playlist.items.size)
         assertEquals("Hello world", playlist.items[0].noteText)
         assertEquals(song, playlist.items[0].song)
@@ -116,7 +113,7 @@ class PostRoutesTest : AppTest() {
             )
             .asString()
         assertEquals(200, resp.status)
-        val song = gson.fromJson(resp.body, SongWithMeta::class.java)
+        val song = objectMapper.readValue(resp.body, SongWithMeta::class.java)
 
         val expectedTweet = "Hello world http://localhost:8080/users/jeff?song=${song.id}"
         verify(mockTwitterService, times(1)).postTweet(jeff, expectedTweet)
@@ -137,7 +134,7 @@ class PostRoutesTest : AppTest() {
         val playlistResp = Unirest.get("$appUrl/playlists/jeff")
             .header("X-Auth-Token", authToken)
             .asString()
-        val playlist = gson.fromJson(playlistResp.body, UserPlaylistResponse::class.java)
+        val playlist = objectMapper.readValue(playlistResp.body, UserPlaylistResponse::class.java)
         assertEquals(0, playlist.items.size)
     }
 

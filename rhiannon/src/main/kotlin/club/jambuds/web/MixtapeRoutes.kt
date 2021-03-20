@@ -1,16 +1,21 @@
 package club.jambuds.web
 
+import club.jambuds.model.SongWithMeta
 import club.jambuds.responses.GetDraftMixtapesResponse
+import club.jambuds.responses.MixtapeWithSongsReponse
 import club.jambuds.responses.RenameMixtapeResponse
 import club.jambuds.service.MixtapeService
 import club.jambuds.web.extensions.currentUser
 import club.jambuds.web.extensions.requireUser
 import club.jambuds.web.extensions.validateJsonBody
-import com.google.gson.annotations.Expose
 import io.javalin.apibuilder.ApiBuilder
 import io.javalin.http.Context
 import io.javalin.http.NotFoundResponse
-import javax.validation.constraints.NotNull
+import io.javalin.plugin.openapi.annotations.OpenApi
+import io.javalin.plugin.openapi.annotations.OpenApiContent
+import io.javalin.plugin.openapi.annotations.OpenApiParam
+import io.javalin.plugin.openapi.annotations.OpenApiRequestBody
+import io.javalin.plugin.openapi.annotations.OpenApiResponse
 
 class MixtapeRoutes(private val mixtapeService: MixtapeService) {
     fun register() {
@@ -28,10 +33,15 @@ class MixtapeRoutes(private val mixtapeService: MixtapeService) {
     }
 
     data class CreateBody(
-        @field:NotNull
-        @Expose val title: String
+        val title: String
     )
 
+    @OpenApi(
+        tags = ["Mixtapes"],
+        summary = "Create a new mixtape",
+        requestBody = OpenApiRequestBody([OpenApiContent(CreateBody::class)]),
+        responses = [OpenApiResponse("200", [OpenApiContent(MixtapeWithSongsReponse::class)])]
+    )
     private fun createMixtape(ctx: Context) {
         val currentUser = ctx.requireUser()
         val body = ctx.validateJsonBody(CreateBody::class.java)
@@ -39,6 +49,12 @@ class MixtapeRoutes(private val mixtapeService: MixtapeService) {
         ctx.json(mixtape)
     }
 
+    @OpenApi(
+        tags = ["Mixtapes"],
+        summary = "Fetch a mixtape",
+        pathParams = [OpenApiParam("id", type = Int::class)],
+        responses = [OpenApiResponse("200", [OpenApiContent(MixtapeWithSongsReponse::class)])]
+    )
     private fun getMixtape(ctx: Context) {
         val currentUserId = ctx.currentUser?.id
         val id = ctx.pathParam<Int>("id").get()
@@ -49,6 +65,12 @@ class MixtapeRoutes(private val mixtapeService: MixtapeService) {
         ctx.json(mixtape)
     }
 
+    @OpenApi(
+        tags = ["Mixtapes"],
+        summary = "Delete a mixtape",
+        pathParams = [OpenApiParam("id", type = Int::class)],
+        responses = [OpenApiResponse("204")]
+    )
     private fun deleteMixtape(ctx: Context) {
         val currentUser = ctx.requireUser()
         val id = ctx.pathParam<Int>("id").get()
@@ -59,10 +81,16 @@ class MixtapeRoutes(private val mixtapeService: MixtapeService) {
     }
 
     data class AddSongBody(
-        @field:NotNull
-        @Expose val spotifyId: String
+        val spotifyId: String
     )
 
+    @OpenApi(
+        tags = ["Mixtapes"],
+        summary = "Add a song to a mixtape",
+        pathParams = [OpenApiParam("mixtapeId", type = Int::class)],
+        requestBody = OpenApiRequestBody([OpenApiContent(AddSongBody::class)]),
+        responses = [OpenApiResponse("200", [OpenApiContent(SongWithMeta::class)])]
+    )
     private fun addSongToMixtape(ctx: Context) {
         val currentUser = ctx.requireUser()
         val mixtapeId = ctx.pathParam<Int>("mixtapeId").get()
@@ -77,6 +105,15 @@ class MixtapeRoutes(private val mixtapeService: MixtapeService) {
         ctx.json(song)
     }
 
+    @OpenApi(
+        tags = ["Mixtapes"],
+        summary = "Remove a song from a mixtape",
+        pathParams = [
+            OpenApiParam("mixtapeId", type = Int::class),
+            OpenApiParam("songId", type = Int::class)
+         ],
+        responses = [OpenApiResponse("204")]
+    )
     private fun removeSongFromMixtape(ctx: Context) {
         val currentUser = ctx.requireUser()
         val mixtapeId = ctx.pathParam<Int>("mixtapeId").get()
@@ -92,10 +129,16 @@ class MixtapeRoutes(private val mixtapeService: MixtapeService) {
     }
 
     data class ReorderSongsBody(
-        @field:NotNull
-        @Expose val songOrder: List<Int>
+        val songOrder: List<Int>
     )
 
+    @OpenApi(
+        tags = ["Mixtapes"],
+        summary = "Reorder songs in a mixtape",
+        pathParams = [OpenApiParam("mixtapeId", type = Int::class)],
+        requestBody = OpenApiRequestBody([OpenApiContent(ReorderSongsBody::class)]),
+        responses = [OpenApiResponse("204")]
+    )
     private fun reorderSongsInMixtape(ctx: Context) {
         val currentUser = ctx.requireUser()
         val mixtapeId = ctx.pathParam<Int>("mixtapeId").get()
@@ -111,10 +154,16 @@ class MixtapeRoutes(private val mixtapeService: MixtapeService) {
     }
 
     data class RenameMixtapeBody(
-        @field:NotNull
-        @Expose val title: String
+        val title: String
     )
 
+    @OpenApi(
+        tags = ["Mixtapes"],
+        summary = "Rename a mixtape",
+        pathParams = [OpenApiParam("mixtapeId", type = Int::class)],
+        requestBody = OpenApiRequestBody([OpenApiContent(RenameMixtapeBody::class)]),
+        responses = [OpenApiResponse("200", [OpenApiContent(RenameMixtapeResponse::class)])]
+    )
     private fun renameMixtape(ctx: Context) {
         val currentUser = ctx.requireUser()
         val mixtapeId = ctx.pathParam<Int>("mixtapeId").get()
@@ -129,6 +178,12 @@ class MixtapeRoutes(private val mixtapeService: MixtapeService) {
         ctx.json(RenameMixtapeResponse(newSlug))
     }
 
+    @OpenApi(
+        tags = ["Mixtapes"],
+        summary = "Publish a mixtape",
+        pathParams = [OpenApiParam("mixtapeId", type = Int::class)],
+        responses = [OpenApiResponse("204")]
+    )
     private fun publishMixtape(ctx: Context) {
         val currentUser = ctx.requireUser()
         val mixtapeId = ctx.pathParam<Int>("mixtapeId").get()
@@ -138,6 +193,14 @@ class MixtapeRoutes(private val mixtapeService: MixtapeService) {
         ctx.status(204)
     }
 
+    @OpenApi(
+        tags = ["Mixtapes"],
+        summary = "Get the current user's draft mixtapes",
+        responses = [OpenApiResponse(
+            "200",
+            [OpenApiContent(GetDraftMixtapesResponse::class)]
+        )]
+    )
     private fun getDraftMixtapes(ctx: Context) {
         val currentUser = ctx.requireUser()
         val mixtapes = mixtapeService.getDraftMixtapesByUser(currentUser)

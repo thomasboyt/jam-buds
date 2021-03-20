@@ -1,7 +1,8 @@
 package club.jambuds.clients
 
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.KotlinModule
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -76,6 +77,7 @@ data class AppleMusicSearchResults(
     )
 }
 
-fun getAppleMusicGson(): Gson {
-    return GsonBuilder().create()
+fun getAppleMusicObjectMapper(): ObjectMapper {
+    return ObjectMapper().registerModule(KotlinModule())
+        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
 }

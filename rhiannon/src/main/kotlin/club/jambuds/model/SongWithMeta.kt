@@ -1,19 +1,19 @@
 package club.jambuds.model
 
-import com.google.gson.annotations.Expose
+import com.fasterxml.jackson.annotation.JsonIgnore
 import java.time.Instant
 import org.jdbi.v3.core.mapper.Nested
 
 data class SongWithMeta(
-    @Expose val id: Int,
-    val createdAt: Instant,
-    @Expose val title: String,
-    @Expose val artists: List<String>,
-    @Expose val album: String?,
-    @Expose val albumArt: String?,
-    @Expose val spotifyId: String?,
-    @Expose val isrcId: String?,
-    @Expose val appleMusicId: String?,
-    @Expose val appleMusicUrl: String?,
-    @Expose @Nested("meta") val meta: ItemMeta
+    val id: Int,
+    @JsonIgnore val createdAt: Instant?,
+    val title: String,
+    val artists: List<String>,
+    val album: String?,
+    val albumArt: String?,
+    val spotifyId: String?,
+    val isrcId: String?,
+    val appleMusicId: String?,
+    val appleMusicUrl: String?,
+    @Nested("meta") val meta: ItemMeta
 )
