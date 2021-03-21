@@ -248,12 +248,11 @@ class SearchService(
     }
 
     private fun hydrateAppleMusicSong(cacheEntry: SongSearchCache): SongSearchCache {
-        val isrc = cacheEntry.isrc
-
         if (disableAppleMusic) {
             return cacheEntry.copy(searchedAppleMusic = true)
         }
 
+        val isrc = cacheEntry.isrc
         if (isrc != null) {
             val song = appleMusicService.getSongDetailsByIsrc(isrc)
             if (song != null) {
@@ -286,6 +285,10 @@ class SearchService(
     }
 
     private fun hydrateAppleMusicAlbum(cacheEntry: AlbumSearchCache): AlbumSearchCache {
+        if (disableAppleMusic) {
+            return cacheEntry.copy(searchedAppleMusic = true)
+        }
+
         val appleMusicDetails = appleMusicService.getAlbumByExistingDetails(cacheEntry)
             ?: return cacheEntry.copy(searchedAppleMusic = true)
 
