@@ -64,7 +64,7 @@ describe('posting a new album', () => {
     cy.contains('.note-text', 'some thoughts about this record');
   });
 
-  it('creates an entry in your feed', () => {
+  it('works for bandcamp urls', () => {
     cy.login('jeff@jambuds.club');
     cy.visit('/');
 
