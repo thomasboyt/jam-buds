@@ -13,7 +13,7 @@
         <new-jam-field :is-search="true" v-model="searchQuery" />
       </form>
 
-      <spotify-results
+      <search-results
         v-if="searchResults"
         :search-results="searchResults"
         @selectItem="handleSelectItem"
@@ -26,14 +26,14 @@
 </template>
 
 <script>
-import SpotifyResults from './SpotifyResults.vue';
+import SearchResults from './SearchResults.vue';
 import NewJamField from './NewJamField.vue';
 import JamTypeFilter from './JamTypeFilter.vue';
 import CreateMixtape from './CreateMixtape.vue';
 
 export default {
   components: {
-    SpotifyResults,
+    SearchResults,
     JamTypeFilter,
     NewJamField,
     CreateMixtape,

@@ -15,7 +15,17 @@
           ></span
         ><span v-else>❌ apple music</span>
       </li>
-      <li>
+      <li v-if="details.bandcampUrl">
+        ✅
+        <a
+          :href="details.bandcampUrl"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          bandcamp
+        </a>
+      </li>
+      <li v-else>
         ✅
         <a :href="youtubeSearchUrl" target="_blank" rel="noopener noreferrer">
           youtube

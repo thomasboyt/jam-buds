@@ -79,8 +79,12 @@ export default {
 
       try {
         resp = await this.$axios({
-          url: `/search-details/${urlPrefix}/${this.selectedItem.spotifyId}`,
+          url: `/search-details/${urlPrefix}`,
           method: 'GET',
+          params: {
+            source: this.selectedItem.source,
+            key: this.selectedItem.key,
+          },
         });
       } catch (err) {
         this.$store.commit('showErrorModal');
@@ -105,6 +109,8 @@ export default {
         type: this.selectedType,
         postTweet: this.twitterPostEnabled,
         noteText: this.noteText === '' ? null : this.noteText,
+        source: this.selectedItem.source,
+        key: this.selectedItem.key,
       };
 
       try {
