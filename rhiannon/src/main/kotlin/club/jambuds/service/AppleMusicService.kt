@@ -6,9 +6,9 @@ import club.jambuds.clients.AppleMusicSearchResults
 import club.jambuds.clients.AppleMusicSearchSongItem
 import club.jambuds.clients.getAppleMusicObjectMapper
 import club.jambuds.model.cache.AlbumSearchCache
+import club.jambuds.util.FuzzySearchLogic
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
-import com.wrapper.spotify.model_objects.specification.AlbumSimplified
 import okhttp3.OkHttpClient
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo
 import org.bouncycastle.openssl.PEMParser
@@ -75,26 +75,22 @@ open class AppleMusicService(musickitToken: String, private val disabled: Boolea
             )
         }
 
-        fun testArtistsMatch(result: AppleMusicSearchAlbumItem): Boolean {
-            // TODO: this artist check relies on an undocumented query param to get the set of
-            // artists from apple music. I'd prefer to use result.attributes.artistName, but I am
-            // concerned about how Apple combines artists names - what Spotify has as
-            // (St Vincent, David Byrne) becomes "David Byrne & St Vincent", and I need to make sure
-            // both are present in the string and, ideally, nothing else is present...
-            val spotifyArtists = album.artists.map { it.toLowerCase() }.toSet()
-            val appleMusicArtists =
-                result.relationships.artists.data.map { it.attributes.name.toLowerCase() }.toSet()
-            return spotifyArtists == appleMusicArtists
-        }
-
         fun searchWithTitle(title: String): AppleMusicSearchResults {
             val artists = album.artists.joinToString(" ")
             return search("$title $artists")
         }
 
         var results = searchWithTitle(album.title)
-        var result = results.albums?.data?.find {
-            it.attributes.name.equals(album.title, ignoreCase = true) && testArtistsMatch(it)
+        var result = results.albums?.data?.find { item ->
+            val namesEqual = FuzzySearchLogic.albumTitleMatchExact(
+                expected = album.title,
+                result = item.attributes.name
+            )
+            val artistsEqual = FuzzySearchLogic.artistsMatch(
+                expected = album.artists,
+                result = item.relationships.artists.data.map { it.attributes.name }
+            )
+            namesEqual && artistsEqual
         }
 
         if (result != null) {
@@ -102,10 +98,18 @@ open class AppleMusicService(musickitToken: String, private val disabled: Boolea
         }
 
         // try again with the title cleaned of remaster, deluxe, whatever info
-        val cleanedTitle = cleanAlbumTitle(album.title)
+        val cleanedTitle = FuzzySearchLogic.cleanAlbumTitle(album.title)
         results = searchWithTitle(cleanedTitle)
-        result = results.albums?.data?.find {
-            it.attributes.name.contains(cleanedTitle, ignoreCase = true) && testArtistsMatch(it)
+        result = results.albums?.data?.find { item ->
+            val namesEqual = FuzzySearchLogic.albumTitleMatchLoose(
+                expected = cleanedTitle,
+                result = item.attributes.name
+            )
+            val artistsEqual = FuzzySearchLogic.artistsMatch(
+                expected = album.artists,
+                result = item.relationships.artists.data.map { it.attributes.name }
+            )
+            namesEqual && artistsEqual
         }
         return result
     }
@@ -123,12 +127,6 @@ open class AppleMusicService(musickitToken: String, private val disabled: Boolea
         val body = resp.body() ?: throw Error("Empty body received")
 
         return body.results
-    }
-
-    private fun cleanAlbumTitle(title: String): String {
-        // remove parentheticals containing these words
-        val regex = """\(.*(Remaster|Deluxe|Collector).*\)""".toRegex()
-        return title.replace(regex, "")
     }
 
     companion object {

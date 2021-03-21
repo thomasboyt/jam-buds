@@ -271,20 +271,28 @@ class SearchService(
     }
 
     private fun hydrateSpotifyAlbum(cacheEntry: AlbumSearchCache): AlbumSearchCache {
-        throw NotImplementedError("TODO")
-        // val spotifyDetails = spotifyApiService.getAlbumByExistingDetails(cacheEntry)
-        // return cacheEntry.copy(
-        //     searchedSpotify = true,
-        //     spotifyId = spotifyDetails?.id
-        // )
+        val spotifyDetails = spotifyApiService.getAlbumByExistingDetails(cacheEntry)
+            ?: return cacheEntry.copy(searchedSpotify = true)
+
+        // spotify is "most accurate" source of truth for details rn
+        // this will matter when we start doing e.g. splitting bandcamp artists
+        return cacheEntry.copy(
+            searchedSpotify = true,
+            title = spotifyDetails.name,
+            artists = spotifyDetails.artists.map { it.name },
+            albumArt = spotifyDetails.images[0].url,
+            spotifyId = spotifyDetails.id
+        )
     }
 
     private fun hydrateAppleMusicAlbum(cacheEntry: AlbumSearchCache): AlbumSearchCache {
         val appleMusicDetails = appleMusicService.getAlbumByExistingDetails(cacheEntry)
+            ?: return cacheEntry.copy(searchedAppleMusic = true)
+
         return cacheEntry.copy(
             searchedAppleMusic = true,
-            appleMusicId = appleMusicDetails?.id,
-            appleMusicUrl = appleMusicDetails?.attributes?.url
+            appleMusicId = appleMusicDetails.id,
+            appleMusicUrl = appleMusicDetails.attributes.url
         )
     }
 
