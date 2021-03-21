@@ -9,11 +9,12 @@ import club.jambuds.clients.AppleMusicArtistRelationship
 import club.jambuds.clients.AppleMusicSearchAlbumItem
 import club.jambuds.clients.AppleMusicSearchSongItem
 import club.jambuds.clients.AppleMusicSongAttributes
-import club.jambuds.model.cache.SpotifyAlbumSearchCache
-import club.jambuds.model.cache.SpotifyTrackSearchCache
+import club.jambuds.helpers.TestDataFactories
+import club.jambuds.model.ItemSource
+import club.jambuds.model.cache.AlbumSearchCache
 import club.jambuds.responses.AlbumSearchResult
 import club.jambuds.responses.SearchDetailsResponse
-import club.jambuds.responses.SpotifySearchResponse
+import club.jambuds.responses.SearchResponse
 import club.jambuds.responses.SongSearchResult
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.whenever
@@ -33,7 +34,8 @@ class SearchRoutesTest : AppTest() {
         whenever(mockSpotifyApiService.searchTracks("Hello")).thenReturn(arrayOf(track))
 
         val expectedResult = SongSearchResult(
-            spotifyId = "abcde",
+            source = ItemSource.SPOTIFY,
+            key = "abcde",
             title = "Live Like We're Dancing",
             artists = listOf("Mura Masa", "Georgia"),
             album = "R.Y.C",
@@ -46,7 +48,7 @@ class SearchRoutesTest : AppTest() {
             .asString()
         assertEquals(200, resp.status)
 
-        val body = objectMapper.readValue(resp.body, SpotifySearchResponse::class.java)
+        val body = objectMapper.readValue(resp.body, SearchResponse::class.java)
 
         assertEquals(expectedResult, body.songs!![0])
     }
@@ -57,7 +59,8 @@ class SearchRoutesTest : AppTest() {
         whenever(mockSpotifyApiService.searchAlbums("Hello")).thenReturn(arrayOf(album))
 
         val expectedResult = AlbumSearchResult(
-            spotifyId = "abcde",
+            source = ItemSource.SPOTIFY,
+            key = "abcde",
             title = "Sound of Silver",
             artists = listOf("LCD Soundsystem"),
             albumArt = "/some/image.jpg"
@@ -69,7 +72,7 @@ class SearchRoutesTest : AppTest() {
             .asString()
         assertEquals(200, resp.status)
 
-        val body = objectMapper.readValue(resp.body, SpotifySearchResponse::class.java)
+        val body = objectMapper.readValue(resp.body, SearchResponse::class.java)
 
         assertEquals(expectedResult, body.albums!![0])
     }
@@ -85,10 +88,11 @@ class SearchRoutesTest : AppTest() {
             .asString()
         assertEquals(200, resp.status)
 
-        val cache = searchCacheDao.getSpotifyTrackSearchCache("abcde")
-        assertEquals(track.id, cache!!.spotify.id)
+        val cache = searchCacheDao.getTrackSearchCache(ItemSource.SPOTIFY,"abcde")
+        assertEquals(track.id, cache!!.spotifyId)
+        assertEquals(true, cache.searchedSpotify)
         assertEquals("abcde", cache.isrc)
-        assertEquals(false, cache.didHydrateExternalIds)
+        assertEquals(false, cache.searchedAppleMusic)
         assertEquals(null, cache.appleMusicId)
         assertEquals(null, cache.appleMusicUrl)
     }
@@ -104,9 +108,10 @@ class SearchRoutesTest : AppTest() {
             .asString()
         assertEquals(200, resp.status)
 
-        val cache = searchCacheDao.getSpotifyAlbumSearchCache("abcde")
-        assertEquals(album.id, cache!!.spotify.id)
-        assertEquals(false, cache.didHydrateExternalIds)
+        val cache = searchCacheDao.getAlbumSearchCache(ItemSource.SPOTIFY, "abcde")
+        assertEquals(album.id, cache!!.spotifyId)
+        assertEquals(true, cache.searchedSpotify)
+        assertEquals(false, cache.searchedAppleMusic)
         assertEquals(null, cache.appleMusicId)
         assertEquals(null, cache.appleMusicUrl)
     }
@@ -134,72 +139,65 @@ class SearchRoutesTest : AppTest() {
             .queryString("type", "song")
             .asString()
         assertEquals(200, resp.status)
-        val body = objectMapper.readValue(resp.body, SpotifySearchResponse::class.java)
+        val body = objectMapper.readValue(resp.body, SearchResponse::class.java)
         assertEquals(4, body.songs!!.size)
     }
 
     @Test
     fun `GET search-details_songs_(spotifyId) - uses the search cache to skip spotify lookup`() {
-        val track = createTrack()
-        val cacheEntry = SpotifyTrackSearchCache(
-            spotify = track,
-            isrc = "abcde",
-            didHydrateExternalIds = false,
-            appleMusicUrl = null,
-            appleMusicId = null
-        )
+        val cacheEntry = TestDataFactories.createPartialSongSearchCacheEntry()
+        searchCacheDao.setTrackSearchCache(ItemSource.SPOTIFY, cacheEntry.spotifyId!!, cacheEntry)
 
-        searchCacheDao.setSpotifyTrackSearchCache(track.id, cacheEntry)
-
-        whenever(mockAppleMusicService.getSongDetailsByIsrc("abcde")).thenReturn(
+        whenever(mockAppleMusicService.getSongDetailsByIsrc(cacheEntry.isrc!!)).thenReturn(
             AppleMusicSearchSongItem(
                 id = "hijkl",
                 attributes = AppleMusicSongAttributes(url = "asdf", playParams = emptyMap())
             )
         )
 
-        val resp = Unirest.get("$appUrl/search-details/songs/abcde")
+        val resp = Unirest.get("$appUrl/search-details/songs")
+            .queryString("source", ItemSource.SPOTIFY)
+            .queryString("key", cacheEntry.spotifyId!!)
             .asString()
         assertEquals(200, resp.status)
 
         val body = objectMapper.readValue(resp.body, SearchDetailsResponse::class.java)
-        assertEquals(track.id, body.spotifyId)
+        assertEquals(cacheEntry.spotifyId, body.spotifyId)
         assertEquals("hijkl", body.appleMusicId)
     }
 
     @Test
     fun `GET search-details_songs_(spotifyId) - uses the search cache to skip apple music lookup`() {
-        val track = createTrack()
-        val cacheEntry = SpotifyTrackSearchCache(
-            spotify = track,
-            isrc = "abcde",
-            didHydrateExternalIds = true,
-            appleMusicUrl = "12345",
-            appleMusicId = "12345"
-        )
+        val cacheEntry = TestDataFactories.createFullSongSearchCacheEntry()
+        searchCacheDao.setTrackSearchCache(ItemSource.SPOTIFY, cacheEntry.spotifyId!!, cacheEntry)
 
-        searchCacheDao.setSpotifyTrackSearchCache(track.id, cacheEntry)
-
-        val resp = Unirest.get("$appUrl/search-details/songs/abcde")
+        val resp = Unirest.get("$appUrl/search-details/songs")
+            .queryString("source", ItemSource.SPOTIFY)
+            .queryString("key", cacheEntry.spotifyId!!)
             .asString()
         assertEquals(200, resp.status)
 
         val body = objectMapper.readValue(resp.body, SearchDetailsResponse::class.java)
-        assertEquals(track.id, body.spotifyId)
-        assertEquals("12345", body.appleMusicId)
+        assertEquals(cacheEntry.spotifyId, body.spotifyId)
+        assertEquals(cacheEntry.appleMusicId, body.appleMusicId)
     }
 
     @Test
     fun `GET search-details_albums_(spotifyId) - uses the search cache to skip spotify lookup and finds on apple music`() {
-        val album = createAlbum()
-        val cacheEntry = SpotifyAlbumSearchCache(
-            spotify = album,
-            didHydrateExternalIds = false,
+        val cacheEntry = AlbumSearchCache(
+            title = "Sound of Silver",
+            artists = listOf("LCD Soundsystem"),
+            albumArt = "/some/image.jpg",
+            searchedSpotify = true,
+            spotifyId = "abcde",
+            searchedAppleMusic = false,
             appleMusicUrl = null,
-            appleMusicId = null
+            appleMusicId = null,
+            searchedBandcamp = false,
+            bandcampUrl = null
         )
 
-        searchCacheDao.setSpotifyAlbumSearchCache(album.id, cacheEntry)
+        searchCacheDao.setAlbumSearchCache(ItemSource.SPOTIFY, cacheEntry.spotifyId!!, cacheEntry)
 
         val mockAlbum = AppleMusicSearchAlbumItem(
             id = "hijkl",
@@ -218,14 +216,16 @@ class SearchRoutesTest : AppTest() {
             )
         )
 
-        whenever(mockAppleMusicService.getAlbumBySpotifyDetails(any())).thenReturn(mockAlbum)
+        whenever(mockAppleMusicService.getAlbumByExistingDetails(any())).thenReturn(mockAlbum)
 
-        val resp = Unirest.get("$appUrl/search-details/albums/abcde")
+        val resp = Unirest.get("$appUrl/search-details/albums")
+            .queryString("source", ItemSource.SPOTIFY)
+            .queryString("key", "abcde")
             .asString()
         assertEquals(200, resp.status)
 
         val body = objectMapper.readValue(resp.body, SearchDetailsResponse::class.java)
-        assertEquals(album.id, body.spotifyId)
+        assertEquals(cacheEntry.spotifyId, body.spotifyId)
         assertEquals("hijkl", body.appleMusicId)
     }
 

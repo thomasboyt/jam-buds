@@ -1,7 +1,8 @@
 package club.jambuds.web
 
+import club.jambuds.model.ItemSource
 import club.jambuds.responses.SearchDetailsResponse
-import club.jambuds.responses.SpotifySearchResponse
+import club.jambuds.responses.SearchResponse
 import club.jambuds.service.SearchService
 import io.javalin.apibuilder.ApiBuilder
 import io.javalin.http.Context
@@ -13,8 +14,8 @@ import io.javalin.plugin.openapi.annotations.OpenApiResponse
 class SearchRoutes(private val searchService: SearchService) {
     fun register() {
         ApiBuilder.get("/api/search", this::search)
-        ApiBuilder.get("/api/search-details/songs/:spotifyId", this::songDetails)
-        ApiBuilder.get("/api/search-details/albums/:spotifyId", this::albumDetails)
+        ApiBuilder.get("/api/search-details/songs", this::songDetails)
+        ApiBuilder.get("/api/search-details/albums", this::albumDetails)
     }
 
     @OpenApi(
@@ -26,7 +27,7 @@ class SearchRoutes(private val searchService: SearchService) {
         ],
         responses = [OpenApiResponse(
             "200",
-            [OpenApiContent(SpotifySearchResponse::class)]
+            [OpenApiContent(SearchResponse::class)]
         )]
     )
     private fun search(ctx: Context) {
@@ -39,40 +40,48 @@ class SearchRoutes(private val searchService: SearchService) {
             .get()
         if (type == "album") {
             val albums = searchService.searchAlbums(query)
-            ctx.json(SpotifySearchResponse(songs = null, albums = albums))
+            ctx.json(SearchResponse(songs = null, albums = albums))
         } else {
             val songs = searchService.searchSongs(query)
-            ctx.json(SpotifySearchResponse(songs = songs, albums = null))
+            ctx.json(SearchResponse(songs = songs, albums = null))
         }
     }
 
     @OpenApi(
         tags = ["Search"],
-        summary = "Find additional song details for a Spotify ID",
-        pathParams = [OpenApiParam(name = "spotifyId")],
+        summary = "Find additional song details for a given source and key",
+        queryParams = [
+            OpenApiParam(name = "source", required = true, type = ItemSource::class),
+            OpenApiParam(name = "key", required = true)
+        ],
         responses = [OpenApiResponse(
             "200",
             [OpenApiContent(SearchDetailsResponse::class)]
         )]
     )
     private fun songDetails(ctx: Context) {
-        val spotifyId = ctx.pathParam<String>("spotifyId").get()
-        val details = searchService.getSongSearchDetails(spotifyId)
+        val source = ctx.queryParam<ItemSource>("source").get()
+        val key = ctx.queryParam<String>("key").get()
+        val details = searchService.getSongSearchDetails(source, key)
         ctx.json(details)
     }
 
     @OpenApi(
         tags = ["Search"],
-        summary = "Find additional album details for a Spotify ID",
-        pathParams = [OpenApiParam(name = "spotifyId")],
+        summary = "Find additional album details for a given source and key",
+        queryParams = [
+            OpenApiParam(name = "source", required = true, type = ItemSource::class),
+            OpenApiParam(name = "key", required = true)
+        ],
         responses = [OpenApiResponse(
             "200",
             [OpenApiContent(SearchDetailsResponse::class)]
         )]
     )
     private fun albumDetails(ctx: Context) {
-        val spotifyId = ctx.pathParam<String>("spotifyId").get()
-        val details = searchService.getAlbumSearchDetails(spotifyId)
+        val source = ctx.queryParam<ItemSource>("source").get()
+        val key = ctx.queryParam<String>("key").get()
+        val details = searchService.getAlbumSearchDetails(source, key)
         ctx.json(details)
     }
 }

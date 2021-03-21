@@ -1,7 +1,8 @@
 package club.jambuds.dao
 
 import club.jambuds.model.Album
-import club.jambuds.model.cache.SpotifyAlbumSearchCache
+import club.jambuds.model.cache.AlbumSearchCache
+import club.jambuds.model.ItemSource
 import org.jdbi.v3.sqlobject.customizer.BindList
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys
 import org.jdbi.v3.sqlobject.statement.SqlQuery
@@ -38,12 +39,28 @@ interface AlbumDao {
     )
     fun getAlbumBySpotifyId(spotifyId: String, currentUserId: Int? = -1): Album?
 
+    @SqlQuery(
+        """
+        SELECT *, $LIKES_SUBQUERY
+        FROM albums
+        WHERE albums.bandcamp_url = :bandcampUrl
+        """
+    )
+    fun getAlbumByBandcampUrl(bandcampUrl: String, currentUserId: Int? = -1): Album?
+
+    fun getAlbumBySource(source: ItemSource, key: String, currentUserId: Int? = -1): Album? {
+        return when (source) {
+            ItemSource.SPOTIFY -> getAlbumBySpotifyId(key, currentUserId)
+            ItemSource.BANDCAMP -> getAlbumByBandcampUrl(key, currentUserId)
+        }
+    }
+
     @SqlUpdate(
         """
         INSERT INTO albums
-            (title, artists, album_art, spotify_id, apple_music_id, apple_music_url)
+            (title, artists, album_art, spotify_id, apple_music_id, apple_music_url, bandcamp_url)
         VALUES
-            (:title, :artists, :albumArt, :spotifyId, :appleMusicId, :appleMusicUrl)
+            (:title, :artists, :albumArt, :spotifyId, :appleMusicId, :appleMusicUrl, :bandcampUrl)
         """
     )
     @GetGeneratedKeys
@@ -53,17 +70,19 @@ interface AlbumDao {
         albumArt: String?,
         spotifyId: String?,
         appleMusicId: String?,
-        appleMusicUrl: String?
+        appleMusicUrl: String?,
+        bandcampUrl: String?
     ): Album
 
-    fun createAlbumFromCacheEntry(searchCacheEntry: SpotifyAlbumSearchCache): Album {
+    fun createAlbumFromCacheEntry(cacheEntry: AlbumSearchCache): Album {
         return createAlbum(
-            title = searchCacheEntry.spotify.name,
-            artists = searchCacheEntry.spotify.artists.map { it.name },
-            albumArt = searchCacheEntry.spotify.images[0].url,
-            spotifyId = searchCacheEntry.spotify.id,
-            appleMusicUrl = searchCacheEntry.appleMusicUrl,
-            appleMusicId = searchCacheEntry.appleMusicId
+            title = cacheEntry.title,
+            artists = cacheEntry.artists,
+            albumArt = cacheEntry.albumArt,
+            spotifyId = cacheEntry.spotifyId,
+            appleMusicId = cacheEntry.appleMusicId,
+            appleMusicUrl = cacheEntry.appleMusicUrl,
+            bandcampUrl = cacheEntry.bandcampUrl
         )
     }
 }

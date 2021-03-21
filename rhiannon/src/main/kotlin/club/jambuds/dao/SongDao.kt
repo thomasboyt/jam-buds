@@ -2,7 +2,8 @@ package club.jambuds.dao
 
 import club.jambuds.model.Song
 import club.jambuds.model.SongWithMeta
-import club.jambuds.model.cache.SpotifyTrackSearchCache
+import club.jambuds.model.ItemSource
+import club.jambuds.model.cache.SongSearchCache
 import org.jdbi.v3.sqlobject.customizer.BindList
 import org.jdbi.v3.sqlobject.locator.UseClasspathSqlLocator
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys
@@ -23,6 +24,16 @@ interface SongDao {
     @SqlQuery
     fun getSongBySpotifyId(spotifyId: String, currentUserId: Int): SongWithMeta?
 
+    @SqlQuery
+    fun getSongByBandcampUrl(bandcampUrl: String, currentUserId: Int): SongWithMeta?
+
+    fun getSongBySource(source: ItemSource, key: String, currentUserId: Int): SongWithMeta? {
+        return when (source) {
+            ItemSource.SPOTIFY -> getSongBySpotifyId(key, currentUserId)
+            ItemSource.BANDCAMP -> getSongByBandcampUrl(key, currentUserId)
+        }
+    }
+
     @SqlUpdate
     @GetGeneratedKeys
     fun createSong(
@@ -30,22 +41,28 @@ interface SongDao {
         artists: List<String>,
         album: String,
         albumArt: String,
-        spotifyId: String,
+        spotifyId: String?,
         isrcId: String?,
         appleMusicId: String?,
-        appleMusicUrl: String?
+        appleMusicUrl: String?,
+        bandcampId: String?,
+        bandcampUrl: String?,
+        bandcampCanStream: Boolean?
     ): Song
 
-    fun createSongFromCacheEntry(cacheEntry: SpotifyTrackSearchCache): Song {
+    fun createSongFromCacheEntry(cacheEntry: SongSearchCache): Song {
         return createSong(
-            spotifyId = cacheEntry.spotify.id,
-            title = cacheEntry.spotify.name,
-            artists = cacheEntry.spotify.artists.map { it.name },
-            album = cacheEntry.spotify.album.name,
-            albumArt = cacheEntry.spotify.album.images[0].url,
+            title = cacheEntry.title,
+            artists = cacheEntry.artists,
+            album = cacheEntry.album,
+            albumArt = cacheEntry.albumArt,
             isrcId = cacheEntry.isrc,
+            spotifyId = cacheEntry.spotifyId,
             appleMusicId = cacheEntry.appleMusicId,
-            appleMusicUrl = cacheEntry.appleMusicUrl
+            appleMusicUrl = cacheEntry.appleMusicUrl,
+            bandcampId = cacheEntry.bandcampId,
+            bandcampUrl = cacheEntry.bandcampUrl,
+            bandcampCanStream = cacheEntry.bandcampStreamingAvailable
         )
     }
 

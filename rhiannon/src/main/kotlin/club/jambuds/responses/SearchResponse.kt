@@ -1,6 +1,6 @@
 package club.jambuds.responses
 
-data class SpotifySearchResponse(
+data class SearchResponse(
     val songs: List<SongSearchResult>?,
     val albums: List<AlbumSearchResult>?
 )

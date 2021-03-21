@@ -2,8 +2,8 @@ package club.jambuds.web
 
 import club.jambuds.AppTest
 import club.jambuds.helpers.TestDataFactories
+import club.jambuds.model.ItemSource
 import club.jambuds.model.SongWithMeta
-import club.jambuds.model.cache.SpotifyTrackSearchCache
 import club.jambuds.responses.FeedPlaylistResponse
 import club.jambuds.responses.GetDraftMixtapesResponse
 import club.jambuds.responses.MixtapeWithSongsReponse
@@ -109,25 +109,22 @@ class MixtapeRoutesTest : AppTest() {
         val songId = TestDataFactories.createSong(txn)
         TestDataFactories.addSongToMixtape(txn, mixtapeId = mixtapeId, songId = songId, rank = 1)
 
-        val track = TestDataFactories.createSpotifyTrack()
+        val cachedSong = TestDataFactories.createFullSongSearchCacheEntry()
+        searchCacheDao.setTrackSearchCache(ItemSource.SPOTIFY, cachedSong.spotifyId!!, cachedSong)
 
-        val cacheEntry = SpotifyTrackSearchCache(
-            spotify = track,
-            isrc = "abcde",
-            didHydrateExternalIds = true,
-            appleMusicUrl = "12345",
-            appleMusicId = "12345"
+        val req = MixtapeRoutes.AddSongBody(
+            source = ItemSource.SPOTIFY,
+            key = cachedSong.spotifyId!!
         )
 
-        searchCacheDao.setSpotifyTrackSearchCache(track.id, cacheEntry)
         val resp = Unirest.post("$appUrl/mixtapes/$mixtapeId/songs")
             .header("X-Auth-Token", authToken)
-            .body(JSONObject(mapOf("spotifyId" to track.id)))
+            .body(objectMapper.writeValueAsString(req))
             .asString()
         assertEquals(200, resp.status)
 
         val body = objectMapper.readValue(resp.body, SongWithMeta::class.java)
-        assertEquals(track.id, body.spotifyId)
+        assertEquals(cachedSong.spotifyId, body.spotifyId)
 
         val mixtapeResp = Unirest.get("$appUrl/mixtapes/$mixtapeId")
             .header("X-Auth-Token", authToken)
@@ -136,14 +133,19 @@ class MixtapeRoutesTest : AppTest() {
         val mixtapeBody = objectMapper.readValue(mixtapeResp.body, MixtapeWithSongsReponse::class.java)
 
         assertEquals(2, mixtapeBody.tracks.size)
-        assertEquals(track.id, mixtapeBody.tracks[1].spotifyId)
+        assertEquals(cachedSong.spotifyId, mixtapeBody.tracks[1].spotifyId)
     }
 
     @Test
     fun `POST mixtapes_(id)_songs - prevents posts to another user's mixtapes`() {
+        val req = MixtapeRoutes.AddSongBody(
+            source = ItemSource.SPOTIFY,
+            key = "asdf"
+        )
+
         assertUnauthorizedMixtapeAccess { mixtapeId ->
             Unirest.post("$appUrl/mixtapes/$mixtapeId/songs")
-                .body(JSONObject(mapOf("spotifyId" to "asdf")))
+                .body(objectMapper.writeValueAsString(req))
         }
     }
 

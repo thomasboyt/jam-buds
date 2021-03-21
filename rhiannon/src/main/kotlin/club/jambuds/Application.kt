@@ -18,8 +18,10 @@ import club.jambuds.dao.UserDao
 import club.jambuds.dao.cache.OAuthStateDao
 import club.jambuds.dao.cache.SearchCacheDao
 import club.jambuds.dao.cache.TwitterFollowingCacheDao
+import club.jambuds.model.ItemSource
 import club.jambuds.service.AppleMusicService
 import club.jambuds.service.AuthService
+import club.jambuds.service.BandcampService
 import club.jambuds.service.ButtondownService
 import club.jambuds.service.EmailService
 import club.jambuds.service.FollowingService
@@ -93,6 +95,7 @@ fun createJdbi(databaseUrl: String): Jdbi {
 
 private fun configureValidation() {
     JavalinValidation.register(Instant::class.java) { Instant.parse(it) }
+    JavalinValidation.register(ItemSource::class.java) { ItemSource.valueOf(it.toUpperCase()) }
 }
 
 fun getConfig(): Config {
@@ -180,6 +183,8 @@ private fun wire(app: Javalin, config: Config) {
     }
     val appleMusicService = AppleMusicService(appleMusicToken, disableAppleMusic)
 
+    val bandcampService = BandcampService()
+
     // Twitter
     val disableTwitter = config.getBoolean("disableTwitter")
     val twitterApiKey = if (disableTwitter) {
@@ -225,6 +230,7 @@ private fun wire(app: Javalin, config: Config) {
     val searchService = SearchService(
         spotifyApiService,
         appleMusicService,
+        bandcampService,
         songDao,
         albumDao,
         searchCacheDao,

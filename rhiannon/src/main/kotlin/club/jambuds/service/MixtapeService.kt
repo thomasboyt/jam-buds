@@ -6,6 +6,7 @@ import club.jambuds.model.Mixtape
 import club.jambuds.model.MixtapePreview
 import club.jambuds.model.SongWithMeta
 import club.jambuds.model.User
+import club.jambuds.model.ItemSource
 import club.jambuds.responses.MixtapeWithSongsReponse
 import io.javalin.http.BadRequestResponse
 import io.javalin.http.NotFoundResponse
@@ -80,16 +81,22 @@ class MixtapeService(
         mixtapeDao.deleteMixtapeById(mixtapeId)
     }
 
-    fun addSongToMixtape(mixtapeId: Int, currentUser: User, spotifyId: String): SongWithMeta {
+    fun addSongToMixtape(mixtapeId: Int, currentUser: User, source: ItemSource, key: String): SongWithMeta {
         val mixtape = getMixtapeOr404(mixtapeId)
         ensureCanUpdateDraft(mixtape, currentUser)
 
         val songs = songDao.getSongsByMixtapeId(mixtape.id, currentUser.id)
-        if (songs.any { it.spotifyId == spotifyId }) {
+        val songExists = songs.any {
+            when (source) {
+                ItemSource.BANDCAMP -> it.bandcampUrl == key
+                ItemSource.SPOTIFY -> it.spotifyId == key
+            }
+        }
+        if (songExists) {
             throw BadRequestResponse("Mixtape already contains this song")
         }
 
-        val song = searchService.getOrCreateSong(spotifyId, currentUser)
+        val song = searchService.getOrCreateSong(source, key, currentUser)
         mixtapeDao.addSongToMixtape(mixtapeId = mixtapeId, songId = song.id)
         return song
     }

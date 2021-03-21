@@ -1,8 +1,8 @@
 package club.jambuds.dao.cache
 
-import club.jambuds.model.cache.SpotifyAlbumSearchCache
-import club.jambuds.model.cache.SpotifyTrackSearchCache
-import com.fasterxml.jackson.annotation.JsonInclude
+import club.jambuds.model.cache.AlbumSearchCache
+import club.jambuds.model.ItemSource
+import club.jambuds.model.cache.SongSearchCache
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
@@ -12,24 +12,20 @@ class SearchCacheDao(private val redis: StatefulRedisConnection<String, String>)
     private val objectMapper = ObjectMapper().registerModule(KotlinModule())
         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
 
-    fun getSpotifyTrackSearchCache(spotifyId: String): SpotifyTrackSearchCache? {
-        val key = "spotify:track:$spotifyId"
-        return getCache(key)
+    fun getTrackSearchCache(source: ItemSource, key: String): SongSearchCache? {
+        return getCache("$source:track:$key")
     }
 
-    fun setSpotifyTrackSearchCache(spotifyId: String, cacheEntry: SpotifyTrackSearchCache) {
-        val key = "spotify:track:$spotifyId"
-        return setCache(key, cacheEntry)
+    fun setTrackSearchCache(source: ItemSource, key: String, cacheEntry: SongSearchCache) {
+        return setCache("$source:track:$key", cacheEntry)
     }
 
-    fun getSpotifyAlbumSearchCache(spotifyId: String): SpotifyAlbumSearchCache? {
-        val key = "spotify:album:$spotifyId"
-        return getCache(key)
+    fun getAlbumSearchCache(source: ItemSource, key: String): AlbumSearchCache? {
+        return getCache("$source:album:$key")
     }
 
-    fun setSpotifyAlbumSearchCache(spotifyId: String, cacheEntry: SpotifyAlbumSearchCache) {
-        val key = "spotify:album:$spotifyId"
-        return setCache(key, cacheEntry)
+    fun setAlbumSearchCache(source: ItemSource, key: String, cacheEntry: AlbumSearchCache) {
+        return setCache("$source:album:$key", cacheEntry)
     }
 
     private inline fun <reified T>getCache(key: String): T? {

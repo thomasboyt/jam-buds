@@ -5,6 +5,7 @@ import club.jambuds.clients.AppleMusicSearchAlbumItem
 import club.jambuds.clients.AppleMusicSearchResults
 import club.jambuds.clients.AppleMusicSearchSongItem
 import club.jambuds.clients.getAppleMusicObjectMapper
+import club.jambuds.model.cache.AlbumSearchCache
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.wrapper.spotify.model_objects.specification.AlbumSimplified
@@ -67,7 +68,7 @@ open class AppleMusicService(musickitToken: String, private val disabled: Boolea
         return body.data[0]
     }
 
-    open fun getAlbumBySpotifyDetails(spotifyAlbum: AlbumSimplified): AppleMusicSearchAlbumItem? {
+    open fun getAlbumByExistingDetails(album: AlbumSearchCache): AppleMusicSearchAlbumItem? {
         if (disabled) {
             throw Error(
                 "Attempted to use AppleMusicService even though it was configured as disabled"
@@ -80,20 +81,20 @@ open class AppleMusicService(musickitToken: String, private val disabled: Boolea
             // concerned about how Apple combines artists names - what Spotify has as
             // (St Vincent, David Byrne) becomes "David Byrne & St Vincent", and I need to make sure
             // both are present in the string and, ideally, nothing else is present...
-            val spotifyArtists = spotifyAlbum.artists.map { it.name.toLowerCase() }.toSet()
+            val spotifyArtists = album.artists.map { it.toLowerCase() }.toSet()
             val appleMusicArtists =
                 result.relationships.artists.data.map { it.attributes.name.toLowerCase() }.toSet()
             return spotifyArtists == appleMusicArtists
         }
 
         fun searchWithTitle(title: String): AppleMusicSearchResults {
-            val artists = spotifyAlbum.artists.joinToString(" ") { it.name }
+            val artists = album.artists.joinToString(" ")
             return search("$title $artists")
         }
 
-        var results = searchWithTitle(spotifyAlbum.name)
+        var results = searchWithTitle(album.title)
         var result = results.albums?.data?.find {
-            it.attributes.name.equals(spotifyAlbum.name, ignoreCase = true) && testArtistsMatch(it)
+            it.attributes.name.equals(album.title, ignoreCase = true) && testArtistsMatch(it)
         }
 
         if (result != null) {
@@ -101,7 +102,7 @@ open class AppleMusicService(musickitToken: String, private val disabled: Boolea
         }
 
         // try again with the title cleaned of remaster, deluxe, whatever info
-        val cleanedTitle = cleanAlbumTitle(spotifyAlbum.name)
+        val cleanedTitle = cleanAlbumTitle(album.title)
         results = searchWithTitle(cleanedTitle)
         result = results.albums?.data?.find {
             it.attributes.name.contains(cleanedTitle, ignoreCase = true) && testArtistsMatch(it)
