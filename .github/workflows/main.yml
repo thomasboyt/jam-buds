@@ -72,6 +72,10 @@ jobs:
           JAMBUDS_ENV: "feature"
           SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
           SPOTIFY_CLIENT_SECRET: ${{ secrets.SPOTIFY_CLIENT_SECRET }}
+          DISABLE_APPLE_MUSIC: false
+          MUSICKIT_KEY_ID: ${{ secrets.MUSICKIT_KEY_ID }}
+          MUSICKIT_TEAM_ID: ${{ secrets.MUSICKIT_TEAM_ID }}
+          MUSICKIT_PRIVATE_KEY: ${{ secrets.MUSICKIT_PRIVATE_KEY }}
 
       - name: Install frontend dependencies
         run: npm ci
