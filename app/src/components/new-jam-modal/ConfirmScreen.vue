@@ -5,7 +5,11 @@
     </div>
 
     <template v-if="loadedDetails">
-      <service-list :details="details" :song="selectedItem" />
+      <service-list
+        :details="details"
+        :item="selectedItem"
+        :type="selectedType"
+      />
 
       <div :style="{ margin: '36px 0' }">
         <note-field v-model="noteText" />

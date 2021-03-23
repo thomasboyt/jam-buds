@@ -6,7 +6,7 @@
 
     <template v-if="loadedDetails">
       <div :style="{ marginBottom: '36px' }">
-        <service-list :details="details" :song="selectedItem" />
+        <service-list :details="details" :item="selectedItem" />
       </div>
 
       <p v-if="error" class="error">
