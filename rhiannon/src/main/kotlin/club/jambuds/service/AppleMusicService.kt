@@ -14,8 +14,7 @@ import org.bouncycastle.asn1.pkcs.PrivateKeyInfo
 import org.bouncycastle.openssl.PEMParser
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter
 import retrofit2.Retrofit
-import java.io.File
-import java.io.FileReader
+import java.io.StringReader
 import java.security.interfaces.ECPrivateKey
 import java.time.Instant
 import java.time.temporal.ChronoUnit
@@ -130,9 +129,8 @@ open class AppleMusicService(musickitToken: String, private val disabled: Boolea
     }
 
     companion object {
-        fun createAuthToken(privateKeyPath: String, keyId: String, teamId: String): String {
-            val file = File(privateKeyPath)
-            val pemParser = PEMParser(FileReader(file))
+        fun createAuthToken(key: String, keyId: String, teamId: String): String {
+            val pemParser = PEMParser(StringReader(key))
             val privateKey =
                 JcaPEMKeyConverter().getPrivateKey(pemParser.readObject() as PrivateKeyInfo)
             val algorithm = Algorithm.ECDSA256(null, privateKey as ECPrivateKey)
