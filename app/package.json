@@ -25,7 +25,7 @@
   "dependencies": {
     "@nuxtjs/axios": "^5.13.1",
     "@nuxtjs/proxy": "^2.1.0",
-    "@nuxtjs/sentry": "^4.3.4",
+    "@nuxtjs/sentry": "^5.0.3",
     "@tboyt/music-kit-jwt": "^0.1.2",
     "body-scroll-lock": "^3.1.5",
     "cookie": "^0.4.1",
