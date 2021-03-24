@@ -63,6 +63,8 @@ import com.typesafe.config.ConfigFactory
 import com.zaxxer.hikari.HikariDataSource
 import io.javalin.Javalin
 import io.javalin.core.validation.JavalinValidation
+import io.javalin.http.HttpResponseExceptionMapper
+import io.javalin.http.InternalServerErrorResponse
 import io.javalin.plugin.json.JavalinJackson
 import io.javalin.plugin.openapi.OpenApiOptions
 import io.javalin.plugin.openapi.OpenApiPlugin
@@ -158,6 +160,11 @@ fun createJavalinApp(generateOpenApi: Boolean): Javalin {
 
     JavalinJackson.configure(createObjectMapper())
     configureValidation()
+
+    app.exception(Exception::class.java) { e, ctx ->
+        Javalin.log.error("Uncaught exception", e)
+        HttpResponseExceptionMapper.handle(InternalServerErrorResponse(), ctx)
+    }
 
     return app
 }
