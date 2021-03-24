@@ -6,7 +6,7 @@
     :is-loading="$fetchState.pending"
     @requestNextPage="handleRequestNextPage"
   >
-    <template v-slot:item="{ item }">
+    <template #item="{ item }">
       <playlist-entry :item="item" @requestPlay="handleRequestPlay" />
       <entry-details
         type="userLiked"
@@ -16,7 +16,7 @@
       />
     </template>
 
-    <template v-slot:placeholder>
+    <template #placeholder>
       <p>This user has not liked any songs yet :(</p>
     </template>
   </playlist>

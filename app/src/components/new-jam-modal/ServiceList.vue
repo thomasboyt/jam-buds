@@ -33,11 +33,10 @@
 <script>
 import { getSpotifyAlbumUrl, getSpotifySongUrl } from '~/util/getSpotifyUrl';
 import getYoutubeSearchUrl from '../../util/getYoutubeSearchUrl';
-import AlbumArt from '../playlist/AlbumArt.vue';
 import ServiceListItem from './ServiceListItem.vue';
 
 export default {
-  components: { AlbumArt, ServiceListItem },
+  components: { ServiceListItem },
   props: ['details', 'item', 'type'],
 
   computed: {

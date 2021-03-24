@@ -3,7 +3,7 @@
     <draggable v-model="mixtapeTracks" handle=".drag-handle" tag="ul">
       <li v-for="songId in mixtapeTracks" :key="songId">
         <song :song-id="songId" :posts="null" @requestPlay="handleRequestPlay">
-          <template v-slot:actions v-if="isEditing">
+          <template #actions v-if="isEditing">
             <song-remove-from-mixtape-action
               :song-id="songId"
               :mixtape-id="mixtapeId"

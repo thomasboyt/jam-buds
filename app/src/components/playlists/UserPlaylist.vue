@@ -6,7 +6,7 @@
     :is-loading="$fetchState.pending"
     @requestNextPage="handleRequestNextPage"
   >
-    <template v-slot:item="{ item }">
+    <template #item="{ item }">
       <playlist-entry
         :item="item"
         :user-name="userName"
@@ -21,7 +21,7 @@
       />
     </template>
 
-    <template v-slot:placeholder>
+    <template #placeholder>
       <p>This user has not posted any songs yet :(</p>
     </template>
   </playlist>
