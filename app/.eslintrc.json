@@ -2,8 +2,7 @@
   "extends": [
     "plugin:vue/strongly-recommended",
     "eslint:recommended",
-    "prettier",
-    "prettier/vue"
+    "prettier"
   ],
   "env": {
     "browser": true,
