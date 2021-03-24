@@ -1,4 +1,4 @@
-export default function ({ $axios, store }) {
+export default function({ $axios, store }) {
   if (process.client) {
     const authToken = store.state.auth.authToken;
 

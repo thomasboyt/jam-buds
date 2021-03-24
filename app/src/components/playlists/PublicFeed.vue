@@ -6,7 +6,7 @@
     :error="$fetchState.error"
     @requestNextPage="handleRequestNextPage"
   >
-    <template v-slot:item="{ item }">
+    <template #item="{ item }">
       <playlist-entry :item="item" @requestPlay="handleRequestPlay" />
       <entry-details
         v-for="post in item.posts"
@@ -19,7 +19,7 @@
       />
     </template>
 
-    <template v-slot:placeholder>
+    <template #placeholder>
       <p>This feed is empty :(</p>
     </template>
   </playlist>

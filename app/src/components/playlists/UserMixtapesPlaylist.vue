@@ -6,7 +6,7 @@
     :is-loading="initialFetchState.pending"
     @requestNextPage="handleRequestNextPage"
   >
-    <template v-slot:item="{ item }">
+    <template #item="{ item }">
       <mixtape-item :mixtape-id="item.mixtapeId" />
       <entry-details
         type="userPlaylist"

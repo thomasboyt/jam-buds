@@ -6,7 +6,7 @@
     :error="$fetchState.error"
     @requestNextPage="handleRequestNextPage"
   >
-    <template v-slot:item="{ item }">
+    <template #item="{ item }">
       <div data-test="feed-entry-group">
         <playlist-entry :item="item" @requestPlay="handleRequestPlay" />
         <entry-details
