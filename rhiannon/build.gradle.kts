@@ -63,9 +63,7 @@ dependencies {
 
     // logging & monitoring
     implementation("ch.qos.logback:logback-classic:1.2.3")
-    val sentryVersion = "4.3.0"
-    implementation("io.sentry:sentry:$sentryVersion")
-    implementation("io.sentry:sentry-logback:$sentryVersion")
+    implementation("io.sentry:sentry-logback:4.3.0")
     implementation("com.newrelic.agent.java:newrelic-api:5.14.0")
 
     // database access
