@@ -23,19 +23,19 @@
     "eslint-plugin-vue": "^7.8.0"
   },
   "dependencies": {
-    "@nuxtjs/axios": "^5.12.5",
-    "@nuxtjs/proxy": "^2.0.1",
+    "@nuxtjs/axios": "^5.13.1",
+    "@nuxtjs/proxy": "^2.1.0",
     "@nuxtjs/sentry": "^4.3.4",
     "@tboyt/music-kit-jwt": "^0.1.2",
-    "body-scroll-lock": "^3.0.3",
+    "body-scroll-lock": "^3.1.5",
     "cookie": "^0.4.1",
-    "date-fns": "^2.16.0",
-    "intersection-observer": "^0.11.0",
-    "lodash": "^4.17.20",
-    "nuxt": "^2.14.12",
-    "sass": "^1.26.10",
+    "date-fns": "^2.19.0",
+    "intersection-observer": "^0.12.0",
+    "lodash": "^4.17.21",
+    "nuxt": "^2.15.3",
+    "sass": "^1.32.8",
     "sass-loader": "^10.0.1",
-    "svg-sprite-loader": "^5.0.0",
-    "vuedraggable": "^2.24.1"
+    "svg-sprite-loader": "^6.0.2",
+    "vuedraggable": "^2.24.3"
   }
 }
