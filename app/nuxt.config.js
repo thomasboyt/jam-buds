@@ -17,8 +17,6 @@ function getProxyConfig() {
 }
 
 export default {
-  mode: 'universal',
-
   srcDir: 'src/',
 
   features: {
@@ -94,9 +92,19 @@ export default {
     '~modules/spriteInject',
   ],
 
-  // Note: unlike other variables, this has to be set during build time!
-  // Will be resolved when https://github.com/nuxt-community/sentry-module/issues/202 is
-  // implemented.
+  // Note: unlike other variables, this has to be set during build time! It's
+  // used for two purposes:
+  //
+  // 1. It's set at build time to allow source maps to be published to Sentry
+  //    during builds.
+  // 2. It's bundled into the compiled app code to be used at runtime.
+  //
+  // Theoretically, with a PR to @nuxt/sentry, we could make it so the build
+  // time and runtime config is separated and the compiled output doesn't bundle
+  // the DSN, instead pulling from an environment variable at runtime. I'm not
+  // really sure what this buys, however, other than I guess having compiled
+  // output that is free of configuration - we'd still have to rebuild to
+  // publish source maps, though, so that doesn't seem very useful.
   sentry: {
     dsn: process.env.SENTRY_PUBLIC_DSN_APP,
   },
