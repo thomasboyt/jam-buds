@@ -18,8 +18,8 @@ plugins {
 apply plugin: 'kotlin'
 apply plugin: 'application'
 
-group 'club.jambuds'
-version '0.0.1-SNAPSHOT'
+group "club.jambuds"
+version "0.0.1-SNAPSHOT"
 mainClassName = "club.jambuds.ApplicationKt"
 
 distZip {
@@ -48,45 +48,45 @@ repositories {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 
-    implementation 'io.javalin:javalin:3.12.0'
-    implementation 'io.javalin:javalin-openapi:3.12.0'
+    implementation "io.javalin:javalin:3.12.0"
+    implementation "io.javalin:javalin-openapi:3.12.0"
     implementation "com.typesafe:config:1.4.0"
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.10.1'
-    implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.10.1'
-    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.10.1'
+    implementation "com.fasterxml.jackson.core:jackson-databind:2.10.1"
+    implementation "com.fasterxml.jackson.module:jackson-module-kotlin:2.10.1"
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.10.1"
 
     // swagger/openapi
-    implementation 'io.swagger.core.v3:swagger-annotations:2.1.6'
-    implementation 'io.swagger.core.v3:swagger-core:2.1.6'
-    implementation 'io.swagger.core.v3:swagger-models:2.1.6'
-    implementation 'org.webjars:swagger-ui:3.24.3'
-    implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.12.0'
+    implementation "io.swagger.core.v3:swagger-annotations:2.1.6"
+    implementation "io.swagger.core.v3:swagger-core:2.1.6"
+    implementation "io.swagger.core.v3:swagger-models:2.1.6"
+    implementation "org.webjars:swagger-ui:3.24.3"
+    implementation "com.fasterxml.jackson.module:jackson-module-kotlin:2.12.0"
 
     // email stuff
     implementation "io.pebbletemplates:pebble:3.1.4"
-    implementation 'com.sendgrid:sendgrid-java:4.6.4'
+    implementation "com.sendgrid:sendgrid-java:4.6.4"
 
     // validation
     implementation "org.hibernate.validator:hibernate-validator:6.1.2.Final"
     implementation "org.glassfish:javax.el:3.0.0"
 
     // third-party apis
-    implementation 'se.michaelthelin.spotify:spotify-web-api-java:4.2.1'
-    implementation 'com.squareup.retrofit2:retrofit:2.7.1'
-    implementation 'com.squareup.retrofit2:converter-jackson:2.7.1'
-    implementation 'com.squareup.retrofit2:converter-scalars:2.7.1'
-    implementation 'org.jsoup:jsoup:1.13.1'
+    implementation "se.michaelthelin.spotify:spotify-web-api-java:4.2.1"
+    implementation "com.squareup.retrofit2:retrofit:2.7.1"
+    implementation "com.squareup.retrofit2:converter-jackson:2.7.1"
+    implementation "com.squareup.retrofit2:converter-scalars:2.7.1"
+    implementation "org.jsoup:jsoup:1.13.1"
 
     // used for third party api auth (twitter, apple music)
     implementation "com.auth0:java-jwt:3.10.0"
-    implementation group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.64'
-    implementation group: 'org.bouncycastle', name: 'bcpkix-jdk15on', version: '1.64'
+    implementation group: "org.bouncycastle", name: "bcprov-jdk15on", version: "1.64"
+    implementation group: "org.bouncycastle", name: "bcpkix-jdk15on", version: "1.64"
 
     // logging & monitoring
     implementation "ch.qos.logback:logback-classic:1.2.3"
-    implementation 'io.sentry:sentry:1.7.30'
-    implementation 'io.sentry:sentry-logback:1.7.30'
-    implementation 'com.newrelic.agent.java:newrelic-api:5.14.0'
+    implementation "io.sentry:sentry:1.7.30"
+    implementation "io.sentry:sentry-logback:1.7.30"
+    implementation "com.newrelic.agent.java:newrelic-api:5.14.0"
 
     // database access
     implementation "org.jdbi:jdbi3-core:$jdbi3_version"
@@ -99,12 +99,12 @@ dependencies {
     implementation "io.lettuce:lettuce-core:5.2.2.RELEASE"
 
     testImplementation "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.5.0'
+    testImplementation "org.junit.jupiter:junit-jupiter-api:5.5.0"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.5.0"
     testImplementation "com.konghq:unirest-java:3.4.03"
     testImplementation "org.flywaydb:flyway-core:6.1.4"
     testImplementation "org.mockito:mockito-core:3.2.4"
-    testImplementation group: 'com.nhaarman.mockitokotlin2', name: 'mockito-kotlin', version: '2.2.0'
+    testImplementation group: "com.nhaarman.mockitokotlin2", name: "mockito-kotlin", version: "2.2.0"
 }
 
 test {
