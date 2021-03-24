@@ -1,6 +1,6 @@
 <template>
   <playlist-item-dropdown-menu>
-    <playlist-item-dropdown-menu-item>
+    <playlist-item-dropdown-menu-item v-if="song.spotifyId">
       <a :href="spotifyUrl" target="_blank" rel="noopener noreferrer"
         >Open in Spotify</a
       >
@@ -8,6 +8,11 @@
     <playlist-item-dropdown-menu-item v-if="song.appleMusicUrl">
       <a :href="song.appleMusicUrl" target="_blank" rel="noopener noreferrer"
         >Open in Apple Music</a
+      >
+    </playlist-item-dropdown-menu-item>
+    <playlist-item-dropdown-menu-item v-if="song.bandcampUrl">
+      <a :href="song.bandcampUrl" target="_blank" rel="noopener noreferrer"
+        >Open on Bandcamp</a
       >
     </playlist-item-dropdown-menu-item>
     <playlist-item-dropdown-menu-item>

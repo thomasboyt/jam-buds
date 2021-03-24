@@ -7,222 +7,340 @@ import club.jambuds.model.Album
 import club.jambuds.model.ItemMeta
 import club.jambuds.model.SongWithMeta
 import club.jambuds.model.User
-import club.jambuds.model.cache.SpotifyAlbumSearchCache
-import club.jambuds.model.cache.SpotifyTrackSearchCache
+import club.jambuds.model.cache.AlbumSearchCache
+import club.jambuds.model.ItemSource
+import club.jambuds.model.ItemType
+import club.jambuds.model.cache.SongSearchCache
 import club.jambuds.responses.AlbumSearchResult
 import club.jambuds.responses.SearchDetailsResponse
 import club.jambuds.responses.SongSearchResult
-import com.wrapper.spotify.model_objects.specification.AlbumSimplified
+import com.wrapper.spotify.model_objects.specification.ArtistSimplified as SpotifyArtist
+import com.wrapper.spotify.model_objects.specification.Image as SpotifyImage
 import com.wrapper.spotify.model_objects.specification.Track
-import io.javalin.http.BadRequestResponse
 import io.javalin.http.NotFoundResponse
 
 class SearchService(
     private val spotifyApiService: SpotifyApiService,
     private val appleMusicService: AppleMusicService,
+    private val bandcampService: BandcampService,
     private val songDao: SongDao,
     private val albumDao: AlbumDao,
     private val searchCacheDao: SearchCacheDao,
     private val disableAppleMusic: Boolean = false
 ) {
     fun searchSongs(query: String): List<SongSearchResult> {
+        val bandcampUrlType = bandcampService.bandcampUrlType(query)
+        if (bandcampUrlType == ItemType.SONG) {
+            val item = findAndCacheSong(ItemSource.BANDCAMP, query)
+                ?: return emptyList()
+            return listOf(serializeSongSearchResult(ItemSource.BANDCAMP, item))
+        }
+
         val results = spotifyApiService.searchTracks(query)
         val tracks = dedupeListByIsrc(results)
 
-        tracks.forEach { track ->
-            createSearchCacheFromTrack(track)
+        val cacheEntries = tracks.map { track ->
+            createSearchCacheFromSpotifyTrack(track)
         }
 
-        return tracks.map { serializeSongSearchResult(it) }
+        return cacheEntries.map { serializeSongSearchResult(ItemSource.SPOTIFY, it) }
     }
 
     fun searchAlbums(query: String): List<AlbumSearchResult> {
-        val results = spotifyApiService.searchAlbums(query)
-        results.forEach { album ->
-            createSearchCacheFromAlbum(album)
+        val bandcampUrlType = bandcampService.bandcampUrlType(query)
+        if (bandcampUrlType == ItemType.ALBUM) {
+            val item = findAndCacheAlbum(ItemSource.BANDCAMP, query)
+                ?: return emptyList()
+            return listOf(serializeAlbumSearchResult(ItemSource.BANDCAMP, item))
         }
-        return results.map { serializeAlbumSearchResult(it) }
+
+        val results = spotifyApiService.searchAlbums(query)
+        val cacheEntries = results.map { album ->
+            createSearchCacheFromSpotifyAlbum(album.name, album.artists, album.images, album.id)
+        }
+        return cacheEntries.map { serializeAlbumSearchResult(ItemSource.SPOTIFY, it) }
     }
 
-    fun getSongSearchDetails(spotifyId: String): SearchDetailsResponse {
-        val cacheEntry = getOrHydrateSongCache(spotifyId)
-            ?: throw NotFoundResponse("Could not find song with Spotify ID $spotifyId")
+    fun getSongSearchDetails(source: ItemSource, key: String): SearchDetailsResponse {
+        val cacheEntry = getOrHydrateSongCache(source, key)
+            ?: throw NotFoundResponse("Could not find song with source $source and key $key")
 
         return SearchDetailsResponse(
-            spotifyId = spotifyId,
+            spotifyId = cacheEntry.spotifyId,
             appleMusicId = cacheEntry.appleMusicId,
-            appleMusicUrl = cacheEntry.appleMusicUrl
+            appleMusicUrl = cacheEntry.appleMusicUrl,
+            bandcampId = cacheEntry.bandcampId,
+            bandcampUrl = cacheEntry.bandcampUrl
         )
     }
 
-    fun getAlbumSearchDetails(spotifyId: String): SearchDetailsResponse {
-        val cacheEntry = getOrHydrateAlbumCache(spotifyId)
-            ?: throw NotFoundResponse("Could not find album with Spotify ID $spotifyId")
+    fun getAlbumSearchDetails(source: ItemSource, key: String): SearchDetailsResponse {
+        val cacheEntry = getOrHydrateAlbumCache(source, key)
+            ?: throw NotFoundResponse("Could not find album with source $source and key $key")
 
         return SearchDetailsResponse(
-            spotifyId = spotifyId,
+            spotifyId = cacheEntry.spotifyId,
             appleMusicId = cacheEntry.appleMusicId,
-            appleMusicUrl = cacheEntry.appleMusicUrl
+            appleMusicUrl = cacheEntry.appleMusicUrl,
+            bandcampId = cacheEntry.bandcampUrl,
+            bandcampUrl = cacheEntry.bandcampUrl
         )
     }
 
     // TODO: possibly move this to a new service
-    fun getOrCreateSong(spotifyId: String, currentUser: User): SongWithMeta {
-        val existingSong = songDao.getSongBySpotifyId(spotifyId, currentUser.id)
+    fun getOrCreateSong(source: ItemSource, key: String, currentUser: User): SongWithMeta {
+        val existingSong = songDao.getSongBySource(source, key, currentUser.id)
 
         if (existingSong != null) {
             return existingSong
         }
 
-        val cacheEntry = getOrHydrateSongCache(spotifyId)
-            ?: throw BadRequestResponse("Could not find song with Spotify ID $spotifyId")
+        val cacheEntry = getOrHydrateSongCache(source, key)
+            ?: throw NotFoundResponse("Could not find song with source $source and key $key")
 
-        // TODO: theoretically I think delegation could help avoid this but I don't know how
-        //       it works :(
-        val s = songDao.createSongFromCacheEntry(cacheEntry)
-        return SongWithMeta(
-            s.id, s.createdAt, s.title, s.artists, s.album, s.albumArt,
-            s.spotifyId, s.isrcId, s.appleMusicId, s.appleMusicUrl,
-            ItemMeta(likeCount = 0, isLiked = false)
-        )
+        val song = songDao.createSongFromCacheEntry(cacheEntry)
+        return SongWithMeta(song, ItemMeta(likeCount = 0, isLiked = false))
     }
 
-    fun getOrCreateAlbum(spotifyId: String, currentUser: User): Album {
-        val existingAlbum = albumDao.getAlbumBySpotifyId(spotifyId, currentUserId = currentUser.id)
+    fun getOrCreateAlbum(source: ItemSource, key: String, currentUser: User): Album {
+        val existingAlbum = albumDao.getAlbumBySource(source, key, currentUserId = currentUser.id)
 
         if (existingAlbum != null) {
             return existingAlbum
         }
 
-        val cacheEntry = getOrHydrateAlbumCache(spotifyId)
-            ?: throw BadRequestResponse("Could not find album with Spotify ID $spotifyId")
+        val cacheEntry = getOrHydrateAlbumCache(source, key)
+            ?: throw NotFoundResponse("Could not find album with source $source and key $key")
 
         return albumDao.createAlbumFromCacheEntry(cacheEntry)
     }
 
-    private fun createSearchCacheFromTrack(track: Track): SpotifyTrackSearchCache {
+    // TODO: Everything here could be pulled into a utility class, probably?
+
+    private fun createSearchCacheFromSpotifyTrack(track: Track): SongSearchCache {
         val isrc = track.externalIds.externalIds["isrc"]
-        val cacheEntry = SpotifyTrackSearchCache(
-            spotify = track,
+        val cacheEntry = SongSearchCache(
+            title = track.name,
+            album = track.album.name,
+            artists = track.artists.map { it.name },
+            albumArt = track.album.images[0].url,
             isrc = isrc,
-            didHydrateExternalIds = false,
+            searchedSpotify = true,
+            spotifyId = track.id,
+            searchedAppleMusic = false,
             appleMusicId = null,
-            appleMusicUrl = null
+            appleMusicUrl = null,
+            searchedBandcamp = false,
+            bandcampId = null,
+            bandcampUrl = null,
+            bandcampStreamingAvailable = null
         )
-        searchCacheDao.setSpotifyTrackSearchCache(track.id, cacheEntry)
+        searchCacheDao.setTrackSearchCache(ItemSource.SPOTIFY, track.id, cacheEntry)
         return cacheEntry
     }
 
-    private fun createSearchCacheFromAlbum(album: AlbumSimplified): SpotifyAlbumSearchCache {
-        val cacheEntry = SpotifyAlbumSearchCache(
-            spotify = album,
-            didHydrateExternalIds = false,
+    private fun createSearchCacheFromBandcampSong(song: BandcampSong): SongSearchCache {
+        val cacheEntry = SongSearchCache(
+            title = song.title,
+            album = song.album,
+            artists = listOf(song.artist),
+            albumArt = song.albumArt,
+            isrc = song.isrc,
+            searchedSpotify = false,
+            spotifyId = null,
+            searchedAppleMusic = false,
             appleMusicId = null,
-            appleMusicUrl = null
+            appleMusicUrl = null,
+            searchedBandcamp = true,
+            bandcampId = song.bandcampId,
+            bandcampUrl = song.bandcampUrl,
+            bandcampStreamingAvailable = song.bandcampStreamingAvailable
         )
-        searchCacheDao.setSpotifyAlbumSearchCache(album.id, cacheEntry)
+        searchCacheDao.setTrackSearchCache(ItemSource.BANDCAMP, song.bandcampUrl, cacheEntry)
         return cacheEntry
     }
 
-    private fun updateTrackSearchCacheWithAppleId(
-        spotifyId: String,
-        appleMusicId: String?,
-        appleMusicUrl: String?
-    ): SpotifyTrackSearchCache {
-        val cacheEntry = searchCacheDao.getSpotifyTrackSearchCache(spotifyId)
-
-        val updated = cacheEntry!!.copy(
-            didHydrateExternalIds = true,
-            appleMusicId = appleMusicId,
-            appleMusicUrl = appleMusicUrl
+    private fun createSearchCacheFromSpotifyAlbum(
+        title: String,
+        artists: Array<SpotifyArtist>,
+        images: Array<SpotifyImage>,
+        id: String
+    ): AlbumSearchCache {
+        val cacheEntry = AlbumSearchCache(
+            title = title,
+            artists = artists.map { it.name },
+            albumArt = images[0].url,
+            searchedSpotify = true,
+            spotifyId = id,
+            searchedAppleMusic = false,
+            appleMusicId = null,
+            appleMusicUrl = null,
+            searchedBandcamp = false,
+            bandcampUrl = null
         )
-
-        searchCacheDao.setSpotifyTrackSearchCache(spotifyId, updated)
-
-        return updated
+        searchCacheDao.setAlbumSearchCache(ItemSource.SPOTIFY, id, cacheEntry)
+        return cacheEntry
     }
 
-    private fun updateAlbumSearchCacheWithAppleId(
-        spotifyId: String,
-        appleMusicId: String?,
-        appleMusicUrl: String?
-    ): SpotifyAlbumSearchCache {
-        val cacheEntry = searchCacheDao.getSpotifyAlbumSearchCache(spotifyId)
-
-        val updated = cacheEntry!!.copy(
-            didHydrateExternalIds = true,
-            appleMusicId = appleMusicId,
-            appleMusicUrl = appleMusicUrl
+    private fun createSearchCacheFromBandcampAlbum(album: BandcampAlbum): AlbumSearchCache {
+        val cacheEntry = AlbumSearchCache(
+            title = album.title,
+            artists = listOf(album.artist),
+            albumArt = album.albumArt,
+            searchedSpotify = false,
+            spotifyId = null,
+            searchedAppleMusic = false,
+            appleMusicId = null,
+            appleMusicUrl = null,
+            searchedBandcamp = true,
+            bandcampUrl = album.bandcampUrl
         )
-
-        searchCacheDao.setSpotifyAlbumSearchCache(spotifyId, updated)
-
-        return updated
+        searchCacheDao.setAlbumSearchCache(ItemSource.BANDCAMP, album.bandcampUrl, cacheEntry)
+        return cacheEntry
     }
 
-    private fun getOrHydrateSongCache(spotifyId: String): SpotifyTrackSearchCache? {
-        // TODO: if song is already in database, use that
-        var cacheEntry = searchCacheDao.getSpotifyTrackSearchCache(spotifyId)
+    private fun findAndCacheSong(source: ItemSource, key: String): SongSearchCache? {
+        return when (source) {
+            ItemSource.SPOTIFY -> {
+                val track = spotifyApiService.getTrackById(key)
+                    ?: return null
+                createSearchCacheFromSpotifyTrack(track)
+            }
+            ItemSource.BANDCAMP -> {
+                val song = bandcampService.getSongByUrl(key)
+                    ?: return null
+                createSearchCacheFromBandcampSong(song)
+            }
+        }
+    }
 
-        if (cacheEntry == null) {
-            val track = spotifyApiService.getTrackById(spotifyId)
-                ?: return null
-            cacheEntry = createSearchCacheFromTrack(track)
+    private fun findAndCacheAlbum(source: ItemSource, key: String): AlbumSearchCache? {
+        return when (source) {
+            ItemSource.SPOTIFY -> {
+                val album = spotifyApiService.getAlbumById(key)
+                    ?: return null
+                createSearchCacheFromSpotifyAlbum(album.name, album.artists, album.images, album.id)
+            }
+            ItemSource.BANDCAMP -> {
+                val album = bandcampService.getAlbumByUrl(key)
+                    ?: return null
+                createSearchCacheFromBandcampAlbum(album)
+            }
+        }
+    }
+
+    private fun hydrateSpotifySong(cacheEntry: SongSearchCache): SongSearchCache {
+        val isrc = cacheEntry.isrc
+
+        if (isrc != null) {
+            val song = spotifyApiService.searchTracks("isrc:$isrc").getOrNull(0)
+            if (song != null) {
+                return cacheEntry.copy(
+                    searchedSpotify = true,
+                    spotifyId = song.id
+                )
+            }
         }
 
-        if (cacheEntry.didHydrateExternalIds) {
-            return cacheEntry
+        // TODO: find from other criteria
+
+        return cacheEntry.copy(searchedSpotify = true)
+    }
+
+    private fun hydrateAppleMusicSong(cacheEntry: SongSearchCache): SongSearchCache {
+        if (disableAppleMusic) {
+            return cacheEntry.copy(searchedAppleMusic = true)
         }
 
         val isrc = cacheEntry.isrc
-
-        val appleMusicDetails = if (isrc == null || disableAppleMusic) {
-            null
-        } else {
-            appleMusicService.getSongDetailsByIsrc(isrc)
+        if (isrc != null) {
+            val song = appleMusicService.getSongDetailsByIsrc(isrc)
+            if (song != null) {
+                return cacheEntry.copy(
+                    searchedAppleMusic = true,
+                    appleMusicId = song.id,
+                    appleMusicUrl = song.attributes.url
+                )
+            }
         }
 
-        return updateTrackSearchCacheWithAppleId(
-            spotifyId,
-            appleMusicDetails?.id,
-            appleMusicDetails?.attributes?.url
+        // TODO: find from other criteria
+
+        return cacheEntry.copy(searchedAppleMusic = true)
+    }
+
+    private fun hydrateSpotifyAlbum(cacheEntry: AlbumSearchCache): AlbumSearchCache {
+        val spotifyDetails = spotifyApiService.getAlbumByExistingDetails(cacheEntry)
+            ?: return cacheEntry.copy(searchedSpotify = true)
+
+        // spotify is "most accurate" source of truth for details rn
+        // this will matter when we start doing e.g. splitting bandcamp artists
+        return cacheEntry.copy(
+            searchedSpotify = true,
+            title = spotifyDetails.name,
+            artists = spotifyDetails.artists.map { it.name },
+            albumArt = spotifyDetails.images[0].url,
+            spotifyId = spotifyDetails.id
         )
     }
 
-    private fun getOrHydrateAlbumCache(spotifyId: String): SpotifyAlbumSearchCache? {
-        var cacheEntry = searchCacheDao.getSpotifyAlbumSearchCache(spotifyId)
+    private fun hydrateAppleMusicAlbum(cacheEntry: AlbumSearchCache): AlbumSearchCache {
+        if (disableAppleMusic) {
+            return cacheEntry.copy(searchedAppleMusic = true)
+        }
+
+        val appleMusicDetails = appleMusicService.getAlbumByExistingDetails(cacheEntry)
+            ?: return cacheEntry.copy(searchedAppleMusic = true)
+
+        return cacheEntry.copy(
+            searchedAppleMusic = true,
+            appleMusicId = appleMusicDetails.id,
+            appleMusicUrl = appleMusicDetails.attributes.url
+        )
+    }
+
+    private fun getOrHydrateSongCache(source: ItemSource, key: String): SongSearchCache? {
+        // TODO: if song is already in database, use that
+        var cacheEntry = searchCacheDao.getTrackSearchCache(source, key)
 
         if (cacheEntry == null) {
-            val full = spotifyApiService.getAlbumById(spotifyId)
+            // cache entry disappeared, go find it!
+            cacheEntry = findAndCacheSong(source, key)
                 ?: return null
-            val album = AlbumSimplified.Builder()
-                .setAlbumType(full.albumType)
-                .setAvailableMarkets(*full.availableMarkets)
-                .setArtists(*full.artists)
-                .setExternalUrls(full.externalUrls)
-                .setHref(full.href)
-                .setId(full.id)
-                .setImages(*full.images)
-                .setName(full.name)
-                .setReleaseDate(full.releaseDate)
-                .setReleaseDatePrecision(full.releaseDatePrecision)
-                .setType(full.type)
-                .setUri(full.uri)
-                .build()
-            cacheEntry = createSearchCacheFromAlbum(album)
         }
 
-        if (disableAppleMusic) {
-            return cacheEntry
+        if (!cacheEntry.searchedSpotify) {
+            cacheEntry = hydrateSpotifySong(cacheEntry)
+        }
+        if (!cacheEntry.searchedAppleMusic) {
+            cacheEntry = hydrateAppleMusicSong(cacheEntry)
         }
 
-        val appleMusicDetails = appleMusicService.getAlbumBySpotifyDetails(cacheEntry.spotify)
+        // TODO: bandcamp cross-search
+        // if (!cacheEntry.searchedBandcamp) {
+        // }
 
-        return updateAlbumSearchCacheWithAppleId(
-            spotifyId,
-            appleMusicDetails?.id,
-            appleMusicDetails?.attributes?.url
-        )
+        searchCacheDao.setTrackSearchCache(source, key, cacheEntry)
+        return cacheEntry
+    }
+
+    private fun getOrHydrateAlbumCache(source: ItemSource, key: String): AlbumSearchCache? {
+        var cacheEntry = searchCacheDao.getAlbumSearchCache(source, key)
+
+        if (cacheEntry == null) {
+            cacheEntry = findAndCacheAlbum(source, key)
+                ?: return null
+        }
+
+        if (!cacheEntry.searchedSpotify) {
+            cacheEntry = hydrateSpotifyAlbum(cacheEntry)
+        }
+        if (!cacheEntry.searchedAppleMusic) {
+            cacheEntry = hydrateAppleMusicAlbum(cacheEntry)
+        }
+
+        searchCacheDao.setAlbumSearchCache(source, key, cacheEntry)
+        return cacheEntry
     }
 
     /**
@@ -253,22 +371,30 @@ class SearchService(
         return dedupedResults
     }
 
-    private fun serializeSongSearchResult(track: Track): SongSearchResult {
+    private fun serializeSongSearchResult(source: ItemSource, item: SongSearchCache): SongSearchResult {
         return SongSearchResult(
-            title = track.name,
-            album = track.album.name,
-            artists = track.artists.map { it.name },
-            spotifyId = track.id,
-            albumArt = track.album.images[0].url
+            title = item.title,
+            album = item.album,
+            artists = item.artists,
+            albumArt = item.albumArt,
+            source = source,
+            key = when (source) {
+                ItemSource.BANDCAMP -> item.bandcampUrl!!
+                ItemSource.SPOTIFY -> item.spotifyId!!
+            }
         )
     }
 
-    private fun serializeAlbumSearchResult(album: AlbumSimplified): AlbumSearchResult {
+    private fun serializeAlbumSearchResult(source: ItemSource, item: AlbumSearchCache): AlbumSearchResult {
         return AlbumSearchResult(
-            title = album.name,
-            artists = album.artists.map { it.name },
-            albumArt = album.images[0].url,
-            spotifyId = album.id
+            title = item.title,
+            artists = item.artists,
+            albumArt = item.albumArt,
+            source = source,
+            key = when (source) {
+                ItemSource.BANDCAMP -> item.bandcampUrl!!
+                ItemSource.SPOTIFY -> item.spotifyId!!
+            }
         )
     }
 }

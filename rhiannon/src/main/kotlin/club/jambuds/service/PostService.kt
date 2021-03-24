@@ -5,6 +5,7 @@ import club.jambuds.model.Album
 import club.jambuds.model.ItemType
 import club.jambuds.model.SongWithMeta
 import club.jambuds.model.User
+import club.jambuds.model.ItemSource
 import io.javalin.http.BadRequestResponse
 import io.javalin.http.NotFoundResponse
 import io.javalin.http.UnauthorizedResponse
@@ -17,11 +18,12 @@ class PostService(
 ) {
     fun createPostForSong(
         currentUser: User,
-        spotifyId: String,
+        source: ItemSource,
+        key: String,
         noteText: String?,
         postTweet: Boolean
     ): SongWithMeta {
-        val song = searchService.getOrCreateSong(spotifyId, currentUser)
+        val song = searchService.getOrCreateSong(source, key, currentUser)
 
         val existingPost = postDao.getUserPostForItem(
             userId = currentUser.id,
@@ -49,11 +51,12 @@ class PostService(
 
     fun createPostForAlbum(
         currentUser: User,
-        spotifyId: String,
+        source: ItemSource,
+        key: String,
         noteText: String?,
         postTweet: Boolean
     ): Album {
-        val album = searchService.getOrCreateAlbum(spotifyId, currentUser)
+        val album = searchService.getOrCreateAlbum(source, key, currentUser)
         val existingPost = postDao.getUserPostForItem(
             userId = currentUser.id,
             itemType = ItemType.ALBUM,

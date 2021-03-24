@@ -6,13 +6,14 @@
       @mouseleave="isHovering = false"
       @click="handleClick"
       :can-play="canRequestPlay"
+      :is-link="!canRequestPlay"
     >
       <album-art
         :album-art="song.albumArt"
         :can-play="canRequestPlay"
-        :streaming-service="streamingService"
         :is-playing="isPlaying"
         :is-hovering="isHovering"
+        :open-in-service="bestOpenableService"
       />
 
       <playlist-item-label>
@@ -113,20 +114,8 @@ export default {
     ...mapGetters('playback', ['currentSong']),
     ...mapGetters(['playerEnabled']),
 
-    // TODO: once a modal is implemented for apple music song-missing state,
-    // this will just always be true after loading
     canRequestPlay() {
-      // for users with a connected streaming service, the song is clickable
-      // if it can be played on that service
-      if (this.streamingService === 'spotify') {
-        return !!this.song.spotifyId;
-      } else if (this.streamingService === 'appleMusic') {
-        return !!this.song.appleMusicId;
-      }
-
-      // for all other users, the song is always clickable, so it can trigger
-      // the connect-streaming banner
-      return true;
+      return this.streamingService && this.playerEnabled && this.canPlay;
     },
 
     isPlaying() {
@@ -142,6 +131,21 @@ export default {
       );
       return artistsToShow.join(', ');
     },
+
+    bestOpenableService() {
+      if (this.streamingService === 'spotify' && this.song.spotifyId) {
+        return 'spotify';
+      } else if (
+        this.streamingService === 'appleMusic' &&
+        this.song.appleMusicId
+      ) {
+        return 'appleMusic';
+      } else if (this.song.bandcampUrl) {
+        return 'bandcamp';
+      } else {
+        return 'youtube';
+      }
+    },
   },
 
   methods: {
@@ -152,24 +156,24 @@ export default {
         return;
       }
 
-      if (this.streamingService) {
-        if (this.playerEnabled) {
-          if (this.canPlay) {
-            this.$emit('requestPlay', this.songId);
-          }
-        } else {
-          this.openInPreferredService();
-        }
+      if (this.streamingService && this.playerEnabled && this.canPlay) {
+        this.$emit('requestPlay', this.songId);
+      } else if (this.streamingService) {
+        // fall back: open in bandcamp or youtube
+        this.openInPreferredService();
       } else {
         this.showConnectStreamingBanner = true;
       }
     },
     openInPreferredService() {
-      if (this.streamingService === 'spotify') {
+      const service = this.bestOpenableService;
+      if (service === 'spotify') {
         window.open(getSpotifySongUrl(this.song.spotifyId));
-      } else if (this.streamingService === 'appleMusic') {
+      } else if (service === 'appleMusic') {
         window.open(this.song.appleMusicUrl);
-      } else if (this.streamingService === 'youtube') {
+      } else if (service === 'bandcamp') {
+        window.open(this.song.bandcampUrl);
+      } else {
         window.open(getYoutubeSearchUrl(this.song));
       }
       this.$store.dispatch('markSongPlayed', this.songId);

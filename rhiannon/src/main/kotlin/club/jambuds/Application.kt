@@ -18,8 +18,10 @@ import club.jambuds.dao.UserDao
 import club.jambuds.dao.cache.OAuthStateDao
 import club.jambuds.dao.cache.SearchCacheDao
 import club.jambuds.dao.cache.TwitterFollowingCacheDao
+import club.jambuds.model.ItemSource
 import club.jambuds.service.AppleMusicService
 import club.jambuds.service.AuthService
+import club.jambuds.service.BandcampService
 import club.jambuds.service.ButtondownService
 import club.jambuds.service.EmailService
 import club.jambuds.service.FollowingService
@@ -56,6 +58,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.typesafe.config.Config
+import com.typesafe.config.ConfigException
 import com.typesafe.config.ConfigFactory
 import com.zaxxer.hikari.HikariDataSource
 import io.javalin.Javalin
@@ -71,6 +74,8 @@ import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.info.Info
 import io.swagger.v3.oas.models.security.SecurityRequirement
 import io.swagger.v3.oas.models.security.SecurityScheme
+import java.nio.file.Files
+import java.nio.file.Paths
 import java.text.SimpleDateFormat
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.kotlin.KotlinPlugin
@@ -93,6 +98,7 @@ fun createJdbi(databaseUrl: String): Jdbi {
 
 private fun configureValidation() {
     JavalinValidation.register(Instant::class.java) { Instant.parse(it) }
+    JavalinValidation.register(ItemSource::class.java) { ItemSource.valueOf(it.toUpperCase()) }
 }
 
 fun getConfig(): Config {
@@ -172,13 +178,21 @@ private fun wire(app: Javalin, config: Config) {
     val appleMusicToken = if (disableAppleMusic) {
         "apple music disabled"
     } else {
+        val key = try {
+            config.getString("musickitPrivateKey")
+        } catch (e: ConfigException.Missing) {
+            val path = config.getString("musickitPrivateKeyPath")
+            String(Files.readAllBytes(Paths.get(path)))
+        }
         AppleMusicService.createAuthToken(
-            privateKeyPath = config.getString("musickitPrivateKeyPath"),
+            key = key,
             keyId = config.getString("musickitKeyId"),
             teamId = config.getString("musickitTeamId")
         )
     }
     val appleMusicService = AppleMusicService(appleMusicToken, disableAppleMusic)
+
+    val bandcampService = BandcampService()
 
     // Twitter
     val disableTwitter = config.getBoolean("disableTwitter")
@@ -225,6 +239,7 @@ private fun wire(app: Javalin, config: Config) {
     val searchService = SearchService(
         spotifyApiService,
         appleMusicService,
+        bandcampService,
         songDao,
         albumDao,
         searchCacheDao,

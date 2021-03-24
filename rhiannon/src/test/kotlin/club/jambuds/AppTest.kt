@@ -17,6 +17,7 @@ import club.jambuds.dao.cache.SearchCacheDao
 import club.jambuds.dao.cache.TwitterFollowingCacheDao
 import club.jambuds.service.AppleMusicService
 import club.jambuds.service.AuthService
+import club.jambuds.service.BandcampService
 import club.jambuds.service.ButtondownService
 import club.jambuds.service.EmailService
 import club.jambuds.service.FollowingService
@@ -79,6 +80,7 @@ open class AppTest {
 
     lateinit var mockSpotifyApiService: SpotifyApiService
     lateinit var mockAppleMusicService: AppleMusicService
+    lateinit var mockBandcampService: BandcampService
     lateinit var mockTwitterService: TwitterService
     lateinit var mockEmailClient: EmailClient
     lateinit var mockButtondownService: ButtondownService
@@ -96,6 +98,7 @@ open class AppTest {
 
         mockSpotifyApiService = mock()
         mockAppleMusicService = mock()
+        mockBandcampService = mock()
         mockTwitterService = mock()
         mockEmailClient = mock()
         mockButtondownService = mock()
@@ -128,6 +131,7 @@ open class AppTest {
         val searchService = SearchService(
             mockSpotifyApiService,
             mockAppleMusicService,
+            mockBandcampService,
             songDao,
             albumDao,
             searchCacheDao

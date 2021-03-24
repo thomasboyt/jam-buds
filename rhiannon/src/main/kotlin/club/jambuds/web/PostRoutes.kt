@@ -1,6 +1,7 @@
 package club.jambuds.web
 
 import club.jambuds.model.Album
+import club.jambuds.model.ItemSource
 import club.jambuds.model.SongWithMeta
 import club.jambuds.service.PostService
 import club.jambuds.service.ReportService
@@ -29,7 +30,8 @@ class PostRoutes(private val postService: PostService, private val reportService
 
     data class PostSongBody(
         val type: PostItemType,
-        val spotifyId: String,
+        val source: ItemSource,
+        val key: String,
         val noteText: String?,
         val postTweet: Boolean
     )
@@ -50,7 +52,8 @@ class PostRoutes(private val postService: PostService, private val reportService
             PostItemType.ALBUM -> {
                 val album = postService.createPostForAlbum(
                     user,
-                    spotifyId = body.spotifyId,
+                    source = body.source,
+                    key = body.key,
                     noteText = body.noteText,
                     postTweet = body.postTweet
                 )
@@ -59,7 +62,8 @@ class PostRoutes(private val postService: PostService, private val reportService
             PostItemType.SONG -> {
                 val song = postService.createPostForSong(
                     user,
-                    spotifyId = body.spotifyId,
+                    source = body.source,
+                    key = body.key,
                     noteText = body.noteText,
                     postTweet = body.postTweet
                 )

@@ -1,6 +1,7 @@
 package club.jambuds.web
 
 import club.jambuds.model.SongWithMeta
+import club.jambuds.model.ItemSource
 import club.jambuds.responses.GetDraftMixtapesResponse
 import club.jambuds.responses.MixtapeWithSongsReponse
 import club.jambuds.responses.RenameMixtapeResponse
@@ -81,7 +82,8 @@ class MixtapeRoutes(private val mixtapeService: MixtapeService) {
     }
 
     data class AddSongBody(
-        val spotifyId: String
+        val source: ItemSource,
+        val key: String
     )
 
     @OpenApi(
@@ -94,12 +96,13 @@ class MixtapeRoutes(private val mixtapeService: MixtapeService) {
     private fun addSongToMixtape(ctx: Context) {
         val currentUser = ctx.requireUser()
         val mixtapeId = ctx.pathParam<Int>("mixtapeId").get()
-        val spotifyId = ctx.validateJsonBody(AddSongBody::class.java).spotifyId
+        val body = ctx.validateJsonBody(AddSongBody::class.java)
 
         val song = mixtapeService.addSongToMixtape(
             mixtapeId = mixtapeId,
             currentUser = currentUser,
-            spotifyId = spotifyId
+            source = body.source,
+            key = body.key
         )
 
         ctx.json(song)

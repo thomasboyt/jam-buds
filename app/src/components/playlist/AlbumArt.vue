@@ -17,11 +17,12 @@ import Icon from '../Icon.vue';
 const albumPlaceholderIcon = require('~/assets/record.svg');
 const playIcon = require('~/assets/play-filled.svg');
 const youtubeIcon = require('~/assets/youtube.svg');
+const bandcampIcon = require('~/assets/bandcamp-circle.svg');
 
 export default {
   components: { Icon },
 
-  props: ['albumArt', 'isPlaying', 'isHovering', 'canPlay', 'streamingService'],
+  props: ['albumArt', 'isPlaying', 'isHovering', 'canPlay', 'openInService'],
 
   data() {
     return {
@@ -31,12 +32,22 @@ export default {
 
   computed: {
     overlayIcon() {
-      if (this.isHovering && this.streamingService === 'youtube') {
-        return youtubeIcon;
-      }
+      // inline playback current or possible for this song with current service
       if (this.isPlaying || (this.isHovering && this.canPlay)) {
         return playIcon;
       }
+
+      if (this.isHovering) {
+        // TODO: maybe add apple/spotify logos here? but they'd never be seen on mobile
+        // anyways so shrug
+        if (this.openInService === 'bandcamp') {
+          return bandcampIcon;
+        }
+        if (this.openInService === 'youtube') {
+          return youtubeIcon;
+        }
+      }
+
       return null;
     },
   },

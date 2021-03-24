@@ -2,6 +2,7 @@ package club.jambuds.helpers
 
 import club.jambuds.model.Post
 import club.jambuds.model.User
+import club.jambuds.model.cache.SongSearchCache
 import club.jambuds.util.generateRandomString
 import com.wrapper.spotify.model_objects.specification.AlbumSimplified
 import com.wrapper.spotify.model_objects.specification.ArtistSimplified
@@ -182,5 +183,41 @@ object TestDataFactories {
                 ExternalId.Builder().setExternalIds(mapOf("isrc" to isrc)).build()
             )
             .build()
+    }
+
+    fun createPartialSongSearchCacheEntry(): SongSearchCache {
+        return SongSearchCache(
+            title = "Live Like We're Dancing",
+            artists = listOf("Mura Masa", "Georgia"),
+            album = "R.Y.C",
+            albumArt = "/some/image.jpg",
+            searchedSpotify = true,
+            spotifyId = "abcdef",
+            isrc = "efghijk",
+            searchedAppleMusic = false,
+            appleMusicUrl = null,
+            appleMusicId = null,
+            searchedBandcamp = false,
+            bandcampId = null,
+            bandcampUrl = null,
+            bandcampStreamingAvailable = null
+        )
+    }
+
+    fun createFullSongSearchCacheEntry(): SongSearchCache {
+        return createPartialSongSearchCacheEntry().copy(
+            searchedAppleMusic = true
+        )
+    }
+
+    fun createBandcampSongSearchCacheEntry(): SongSearchCache {
+        return createPartialSongSearchCacheEntry().copy(
+            spotifyId = null,
+            searchedSpotify = false,
+            searchedBandcamp = true,
+            bandcampId = "abcdef",
+            bandcampUrl = "https://artist.bandcamp.com/track/title",
+            bandcampStreamingAvailable = true
+        )
     }
 }

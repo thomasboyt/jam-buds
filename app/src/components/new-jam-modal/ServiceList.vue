@@ -1,39 +1,55 @@
 <template>
   <div class="service-list">
     <ul>
-      <li>
-        <span v-if="details.spotifyId">✅</span><span v-else>❌</span> spotify
-      </li>
-      <li>
-        <span v-if="details.appleMusicId"
-          >✅
-          <a
-            :href="details.appleMusicUrl"
-            target="_blank"
-            rel="noopener noreferrer"
-            >apple music</a
-          ></span
-        ><span v-else>❌ apple music</span>
-      </li>
-      <li>
-        ✅
-        <a :href="youtubeSearchUrl" target="_blank" rel="noopener noreferrer">
-          youtube
-        </a>
-      </li>
+      <service-list-item
+        data-test="service-spotify"
+        name="spotify"
+        :present="details.spotifyId"
+        :url="spotifyUrl"
+      />
+      <service-list-item
+        data-test="service-apple-music"
+        name="apple music"
+        :present="details.appleMusicId"
+        :url="details.appleMusicUrl"
+      />
+      <service-list-item
+        v-if="details.bandcampUrl"
+        data-test="service-bandcamp"
+        name="bandcamp"
+        :present="details.bandcampUrl"
+        :url="details.bandcampUrl"
+      />
+      <service-list-item
+        v-else
+        name="youtube"
+        :present="true"
+        :url="youtubeSearchUrl"
+      />
     </ul>
   </div>
 </template>
 
 <script>
+import { getSpotifyAlbumUrl, getSpotifySongUrl } from '~/util/getSpotifyUrl';
 import getYoutubeSearchUrl from '../../util/getYoutubeSearchUrl';
+import AlbumArt from '../playlist/AlbumArt.vue';
+import ServiceListItem from './ServiceListItem.vue';
 
 export default {
-  props: ['details', 'song'],
+  components: { AlbumArt, ServiceListItem },
+  props: ['details', 'item', 'type'],
 
   computed: {
     youtubeSearchUrl() {
-      return getYoutubeSearchUrl(this.song);
+      return getYoutubeSearchUrl(this.item);
+    },
+    spotifyUrl() {
+      if (this.type === 'album') {
+        return getSpotifyAlbumUrl(this.details.spotifyId);
+      } else {
+        return getSpotifySongUrl(this.details.spotifyId);
+      }
     },
   },
 };

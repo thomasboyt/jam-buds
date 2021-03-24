@@ -75,6 +75,8 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.7.1'
     implementation 'com.squareup.retrofit2:converter-jackson:2.7.1'
     implementation 'com.squareup.retrofit2:converter-scalars:2.7.1'
+    implementation 'org.jsoup:jsoup:1.13.1'
+
     // used for third party api auth (twitter, apple music)
     implementation "com.auth0:java-jwt:3.10.0"
     implementation group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.64'

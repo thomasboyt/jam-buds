@@ -10,6 +10,11 @@
         >Open in Apple Music</a
       >
     </playlist-item-dropdown-menu-item>
+    <playlist-item-dropdown-menu-item v-if="album.bandcampUrl">
+      <a :href="album.bandcampUrl" target="_blank" rel="noopener noreferrer"
+        >Open on Bandcamp</a
+      >
+    </playlist-item-dropdown-menu-item>
     <playlist-item-dropdown-menu-item v-if="!!ownPostId">
       <button type="button" data-test="delete-post" @click="handleClickDelete">
         Delete

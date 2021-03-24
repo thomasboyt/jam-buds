@@ -15,5 +15,23 @@ data class SongWithMeta(
     val isrcId: String?,
     val appleMusicId: String?,
     val appleMusicUrl: String?,
+    val bandcampId: String?,
+    val bandcampUrl: String?,
     @Nested("meta") val meta: ItemMeta
-)
+) {
+    constructor(s: Song, meta: ItemMeta) : this(
+        s.id,
+        s.createdAt,
+        s.title,
+        s.artists,
+        s.album,
+        s.albumArt,
+        s.spotifyId,
+        s.isrcId,
+        s.appleMusicId,
+        s.appleMusicUrl,
+        s.bandcampId,
+        s.bandcampUrl,
+        meta
+    )
+}

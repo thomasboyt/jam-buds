@@ -26,7 +26,7 @@
             @click="handleSelectYoutube"
             class="link-button"
           >
-            just use youtube search
+            no thanks, i'll use youtube/bandcamp
           </button>
         </p>
       </div>

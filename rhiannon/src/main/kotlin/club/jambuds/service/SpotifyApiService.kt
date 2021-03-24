@@ -1,5 +1,7 @@
 package club.jambuds.service
 
+import club.jambuds.model.cache.AlbumSearchCache
+import club.jambuds.util.FuzzySearchLogic
 import com.wrapper.spotify.SpotifyApi
 import com.wrapper.spotify.exceptions.SpotifyWebApiException
 import com.wrapper.spotify.exceptions.detailed.NotFoundException
@@ -72,5 +74,45 @@ open class SpotifyApiService(clientId: String, clientSecret: String) {
                 throw err
             }
         }
+    }
+
+    open fun getAlbumByExistingDetails(cacheEntry: AlbumSearchCache): AlbumSimplified? {
+        val title = cacheEntry.title
+        val artistsQuery = cacheEntry.artists.joinToString(" ")
+
+        // strict search
+        var results = spotifyApi.searchAlbums("$title $artistsQuery").build().execute().items
+        var result = results.find { item ->
+            val namesEqual = FuzzySearchLogic.albumTitleMatchExact(
+                expected = cacheEntry.title,
+                result = item.name
+            )
+            val artistsEqual = FuzzySearchLogic.artistsMatch(
+                expected = cacheEntry.artists,
+                result = item.artists.map { it.name }
+            )
+            namesEqual && artistsEqual
+        }
+
+        if (result != null) {
+            return result
+        }
+
+        // loose search
+        val cleanedTitle = FuzzySearchLogic.cleanAlbumTitle(cacheEntry.title)
+        results = spotifyApi.searchAlbums("$cleanedTitle $artistsQuery").build().execute().items
+        result = results.find { item ->
+            val namesEqual = FuzzySearchLogic.albumTitleMatchLoose(
+                expected = cleanedTitle,
+                result = item.name
+            )
+            val artistsEqual = FuzzySearchLogic.artistsMatch(
+                expected = cacheEntry.artists,
+                result = item.artists.map { it.name }
+            )
+            namesEqual && artistsEqual
+        }
+
+        return result
     }
 }

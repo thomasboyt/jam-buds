@@ -2,14 +2,13 @@ package club.jambuds.web
 
 import club.jambuds.AppTest
 import club.jambuds.helpers.TestDataFactories
+import club.jambuds.model.ItemSource
 import club.jambuds.model.PostReport
 import club.jambuds.model.SongWithMeta
-import club.jambuds.model.cache.SpotifyTrackSearchCache
 import club.jambuds.responses.UserPlaylistResponse
 import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
 import kong.unirest.Unirest
-import kong.unirest.json.JSONObject
 import org.jdbi.v3.core.kotlin.withHandleUnchecked
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
@@ -19,29 +18,21 @@ class PostRoutesTest : AppTest() {
     fun `POST posts - works`() {
         val jeff = TestDataFactories.createUser(txn, "jeff", true)
         val authToken = TestDataFactories.createAuthToken(txn, jeff.id)
-        val track = TestDataFactories.createSpotifyTrack()
 
-        val cacheEntry = SpotifyTrackSearchCache(
-            spotify = track,
-            isrc = "abcde",
-            didHydrateExternalIds = true,
-            appleMusicUrl = "12345",
-            appleMusicId = "12345"
+        val cacheEntry = TestDataFactories.createFullSongSearchCacheEntry()
+        searchCacheDao.setTrackSearchCache(ItemSource.SPOTIFY, cacheEntry.spotifyId!!, cacheEntry)
+
+        val req = PostRoutes.PostSongBody(
+            type = PostRoutes.PostItemType.SONG,
+            source = ItemSource.SPOTIFY,
+            key = cacheEntry.spotifyId!!,
+            postTweet = false,
+            noteText = "Hello world"
         )
-        searchCacheDao.setSpotifyTrackSearchCache(track.id, cacheEntry)
 
         val resp = Unirest.post("$appUrl/posts")
             .header("X-Auth-Token", authToken)
-            .body(
-                JSONObject(
-                    mapOf(
-                        "type" to "song",
-                        "spotifyId" to track.id,
-                        "noteText" to "Hello world",
-                        "postTweet" to false
-                    )
-                )
-            )
+            .body(objectMapper.writeValueAsString(req))
             .asString()
         assertEquals(200, resp.status)
         val song = objectMapper.readValue(resp.body, SongWithMeta::class.java)
@@ -60,26 +51,27 @@ class PostRoutesTest : AppTest() {
     fun `POST posts - prevents reposting same song`() {
         val jeff = TestDataFactories.createUser(txn, "jeff", true)
         val authToken = TestDataFactories.createAuthToken(txn, jeff.id)
-        val track = TestDataFactories.createSpotifyTrack()
 
-        val cacheEntry = SpotifyTrackSearchCache(
-            spotify = track,
-            isrc = "abcde",
-            didHydrateExternalIds = true,
-            appleMusicUrl = "12345",
-            appleMusicId = "12345"
+        val cacheEntry = TestDataFactories.createFullSongSearchCacheEntry()
+        searchCacheDao.setTrackSearchCache(ItemSource.SPOTIFY, cacheEntry.spotifyId!!, cacheEntry)
+
+        val req = PostRoutes.PostSongBody(
+            type = PostRoutes.PostItemType.SONG,
+            source = ItemSource.SPOTIFY,
+            key = cacheEntry.spotifyId!!,
+            postTweet = false,
+            noteText = null
         )
-        searchCacheDao.setSpotifyTrackSearchCache(track.id, cacheEntry)
 
         val resp = Unirest.post("$appUrl/posts")
             .header("X-Auth-Token", authToken)
-            .body(JSONObject(mapOf("spotifyId" to track.id, "postTweet" to false, "type" to "song")))
+            .body(objectMapper.writeValueAsString(req))
             .asString()
         assertEquals(200, resp.status)
 
         val redoResp = Unirest.post("$appUrl/posts")
             .header("X-Auth-Token", authToken)
-            .body(JSONObject(mapOf("spotifyId" to track.id, "postTweet" to false, "type" to "song")))
+            .body(objectMapper.writeValueAsString(req))
             .asString()
         assertEquals(400, redoResp.status)
     }
@@ -88,29 +80,20 @@ class PostRoutesTest : AppTest() {
     fun `POST posts - sends tweet with post`() {
         val jeff = TestDataFactories.createUser(txn, "jeff", true, hasTwitter = true)
         val authToken = TestDataFactories.createAuthToken(txn, jeff.id)
-        val track = TestDataFactories.createSpotifyTrack()
+        val cacheEntry = TestDataFactories.createFullSongSearchCacheEntry()
+        searchCacheDao.setTrackSearchCache(ItemSource.SPOTIFY, cacheEntry.spotifyId!!, cacheEntry)
 
-        val cacheEntry = SpotifyTrackSearchCache(
-            spotify = track,
-            isrc = "abcde",
-            didHydrateExternalIds = true,
-            appleMusicUrl = "12345",
-            appleMusicId = "12345"
+        val req = PostRoutes.PostSongBody(
+            type = PostRoutes.PostItemType.SONG,
+            source = ItemSource.SPOTIFY,
+            key = cacheEntry.spotifyId!!,
+            postTweet = true,
+            noteText = "Hello world"
         )
-        searchCacheDao.setSpotifyTrackSearchCache(track.id, cacheEntry)
 
         val resp = Unirest.post("$appUrl/posts")
             .header("X-Auth-Token", authToken)
-            .body(
-                JSONObject(
-                    mapOf(
-                        "type" to "song",
-                        "spotifyId" to track.id,
-                        "noteText" to "Hello world",
-                        "postTweet" to true
-                    )
-                )
-            )
+            .body(objectMapper.writeValueAsString(req))
             .asString()
         assertEquals(200, resp.status)
         val song = objectMapper.readValue(resp.body, SongWithMeta::class.java)

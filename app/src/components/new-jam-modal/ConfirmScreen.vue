@@ -5,7 +5,11 @@
     </div>
 
     <template v-if="loadedDetails">
-      <service-list :details="details" :song="selectedItem" />
+      <service-list
+        :details="details"
+        :item="selectedItem"
+        :type="selectedType"
+      />
 
       <div :style="{ margin: '36px 0' }">
         <note-field v-model="noteText" />
@@ -79,8 +83,12 @@ export default {
 
       try {
         resp = await this.$axios({
-          url: `/search-details/${urlPrefix}/${this.selectedItem.spotifyId}`,
+          url: `/search-details/${urlPrefix}`,
           method: 'GET',
+          params: {
+            source: this.selectedItem.source,
+            key: this.selectedItem.key,
+          },
         });
       } catch (err) {
         this.$store.commit('showErrorModal');
@@ -105,6 +113,8 @@ export default {
         type: this.selectedType,
         postTweet: this.twitterPostEnabled,
         noteText: this.noteText === '' ? null : this.noteText,
+        source: this.selectedItem.source,
+        key: this.selectedItem.key,
       };
 
       try {

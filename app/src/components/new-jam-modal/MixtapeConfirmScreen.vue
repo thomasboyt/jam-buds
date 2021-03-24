@@ -6,7 +6,7 @@
 
     <template v-if="loadedDetails">
       <div :style="{ marginBottom: '36px' }">
-        <service-list :details="details" :song="selectedItem" />
+        <service-list :details="details" :item="selectedItem" />
       </div>
 
       <p v-if="error" class="error">
@@ -61,8 +61,12 @@ export default {
 
       try {
         resp = await this.$axios({
-          url: `/search-details/songs/${this.selectedItem.spotifyId}`,
+          url: `/search-details/songs`,
           method: 'GET',
+          params: {
+            source: this.selectedItem.source,
+            key: this.selectedItem.key,
+          },
         });
       } catch (err) {
         this.$store.commit('showErrorModal');
@@ -77,8 +81,8 @@ export default {
       evt.preventDefault();
 
       const params = {
-        source: 'spotify',
-        spotifyId: this.selectedItem.spotifyId,
+        source: this.selectedItem.source,
+        key: this.selectedItem.key,
       };
 
       let resp;
