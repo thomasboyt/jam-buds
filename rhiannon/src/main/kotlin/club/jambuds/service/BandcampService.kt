@@ -34,7 +34,7 @@ open class BandcampService {
 
     private val timeout = 10000
 
-    fun getSongByUrl(url: String): BandcampSong? {
+    open fun getSongByUrl(url: String): BandcampSong? {
         val doc: Document = try {
             Jsoup.connect(url)
                 .timeout(timeout)
@@ -89,7 +89,7 @@ open class BandcampService {
         }
     }
 
-    fun getAlbumByUrl(url: String): BandcampAlbum? {
+    open fun getAlbumByUrl(url: String): BandcampAlbum? {
         val doc: Document = try {
             Jsoup.connect(url)
                 .timeout(timeout)

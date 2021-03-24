@@ -16,7 +16,12 @@ import club.jambuds.responses.AlbumSearchResult
 import club.jambuds.responses.SearchDetailsResponse
 import club.jambuds.responses.SearchResponse
 import club.jambuds.responses.SongSearchResult
+import club.jambuds.service.BandcampAlbum
+import club.jambuds.service.BandcampSong
 import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.never
+import com.nhaarman.mockitokotlin2.times
+import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import com.wrapper.spotify.model_objects.specification.AlbumSimplified
 import com.wrapper.spotify.model_objects.specification.ArtistSimplified
@@ -51,6 +56,14 @@ class SearchRoutesTest : AppTest() {
         val body = objectMapper.readValue(resp.body, SearchResponse::class.java)
 
         assertEquals(expectedResult, body.songs!![0])
+
+        val cache = searchCacheDao.getTrackSearchCache(ItemSource.SPOTIFY,"abcde")
+        assertEquals(track.id, cache!!.spotifyId)
+        assertEquals(true, cache.searchedSpotify)
+        assertEquals("abcde", cache.isrc)
+        assertEquals(false, cache.searchedAppleMusic)
+        assertEquals(null, cache.appleMusicId)
+        assertEquals(null, cache.appleMusicUrl)
     }
 
     @Test
@@ -75,38 +88,6 @@ class SearchRoutesTest : AppTest() {
         val body = objectMapper.readValue(resp.body, SearchResponse::class.java)
 
         assertEquals(expectedResult, body.albums!![0])
-    }
-
-    @Test
-    fun `GET search - stores results in song cache`() {
-        val track = createTrack()
-        whenever(mockSpotifyApiService.searchTracks("Hello")).thenReturn(arrayOf(track))
-
-        val resp = Unirest.get("$appUrl/search")
-            .queryString("query", "Hello")
-            .queryString("type", "song")
-            .asString()
-        assertEquals(200, resp.status)
-
-        val cache = searchCacheDao.getTrackSearchCache(ItemSource.SPOTIFY,"abcde")
-        assertEquals(track.id, cache!!.spotifyId)
-        assertEquals(true, cache.searchedSpotify)
-        assertEquals("abcde", cache.isrc)
-        assertEquals(false, cache.searchedAppleMusic)
-        assertEquals(null, cache.appleMusicId)
-        assertEquals(null, cache.appleMusicUrl)
-    }
-
-    @Test
-    fun `GET search - stores results in album cache`() {
-        val album = createAlbum()
-        whenever(mockSpotifyApiService.searchAlbums("Hello")).thenReturn(arrayOf(album))
-
-        val resp = Unirest.get("$appUrl/search")
-            .queryString("query", "Hello")
-            .queryString("type", "album")
-            .asString()
-        assertEquals(200, resp.status)
 
         val cache = searchCacheDao.getAlbumSearchCache(ItemSource.SPOTIFY, "abcde")
         assertEquals(album.id, cache!!.spotifyId)
@@ -114,6 +95,79 @@ class SearchRoutesTest : AppTest() {
         assertEquals(false, cache.searchedAppleMusic)
         assertEquals(null, cache.appleMusicId)
         assertEquals(null, cache.appleMusicUrl)
+    }
+
+    @Test
+    fun `GET search - works for bandcamp song URLs`() {
+        val url = "https://ladygaga.bandcamp.com/track/replay"
+        val bandcampSong = BandcampSong(
+            title = "Replay",
+            artist = "Lady Gaga",
+            album = "Chromatica",
+            albumArt = "/images/foo.jpg",
+            isrc = "abc",
+            bandcampUrl = url,
+            bandcampId = "abcde",
+            bandcampStreamingAvailable = true
+        )
+        whenever(mockBandcampService.getSongByUrl(url)).thenReturn(bandcampSong)
+
+        val expectedResult = SongSearchResult(
+            source = ItemSource.BANDCAMP,
+            title = "Replay",
+            artists = listOf("Lady Gaga"),
+            albumArt = "/images/foo.jpg",
+            album = "Chromatica",
+            key = url
+        )
+
+        val resp = Unirest.get("$appUrl/search")
+            .queryString("query", url)
+            .queryString("type", "song")
+            .asString()
+
+        val body = objectMapper.readValue(resp.body, SearchResponse::class.java)
+        assertEquals(expectedResult, body.songs!![0])
+
+        val cache = searchCacheDao.getTrackSearchCache(ItemSource.BANDCAMP, url)
+        assertEquals(url, cache!!.bandcampUrl)
+        assertEquals(true, cache.searchedBandcamp)
+        assertEquals(false, cache.searchedSpotify)
+        assertEquals(false, cache.searchedAppleMusic)
+    }
+
+    @Test
+    fun `GET search - works for bandcamp album URLs`() {
+        val url = "https://ladygaga.bandcamp.com/album/chromatica"
+        val album = BandcampAlbum(
+            title = "Chromatica",
+            artist = "Lady Gaga",
+            albumArt = "/images/foo.jpg",
+            bandcampUrl = url
+        )
+        whenever(mockBandcampService.getAlbumByUrl(url)).thenReturn(album)
+
+        val expectedResult = AlbumSearchResult(
+            source = ItemSource.BANDCAMP,
+            title = "Chromatica",
+            artists = listOf("Lady Gaga"),
+            albumArt = "/images/foo.jpg",
+            key = url
+        )
+
+        val resp = Unirest.get("$appUrl/search")
+            .queryString("query", url)
+            .queryString("type", "album")
+            .asString()
+
+        val body = objectMapper.readValue(resp.body, SearchResponse::class.java)
+        assertEquals(expectedResult, body.albums!![0])
+
+        val cache = searchCacheDao.getAlbumSearchCache(ItemSource.BANDCAMP, url)
+        assertEquals(url, cache!!.bandcampUrl)
+        assertEquals(true, cache.searchedBandcamp)
+        assertEquals(false, cache.searchedSpotify)
+        assertEquals(false, cache.searchedAppleMusic)
     }
 
     @Test
@@ -180,6 +234,28 @@ class SearchRoutesTest : AppTest() {
         val body = objectMapper.readValue(resp.body, SearchDetailsResponse::class.java)
         assertEquals(cacheEntry.spotifyId, body.spotifyId)
         assertEquals(cacheEntry.appleMusicId, body.appleMusicId)
+    }
+
+    @Test
+    fun `GET search-details_songs_(spotifyId) - uses the search cache to skip bandcamp lookup`() {
+        val cacheEntry = TestDataFactories.createBandcampSongSearchCacheEntry()
+        searchCacheDao.setTrackSearchCache(ItemSource.BANDCAMP, cacheEntry.bandcampUrl!!, cacheEntry)
+
+        whenever(mockSpotifyApiService.searchTracks(any())).thenReturn(emptyArray())
+        whenever(mockAppleMusicService.getSongDetailsByIsrc(any())).thenReturn(null)
+
+        val resp = Unirest.get("$appUrl/search-details/songs")
+            .queryString("source", ItemSource.BANDCAMP)
+            .queryString("key", cacheEntry.bandcampUrl)
+            .asString()
+        assertEquals(200, resp.status)
+
+        verify(mockSpotifyApiService, times(1)).searchTracks(any())
+        verify(mockAppleMusicService, times(1)).getSongDetailsByIsrc(any())
+        verify(mockBandcampService, never()).getSongByUrl(any())
+
+        val body = objectMapper.readValue(resp.body, SearchDetailsResponse::class.java)
+        assertEquals(cacheEntry.bandcampId, body.bandcampId)
     }
 
     @Test

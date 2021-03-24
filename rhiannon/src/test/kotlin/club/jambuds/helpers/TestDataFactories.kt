@@ -209,4 +209,15 @@ object TestDataFactories {
             searchedAppleMusic = true
         )
     }
+
+    fun createBandcampSongSearchCacheEntry(): SongSearchCache {
+        return createPartialSongSearchCacheEntry().copy(
+            spotifyId = null,
+            searchedSpotify = false,
+            searchedBandcamp = true,
+            bandcampId = "abcdef",
+            bandcampUrl = "https://artist.bandcamp.com/track/title",
+            bandcampStreamingAvailable = true
+        )
+    }
 }
