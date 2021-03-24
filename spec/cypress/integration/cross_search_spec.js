@@ -7,7 +7,7 @@ describe('song cross-search', () => {
     // Twice - TT
     // Direct ISRC match (US5TA1600082)
     // https://open.spotify.com/track/60jFaQV7Z4boGC4ob5B5c6
-    // https://music.apple.com/us/album/tt/1555401119?i=1555401122
+    // https://music.apple.com/us/album/tt/1555396345?i=1555396349
     cy.login('jeff@jambuds.club');
     cy.visit('/?modal=new-jam');
 
@@ -20,7 +20,7 @@ describe('song cross-search', () => {
       .should('exist');
     cy.get('[data-test="service-apple-music"]')
       .get(
-        'a[href="https://music.apple.com/us/album/tt/1555401119?i=1555401122"]'
+        'a[href="https://music.apple.com/us/album/tt/1555396345?i=1555396349"]'
       )
       .should('exist');
   });
