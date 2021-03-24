@@ -23,19 +23,21 @@ repositories {
 dependencies {
     implementation(kotlin("stdlib"))
 
-    implementation("io.javalin:javalin:3.12.0")
-    implementation("io.javalin:javalin-openapi:3.12.0")
+    val javalinVersion = "3.12.0"
+    implementation("io.javalin:javalin:$javalinVersion")
+    implementation("io.javalin:javalin-openapi:$javalinVersion")
     implementation("com.typesafe:config:1.4.0")
-    implementation("com.fasterxml.jackson.core:jackson-databind:2.10.1")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.10.1")
-    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.10.1")
+    val jacksonVersion = "2.12.2"
+    implementation("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
 
     // swagger/openapi
-    implementation("io.swagger.core.v3:swagger-annotations:2.1.6")
-    implementation("io.swagger.core.v3:swagger-core:2.1.6")
-    implementation("io.swagger.core.v3:swagger-models:2.1.6")
+    val swaggerVersion = "2.1.6"
+    implementation("io.swagger.core.v3:swagger-annotations:$swaggerVersion")
+    implementation("io.swagger.core.v3:swagger-core:$swaggerVersion")
+    implementation("io.swagger.core.v3:swagger-models:$swaggerVersion")
     implementation("org.webjars:swagger-ui:3.24.3")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.12.0")
 
     // email stuff
     implementation("io.pebbletemplates:pebble:3.1.4")
@@ -47,20 +49,23 @@ dependencies {
 
     // third-party apis
     implementation("se.michaelthelin.spotify:spotify-web-api-java:4.2.1")
-    implementation("com.squareup.retrofit2:retrofit:2.7.1")
-    implementation("com.squareup.retrofit2:converter-jackson:2.7.1")
-    implementation("com.squareup.retrofit2:converter-scalars:2.7.1")
+    val retrofitVersion = "2.7.1"
+    implementation("com.squareup.retrofit2:retrofit:$retrofitVersion")
+    implementation("com.squareup.retrofit2:converter-jackson:$retrofitVersion")
+    implementation("com.squareup.retrofit2:converter-scalars:$retrofitVersion")
     implementation("org.jsoup:jsoup:1.13.1")
 
     // used for third party api auth (twitter, apple music)
     implementation("com.auth0:java-jwt:3.10.0")
-    implementation("org.bouncycastle:bcprov-jdk15on:1.64")
-    implementation("org.bouncycastle:bcpkix-jdk15on:1.64")
+    val bouncycastleVersion = "1.68"
+    implementation("org.bouncycastle:bcprov-jdk15on:$bouncycastleVersion")
+    implementation("org.bouncycastle:bcpkix-jdk15on:$bouncycastleVersion")
 
     // logging & monitoring
     implementation("ch.qos.logback:logback-classic:1.2.3")
-    implementation("io.sentry:sentry:1.7.30")
-    implementation("io.sentry:sentry-logback:1.7.30")
+    val sentryVersion = "4.3.0"
+    implementation("io.sentry:sentry:$sentryVersion")
+    implementation("io.sentry:sentry-logback:$sentryVersion")
     implementation("com.newrelic.agent.java:newrelic-api:5.14.0")
 
     // database access
@@ -84,7 +89,7 @@ dependencies {
 }
 
 application {
-    mainClassName = "club.jambuds.ApplicationKt"
+    mainClass.set("club.jambuds.ApplicationKt")
 }
 
 java {

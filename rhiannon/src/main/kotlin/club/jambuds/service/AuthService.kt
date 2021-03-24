@@ -179,7 +179,7 @@ class AuthService(
                 buttondownService.subscribe(email)
             } catch (err: Exception) {
                 logger.error(err.message)
-                Sentry.capture(err)
+                Sentry.captureException(err)
             }
         }
 
