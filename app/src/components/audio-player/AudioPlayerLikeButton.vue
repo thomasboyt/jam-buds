@@ -42,12 +42,15 @@ export default {
     async handleToggleLike(e) {
       e.preventDefault();
 
-      const action = this.song.meta.isLiked ? 'unlikeSong' : 'likeSong';
+      const action = this.song.meta.isLiked ? 'unlikeItem' : 'likeItem';
 
       this.requestInFlight = true;
 
       try {
-        await this.$store.dispatch(`${action}`, { id: this.song.id });
+        await this.$store.dispatch(action, {
+          itemId: this.song.id,
+          itemType: 'song',
+        });
       } catch (err) {
         this.$store.commit('showErrorModal');
         throw err;
