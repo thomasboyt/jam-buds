@@ -25,12 +25,16 @@ interface SongDao {
     fun getSongBySpotifyId(spotifyId: String, currentUserId: Int): SongWithMeta?
 
     @SqlQuery
+    fun getSongByAppleMusicId(appleMusicId: String, currentUserId: Int): SongWithMeta?
+
+    @SqlQuery
     fun getSongByBandcampUrl(bandcampUrl: String, currentUserId: Int): SongWithMeta?
 
     fun getSongBySource(source: ItemSource, key: String, currentUserId: Int): SongWithMeta? {
         return when (source) {
             ItemSource.SPOTIFY -> getSongBySpotifyId(key, currentUserId)
             ItemSource.BANDCAMP -> getSongByBandcampUrl(key, currentUserId)
+            ItemSource.APPLEMUSIC -> getSongByAppleMusicId(key, currentUserId)
         }
     }
 

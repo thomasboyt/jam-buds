@@ -53,6 +53,7 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:$retrofitVersion")
     implementation("com.squareup.retrofit2:converter-jackson:$retrofitVersion")
     implementation("com.squareup.retrofit2:converter-scalars:$retrofitVersion")
+    implementation("com.squareup.okhttp3:logging-interceptor:3.8.0")
     implementation("org.jsoup:jsoup:1.13.1")
 
     // used for third party api auth (twitter, apple music)

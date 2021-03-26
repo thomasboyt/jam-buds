@@ -5,11 +5,27 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import retrofit2.Call
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface AppleMusicClient {
+    @GET("v1/catalog/us/songs/{id}")
+    fun getSongById(
+        @Path("id") id: String,
+        @Query("include[songs]") includeSongs: String = "artists"
+    ): Call<AppleMusicGetSongsResponse>
+
+    @GET("v1/catalog/us/albums/{id}")
+    fun getAlbumById(
+        @Path("id") id: String,
+        @Query("include[albums]") includeAlbums: String = "artists"
+    ): Call<AppleMusicGetAlbumsResponse>
+
     @GET("v1/catalog/us/songs")
-    fun getSongsByISRC(@Query("filter[isrc]") isrc: String): Call<AppleMusicGetSongsByISRCResponse>
+    fun getSongsByISRC(
+        @Query("filter[isrc]") isrc: String,
+        @Query("include[songs]") includeSongs: String = "artists"
+    ): Call<AppleMusicGetSongsResponse>
 
     @GET("v1/catalog/us/search")
     fun search(
@@ -29,21 +45,41 @@ data class AppleMusicArtist(
     val attributes: AppleMusicArtistAttributes
 )
 
+data class AppleMusicArtwork(
+    val url: String
+) {
+    fun getUrl(width: Int = 640, height: Int = 640): String {
+         return url
+            .replace("{w}", width.toString())
+            .replace("{h}", height.toString())
+    }
+}
+
 data class AppleMusicSongAttributes(
-    val url: String,
-    val playParams: Map<String, Any>?
+    val albumName: String,
+    val artwork: AppleMusicArtwork,
+    val isrc: String,
+    val name: String,
+    val playParams: Map<String, Any>?,
+    val url: String
+)
+
+data class AppleMusicSongRelationships(
+    val artists: AppleMusicArtistRelationship
 )
 
 data class AppleMusicSearchSongItem(
     val id: String,
-    val attributes: AppleMusicSongAttributes
+    val attributes: AppleMusicSongAttributes,
+    val relationships: AppleMusicSongRelationships
 )
 
 data class AppleMusicAlbumAttributes(
-    val url: String,
-    val playParams: Map<String, Any>?,
+    val artistName: String,
+    val artwork: AppleMusicArtwork,
     val name: String,
-    val artistName: String
+    val playParams: Map<String, Any>?,
+    val url: String
 )
 
 // https://developer.apple.com/documentation/applemusicapi/album/relationships
@@ -61,8 +97,12 @@ data class AppleMusicSearchAlbumItem(
     val relationships: AppleMusicAlbumRelationships
 )
 
-data class AppleMusicGetSongsByISRCResponse(
+data class AppleMusicGetSongsResponse(
     val data: List<AppleMusicSearchSongItem>
+)
+
+data class AppleMusicGetAlbumsResponse(
+    val data: List<AppleMusicSearchAlbumItem>
 )
 
 data class AppleMusicSearchResponse(

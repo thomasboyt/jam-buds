@@ -10,25 +10,34 @@ import club.jambuds.util.FuzzySearchLogic
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo
 import org.bouncycastle.openssl.PEMParser
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter
 import retrofit2.Retrofit
+import retrofit2.converter.jackson.JacksonConverterFactory
 import java.io.StringReader
 import java.security.interfaces.ECPrivateKey
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 import java.util.Date
-import retrofit2.converter.jackson.JacksonConverterFactory
 
 open class AppleMusicService(musickitToken: String, private val disabled: Boolean = false) {
-    private val okHttpClient = OkHttpClient.Builder().addInterceptor { chain ->
-        val req = chain.request()
-        val newReq = req.newBuilder()
-            .addHeader("Authorization", "Bearer $musickitToken")
-            .build()
-        chain.proceed(newReq)
-    }.build()
+    private val okHttpClient: OkHttpClient
+
+    init {
+        // change for debugging
+        val logging = HttpLoggingInterceptor()
+        logging.level = HttpLoggingInterceptor.Level.NONE
+
+        okHttpClient = OkHttpClient.Builder().addInterceptor { chain ->
+            val req = chain.request()
+            val newReq = req.newBuilder()
+                .addHeader("Authorization", "Bearer $musickitToken")
+                .build()
+            chain.proceed(newReq)
+        }.addInterceptor(logging).build()
+    }
 
     private val retrofit = Retrofit.Builder()
         .baseUrl("https://api.music.apple.com")
@@ -37,6 +46,29 @@ open class AppleMusicService(musickitToken: String, private val disabled: Boolea
         .build()
 
     private val client = retrofit.create(AppleMusicClient::class.java)
+
+    open fun getSongDetailsById(id: String): AppleMusicSearchSongItem? {
+        val resp = client.getSongById(id, includeSongs = "artists").execute()
+
+        if (!resp.isSuccessful) {
+            println(resp.errorBody()!!.string())
+            throw Error("Exception fetching Apple Music details: ${resp.code()} ${resp.message()}")
+        }
+
+        val body = resp.body() ?: throw Error("Empty body received")
+
+        if (body.data.isEmpty()) {
+            return null
+        }
+
+        if (body.data[0].attributes.playParams == null) {
+            // when play params is null, that means the song can be played in iTunes, but not
+            // apple music
+            return null
+        }
+
+        return body.data[0]
+    }
 
     open fun getSongDetailsByIsrc(isrc: String): AppleMusicSearchSongItem? {
         if (disabled) {
@@ -61,6 +93,23 @@ open class AppleMusicService(musickitToken: String, private val disabled: Boolea
         if (body.data[0].attributes.playParams == null) {
             // when play params is null, that means the song can be played in iTunes, but not
             // apple music
+            return null
+        }
+
+        return body.data[0]
+    }
+
+    open fun getAlbumById(id: String): AppleMusicSearchAlbumItem? {
+        val resp = client.getAlbumById(id, includeAlbums = "artists").execute()
+
+        if (!resp.isSuccessful) {
+            println(resp.errorBody()!!.string())
+            throw Error("Exception fetching Apple Music details: ${resp.code()} ${resp.message()}")
+        }
+
+        val body = resp.body() ?: throw Error("Empty body received")
+
+        if (body.data.isEmpty()) {
             return null
         }
 
