@@ -12,7 +12,8 @@
     "start": "nuxt start",
     "generate": "nuxt generate",
     "lint": "eslint --ext .js,.vue --ignore-path ../.gitignore .",
-    "e2e": "NODE_ENV=test TEST_ENV=feature nuxt"
+    "e2e": "NODE_ENV=test TEST_ENV=feature nuxt",
+    "gen-schema": "openapi-typescript http://localhost:7000/swagger-docs --output src/api/_schema.ts"
   },
   "author": "Thomas Boyt <me@thomasboyt.com>",
   "license": "Parity-6.0.0",
@@ -23,7 +24,8 @@
     "dotenv": "^8.2.0",
     "eslint": "^7.22.0",
     "eslint-config-prettier": "^8.1.0",
-    "eslint-plugin-vue": "^7.8.0"
+    "eslint-plugin-vue": "^7.8.0",
+    "openapi-typescript": "^3.2.0"
   },
   "dependencies": {
     "@nuxtjs/axios": "^5.13.1",
