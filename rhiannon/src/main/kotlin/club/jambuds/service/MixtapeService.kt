@@ -90,6 +90,7 @@ class MixtapeService(
             when (source) {
                 ItemSource.BANDCAMP -> it.bandcampUrl == key
                 ItemSource.SPOTIFY -> it.spotifyId == key
+                ItemSource.APPLEMUSIC -> it.appleMusicId == key
             }
         }
         if (songExists) {

@@ -43,6 +43,15 @@ interface AlbumDao {
         """
         SELECT *, $LIKES_SUBQUERY
         FROM albums
+        WHERE albums.apple_music_id = :appleMusicId
+        """
+    )
+    fun getAlbumByAppleMusicId(appleMusicId: String, currentUserId: Int? = -1): Album?
+
+    @SqlQuery(
+        """
+        SELECT *, $LIKES_SUBQUERY
+        FROM albums
         WHERE albums.bandcamp_url = :bandcampUrl
         """
     )
@@ -52,6 +61,7 @@ interface AlbumDao {
         return when (source) {
             ItemSource.SPOTIFY -> getAlbumBySpotifyId(key, currentUserId)
             ItemSource.BANDCAMP -> getAlbumByBandcampUrl(key, currentUserId)
+            ItemSource.APPLEMUSIC -> getAlbumByAppleMusicId(key, currentUserId)
         }
     }
 

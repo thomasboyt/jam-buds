@@ -16,6 +16,8 @@ import java.util.concurrent.TimeUnit
 
 // left open for mocking
 open class SpotifyApiService(clientId: String, clientSecret: String) {
+    val itemRegex = Regex("""https?://open\.spotify\.com/(album|track)/([A-z0-9-]+)""")
+
     private val logger = LoggerFactory.getLogger(SpotifyApiService::class.java.name)
 
     // TODO: should this use a pool at all?

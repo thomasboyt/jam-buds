@@ -20,6 +20,7 @@
       />
       <div v-else class="search-placeholder">
         <p>Search for {{ jamTypeLabel }} or artist you like!</p>
+        <p>(or, you can paste a Spotify, Apple Music, or Bandcamp link)</p>
       </div>
     </template>
   </div>
@@ -103,8 +104,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '~/assets/styles/mixins.scss';
+
 .search-placeholder {
-  padding: 50px;
+  padding: $spacing-3xl $spacing-md;
   text-align: center;
 }
 </style>
