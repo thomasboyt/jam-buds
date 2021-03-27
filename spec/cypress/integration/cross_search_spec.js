@@ -2,60 +2,85 @@
 // don't have anything set up for integration tests that aren't UI tests. these
 // are fast enough for now.
 
+// Bartees Strange - Boomer
+// Direct ISRC match (QMCE71302891)
+const boomer = {
+  query: 'Bartees Strange Boomer',
+  title: 'Boomer',
+  spotify: 'https://open.spotify.com/track/3hjaAXpqBfhoQa4I2MYRiv',
+  apple: 'https://music.apple.com/us/album/boomer/1522995665?i=1522995860',
+  // bandcamp: 'https://barteesstrange.bandcamp.com/track/boomer'
+};
+
+// Mr Twin Sister - In the House of Yes
+// Direct ISRC match (USA2B1401756)
+const inTheHouseOfYes = {
+  spotify: 'https://open.spotify.com/track/7eeNU3Zm56wzyl7MQDvEAH',
+  apple:
+    'https://music.apple.com/us/album/in-the-house-of-yes/905957630?i=905957637',
+  bandcamp: 'https://mrtwinsister.bandcamp.com/track/in-the-house-of-yes',
+};
+
+function expectResult(song) {
+  cy.get('[data-test="service-spotify"]')
+    .get(`a[href="${song.spotify}"]`)
+    .should('exist');
+  cy.get('[data-test="service-apple-music"]')
+    .get(`a[href="${song.apple}"]`)
+    .should('exist');
+  if (song.bandcamp) {
+    cy.get('[data-test="service-bandcamp"]')
+      .get(`a[href="${song.bandcamp}"]`)
+      .should('exist');
+  }
+}
+
 describe('song cross-search', () => {
   it('cross-references apple and spotify', () => {
-    // Twice - TT
-    // Direct ISRC match (US5TA1600082)
-    // https://open.spotify.com/track/60jFaQV7Z4boGC4ob5B5c6
-    // https://music.apple.com/us/album/tt/1555396345?i=1555396349
     cy.login('jeff@jambuds.club');
     cy.visit('/?modal=new-jam');
 
-    cy.get('[data-test="new-jam-field"]').clear().type('Twice TT');
+    cy.get('[data-test="new-jam-field"]').clear().type(boomer.query);
     cy.get('button[type="submit"]').click();
 
-    cy.contains('[data-test="search-results"] a', 'TT').click();
-    cy.get('[data-test="service-spotify"]')
-      .get('a[href="https://open.spotify.com/track/60jFaQV7Z4boGC4ob5B5c6"]')
-      .should('exist');
-    cy.get('[data-test="service-apple-music"]')
-      .get(
-        'a[href="https://music.apple.com/us/album/tt/1555396345?i=1555396349"]'
-      )
-      .should('exist');
+    cy.contains('[data-test="search-results"] a', boomer.title).click();
+    expectResult(boomer);
   });
 
-  it('works for bandcamp songs with isrc', () => {
-    // Mr Twin Sister - In the House of Yes
-    // Direct ISRC match (USA2B1401756)
-    // https://mrtwinsister.bandcamp.com/track/in-the-house-of-yes
-    // https://open.spotify.com/track/7eeNU3Zm56wzyl7MQDvEAH
-    // https://music.apple.com/us/album/in-the-house-of-yes/905957630?i=905957637
+  it('works for spotify direct links', () => {
     cy.login('jeff@jambuds.club');
     cy.visit('/?modal=new-jam');
 
-    cy.get('[data-test="new-jam-field"]')
-      .clear()
-      .type('https://mrtwinsister.bandcamp.com/track/in-the-house-of-yes');
+    cy.get('[data-test="new-jam-field"]').clear().type(boomer.spotify);
+    cy.get('button[type="submit"]').click();
+
+    cy.contains('[data-test="search-results"] a', boomer.title).click();
+    expectResult(boomer);
+  });
+
+  it('works for apple direct links', () => {
+    cy.login('jeff@jambuds.club');
+    cy.visit('/?modal=new-jam');
+
+    cy.get('[data-test="new-jam-field"]').clear().type(boomer.apple);
+    cy.get('button[type="submit"]').click();
+
+    cy.contains('[data-test="search-results"] a', boomer.title).click();
+    expectResult(boomer);
+  });
+
+  it('works for bandcamp direct links (with isrc)', () => {
+    cy.login('jeff@jambuds.club');
+    cy.visit('/?modal=new-jam');
+
+    cy.get('[data-test="new-jam-field"]').type(inTheHouseOfYes.bandcamp);
     cy.get('button[type="submit"]').click();
 
     cy.contains(
       '[data-test="search-results"] a',
       'In the House of Yes'
     ).click();
-    cy.get('[data-test="service-spotify"]')
-      .get('a[href="https://open.spotify.com/track/7eeNU3Zm56wzyl7MQDvEAH"]')
-      .should('exist');
-    cy.get('[data-test="service-apple-music"]')
-      .get(
-        'a[href="https://music.apple.com/us/album/in-the-house-of-yes/905957630?i=905957637"]'
-      )
-      .should('exist');
-    cy.get('[data-test="service-bandcamp"]')
-      .get(
-        'a[href="https://mrtwinsister.bandcamp.com/track/in-the-house-of-yes"]'
-      )
-      .should('exist');
+    expectResult(inTheHouseOfYes);
   });
 });
 
