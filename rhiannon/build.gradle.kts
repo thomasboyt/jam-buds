@@ -67,6 +67,8 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:1.2.3")
     implementation("io.sentry:sentry-logback:4.3.0")
     implementation("com.newrelic.agent.java:newrelic-api:5.14.0")
+    implementation("io.opentelemetry:opentelemetry-api:0.16.0")
+    implementation("io.opentelemetry:opentelemetry-extension-annotations:0.16.0")
 
     // database access
     val jdbiVersion = "3.12.0"

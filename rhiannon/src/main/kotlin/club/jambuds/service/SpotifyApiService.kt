@@ -8,6 +8,7 @@ import com.wrapper.spotify.exceptions.detailed.NotFoundException
 import com.wrapper.spotify.model_objects.specification.Album
 import com.wrapper.spotify.model_objects.specification.AlbumSimplified
 import com.wrapper.spotify.model_objects.specification.Track
+import io.opentelemetry.extension.annotations.WithSpan
 import org.slf4j.LoggerFactory
 import java.io.PrintWriter
 import java.io.StringWriter
@@ -16,8 +17,6 @@ import java.util.concurrent.TimeUnit
 
 // left open for mocking
 open class SpotifyApiService(clientId: String, clientSecret: String) {
-    val itemRegex = Regex("""https?://open\.spotify\.com/(album|track)/([A-z0-9-]+)""")
-
     private val logger = LoggerFactory.getLogger(SpotifyApiService::class.java.name)
 
     // TODO: should this use a pool at all?
@@ -33,6 +32,7 @@ open class SpotifyApiService(clientId: String, clientSecret: String) {
     }
 
     // TODO: use some kind of retry-with-back-off strategy for failures
+    @WithSpan("Spotify token refresh")
     private fun refresh() {
         try {
             val resp = spotifyApi.clientCredentials().build().execute()

@@ -39,6 +39,7 @@ import club.jambuds.service.TwitterAuthService
 import club.jambuds.service.TwitterService
 import club.jambuds.service.UserService
 import club.jambuds.util.NewRelicPlugin
+import club.jambuds.util.OpenTelemetryPlugin
 import club.jambuds.web.AuthHandlers
 import club.jambuds.web.AuthRoutes
 import club.jambuds.web.FollowingRoutes
@@ -118,6 +119,7 @@ class Application {
                 config.defaultContentType = "application/json"
                 config.showJavalinBanner = false // would be fun to turn this back on for not tests
                 config.registerPlugin(NewRelicPlugin())
+                config.registerPlugin(OpenTelemetryPlugin())
                 if (generateOpenApi) {
                     config.registerPlugin(createOpenApiPlugin())
                 }
