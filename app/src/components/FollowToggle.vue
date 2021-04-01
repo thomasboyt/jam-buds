@@ -49,7 +49,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.follow-toggle {
+button.follow-toggle {
   padding: 8px 15px;
   width: 120px;
   font-weight: 600;
