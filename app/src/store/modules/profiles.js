@@ -19,7 +19,6 @@ const profiles = {
 
   actions: {
     async loadProfileForUser(context, userName) {
-      console.log('loading profile');
       const resp = await this.$axios({
         url: `/users/${userName}`,
         method: 'GET',
