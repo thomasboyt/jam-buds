@@ -67,10 +67,20 @@ import io.javalin.core.validation.JavalinValidation
 import io.javalin.http.HttpResponseExceptionMapper
 import io.javalin.http.InternalServerErrorResponse
 import io.javalin.plugin.json.JavalinJackson
+import io.javalin.plugin.metrics.MicrometerPlugin
 import io.javalin.plugin.openapi.OpenApiOptions
 import io.javalin.plugin.openapi.OpenApiPlugin
 import io.javalin.plugin.openapi.ui.SwaggerOptions
 import io.lettuce.core.RedisClient
+import io.micrometer.core.instrument.MeterRegistry
+import io.micrometer.core.instrument.binder.jvm.ClassLoaderMetrics
+import io.micrometer.core.instrument.binder.jvm.JvmGcMetrics
+import io.micrometer.core.instrument.binder.jvm.JvmMemoryMetrics
+import io.micrometer.core.instrument.binder.jvm.JvmThreadMetrics
+import io.micrometer.core.instrument.binder.system.ProcessorMetrics
+import io.micrometer.prometheus.PrometheusConfig
+import io.micrometer.prometheus.PrometheusMeterRegistry
+import io.prometheus.client.exporter.common.TextFormat
 import io.sentry.Sentry
 import io.swagger.v3.oas.models.Components
 import io.swagger.v3.oas.models.OpenAPI
@@ -115,11 +125,14 @@ class Application {
         }
 
         fun createJavalinApp(generateOpenApi: Boolean): Javalin {
+            val registry = createPrometheusRegistsry()
+
             val app = Javalin.create { config ->
                 config.defaultContentType = "application/json"
                 config.showJavalinBanner = false // would be fun to turn this back on for not tests
                 config.registerPlugin(NewRelicPlugin())
                 config.registerPlugin(OpenTelemetryPlugin())
+                config.registerPlugin(createMicrometerPlugin(registry))
                 if (generateOpenApi) {
                     config.registerPlugin(createOpenApiPlugin())
                 }
@@ -127,6 +140,10 @@ class Application {
 
             JavalinJackson.configure(createObjectMapper())
             configureValidation()
+
+            app.get("/_prometheus") { ctx ->
+                ctx.contentType(TextFormat.CONTENT_TYPE_004).result(registry.scrape())
+            }
 
             app.exception(Exception::class.java) { e, ctx ->
                 Javalin.log.error("Uncaught exception", e)
@@ -184,6 +201,22 @@ class Application {
                 swagger(SwaggerOptions("/swagger-ui"))
             }
             return OpenApiPlugin(opts)
+        }
+
+        private fun createPrometheusRegistsry(): PrometheusMeterRegistry {
+            return PrometheusMeterRegistry(PrometheusConfig.DEFAULT)
+        }
+
+        private fun createMicrometerPlugin(registry: MeterRegistry): MicrometerPlugin {
+            val plugin = MicrometerPlugin(registry)
+
+            ClassLoaderMetrics().bindTo(registry)
+            JvmMemoryMetrics().bindTo(registry)
+            JvmGcMetrics().bindTo(registry)
+            JvmThreadMetrics().bindTo(registry)
+            ProcessorMetrics().bindTo(registry)
+
+            return plugin
         }
 
         private fun wire(app: Javalin, config: Config) {
