@@ -1,6 +1,6 @@
 buildscript {
     repositories {
-        jcenter()
+        mavenCentral()
     }
 }
 
@@ -17,7 +17,7 @@ group = "club.jambuds"
 
 repositories {
     mavenLocal()
-    jcenter()
+    mavenCentral()
 }
 
 dependencies {
