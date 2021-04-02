@@ -204,7 +204,9 @@ class Application {
         }
 
         private fun createPrometheusRegistsry(): PrometheusMeterRegistry {
-            return PrometheusMeterRegistry(PrometheusConfig.DEFAULT)
+            val registry = PrometheusMeterRegistry(PrometheusConfig.DEFAULT)
+            registry.config().commonTags("application", "rhiannon")
+            return registry
         }
 
         private fun createMicrometerPlugin(registry: MeterRegistry): MicrometerPlugin {
