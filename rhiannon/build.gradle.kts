@@ -88,7 +88,7 @@ dependencies {
 }
 
 application {
-    mainClass.set("club.jambuds.ApplicationKt")
+    mainClass.set("club.jambuds.Application")
 }
 
 java {
@@ -106,7 +106,7 @@ jib {
         image = "azul/zulu-openjdk-alpine:11.0.6"
     }
     container {
-        mainClass = "club.jambuds.ApplicationKt"
+        mainClass = "club.jambuds.Application"
         // TODO: use runtime env var for this?
         jvmFlags = listOf(
             "-XX:+UseG1GC",

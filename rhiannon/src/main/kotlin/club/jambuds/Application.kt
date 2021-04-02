@@ -86,249 +86,254 @@ import org.jdbi.v3.sqlobject.kotlin.KotlinSqlObjectPlugin
 import org.jdbi.v3.sqlobject.kotlin.onDemand
 import java.time.Instant
 
-fun createJdbi(databaseUrl: String): Jdbi {
-    val ds = HikariDataSource()
-    ds.jdbcUrl = databaseUrl
-    ds.maximumPoolSize = 3 // (core_size * 2) + disk_count
+class Application {
+    companion object {
+        @JvmStatic
+        fun main(args: Array<String>) {
+            val dsn = System.getenv("RHIANNON_SENTRY_DSN")
+            if (dsn != null) {
+                Sentry.init(dsn)
+            }
 
-    val jdbi = Jdbi.create(ds)
-    jdbi.installPlugin(KotlinPlugin())
-    jdbi.installPlugin(KotlinSqlObjectPlugin())
-    jdbi.installPlugin(PostgresPlugin())
-    return jdbi
-}
+            val config = getConfig()
+            val app = createJavalinApp(config.getBoolean("hostDocs"))
+            wire(app, config)
+            app.start(config.getInt("port"))
+        }
 
-private fun configureValidation() {
-    JavalinValidation.register(Instant::class.java) { Instant.parse(it) }
-    JavalinValidation.register(ItemSource::class.java) { ItemSource.valueOf(it.toUpperCase()) }
-}
+        fun getConfig(): Config {
+            val env = System.getenv("JAMBUDS_ENV") ?: throw Error("No JAMBUDS_ENV set!")
+            val envConfig = ConfigFactory.parseResources("conf/$env.conf")
+            val localConfig = ConfigFactory.parseResources("conf/local/$env.conf")
+            val envVarConfig = ConfigFactory.parseResources("conf/vars.conf")
+            return envVarConfig
+                .withFallback(localConfig)
+                .withFallback(envConfig)
+                .resolve()
+                .getConfig("rhiannon")
+        }
 
-fun getConfig(): Config {
-    val env = System.getenv("JAMBUDS_ENV") ?: throw Error("No JAMBUDS_ENV set!")
-    val envConfig = ConfigFactory.parseResources("conf/$env.conf")
-    val localConfig = ConfigFactory.parseResources("conf/local/$env.conf")
-    val envVarConfig = ConfigFactory.parseResources("conf/vars.conf")
-    return envVarConfig
-        .withFallback(localConfig)
-        .withFallback(envConfig)
-        .resolve()
-        .getConfig("rhiannon")
-}
+        fun createJavalinApp(generateOpenApi: Boolean): Javalin {
+            val app = Javalin.create { config ->
+                config.defaultContentType = "application/json"
+                config.showJavalinBanner = false // would be fun to turn this back on for not tests
+                config.registerPlugin(NewRelicPlugin())
+                if (generateOpenApi) {
+                    config.registerPlugin(createOpenApiPlugin())
+                }
+            }
 
-fun createOpenApiPlugin(): OpenApiPlugin {
-    val scheme = SecurityScheme().apply {
-        type = SecurityScheme.Type.APIKEY
-        `in` = SecurityScheme.In.HEADER
-        name = "X-Auth-Token"
-    }
-    val opts = OpenApiOptions {
-        OpenAPI()
-            .components(Components().apply {
-                addSecuritySchemes("token", scheme)
-            })
-            .security(listOf(SecurityRequirement().addList("token")))
-            .info(Info().apply {
-                version("1.0")
-                title("Jam Buds API")
-                description("Jam Buds API")
-            })
-    }.apply {
-        path("/swagger-docs")
-        swagger(SwaggerOptions("/swagger-ui"))
-    }
-    return OpenApiPlugin(opts)
-}
+            JavalinJackson.configure(createObjectMapper())
+            configureValidation()
 
-fun createObjectMapper(): ObjectMapper {
-    val df = SimpleDateFormat("yyyy-MM-dd'T'HH:mmX")
-    return ObjectMapper()
-        .registerModule(KotlinModule())
-        .registerModule(JavaTimeModule())
-        .setDateFormat(df)
-        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-}
+            app.exception(Exception::class.java) { e, ctx ->
+                Javalin.log.error("Uncaught exception", e)
+                HttpResponseExceptionMapper.handle(InternalServerErrorResponse(), ctx)
+            }
 
-fun createJavalinApp(generateOpenApi: Boolean): Javalin {
-    val app = Javalin.create { config ->
-        config.defaultContentType = "application/json"
-        config.showJavalinBanner = false // would be fun to turn this back on for not tests
-        config.registerPlugin(NewRelicPlugin())
-        if (generateOpenApi) {
-            config.registerPlugin(createOpenApiPlugin())
+            return app
+        }
+
+        fun createJdbi(databaseUrl: String): Jdbi {
+            val ds = HikariDataSource()
+            ds.jdbcUrl = databaseUrl
+            ds.maximumPoolSize = 3 // (core_size * 2) + disk_count
+
+            val jdbi = Jdbi.create(ds)
+            jdbi.installPlugin(KotlinPlugin())
+            jdbi.installPlugin(KotlinSqlObjectPlugin())
+            jdbi.installPlugin(PostgresPlugin())
+            return jdbi
+        }
+
+        fun createObjectMapper(): ObjectMapper {
+            val df = SimpleDateFormat("yyyy-MM-dd'T'HH:mmX")
+            return ObjectMapper()
+                .registerModule(KotlinModule())
+                .registerModule(JavaTimeModule())
+                .setDateFormat(df)
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+        }
+
+        private fun configureValidation() {
+            JavalinValidation.register(Instant::class.java) { Instant.parse(it) }
+            JavalinValidation.register(ItemSource::class.java) { ItemSource.valueOf(it.toUpperCase()) }
+        }
+
+        private fun createOpenApiPlugin(): OpenApiPlugin {
+            val scheme = SecurityScheme().apply {
+                type = SecurityScheme.Type.APIKEY
+                `in` = SecurityScheme.In.HEADER
+                name = "X-Auth-Token"
+            }
+            val opts = OpenApiOptions {
+                OpenAPI()
+                    .components(Components().apply {
+                        addSecuritySchemes("token", scheme)
+                    })
+                    .security(listOf(SecurityRequirement().addList("token")))
+                    .info(Info().apply {
+                        version("1.0")
+                        title("Jam Buds API")
+                        description("Jam Buds API")
+                    })
+            }.apply {
+                path("/swagger-docs")
+                swagger(SwaggerOptions("/swagger-ui"))
+            }
+            return OpenApiPlugin(opts)
+        }
+
+        private fun wire(app: Javalin, config: Config) {
+            val jdbi = createJdbi(config.getString("databaseUrl"))
+            val redis = RedisClient.create(config.getString("redisUrl")).connect()
+
+            // Spotify
+            val spotifyApiService = SpotifyApiService(
+                config.getString("spotifyClientId"),
+                config.getString("spotifyClientSecret")
+            )
+            spotifyApiService.startRefreshLoop()
+
+            // Apple Music
+            val disableAppleMusic = config.getBoolean("disableAppleMusic")
+            val appleMusicToken = if (disableAppleMusic) {
+                "apple music disabled"
+            } else {
+                val key = try {
+                    config.getString("musickitPrivateKey")
+                } catch (e: ConfigException.Missing) {
+                    val path = config.getString("musickitPrivateKeyPath")
+                    String(Files.readAllBytes(Paths.get(path)))
+                }
+                AppleMusicService.createAuthToken(
+                    key = key,
+                    keyId = config.getString("musickitKeyId"),
+                    teamId = config.getString("musickitTeamId")
+                )
+            }
+            val appleMusicService = AppleMusicService(appleMusicToken, disableAppleMusic)
+
+            val bandcampService = BandcampService()
+
+            // Twitter
+            val disableTwitter = config.getBoolean("disableTwitter")
+            val twitterApiKey = if (disableTwitter) {
+                "placeholder key"
+            } else {
+                config.getString("twitterApiKey")
+            }
+            val twitterApiSecret = if (disableTwitter) {
+                "placeholder secret"
+            } else {
+                config.getString("twitterApiSecret")
+            }
+            val twitterService = TwitterService(twitterApiKey, twitterApiSecret, disableTwitter)
+
+            // DAOs
+            val postDao = jdbi.onDemand<PostDao>()
+            val songDao = jdbi.onDemand<SongDao>()
+            val albumDao = jdbi.onDemand<AlbumDao>()
+            val mixtapeDao = jdbi.onDemand<MixtapeDao>()
+            val userDao = jdbi.onDemand<UserDao>()
+            val colorSchemeDao = jdbi.onDemand<ColorSchemeDao>()
+            val likeDao = jdbi.onDemand<LikeDao>()
+            val reportDao = jdbi.onDemand<ReportDao>()
+            val notificationsDao = jdbi.onDemand<NotificationsDao>()
+            val followingDao = jdbi.onDemand<FollowingDao>()
+            val signInTokenDao = jdbi.onDemand<SignInTokenDao>()
+            val authTokenDao = jdbi.onDemand<AuthTokenDao>()
+
+            val searchCacheDao = SearchCacheDao(redis)
+            val oAuthStateDao = OAuthStateDao(redis)
+            val twitterFollowingCacheDao = TwitterFollowingCacheDao(redis)
+
+            // Services
+            val playlistService =
+                PlaylistService(postDao, songDao, mixtapeDao, albumDao, likeDao)
+            val userService = UserService(
+                userDao,
+                colorSchemeDao,
+                notificationsDao,
+                twitterService,
+                twitterFollowingCacheDao
+            )
+            val searchService = SearchService(
+                spotifyApiService,
+                appleMusicService,
+                bandcampService,
+                songDao,
+                albumDao,
+                searchCacheDao,
+                disableAppleMusic = disableAppleMusic
+            )
+            val mixtapeService = MixtapeService(mixtapeDao, songDao, userService, searchService)
+            val postService =
+                PostService(postDao, searchService, twitterService, config.getString("appUrl"))
+            val likeService = LikeService(likeDao, songDao, mixtapeDao)
+            val reportService = ReportService(reportDao, postDao)
+            val spotifyAuthService = SpotifyAuthService(
+                config.getString("appUrl"),
+                oAuthStateDao,
+                config.getString("spotifyClientId"),
+                config.getString("spotifyClientSecret")
+            )
+            val followingService = FollowingService(followingDao, userDao, notificationsDao)
+            val notificationService = NotificationService(notificationsDao, userDao)
+
+            val disableEmail = config.getBoolean("disableEmail")
+            val emailClient = if (disableEmail) {
+                DevEmailClient()
+            } else {
+                SendgridClient(config.getString("sendgridApiKey"))
+            }
+            val emailService = EmailService(emailClient)
+
+            val buttondownService = if (config.getBoolean("disableButtondown")) {
+                ButtondownService(null)
+            } else {
+                val buttondownClient = createButtondownClient(config.getString("buttondownApiKey"))
+                ButtondownService(buttondownClient)
+            }
+
+            val authService =
+                AuthService(
+                    userDao,
+                    signInTokenDao,
+                    authTokenDao,
+                    followingService,
+                    emailService,
+                    buttondownService,
+                    appUrl = config.getString("appUrl"),
+                    skipAuth = config.getBoolean("dangerSkipAuth")
+                )
+
+            val twitterAuthService = TwitterAuthService(userDao, twitterApiKey, twitterApiSecret)
+
+            val songService = SongService(songDao)
+
+            // Routes
+            app.routes {
+                AuthHandlers(userDao).register()
+                PlaylistRoutes(playlistService, userService).register()
+                MixtapeRoutes(mixtapeService).register()
+                SearchRoutes(searchService).register()
+                PostRoutes(postService, reportService).register()
+                LikeRoutes(likeService).register()
+                SpotifyAuthRoutes(spotifyAuthService).register()
+                UserRoutes(userService).register()
+                FollowingRoutes(followingService).register()
+                NotificationRoutes(notificationService).register()
+                AuthRoutes(authService, config.getString("appUrl")).register()
+                SettingsRoutes(buttondownService, userDao, colorSchemeDao).register()
+                TwitterAuthRoutes(
+                    twitterAuthService,
+                    userDao,
+                    oAuthStateDao,
+                    config.getString("appUrl")
+                ).register()
+                SongRoutes(songService).register()
+            }
         }
     }
-
-    JavalinJackson.configure(createObjectMapper())
-    configureValidation()
-
-    app.exception(Exception::class.java) { e, ctx ->
-        Javalin.log.error("Uncaught exception", e)
-        HttpResponseExceptionMapper.handle(InternalServerErrorResponse(), ctx)
-    }
-
-    return app
-}
-
-private fun wire(app: Javalin, config: Config) {
-    val jdbi = createJdbi(config.getString("databaseUrl"))
-    val redis = RedisClient.create(config.getString("redisUrl")).connect()
-
-    // Spotify
-    val spotifyApiService = SpotifyApiService(
-        config.getString("spotifyClientId"),
-        config.getString("spotifyClientSecret")
-    )
-    spotifyApiService.startRefreshLoop()
-
-    // Apple Music
-    val disableAppleMusic = config.getBoolean("disableAppleMusic")
-    val appleMusicToken = if (disableAppleMusic) {
-        "apple music disabled"
-    } else {
-        val key = try {
-            config.getString("musickitPrivateKey")
-        } catch (e: ConfigException.Missing) {
-            val path = config.getString("musickitPrivateKeyPath")
-            String(Files.readAllBytes(Paths.get(path)))
-        }
-        AppleMusicService.createAuthToken(
-            key = key,
-            keyId = config.getString("musickitKeyId"),
-            teamId = config.getString("musickitTeamId")
-        )
-    }
-    val appleMusicService = AppleMusicService(appleMusicToken, disableAppleMusic)
-
-    val bandcampService = BandcampService()
-
-    // Twitter
-    val disableTwitter = config.getBoolean("disableTwitter")
-    val twitterApiKey = if (disableTwitter) {
-        "placeholder key"
-    } else {
-        config.getString("twitterApiKey")
-    }
-    val twitterApiSecret = if (disableTwitter) {
-        "placeholder secret"
-    } else {
-        config.getString("twitterApiSecret")
-    }
-    val twitterService = TwitterService(twitterApiKey, twitterApiSecret, disableTwitter)
-
-    // DAOs
-    val postDao = jdbi.onDemand<PostDao>()
-    val songDao = jdbi.onDemand<SongDao>()
-    val albumDao = jdbi.onDemand<AlbumDao>()
-    val mixtapeDao = jdbi.onDemand<MixtapeDao>()
-    val userDao = jdbi.onDemand<UserDao>()
-    val colorSchemeDao = jdbi.onDemand<ColorSchemeDao>()
-    val likeDao = jdbi.onDemand<LikeDao>()
-    val reportDao = jdbi.onDemand<ReportDao>()
-    val notificationsDao = jdbi.onDemand<NotificationsDao>()
-    val followingDao = jdbi.onDemand<FollowingDao>()
-    val signInTokenDao = jdbi.onDemand<SignInTokenDao>()
-    val authTokenDao = jdbi.onDemand<AuthTokenDao>()
-
-    val searchCacheDao = SearchCacheDao(redis)
-    val oAuthStateDao = OAuthStateDao(redis)
-    val twitterFollowingCacheDao = TwitterFollowingCacheDao(redis)
-
-    // Services
-    val playlistService =
-        PlaylistService(postDao, songDao, mixtapeDao, albumDao, likeDao)
-    val userService = UserService(
-        userDao,
-        colorSchemeDao,
-        notificationsDao,
-        twitterService,
-        twitterFollowingCacheDao
-    )
-    val searchService = SearchService(
-        spotifyApiService,
-        appleMusicService,
-        bandcampService,
-        songDao,
-        albumDao,
-        searchCacheDao,
-        disableAppleMusic = disableAppleMusic
-    )
-    val mixtapeService = MixtapeService(mixtapeDao, songDao, userService, searchService)
-    val postService =
-        PostService(postDao, searchService, twitterService, config.getString("appUrl"))
-    val likeService = LikeService(likeDao, songDao, mixtapeDao)
-    val reportService = ReportService(reportDao, postDao)
-    val spotifyAuthService = SpotifyAuthService(
-        config.getString("appUrl"),
-        oAuthStateDao,
-        config.getString("spotifyClientId"),
-        config.getString("spotifyClientSecret")
-    )
-    val followingService = FollowingService(followingDao, userDao, notificationsDao)
-    val notificationService = NotificationService(notificationsDao, userDao)
-
-    val disableEmail = config.getBoolean("disableEmail")
-    val emailClient = if (disableEmail) {
-        DevEmailClient()
-    } else {
-        SendgridClient(config.getString("sendgridApiKey"))
-    }
-    val emailService = EmailService(emailClient)
-
-    val buttondownService = if (config.getBoolean("disableButtondown")) {
-        ButtondownService(null)
-    } else {
-        val buttondownClient = createButtondownClient(config.getString("buttondownApiKey"))
-        ButtondownService(buttondownClient)
-    }
-
-    val authService =
-        AuthService(
-            userDao,
-            signInTokenDao,
-            authTokenDao,
-            followingService,
-            emailService,
-            buttondownService,
-            appUrl = config.getString("appUrl"),
-            skipAuth = config.getBoolean("dangerSkipAuth")
-        )
-
-    val twitterAuthService = TwitterAuthService(userDao, twitterApiKey, twitterApiSecret)
-
-    val songService = SongService(songDao)
-
-    // Routes
-    app.routes {
-        AuthHandlers(userDao).register()
-        PlaylistRoutes(playlistService, userService).register()
-        MixtapeRoutes(mixtapeService).register()
-        SearchRoutes(searchService).register()
-        PostRoutes(postService, reportService).register()
-        LikeRoutes(likeService).register()
-        SpotifyAuthRoutes(spotifyAuthService).register()
-        UserRoutes(userService).register()
-        FollowingRoutes(followingService).register()
-        NotificationRoutes(notificationService).register()
-        AuthRoutes(authService, config.getString("appUrl")).register()
-        SettingsRoutes(buttondownService, userDao, colorSchemeDao).register()
-        TwitterAuthRoutes(
-            twitterAuthService,
-            userDao,
-            oAuthStateDao,
-            config.getString("appUrl")
-        ).register()
-        SongRoutes(songService).register()
-    }
-}
-
-fun main() {
-    val dsn = System.getenv("RHIANNON_SENTRY_DSN")
-    if (dsn != null) {
-        Sentry.init(dsn)
-    }
-
-    val config = getConfig()
-    val app = createJavalinApp(config.getBoolean("hostDocs"))
-    wire(app, config)
-    app.start(config.getInt("port"))
 }

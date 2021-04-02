@@ -59,7 +59,6 @@ import org.junit.jupiter.api.extension.Extensions
 import org.junit.jupiter.api.extension.InvocationInterceptor
 import org.junit.jupiter.api.extension.ReflectiveInvocationContext
 import java.lang.reflect.Method
-import kong.unirest.ObjectMapper
 
 /**
  * AppTest starts an actual instance of the server. It wires up DAOs, services,
@@ -93,7 +92,7 @@ open class AppTest {
     fun wire(txn: Handle) {
         this.txn = txn
 
-        app = createJavalinApp(false)
+        app = Application.createJavalinApp(false)
         app.start(testAppPort)
 
         mockSpotifyApiService = mock()
@@ -188,10 +187,10 @@ open class AppTest {
     }
 
     companion object {
-        val config = getConfig()
-        val jdbi = createJdbi(config.getString("databaseUrl"))
-        val redis = RedisClient.create(config.getString("redisUrl")).connect()
-        val objectMapper = createObjectMapper()
+        val config = Application.getConfig()
+        val jdbi = Application.createJdbi(config.getString("databaseUrl"))
+        val redis = RedisClient.create(config.getString("redisUrl")).connect()!!
+        val objectMapper = Application.createObjectMapper()
 
         init {
             resetDatabase()
