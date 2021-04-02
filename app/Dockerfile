@@ -11,13 +11,14 @@ RUN npm install --production
 COPY --chown=node:node . .
 USER node
 
+# Create static folder that can be served from e.g. Caddy
+RUN mkdir -p public
+RUN cp -r  src/static/. public
+
 # Build app
 ARG SENTRY_PUBLIC_DSN_APP
 RUN NODE_ENV=production npm run build -- --quiet
-
-# Create static folder that can be served from e.g. Caddy
-RUN mkdir -p public
-RUN cp -r .nuxt/dist/client/. src/static/. public
+RUN cp -r .nuxt/dist/client public/_nuxt
 
 EXPOSE 8080
 CMD [ "./node_modules/.bin/nuxt", "start" ]
