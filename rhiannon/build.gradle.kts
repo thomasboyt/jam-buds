@@ -67,7 +67,7 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:1.2.3")
     implementation("io.sentry:sentry-logback:4.3.0")
     implementation("com.newrelic.agent.java:newrelic-api:5.14.0")
-    val otlpVersion = "0.16.0"
+    val otlpVersion = "1.0.1"
     implementation("io.opentelemetry:opentelemetry-api:$otlpVersion")
     implementation("io.opentelemetry:opentelemetry-extension-annotations:$otlpVersion")
     val micrometerVersion = "1.6.5"
