@@ -80,6 +80,7 @@ import io.micrometer.core.instrument.binder.jvm.JvmThreadMetrics
 import io.micrometer.core.instrument.binder.system.ProcessorMetrics
 import io.micrometer.prometheus.PrometheusConfig
 import io.micrometer.prometheus.PrometheusMeterRegistry
+import io.opentelemetry.api.trace.Span
 import io.prometheus.client.exporter.common.TextFormat
 import io.sentry.Sentry
 import io.swagger.v3.oas.models.Components
@@ -136,12 +137,25 @@ class Application {
                 if (generateOpenApi) {
                     config.registerPlugin(createOpenApiPlugin())
                 }
+
+                config.requestLogger { ctx, ms ->
+                    val span = Span.current()
+                    val traceId = span.spanContext.traceId
+                    val spanId = span.spanContext.spanId
+                    // TODO: make json? figure out other ways to do structured logging?
+                    if (ctx.attribute<Boolean>("hideLog") != true) {
+                        Javalin.log.info(
+                            "method=${ctx.method()} endpoint=${ctx.matchedPath()} status=${ctx.status()} url=${ctx.url()} elapsed=$ms userAgent=${ctx.userAgent()} traceId=$traceId spanId=$spanId"
+                        )
+                    }
+                }
             }
 
             JavalinJackson.configure(createObjectMapper())
             configureValidation()
 
             app.get("/_prometheus") { ctx ->
+                ctx.attribute("hideLog", true)
                 ctx.contentType(TextFormat.CONTENT_TYPE_004).result(registry.scrape())
             }
 
