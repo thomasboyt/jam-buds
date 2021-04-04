@@ -18,10 +18,6 @@ class AggregatedPostRowMapper : RowMapper<AggregatedPost> {
     override fun map(rs: ResultSet, ctx: StatementContext): AggregatedPost {
         val postsJson = rs.getString("agg_posts")
 
-        val mapper = ObjectMapper()
-            .registerModule(KotlinModule())
-            .registerModule(JavaTimeModule())
-
         val posts = mapper.readValue(postsJson, Array<AggregatedPostItem>::class.java).toList()
 
         return AggregatedPost(
@@ -32,5 +28,11 @@ class AggregatedPostRowMapper : RowMapper<AggregatedPost> {
             timestamp = rs.getTimestamp("agg_timestamp").toInstant(),
             posts = posts
         )
+    }
+
+    companion object {
+        private val mapper = ObjectMapper()
+            .registerModule(KotlinModule())
+            .registerModule(JavaTimeModule())
     }
 }
