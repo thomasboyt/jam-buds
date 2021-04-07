@@ -185,7 +185,7 @@ class AuthService(
 
         if (referral != null) {
             try {
-                followingService.followUser(userId = user.id, followedUserName = referral)
+                followingService.followUser(currentUser = user, followedUserName = referral)
             } catch (e: BadRequestResponse) {
                 // TODO: more granular error check, somehow
                 logger.error("Referral user $referral not found for new registration $email")

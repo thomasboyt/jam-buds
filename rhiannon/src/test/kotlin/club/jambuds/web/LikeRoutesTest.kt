@@ -2,6 +2,7 @@ package club.jambuds.web
 
 import club.jambuds.AppTest
 import club.jambuds.helpers.TestDataFactories
+import club.jambuds.model.LikeSource
 import club.jambuds.responses.UserPlaylistResponse
 import kong.unirest.Unirest
 import org.junit.jupiter.api.Test
@@ -15,6 +16,8 @@ class LikeRoutesTest : AppTest() {
         val songId = TestDataFactories.createSong(txn)
 
         val resp = Unirest.put("$appUrl/likes/songs/$songId")
+            .queryString("likeSource", LikeSource.POST)
+            .queryString("sourceUserNames", listOf("vinny"))
             .header("X-Auth-Token", authToken)
             .asString()
         assertEquals(204, resp.status)
@@ -34,6 +37,8 @@ class LikeRoutesTest : AppTest() {
         val mixtapeId = TestDataFactories.createMixtape(txn, jeff.id, true)
 
         val resp = Unirest.put("$appUrl/likes/mixtapes/$mixtapeId")
+            .queryString("likeSource", LikeSource.POST)
+            .queryString("sourceUserNames", listOf("vinny"))
             .header("X-Auth-Token", authToken)
             .asString()
         assertEquals(204, resp.status)
@@ -53,6 +58,8 @@ class LikeRoutesTest : AppTest() {
         val mixtapeId = TestDataFactories.createMixtape(txn, jeff.id, false)
 
         val resp = Unirest.put("$appUrl/likes/mixtapes/$mixtapeId")
+            .queryString("likeSource", LikeSource.POST)
+            .queryString("sourceUserNames", listOf("vinny"))
             .header("X-Auth-Token", authToken)
             .asString()
         assertEquals(400, resp.status)
@@ -64,6 +71,8 @@ class LikeRoutesTest : AppTest() {
         val authToken = TestDataFactories.createAuthToken(txn, jeff.id)
 
         val resp = Unirest.put("$appUrl/likes/songs/1234")
+            .queryString("likeSource", LikeSource.POST)
+            .queryString("sourceUserNames", listOf("vinny"))
             .header("X-Auth-Token", authToken)
             .asString()
         assertEquals(404, resp.status)
@@ -76,11 +85,15 @@ class LikeRoutesTest : AppTest() {
         val songId = TestDataFactories.createSong(txn)
 
         val resp = Unirest.put("$appUrl/likes/songs/$songId")
+            .queryString("likeSource", LikeSource.POST)
+            .queryString("sourceUserNames", listOf("vinny"))
             .header("X-Auth-Token", authToken)
             .asString()
         assertEquals(204, resp.status)
 
         val retryResp = Unirest.put("$appUrl/likes/songs/$songId")
+            .queryString("likeSource", LikeSource.POST)
+            .queryString("sourceUserNames", listOf("vinny"))
             .header("X-Auth-Token", authToken)
             .asString()
         assertEquals(400, retryResp.status)

@@ -19,6 +19,7 @@ import club.jambuds.dao.cache.OAuthStateDao
 import club.jambuds.dao.cache.SearchCacheDao
 import club.jambuds.dao.cache.TwitterFollowingCacheDao
 import club.jambuds.model.ItemSource
+import club.jambuds.model.LikeSource
 import club.jambuds.service.AppleMusicService
 import club.jambuds.service.AuthService
 import club.jambuds.service.BandcampService
@@ -191,6 +192,7 @@ class Application {
         private fun configureValidation() {
             JavalinValidation.register(Instant::class.java) { Instant.parse(it) }
             JavalinValidation.register(ItemSource::class.java) { ItemSource.valueOf(it.toUpperCase()) }
+            JavalinValidation.register(LikeSource::class.java) { LikeSource.valueOf(it.toUpperCase()) }
         }
 
         private fun createOpenApiPlugin(): OpenApiPlugin {
@@ -321,7 +323,7 @@ class Application {
             val mixtapeService = MixtapeService(mixtapeDao, songDao, userService, searchService)
             val postService =
                 PostService(postDao, searchService, twitterService, config.getString("appUrl"))
-            val likeService = LikeService(likeDao, songDao, mixtapeDao)
+            val likeService = LikeService(likeDao, songDao, mixtapeDao, albumDao, notificationsDao, userDao, postDao)
             val reportService = ReportService(reportDao, postDao)
             val spotifyAuthService = SpotifyAuthService(
                 config.getString("appUrl"),
@@ -330,7 +332,7 @@ class Application {
                 config.getString("spotifyClientSecret")
             )
             val followingService = FollowingService(followingDao, userDao, notificationsDao)
-            val notificationService = NotificationService(notificationsDao, userDao)
+            val notificationService = NotificationService(notificationsDao)
 
             val disableEmail = config.getBoolean("disableEmail")
             val emailClient = if (disableEmail) {

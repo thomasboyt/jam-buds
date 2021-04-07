@@ -3,6 +3,7 @@ package club.jambuds.web
 import club.jambuds.service.LikeService
 import club.jambuds.web.extensions.requireUser
 import club.jambuds.model.ItemType
+import club.jambuds.model.LikeSource
 import io.javalin.apibuilder.ApiBuilder.delete
 import io.javalin.apibuilder.ApiBuilder.put
 import io.javalin.http.Context
@@ -27,14 +28,36 @@ class LikeRoutes(private val likeService: LikeService) {
                 type = String::class,
                 description = "One of 'songs', 'mixtapes, or 'albums'"
             ),
-            OpenApiParam(name = "itemId",  type = Int::class)
+            OpenApiParam(name = "itemId", type = Int::class)
+        ],
+        queryParams = [
+            OpenApiParam(
+                name = "likeSource",
+                required = true,
+                type = LikeSource::class,
+                description = "The origin of the like. 'post' indicates feed or playlist, 'like' " +
+                    "indicates a likes list, 'mixtape' indicates a mixtape songs listing."
+            ),
+            OpenApiParam(
+                name = "sourceMixtapeId",
+                type = Int::class,
+                description = "If likeSource is 'mixtape', this is the id of the source mixtape"
+            ),
+            OpenApiParam(
+                name = "sourceUserNames",
+                type = String::class,
+                description = "If likeSource is 'like' or 'post', this is the name(s) of the source user (joined with a comma)"
+            ),
         ]
     )
     private fun createLike(ctx: Context) {
         val currentUser = ctx.requireUser()
         val itemType = getItemType(ctx)
         val itemId = ctx.pathParam<Int>("itemId").get()
-        likeService.createLike(currentUser, itemType, itemId)
+        val likeSource = ctx.queryParam<LikeSource>("likeSource").get()
+        val sourceMixtapeId = ctx.queryParam<Int>("sourceMixtapeId").getOrNull()
+        val sourceUserNames = ctx.queryParam<String>("sourceUserNames").getOrNull()
+        likeService.createLike(currentUser, itemType, itemId, likeSource, sourceMixtapeId, sourceUserNames)
         ctx.status(204)
     }
 

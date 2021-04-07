@@ -2,10 +2,10 @@ package club.jambuds.model
 
 import com.fasterxml.jackson.annotation.JsonValue
 
-enum class ItemType(@get:JsonValue val type: String) {
-    SONG("song"),
-    MIXTAPE("mixtape"),
-    ALBUM("album");
+enum class LikeSource(@get:JsonValue val type: String) {
+    POST("post"),
+    LIKE("like"),
+    MIXTAPE("mixtape");
 
     override fun toString(): String {
         return type
