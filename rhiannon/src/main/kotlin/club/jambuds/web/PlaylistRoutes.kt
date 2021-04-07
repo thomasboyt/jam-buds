@@ -109,7 +109,8 @@ class PlaylistRoutes(
         )
         val resp = UserPlaylistResponse(
             items = playlist.items,
-            limit = playlist.limit
+            limit = playlist.limit,
+            profiles = listOf(userProfile)
         )
         ctx.json(resp)
     }
@@ -138,9 +139,11 @@ class PlaylistRoutes(
             beforeTimestamp = timestamps.beforeTimestamp,
             afterTimestamp = timestamps.afterTimestamp
         )
+        val profiles = userService.getUserProfilesFromUserPlaylist(playlist)
         val resp = UserPlaylistResponse(
             items = playlist.items,
-            limit = playlist.limit
+            limit = playlist.limit,
+            profiles = listOf(userProfile).plus(profiles).distinct()
         )
         ctx.json(resp)
     }
