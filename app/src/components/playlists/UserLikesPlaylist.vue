@@ -7,7 +7,14 @@
     @requestNextPage="handleRequestNextPage"
   >
     <template #item="{ item }">
-      <playlist-entry :item="item" @requestPlay="handleRequestPlay" />
+      <playlist-entry
+        :item="item"
+        :like-source-params="{
+          likeSource: 'like',
+          sourceUserNames: [userName],
+        }"
+        @requestPlay="handleRequestPlay"
+      />
       <entry-details
         type="userLiked"
         :name="userName"

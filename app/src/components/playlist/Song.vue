@@ -39,6 +39,7 @@
             :item-id="song.id"
             :is-liked="song.meta.isLiked"
             :like-count="song.meta.likeCount"
+            :like-source-params="likeSourceParams"
           />
           <song-dropdown-menu :song="song" :own-post-id="ownPostId" />
         </slot>
@@ -86,6 +87,9 @@ export default {
     },
     ownPostId: {
       type: Number,
+    },
+    likeSourceParams: {
+      type: Object,
     },
   },
 

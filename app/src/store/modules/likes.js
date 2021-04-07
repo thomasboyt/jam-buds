@@ -1,9 +1,17 @@
 const likes = {
   actions: {
-    async likeItem(context, { itemType, itemId }) {
+    async likeItem(
+      context,
+      { itemType, itemId, likeSource, sourceMixtapeId, sourceUserNames }
+    ) {
       await this.$axios({
         url: `/likes/${itemType}s/${itemId}`,
         method: 'PUT',
+        params: {
+          likeSource,
+          sourceMixtapeId,
+          sourceUserNames: sourceUserNames?.join(','),
+        },
       });
 
       if (itemType === 'song') {

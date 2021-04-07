@@ -27,6 +27,7 @@
             :item-id="album.id"
             :is-liked="album.meta.isLiked"
             :like-count="album.meta.likeCount"
+            :like-source-params="likeSourceParams"
           />
           <album-dropdown-menu :album="album" :own-post-id="ownPostId" />
         </slot>
@@ -74,6 +75,9 @@ export default {
     },
     ownPostId: {
       type: Number,
+    },
+    likeSourceParams: {
+      type: Object,
     },
   },
 
