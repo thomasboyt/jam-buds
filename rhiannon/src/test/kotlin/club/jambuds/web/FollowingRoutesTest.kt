@@ -2,6 +2,7 @@ package club.jambuds.web
 
 import club.jambuds.AppTest
 import club.jambuds.helpers.TestDataFactories
+import club.jambuds.model.NotificationType
 import club.jambuds.responses.FollowUserResponse
 import club.jambuds.responses.GetCurrentUserResponse
 import club.jambuds.responses.NotificationItem
@@ -46,7 +47,7 @@ class FollowingRoutesTest : AppTest() {
 
         val notifications = getNotifications(jeffAuthToken)
         assertEquals(1, notifications.size)
-        assertEquals("vinny", notifications[0].user!!.name)
+        assertEquals(NotificationType.FOLLOW, notifications[0].type)
     }
 
     @Test

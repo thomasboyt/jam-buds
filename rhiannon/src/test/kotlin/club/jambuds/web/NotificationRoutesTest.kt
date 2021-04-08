@@ -2,6 +2,7 @@ package club.jambuds.web
 
 import club.jambuds.AppTest
 import club.jambuds.helpers.TestDataFactories
+import club.jambuds.model.NotificationType
 import club.jambuds.responses.NotificationItem
 import kong.unirest.Unirest
 import org.junit.jupiter.api.Test
@@ -34,11 +35,11 @@ class NotificationRoutesTest : AppTest() {
         val jeffAuthToken = TestDataFactories.createAuthToken(txn, jeff.id)
 
         val vinny = TestDataFactories.createUser(txn, "vinny", true)
-        followingService.followUser(vinny.id, jeff.name)
+        followingService.followUser(vinny, jeff.name)
 
         var items = getNotifications(jeffAuthToken)
         assertEquals(1, items.size)
-        assertEquals("vinny", items[0].user!!.name)
+        assertEquals(NotificationType.FOLLOW, items[0].type)
 
         val markReadResp = Unirest.post("$appUrl/notifications/mark-all-read")
             .header("X-Auth-Token", jeffAuthToken)
@@ -49,7 +50,7 @@ class NotificationRoutesTest : AppTest() {
         assertEquals(0, items.size)
 
         val brad = TestDataFactories.createUser(txn, "brad", true)
-        followingService.followUser(brad.id, jeff.name)
+        followingService.followUser(brad, jeff.name)
 
         val resp = Unirest.get("$appUrl/notifications")
             .header("X-Auth-Token", jeffAuthToken)
@@ -58,7 +59,7 @@ class NotificationRoutesTest : AppTest() {
 
         items = getNotifications(jeffAuthToken)
         assertEquals(1, items.size)
-        assertEquals("brad", items[0].user!!.name)
+        assertEquals(NotificationType.FOLLOW, items[0].type)
     }
 
     @Test
@@ -68,10 +69,10 @@ class NotificationRoutesTest : AppTest() {
 
         // create follow notifications
         val vinny = TestDataFactories.createUser(txn, "vinny", true)
-        followingService.followUser(vinny.id, jeff.name)
+        followingService.followUser(vinny, jeff.name)
         val brad = TestDataFactories.createUser(txn, "brad", true)
-        followingService.followUser(brad.id, jeff.name)
-        followingService.followUser(vinny.id, brad.name)
+        followingService.followUser(brad, jeff.name)
+        followingService.followUser(vinny, brad.name)
         val bradAuthToken = TestDataFactories.createAuthToken(txn, brad.id)
 
         val markReadResp = Unirest.post("$appUrl/notifications/mark-all-read")
@@ -105,9 +106,9 @@ class NotificationRoutesTest : AppTest() {
 
         // create follow notifications
         val vinny = TestDataFactories.createUser(txn, "vinny", true)
-        followingService.followUser(vinny.id, jeff.name)
+        followingService.followUser(vinny, jeff.name)
         val brad = TestDataFactories.createUser(txn, "brad", true)
-        followingService.followUser(brad.id, jeff.name)
+        followingService.followUser(brad, jeff.name)
 
         val initResp = Unirest.get("$appUrl/notifications")
             .header("X-Auth-Token", jeffAuthToken)
@@ -141,7 +142,7 @@ class NotificationRoutesTest : AppTest() {
         val jeffAuthToken = TestDataFactories.createAuthToken(txn, jeff.id)
         val vinny = TestDataFactories.createUser(txn, "vinny", true)
         val vinnyAuthToken = TestDataFactories.createAuthToken(txn, vinny.id)
-        followingService.followUser(vinny.id, jeff.name)
+        followingService.followUser(vinny, jeff.name)
 
         val initResp = Unirest.get("$appUrl/notifications")
             .header("X-Auth-Token", jeffAuthToken)

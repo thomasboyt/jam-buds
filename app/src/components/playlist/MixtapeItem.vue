@@ -31,6 +31,7 @@
           :item-id="mixtape.id"
           :is-liked="mixtape.meta.isLiked"
           :like-count="mixtape.meta.likeCount"
+          :like-source-params="likeSourceParams"
         />
         <div class="dropdown-action-placeholder" />
       </playlist-item-actions>
@@ -56,7 +57,7 @@ export default {
     PlaylistItemRow,
   },
 
-  props: ['mixtapeId'],
+  props: ['mixtapeId', 'likeSourceParams'],
 
   computed: {
     ...mapState({

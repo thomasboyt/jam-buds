@@ -23,7 +23,14 @@ const heartFilledIcon = require('~/assets/heart_filled.svg');
 export default {
   components: { Icon },
 
-  props: ['itemType', 'itemId', 'isLiked', 'likeCount', 'mobile'],
+  props: [
+    'itemType',
+    'itemId',
+    'isLiked',
+    'likeCount',
+    'likeSourceParams',
+    'mobile',
+  ],
 
   data() {
     return {
@@ -51,6 +58,7 @@ export default {
         await this.$store.dispatch(action, {
           itemId: this.itemId,
           itemType: this.itemType,
+          ...this.likeSourceParams,
         });
       } catch (err) {
         this.$store.commit('showErrorModal');

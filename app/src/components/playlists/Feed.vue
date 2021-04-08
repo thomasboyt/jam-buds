@@ -8,7 +8,14 @@
   >
     <template #item="{ item }">
       <div data-test="feed-entry-group">
-        <playlist-entry :item="item" @requestPlay="handleRequestPlay" />
+        <playlist-entry
+          :item="item"
+          :like-source-params="{
+            likeSource: 'post',
+            sourceUserNames: item.posts.map((post) => post.userName),
+          }"
+          @requestPlay="handleRequestPlay"
+        />
         <entry-details
           v-for="post in sortPosts(item.posts)"
           type="feed"

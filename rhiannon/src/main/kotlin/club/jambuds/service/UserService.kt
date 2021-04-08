@@ -9,6 +9,7 @@ import club.jambuds.responses.CurrentUser
 import club.jambuds.responses.FeedPlaylistEntry
 import club.jambuds.responses.PublicUser
 import club.jambuds.responses.TwitterFriendSuggestion
+import club.jambuds.responses.UserPlaylistEntry
 import club.jambuds.responses.UserProfile
 import club.jambuds.util.defaultColorScheme
 import io.javalin.http.BadRequestResponse
@@ -131,5 +132,20 @@ class UserService(
     ): List<UserProfile> {
         val userNames = playlist.items.flatMap { item -> item.posts.map { it.userName } }.distinct()
         return getUserProfilesByNames(userNames)
+    }
+
+    /**
+     * A user-specific playlist still needs to get profiles for any mixtapes posted by other
+     * users.
+     */
+    fun getUserProfilesFromUserPlaylist(
+        playlist: PlaylistService.Playlist<UserPlaylistEntry>
+    ): List<UserProfile> {
+        val userIds = playlist.items.mapNotNull { it.mixtape }.map { it.userId!! }.distinct()
+        if (userIds.isEmpty()) {
+            return listOf()
+        }
+        val users = userDao.getUsersByIds(userIds)
+        return getUserProfileForUsers(users)
     }
 }

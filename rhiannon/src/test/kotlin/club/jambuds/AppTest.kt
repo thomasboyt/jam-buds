@@ -142,9 +142,9 @@ open class AppTest {
             mockTwitterService,
             config.getString("appUrl")
         )
-        val likeService = LikeService(likeDao, songDao, mixtapeDao)
+        val likeService = LikeService(likeDao, songDao, mixtapeDao, albumDao, notificationsDao, userDao, postDao)
         val reportService = ReportService(reportDao, postDao)
-        val notificationService = NotificationService(notificationsDao, userDao)
+        val notificationService = NotificationService(notificationsDao)
         followingService = FollowingService(followingDao, userDao, notificationsDao)
         val emailService = EmailService(mockEmailClient)
         val authService = AuthService(

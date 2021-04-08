@@ -1,6 +1,7 @@
 package club.jambuds.dao
 
 import club.jambuds.model.Notification
+import club.jambuds.model.NotificationType
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.jdbi.v3.sqlobject.statement.SqlUpdate
 
@@ -39,20 +40,36 @@ interface NotificationsDao {
     @SqlUpdate(
         """
         INSERT INTO notifications
-            (target_user_id, type, notification_user_id)
+            (target_user_id, key, type, body, url, read)
         VALUES
-            (:followedUserId, 'follow', :newFollowerId)
+            (:targetUserId, :key, :type, :body, :url, false)
         """
     )
-    fun createFollowingNotification(followedUserId: Int, newFollowerId: Int)
+    fun createNotification(
+        targetUserId: Int,
+        type: NotificationType,
+        key: String,
+        body: String,
+        url: String,
+    )
 
     @SqlUpdate(
         """
         DELETE FROM notifications
-        WHERE type = 'follow'
-        AND target_user_id = :followedUserId
-        AND notification_user_id = :followerId
+        WHERE type = :type
+        AND target_user_id = :targetUserId
+        AND key = :key
         """
     )
-    fun removeFollowingNotification(followedUserId: Int, followerId: Int)
+    fun removeNotification(targetUserId: Int, type: NotificationType, key: String)
+
+    @SqlUpdate(
+        """
+        DELETE FROM notifications
+        WHERE type = :type
+        AND key = :key
+        """
+    )
+    fun removeAnyTargetNotification(type: NotificationType, key: String)
+
 }

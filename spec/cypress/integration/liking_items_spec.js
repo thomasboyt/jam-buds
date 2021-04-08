@@ -20,5 +20,16 @@ describe('liking items', () => {
     cy.contains('[data-test="feed-entry-group"]', 'Drive')
       .find('[data-test="like-count"]:visible')
       .contains('1');
+
+    // ensure creates like for other user
+    cy.clearCookies();
+    cy.login('vinny@jambuds.club');
+    cy.visit('/');
+    cy.get('.notifications-button .notifications-dot').should('exist');
+    cy.get('.sidebar .notifications-button').click();
+    cy.get('.modal').should(
+      'contain',
+      'jeff liked the song "Drive" via your post'
+    );
   });
 });

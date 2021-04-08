@@ -4,16 +4,19 @@
       v-if="item.type === 'song'"
       :song-id="item.songId"
       :own-post-id="ownPostId"
+      :like-source-params="likeSourceParams"
       @requestPlay="handleRequestPlay"
     />
     <mixtape-item
       v-else-if="item.type === 'mixtape'"
       :mixtape-id="item.mixtapeId"
+      :like-source-params="likeSourceParams"
     />
     <album-item
       v-else-if="item.type === 'album'"
       :album-id="item.albumId"
       :own-post-id="ownPostId"
+      :like-source-params="likeSourceParams"
     />
   </div>
 </template>
@@ -27,7 +30,7 @@ import AlbumItem from './AlbumItem.vue';
 export default {
   components: { Song, MixtapeItem, AlbumItem },
 
-  props: ['item'],
+  props: ['item', 'likeSourceParams'],
 
   computed: {
     ...mapState({

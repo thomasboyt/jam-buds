@@ -7,7 +7,13 @@
     @requestNextPage="handleRequestNextPage"
   >
     <template #item="{ item }">
-      <mixtape-item :mixtape-id="item.mixtapeId" />
+      <mixtape-item
+        :mixtape-id="item.mixtapeId"
+        :like-source-params="{
+          likeSource: 'post',
+          sourceUserNames: [userName],
+        }"
+      />
       <entry-details
         type="userPlaylist"
         :id="item.postId"

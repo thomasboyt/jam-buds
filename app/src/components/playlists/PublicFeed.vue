@@ -7,7 +7,14 @@
     @requestNextPage="handleRequestNextPage"
   >
     <template #item="{ item }">
-      <playlist-entry :item="item" @requestPlay="handleRequestPlay" />
+      <playlist-entry
+        :item="item"
+        :like-source-params="{
+          likeSource: 'post',
+          sourceUserNames: item.posts.map((post) => post.userName),
+        }"
+        @requestPlay="handleRequestPlay"
+      />
       <entry-details
         v-for="post in item.posts"
         type="feed"

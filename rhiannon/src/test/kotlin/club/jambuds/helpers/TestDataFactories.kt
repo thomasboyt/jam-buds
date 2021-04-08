@@ -1,5 +1,9 @@
 package club.jambuds.helpers
 
+import club.jambuds.dao.AlbumDao
+import club.jambuds.dao.PostDao
+import club.jambuds.model.Album
+import club.jambuds.model.ItemType
 import club.jambuds.model.Post
 import club.jambuds.model.User
 import club.jambuds.model.cache.SongSearchCache
@@ -55,6 +59,19 @@ object TestDataFactories {
             .executeAndReturnGeneratedKeys("id")
             .mapTo(Int::class.java)
             .one()
+    }
+
+    fun createAlbum(txn: Handle): Album {
+        val albumDao = txn.attach(AlbumDao::class.java)
+        return albumDao.createAlbum(
+            title = "Music for the Masses",
+            artists = listOf("Depeche Mode"),
+            albumArt = "/some/image.jpg",
+            spotifyId = "abcdef",
+            appleMusicId = null,
+            bandcampUrl = null,
+            appleMusicUrl = null
+        )
     }
 
     fun createUser(
@@ -219,5 +236,10 @@ object TestDataFactories {
             bandcampUrl = "https://artist.bandcamp.com/track/title",
             bandcampStreamingAvailable = true
         )
+    }
+
+    fun createAlbumPost(txn: Handle, userId: Int, albumId: Int): Post {
+        val postDao = txn.attach(PostDao::class.java)
+        return postDao.createPost(userId, ItemType.ALBUM, albumId, note = null)
     }
 }

@@ -11,10 +11,10 @@
         <li v-for="notification of notifications" :key="notification.id">
           <nuxt-link
             :class="{ read: notification.seen }"
-            :to="`/users/${notification.user.name}`"
+            :to="notification.url"
             @click.native="handleClickNotification(notification)"
           >
-            {{ notification.user.name }} is now following you.<br />
+            {{ notification.body }}
             <div class="timestamp">
               {{ formatTimestamp(notification.timestamp) }}
             </div>

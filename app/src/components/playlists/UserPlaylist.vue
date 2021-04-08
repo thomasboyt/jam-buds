@@ -10,6 +10,10 @@
       <playlist-entry
         :item="item"
         :user-name="userName"
+        :like-source-params="{
+          likeSource: 'post',
+          sourceUserNames: [userName],
+        }"
         @requestPlay="handleRequestPlay"
       />
       <entry-details

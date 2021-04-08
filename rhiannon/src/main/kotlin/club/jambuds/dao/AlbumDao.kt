@@ -22,6 +22,18 @@ interface AlbumDao {
         """
         SELECT *, $LIKES_SUBQUERY
         FROM albums
+        WHERE albums.id = :id;
+        """
+    )
+    fun getAlbumById(
+        id: Int,
+        currentUserId: Int? = -1
+    ): Album?
+
+    @SqlQuery(
+        """
+        SELECT *, $LIKES_SUBQUERY
+        FROM albums
         WHERE albums.id IN (<albumIds>);
         """
     )
