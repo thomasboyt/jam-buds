@@ -27,7 +27,7 @@ class LikeService(
     private val logger = LoggerFactory.getLogger(AuthService::class.java.name)
 
     companion object {
-        private class LikeNotificationError(message: String): Exception(message)
+        class LikeNotificationError(message: String): Exception(message)
     }
 
     fun createLike(
@@ -75,7 +75,7 @@ class LikeService(
         }
     }
 
-    private fun createLikeNotification(
+    fun createLikeNotification(
         currentUser: User,
         itemType: ItemType,
         itemId: Int,
