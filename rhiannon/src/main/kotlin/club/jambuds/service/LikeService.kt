@@ -34,7 +34,7 @@ class LikeService(
         currentUser: User,
         itemType: ItemType,
         itemId: Int,
-        likeSource: LikeSource,
+        likeSource: LikeSource?,
         sourceMixtapeId: Int?,
         sourceUserNames: String?
     ) {
@@ -65,6 +65,11 @@ class LikeService(
             itemType = itemType,
             itemId = itemId
         )
+
+        // TODO: remove this after audio player like button is fixed
+        if (likeSource == null) {
+            return
+        }
 
         try {
             createLikeNotification(currentUser, itemType, itemId, likeSource, sourceMixtapeId, sourceUserNames)

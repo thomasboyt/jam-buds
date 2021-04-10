@@ -54,7 +54,7 @@ class LikeRoutes(private val likeService: LikeService) {
         val currentUser = ctx.requireUser()
         val itemType = getItemType(ctx)
         val itemId = ctx.pathParam<Int>("itemId").get()
-        val likeSource = ctx.queryParam<LikeSource>("likeSource").get()
+        val likeSource = ctx.queryParam<LikeSource>("likeSource").getOrNull()
         val sourceMixtapeId = ctx.queryParam<Int>("sourceMixtapeId").getOrNull()
         val sourceUserNames = ctx.queryParam<String>("sourceUserNames").getOrNull()
         likeService.createLike(currentUser, itemType, itemId, likeSource, sourceMixtapeId, sourceUserNames)
