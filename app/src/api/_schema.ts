@@ -63,8 +63,8 @@ export interface paths {
     put: operations["putApiPostsWithPostidReport"];
   };
   "/api/likes/{type}/{itemId}": {
-    put: operations["putApiLikesWithTypeWithItemid"];
-    delete: operations["deleteApiLikesWithTypeWithItemid"];
+    put: operations["createLike"];
+    delete: operations["deleteLike"];
   };
   "/api/me": {
     get: operations["getApiMe"];
@@ -657,7 +657,7 @@ export interface operations {
       204: never;
     };
   };
-  putApiLikesWithTypeWithItemid: {
+  createLike: {
     parameters: {
       path: {
         /** One of 'songs', 'mixtapes, or 'albums' */
@@ -678,7 +678,7 @@ export interface operations {
       204: never;
     };
   };
-  deleteApiLikesWithTypeWithItemid: {
+  deleteLike: {
     parameters: {
       path: {
         /** One of 'songs', 'mixtapes, or 'albums' */

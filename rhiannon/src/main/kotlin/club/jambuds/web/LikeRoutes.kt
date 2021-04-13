@@ -19,6 +19,7 @@ class LikeRoutes(private val likeService: LikeService) {
     }
 
     @OpenApi(
+        operationId="createLike",
         tags = ["Likes"],
         summary = "Like an item",
         responses = [OpenApiResponse("204")],
@@ -62,6 +63,7 @@ class LikeRoutes(private val likeService: LikeService) {
     }
 
     @OpenApi(
+        operationId="deleteLike",
         tags = ["Likes"],
         summary = "Unlike an item",
         responses = [OpenApiResponse("204")],
