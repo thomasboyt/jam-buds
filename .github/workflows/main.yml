@@ -33,10 +33,13 @@ jobs:
         with:
           java-version: 11
 
-      - name: Use Node 12
-        uses: actions/setup-node@v1
+      - name: Use Node 14
+        uses: actions/setup-node@v2
         with:
-          node-version: 12.x
+          node-version: '14'
+
+      - name: Use npm 7
+        run: npm install -g npm
 
       - name: Restore/cache Gradle dependencies
         uses: actions/cache@v1
