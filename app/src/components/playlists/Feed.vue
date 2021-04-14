@@ -53,22 +53,16 @@ export default {
   },
 
   async fetch() {
-    return this.$store.dispatch('loadPlaylist', { key: 'feed', url: '/feed' });
+    return this.$store.dispatch('playlists/loadPlaylist', {
+      key: 'feed',
+      url: '/feed',
+    });
   },
 
   data() {
     return {
       loadingNextPage: false,
     };
-  },
-
-  computed: {
-    items() {
-      return this.$store.getters.playlistItems('feed');
-    },
-    ...mapState({
-      feedItemsExhausted: (state) => state.playlists.feed.itemsExhausted,
-    }),
   },
 
   methods: {
@@ -80,7 +74,9 @@ export default {
       this.loadingNextPage = true;
 
       try {
-        await this.$store.dispatch('loadNextPlaylistPage', { key: 'feed' });
+        await this.$store.dispatch('playlists/loadNextPlaylistPage', {
+          key: 'feed',
+        });
       } catch (err) {
         this.$store.commit('showErrorModal');
         throw err;

@@ -22,7 +22,7 @@ export default {
           // TODO: native connection
         }
       }
-      this.$store.dispatch('updateStreamingService', 'appleMusic');
+      this.$store.dispatch('streaming/updateStreamingService', 'appleMusic');
       this.$emit('connected');
     },
   },

@@ -76,7 +76,7 @@ export default class SpotifyPlayer {
           'A premium Spotify account is required for playback, sorry :('
         );
         this.store.commit('playback/clearPlayback');
-        this.store.dispatch('unsetStreamingService');
+        this.store.dispatch('streaming/unsetStreamingService');
         return;
       }
       this.store.commit(

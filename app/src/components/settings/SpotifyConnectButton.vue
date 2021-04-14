@@ -47,7 +47,7 @@ export default {
           // TODO: native connection
         }
       }
-      this.$store.dispatch('updateStreamingService', 'spotify');
+      this.$store.dispatch('streaming/updateStreamingService', 'spotify');
       this.$emit('connected');
     },
   },

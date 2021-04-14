@@ -28,7 +28,7 @@ export default {
   props: ['isMixtapeSearch'],
 
   fetch() {
-    return this.$store.dispatch('loadDraftMixtapes');
+    return this.$store.dispatch('mixtapes/loadDraftMixtapes');
   },
 
   data() {

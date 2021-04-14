@@ -116,7 +116,7 @@ export default {
     }),
 
     ...mapGetters('playback', ['currentSong']),
-    ...mapGetters(['playerEnabled']),
+    ...mapGetters('streaming', ['playerEnabled']),
 
     canRequestPlay() {
       return this.streamingService && this.playerEnabled && this.canPlay;
@@ -180,7 +180,7 @@ export default {
       } else {
         window.open(getYoutubeSearchUrl(this.song));
       }
-      this.$store.dispatch('markSongPlayed', this.songId);
+      this.$store.dispatch('playlistItems/markSongPlayed', this.songId);
     },
     handleConnectedFromStreamingBanner() {
       this.showConnectStreamingBanner = false;

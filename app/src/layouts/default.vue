@@ -93,12 +93,12 @@ export default {
   mounted() {
     // this is an odd place for this, but plugins can't be used since they break
     // dom matching between server/client rendering
-    this.$store.dispatch('initializeStreaming', {
+    this.$store.dispatch('streaming/initializeStreaming', {
       userAgent: navigator.userAgent,
     });
 
     if ('spotifySuccess' in this.$route.query) {
-      this.$store.dispatch('updateStreamingService', 'spotify');
+      this.$store.dispatch('streaming/updateStreamingService', 'spotify');
       this.$router.replace(this.$route.path);
     }
   },

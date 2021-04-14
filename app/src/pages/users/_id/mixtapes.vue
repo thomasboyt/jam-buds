@@ -36,14 +36,17 @@ export default {
 
   fetch() {
     const requests = [
-      this.$store.dispatch('loadProfileMixtapes', this.$route.params.id),
+      this.$store.dispatch(
+        'playlists/loadProfileMixtapes',
+        this.$route.params.id
+      ),
     ];
 
     if (
       this.$store.state.auth.authenticated &&
       this.$store.state.currentUser.name === this.$route.params.id
     ) {
-      requests.push(this.$store.dispatch('loadDraftMixtapes'));
+      requests.push(this.$store.dispatch('mixtapes/loadDraftMixtapes'));
     }
 
     return Promise.all(requests);

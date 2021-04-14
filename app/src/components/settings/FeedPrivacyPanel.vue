@@ -31,7 +31,7 @@ export default {
   methods: {
     async handleUpdatePrivacy() {
       // optimistic update
-      this.$store.commit('updateUserPrivacy', {
+      this.$store.commit('currentUser/updateUserPrivacy', {
         showInPublicFeed: !this.showInPublicFeed,
       });
 
@@ -48,7 +48,7 @@ export default {
       } catch (err) {
         this.$store.commit('showErrorModal');
         // de...optimistic update
-        this.$store.commit('updateUserPrivacy', {
+        this.$store.commit('currentUser/updateUserPrivacy', {
           showInPublicFeed: !this.showInPublicFeed,
         });
         throw err;

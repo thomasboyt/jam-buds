@@ -14,7 +14,7 @@ export default {
     const name = this.$route.params.id;
 
     if (!this.$store.state.profiles[name]) {
-      await this.$store.dispatch('loadProfileForUser', name);
+      await this.$store.dispatch('profiles/loadProfileForUser', name);
     }
 
     this.$store.dispatch('colorScheme/setOverrideFromProfile', name);
