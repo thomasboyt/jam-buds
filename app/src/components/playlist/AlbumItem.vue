@@ -92,7 +92,7 @@ export default {
       streamingService: (state) => state.streaming.service,
 
       album(state) {
-        return state.albums[this.albumId];
+        return state.playlistItems.albums[this.albumId];
       },
     }),
 

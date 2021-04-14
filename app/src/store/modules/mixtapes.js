@@ -2,37 +2,16 @@ import Vue from 'vue';
 
 const mixtapes = {
   state() {
-    // [k, v] -> [id, resource]
     return {
-      mixtapesById: {},
       tracksByMixtapeId: {},
+      draftMixtapes: [],
     };
   },
 
   mutations: {
-    setMixtape(state, { id, data }) {
+    setMixtapeSongs(state, data) {
       const trackIds = data.tracks.map((song) => song.id);
-      Vue.set(state.mixtapesById, id, data.mixtape);
-      Vue.set(state.tracksByMixtapeId, id, trackIds);
-    },
-
-    setMixtapeTitle(state, { mixtapeId, title }) {
-      state.mixtapesById[mixtapeId].title = title;
-    },
-
-    setMixtapeSlug(state, { mixtapeId, slug }) {
-      state.mixtapesById[mixtapeId].slug = slug;
-    },
-
-    setMixtapePublished(state, { mixtapeId }) {
-      // Using vue.set because publishedAt is not present in returned mixtape
-      // resource if the playlist isn't published yet, so Vue doesn't pick it
-      // up w/r/t reactivity.
-      Vue.set(
-        state.mixtapesById[mixtapeId],
-        'publishedAt',
-        new Date().toISOString()
-      );
+      Vue.set(state.tracksByMixtapeId, data.mixtape.id, trackIds);
     },
 
     setMixtapeOrder(state, { mixtapeId, songOrder }) {
@@ -51,25 +30,12 @@ const mixtapes = {
       Vue.set(state.tracksByMixtapeId, mixtapeId, newTracks);
     },
 
-    addMixtapes(state, mixtapes) {
-      for (let mixtape of mixtapes) {
-        Vue.set(state.mixtapesById, mixtape.id, mixtape);
-      }
-    },
-
     removeMixtape(state, { mixtapeId }) {
-      Vue.delete(state.mixtapesById, mixtapeId);
       Vue.delete(state.tracksByMixtapeId, mixtapeId);
     },
 
-    likeMixtape(state, id) {
-      state.mixtapesById[id].meta.isLiked = true;
-      state.mixtapesById[id].meta.likeCount += 1;
-    },
-
-    unlikeMixtape(state, id) {
-      state.mixtapesById[id].meta.isLiked = false;
-      state.mixtapesById[id].meta.likeCount -= 1;
+    setDraftMixtapes(state, mixtapes) {
+      state.draftMixtapes = mixtapes;
     },
   },
 
@@ -81,7 +47,8 @@ const mixtapes = {
       });
 
       context.commit('addSongs', resp.data.tracks);
-      context.commit('setMixtape', { id, data: resp.data });
+      context.commit('setMixtapeSongs', resp.data);
+      context.commit('addMixtape', resp.data.mixtape);
       context.commit('addProfiles', [resp.data.author]);
 
       return resp.data;
@@ -119,7 +86,8 @@ const mixtapes = {
     },
 
     async renameMixtape(context, { mixtapeId, title }) {
-      const prevTitle = context.state.mixtapesById[mixtapeId].title;
+      const prevTitle =
+        context.rootState.playlistItems.mixtapes[mixtapeId].title;
       context.commit('setMixtapeTitle', { mixtapeId, title });
 
       try {
@@ -165,12 +133,22 @@ const mixtapes = {
       context.commit('removeMixtape', { mixtapeId });
       context.commit('deleteOwnPlaylistMixtape', { mixtapeId });
     },
+
+    async loadDraftMixtapes(context) {
+      const resp = await this.$axios({
+        url: `/draft-mixtapes`,
+        method: 'GET',
+      });
+
+      context.commit('setDraftMixtapes', resp.data.mixtapes);
+      context.commit('addMixtapes', resp.data.mixtapes);
+    },
   },
 
   getters: {
     getMixtape(state, getters, rootState) {
       return (key) => {
-        const mixtape = state.mixtapesById[key];
+        const mixtape = rootState.playlistItems.mixtapes[key];
 
         if (!mixtape) {
           return null;

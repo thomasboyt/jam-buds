@@ -198,7 +198,7 @@ const playback = {
      * Play a mixtape starting with a specific song ID.
      */
     playFromMixtape(context, { mixtapeId, mixtapeSlug, songId }) {
-      const mixtape = context.rootState.mixtapes.mixtapesById[mixtapeId];
+      const mixtape = context.rootState.playlistItems.mixtapes[mixtapeId];
       const playbackSourceLabel = mixtape.title;
       const playbackSourcePath = `/mixtapes/${mixtapeId}/${mixtapeSlug}`;
 
@@ -268,7 +268,7 @@ const playback = {
 
   getters: {
     currentSong(state, getters, rootState) {
-      return rootState.songs[state.currentSongId];
+      return rootState.playlistItems.songs[state.currentSongId];
     },
   },
 };

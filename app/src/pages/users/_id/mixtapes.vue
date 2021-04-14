@@ -51,7 +51,7 @@ export default {
 
   computed: {
     ...mapState({
-      draftMixtapes: (state) => state.currentUser.draftMixtapes,
+      draftMixtapes: (state) => state.mixtapes.draftMixtapes,
       isCurrentUserPage(state) {
         return state.auth.authenticated && state.currentUser.name === this.name;
       },

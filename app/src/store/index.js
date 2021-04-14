@@ -4,7 +4,6 @@ import { parse as parseUrl } from 'url';
 
 import auth from './modules/auth';
 import currentUser from './modules/currentUser';
-import songs from './modules/songs';
 import playback from './modules/playback';
 import playlists from './modules/playlists';
 import profiles from './modules/profiles';
@@ -12,14 +11,12 @@ import mixtapes from './modules/mixtapes';
 import notifications from './modules/notifications';
 import streaming from './modules/streaming';
 import colorScheme from './modules/colorScheme';
-import likes from './modules/likes';
-import albums from './modules/albums';
+import * as playlistItems from './modules/playlistItems';
 
 const root = {
   modules: {
     auth,
     currentUser,
-    songs,
     playback,
     playlists,
     profiles,
@@ -27,8 +24,7 @@ const root = {
     notifications,
     streaming,
     colorScheme,
-    likes,
-    albums,
+    playlistItems,
   },
 
   state() {

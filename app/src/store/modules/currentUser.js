@@ -19,9 +19,6 @@ const currentUser = {
     updateUserPrivacy(state, { showInPublicFeed }) {
       state.showInPublicFeed = showInPublicFeed;
     },
-    setDraftMixtapes(state, mixtapes) {
-      state.draftMixtapes = mixtapes;
-    },
   },
 
   actions: {
@@ -43,16 +40,6 @@ const currentUser = {
       });
 
       context.commit('removeFollowedUser', name);
-    },
-
-    async loadDraftMixtapes(context) {
-      const resp = await this.$axios({
-        url: `/draft-mixtapes`,
-        method: 'GET',
-      });
-
-      context.commit('setDraftMixtapes', resp.data.mixtapes);
-      context.commit('addMixtapes', resp.data.mixtapes);
     },
 
     async signOut() {

@@ -186,18 +186,7 @@ const playlists = {
     },
 
     addPlaylistResources(context, { items, profiles }) {
-      context.commit(
-        'addSongs',
-        items.map((item) => item.song).filter((song) => song)
-      );
-      context.commit(
-        'addMixtapes',
-        items.map((item) => item.mixtape).filter((mixtape) => mixtape)
-      );
-      context.commit(
-        'addAlbums',
-        items.map((item) => item.album).filter((album) => album)
-      );
+      context.commit('addPlaylistItems', items);
       if (profiles) {
         context.commit('addProfiles', profiles);
       }

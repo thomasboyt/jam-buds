@@ -111,7 +111,7 @@ export default {
       streamingService: (state) => state.streaming.service,
 
       song(state) {
-        return state.songs[this.songId];
+        return state.playlistItems.songs[this.songId];
       },
     }),
 

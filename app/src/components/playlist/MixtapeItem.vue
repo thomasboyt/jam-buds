@@ -62,7 +62,7 @@ export default {
   computed: {
     ...mapState({
       mixtape(state) {
-        return state.mixtapes.mixtapesById[this.mixtapeId];
+        return state.playlistItems.mixtapes[this.mixtapeId];
       },
     }),
 
