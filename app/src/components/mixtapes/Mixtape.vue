@@ -53,7 +53,7 @@ export default {
 
   computed: {
     mixtape() {
-      return this.$store.getters.getMixtape(this.mixtapeId);
+      return this.$store.getters['mixtapes/getMixtape'](this.mixtapeId);
     },
 
     mixtapeTracks: {
@@ -63,7 +63,7 @@ export default {
 
       async set(songOrder) {
         try {
-          await this.$store.dispatch('updateMixtapeSongOrder', {
+          await this.$store.dispatch('mixtapes/updateMixtapeSongOrder', {
             mixtapeId: this.mixtapeId,
             songOrder,
           });

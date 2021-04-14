@@ -55,7 +55,7 @@ export default {
       try {
         const prevSlug = this.mixtape.slug;
 
-        await this.$store.dispatch('renameMixtape', {
+        await this.$store.dispatch('mixtapes/renameMixtape', {
           mixtapeId: this.mixtape.id,
           title: this.value,
         });

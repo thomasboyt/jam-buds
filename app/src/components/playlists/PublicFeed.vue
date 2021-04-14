@@ -44,7 +44,7 @@ export default {
   components: { Playlist, PlaylistEntry, EntryDetails },
 
   async fetch() {
-    await this.$store.dispatch('loadPlaylist', {
+    await this.$store.dispatch('playlists/loadPlaylist', {
       key: 'publicFeed',
       url: '/public-feed',
     });
@@ -56,15 +56,6 @@ export default {
     };
   },
 
-  computed: {
-    items() {
-      return this.$store.getters.playlistItems('publicFeed');
-    },
-    ...mapState({
-      feedItemsExhausted: (state) => state.playlists.publicFeed.itemsExhausted,
-    }),
-  },
-
   methods: {
     sortPosts(posts) {
       return sortBy(posts, (item) => -new Date(item.timestamp).valueOf());
@@ -74,7 +65,7 @@ export default {
       this.loadingNextPage = true;
 
       try {
-        await this.$store.dispatch('loadNextPlaylistPage', {
+        await this.$store.dispatch('playlists/loadNextPlaylistPage', {
           key: 'publicFeed',
         });
       } catch (err) {

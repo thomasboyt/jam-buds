@@ -14,5 +14,5 @@ export default ({ $config, store }) => {
     keyId: $config.MUSICKIT_KEY_ID,
   });
 
-  store.commit('setMusicKitToken', token);
+  store.commit('streaming/setMusicKitToken', token);
 };

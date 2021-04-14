@@ -40,7 +40,7 @@ export default {
       this.requestInFlight = true;
 
       try {
-        await this.$store.dispatch('publishMixtape', {
+        await this.$store.dispatch('mixtapes/publishMixtape', {
           mixtapeId: this.mixtape.id,
         });
       } catch (err) {

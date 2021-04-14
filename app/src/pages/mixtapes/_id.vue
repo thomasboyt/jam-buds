@@ -127,7 +127,7 @@ export default {
   async fetch() {
     const mixtapeId = this.$route.params.id;
     const { mixtape, author } = await this.$store.dispatch(
-      'loadMixtape',
+      'mixtapes/loadMixtape',
       mixtapeId
     );
     // this is also done when navigating in - see <mixtape-item>
@@ -151,7 +151,7 @@ export default {
     },
 
     mixtape() {
-      return this.$store.getters.getMixtape(this.mixtapeId);
+      return this.$store.getters['mixtapes/getMixtape'](this.mixtapeId);
     },
 
     isOwnMixtape() {
@@ -200,7 +200,7 @@ export default {
       const { mixtapeId } = this;
 
       try {
-        await this.$store.dispatch('deleteMixtape', {
+        await this.$store.dispatch('mixtapes/deleteMixtape', {
           mixtapeId,
         });
       } catch (err) {
@@ -209,7 +209,7 @@ export default {
       }
 
       this.$router.push('/', () => {
-        this.$store.dispatch('removeMixtapeFromCache', { mixtapeId });
+        this.$store.dispatch('mixtapes/removeMixtapeFromCache', { mixtapeId });
       });
     },
   },

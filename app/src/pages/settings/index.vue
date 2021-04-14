@@ -88,7 +88,7 @@ export default {
         return;
       }
 
-      await this.$store.dispatch('signOut');
+      await this.$store.dispatch('currentUser/signOut');
 
       if (this.$nativeBridge) {
         this.$nativeBridge.signOut();

@@ -16,7 +16,7 @@ export default {
 
   computed: {
     serviceName() {
-      return this.$store.getters.streamingServiceName;
+      return this.$store.getters['streaming/streamingServiceName'];
     },
 
     title() {

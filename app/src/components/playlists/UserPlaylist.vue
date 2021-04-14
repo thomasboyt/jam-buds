@@ -46,7 +46,10 @@ export default {
   props: ['userName'],
 
   fetch() {
-    return this.$store.dispatch('loadProfilePostsPlaylist', this.userName);
+    return this.$store.dispatch(
+      'playlists/loadProfilePostsPlaylist',
+      this.userName
+    );
   },
 
   data() {
@@ -58,12 +61,6 @@ export default {
   computed: {
     playlistKey() {
       return `${this.userName}/posts`;
-    },
-    items() {
-      return this.$store.getters.playlistItems(this.playlistKey);
-    },
-    itemsExhausted() {
-      return this.$store.state.playlists[this.playlistKey].itemsExhausted;
     },
     playbackSourcePath() {
       return `/users/${this.userName}`;
@@ -78,7 +75,7 @@ export default {
       this.loadingNextPage = true;
 
       try {
-        await this.$store.dispatch('loadNextPlaylistPage', {
+        await this.$store.dispatch('playlists/loadNextPlaylistPage', {
           key: this.playlistKey,
         });
       } catch (err) {

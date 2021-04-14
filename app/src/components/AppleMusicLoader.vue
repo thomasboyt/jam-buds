@@ -46,7 +46,7 @@ export default {
       // if we're no longer authorized, disable apple music
       const music = MusicKit.getInstance();
       if (this.usingAppleMusicWebPlayer && !music.isAuthorized) {
-        this.$store.dispatch('unsetStreamingService');
+        this.$store.dispatch('streaming/unsetStreamingService');
       }
     },
   },

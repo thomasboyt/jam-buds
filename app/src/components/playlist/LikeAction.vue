@@ -55,7 +55,7 @@ export default {
       this.requestInFlight = true;
 
       try {
-        await this.$store.dispatch(action, {
+        await this.$store.dispatch(`playlistItems/${action}`, {
           itemId: this.itemId,
           itemType: this.itemType,
           ...this.likeSourceParams,

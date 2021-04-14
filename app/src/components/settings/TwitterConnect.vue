@@ -55,7 +55,7 @@ export default {
         throw err;
       }
 
-      this.$store.commit('disconnectedTwitter');
+      this.$store.commit('currentUser/disconnectedTwitter');
       this.isDisconnecting = false;
     },
   },

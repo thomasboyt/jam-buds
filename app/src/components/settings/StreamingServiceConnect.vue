@@ -56,8 +56,9 @@ export default {
       webPlayerEnabled: (state) => state.streaming.webPlayerEnabled,
       supports: (state) => state.streaming.supports,
     }),
+
     serviceName() {
-      return this.$store.getters.streamingServiceName;
+      return this.$store.getters['streaming/streamingServiceName'];
     },
   },
 
@@ -68,7 +69,7 @@ export default {
       } else if (this.streamingService === 'appleMusic') {
         this.handleDisconnectAppleMusic();
       }
-      this.$store.dispatch('unsetStreamingService');
+      this.$store.dispatch('streaming/unsetStreamingService');
     },
 
     async handleDisconnectAppleMusic() {

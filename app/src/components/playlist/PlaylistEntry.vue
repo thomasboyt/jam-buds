@@ -59,7 +59,7 @@ export default {
   methods: {
     handleRequestPlay() {
       this.$emit('requestPlay', this.item.songId);
-      this.$store.dispatch('markSongPlayed', this.item.songId);
+      this.$store.dispatch('playlistItems/markSongPlayed', this.item.songId);
     },
   },
 };

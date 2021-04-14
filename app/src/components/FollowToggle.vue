@@ -22,13 +22,13 @@ export default {
 
   computed: {
     isFollowing() {
-      return this.$store.getters.isFollowing(this.name);
+      return this.$store.getters['currentUser/isFollowing'](this.name);
     },
   },
 
   methods: {
     async handleFollow() {
-      await this.$store.dispatch('followUser', this.name);
+      await this.$store.dispatch('currentUser/followUser', this.name);
 
       this.$store.dispatch('setFlashMessage', {
         message: `You're now following ${this.name}!`,
@@ -37,7 +37,7 @@ export default {
     },
 
     async handleUnfollow() {
-      await this.$store.dispatch('unfollowUser', this.name);
+      await this.$store.dispatch('currentUser/unfollowUser', this.name);
 
       this.$store.dispatch('setFlashMessage', {
         message: `You have unfollowed ${this.name}.`,
