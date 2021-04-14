@@ -38,6 +38,7 @@
     "intersection-observer": "^0.12.0",
     "lodash": "^4.17.21",
     "nuxt": "^2.15.3",
+    "nuxt-typed-vuex": "^0.1.22",
     "sass": "^1.32.8",
     "sass-loader": "^10.0.1",
     "svg-sprite-loader": "^6.0.2",
