@@ -31,6 +31,7 @@ export default {
   computed: {
     inputStyle() {
       // goofy declaration of dependency here
+      // eslint-disable-next-line no-unused-expressions
       this.fontsLoaded;
 
       // stub out for SSR

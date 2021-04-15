@@ -5,8 +5,8 @@
 </template>
 
 <script>
-const chevronIcon = require('~/assets/arrow.svg');
 import Icon from '~/components/Icon.vue';
+const chevronIcon = require('~/assets/arrow.svg');
 
 export default {
   components: { Icon },

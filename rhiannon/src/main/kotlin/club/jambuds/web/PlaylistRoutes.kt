@@ -27,6 +27,7 @@ class PlaylistRoutes(
     }
 
     @OpenApi(
+        operationId="getPublicFeed",
         tags = ["Playlists"],
         summary = "Fetch the public feed.",
         responses = [OpenApiResponse("200", [OpenApiContent(FeedPlaylistResponse::class)])],
@@ -54,6 +55,7 @@ class PlaylistRoutes(
     }
 
     @OpenApi(
+        operationId="getUserFeed",
         tags = ["Playlists"],
         summary = "Fetch the current user's feed.",
         responses = [OpenApiResponse("200", [OpenApiContent(FeedPlaylistResponse::class)])],
@@ -81,6 +83,7 @@ class PlaylistRoutes(
     }
 
     @OpenApi(
+        operationId="getUserPlaylist",
         tags = ["Playlists"],
         summary = "Fetch the playlist (recent posts) of a specific user.",
         responses = [OpenApiResponse("200", [OpenApiContent(UserPlaylistResponse::class)])],
@@ -116,6 +119,7 @@ class PlaylistRoutes(
     }
 
     @OpenApi(
+        operationId="getUserLikesPlaylist",
         tags = ["Playlists"],
         summary = "Fetch the likes of a specific user.",
         responses = [OpenApiResponse("200", [OpenApiContent(UserPlaylistResponse::class)])],

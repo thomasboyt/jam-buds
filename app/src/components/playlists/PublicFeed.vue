@@ -44,7 +44,7 @@ export default {
   components: { Playlist, PlaylistEntry, EntryDetails },
 
   async fetch() {
-    await this.$store.dispatch('playlists/loadPlaylist', {
+    await this.$store.dispatch('playlist/loadPlaylist', {
       key: 'publicFeed',
       url: '/public-feed',
     });
@@ -65,7 +65,7 @@ export default {
       this.loadingNextPage = true;
 
       try {
-        await this.$store.dispatch('playlists/loadNextPlaylistPage', {
+        await this.$store.dispatch('playlist/loadNextPlaylistPage', {
           key: 'publicFeed',
         });
       } catch (err) {

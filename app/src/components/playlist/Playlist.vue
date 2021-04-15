@@ -37,14 +37,14 @@ export default {
 
   computed: {
     items() {
-      return this.$store.getters['playlists/getPlaylist'](this.playlistKey);
+      return this.$store.getters['playlist/getPlaylist'](this.playlistKey);
     },
     ...mapState({
       itemsExhausted(state) {
-        return state.playlists[this.playlistKey].itemsExhausted;
+        return state.playlist.playlists[this.playlistKey].itemsExhausted;
       },
       hasLoadedInitialItems(state) {
-        return state.playlists[this.playlistKey].hasLoadedInitialItems;
+        return state.playlist.playlists[this.playlistKey].hasLoadedInitialItems;
       },
     }),
   },

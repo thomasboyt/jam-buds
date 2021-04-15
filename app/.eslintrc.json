@@ -1,7 +1,9 @@
 {
+  "ignorePatterns": ["src/api/_schema.ts"],
   "extends": [
     "plugin:vue/strongly-recommended",
     "eslint:recommended",
+    "@nuxtjs/eslint-config-typescript",
     "prettier"
   ],
   "env": {
@@ -16,12 +18,21 @@
   },
   "rules": {
     "no-console": "off",
+    "camelcase": "off",
+    "require-await": "off",
+
+    "import/order": "off",
 
     // Currently broken: https://github.com/eslint/eslint/issues/11899
     "require-atomic-updates": "off",
 
+    "@typescript-eslint/no-unused-vars": "off",
+
     "vue/require-default-prop": "off",
     "vue/require-prop-types": "off",
+    "vue/attributes-order": "off",
+    "vue/v-slot-style": "off",
+    "vue/no-lone-template": "off",
     "vue/order-in-components": [
       "error",
       {

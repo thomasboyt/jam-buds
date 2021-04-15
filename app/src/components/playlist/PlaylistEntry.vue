@@ -41,13 +41,13 @@ export default {
 
         if (this.item.posts) {
           return this.item.posts.find(
-            (post) => post.userName === state.currentUser.name
+            (post) => post.userName === state.currentUser.user.name
           )?.postId;
         }
 
         // HACK: This should probably use props passed down instead of going off
         // of route
-        if (this.$route.path === `/users/${state.currentUser.name}`) {
+        if (this.$route.path === `/users/${state.currentUser.user.name}`) {
           return this.item.postId;
         }
 

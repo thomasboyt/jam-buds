@@ -91,6 +91,7 @@ export default {
     '@nuxtjs/proxy',
     '~modules/spriteInject',
   ],
+  buildModules: ['@nuxt/typescript-build', 'nuxt-typed-vuex'],
 
   // Note: unlike other variables, this has to be set during build time! It's
   // used for two purposes:

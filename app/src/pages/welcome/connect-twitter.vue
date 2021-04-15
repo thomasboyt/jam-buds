@@ -58,7 +58,7 @@ export default {
   },
 
   computed: mapState({
-    twitterName: (state) => state.currentUser.twitterName,
+    twitterName: (state) => state.currentUser.user.twitterName,
   }),
 
   methods: {

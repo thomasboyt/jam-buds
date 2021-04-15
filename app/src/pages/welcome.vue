@@ -34,7 +34,7 @@ export default {
   },
 
   computed: mapState({
-    name: (state) => state.auth.authenticated && state.currentUser.name,
+    name: (state) => state.auth.authenticated && state.currentUser.user.name,
   }),
 };
 </script>

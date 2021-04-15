@@ -62,7 +62,7 @@ export default {
 
   computed: {
     currentUserName() {
-      return this.$store.state.currentUser.name;
+      return this.$store.state.currentUser.user.name;
     },
     authenticated() {
       return this.$store.state.auth.authenticated;

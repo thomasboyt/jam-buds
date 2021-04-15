@@ -43,7 +43,7 @@ export default {
     // copy color scheme out of store
     const colorScheme = {
       ...defaultColorScheme,
-      ...this.$store.getters['profiles/currentUserColorScheme'],
+      ...this.$store.getters['profile/currentUserColorScheme'],
     };
 
     return {
@@ -62,7 +62,7 @@ export default {
       this.colorScheme = colorScheme;
 
       this.$store.commit('profile/updateProfileColorScheme', {
-        name: this.$store.state.currentUser.name,
+        name: this.$store.state.currentUser.user.name,
         colorScheme,
       });
 

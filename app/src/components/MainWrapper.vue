@@ -22,7 +22,6 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
 import getCSSVariablesFromColorScheme from '../util/getCSSVariablesFromColorScheme';
 import LoggedOutHeader from './LoggedOutHeader.vue';
 import Sidebar from './nav/Sidebar.vue';
@@ -61,12 +60,12 @@ export default {
   },
 
   computed: {
-    ...mapState({
-      authenticated: (state) => state.auth.authenticated,
-    }),
+    authenticated() {
+      return this.$accessor.auth.authenticated;
+    },
 
     cssTheme() {
-      const scheme = this.$store.getters['colorScheme/currentColorScheme'];
+      const scheme = this.$accessor.colorScheme.currentColorScheme;
       return getCSSVariablesFromColorScheme(scheme);
     },
 
@@ -83,10 +82,10 @@ export default {
 
   created() {
     if (this.withColorSchemeOverride) {
-      this.$store.commit('colorScheme/enableOverride');
+      this.$accessor.colorScheme.enableOverride();
     } else {
       // reset back to default color scheme
-      this.$store.commit('colorScheme/disableOverride');
+      this.$accessor.colorScheme.disableOverride();
     }
   },
 
