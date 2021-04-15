@@ -27,7 +27,7 @@ export default {
 
   computed: {
     tabs() {
-      const currentUserName = this.$store.state.currentUser.name;
+      const currentUserName = this.$store.state.currentUser.user.name;
       return [
         { name: 'Feed', link: '/', icon: homeIcon },
         {

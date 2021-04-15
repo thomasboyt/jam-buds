@@ -20,8 +20,6 @@
 </template>
 
 <script>
-import _get from 'lodash/get';
-
 export default {
   props: ['names'],
 
@@ -42,7 +40,7 @@ export default {
     },
 
     currentUserName() {
-      return _get(this.$store.state.currentUser, 'name');
+      return this.$store.state.currentUser.user?.name;
     },
   },
 };

@@ -3,36 +3,45 @@ import { ApiSchema } from '~/api/_helpers';
 
 type PublicUser = ApiSchema<'PublicUser'>;
 type CurrentUser = ApiSchema<'CurrentUser'>;
-type CurrentUserState = CurrentUser | Record<string, never>; // this sucks lol
+type CurrentUserState = {
+  user: CurrentUser | null;
+};
 
 export const state = (): CurrentUserState => {
-  return {};
+  return {
+    user: null,
+  };
 };
 
 export const getters = getterTree(state, {
   isFollowing: (state) => (name: string) => {
-    return state.following.some((user) => user.name === name);
+    if (!state.user) {
+      return false;
+    }
+    return state.user.following.some((user) => user.name === name);
   },
 });
 
 export const mutations = mutationTree(state, {
   setCurrentUser(state, user: CurrentUser) {
-    Object.assign(state, user);
+    state.user = user;
   },
   addFollowedUser(state, user: PublicUser) {
-    state.following = state.following.concat([user]);
+    state.user!.following = state.user!.following.concat([user]);
   },
   removeFollowedUser(state, name: string) {
-    state.following = state.following.filter((user) => user.name !== name);
+    state.user!.following = state.user!.following.filter(
+      (user) => user.name !== name
+    );
   },
   disconnectedTwitter(state) {
-    state.twitterName = undefined;
+    state.user!.twitterName = undefined;
   },
   updateUserPrivacy(
     state,
     { showInPublicFeed }: { showInPublicFeed: boolean }
   ) {
-    state.showInPublicFeed = showInPublicFeed;
+    state.user!.showInPublicFeed = showInPublicFeed;
   },
 });
 

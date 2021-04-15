@@ -40,7 +40,7 @@ export const actions = actionTree(
         const user = resp.data.user;
         context.commit('setAuthenticated');
         this.app.$accessor.currentUser.setCurrentUser(user);
-        this.app.$accessor.profiles.addProfiles([user.profile]);
+        this.app.$accessor.profile.addProfiles([user.profile]);
       }
     },
   }

@@ -42,7 +42,7 @@ export default {
   computed: {
     ...mapState({
       authenticated: (state) => state.auth.authenticated,
-      enabledPublicPosts: (state) => state.currentUser.showInPublicFeed,
+      enabledPublicPosts: (state) => state.currentUser.user?.showInPublicFeed,
     }),
 
     publicPostsStatus() {

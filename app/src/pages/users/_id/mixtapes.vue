@@ -37,14 +37,14 @@ export default {
   fetch() {
     const requests = [
       this.$store.dispatch(
-        'playlists/loadProfileMixtapes',
+        'playlist/loadProfileMixtapes',
         this.$route.params.id
       ),
     ];
 
     if (
       this.$store.state.auth.authenticated &&
-      this.$store.state.currentUser.name === this.$route.params.id
+      this.$store.state.currentUser.user.name === this.$route.params.id
     ) {
       requests.push(this.$store.dispatch('mixtapes/loadDraftMixtapes'));
     }
@@ -56,7 +56,9 @@ export default {
     ...mapState({
       draftMixtapes: (state) => state.mixtapes.draftMixtapes,
       isCurrentUserPage(state) {
-        return state.auth.authenticated && state.currentUser.name === this.name;
+        return (
+          state.auth.authenticated && state.currentUser.user.name === this.name
+        );
       },
     }),
     name() {

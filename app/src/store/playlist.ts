@@ -58,16 +58,20 @@ export interface Playlist {
   hasLoadedInitialItems: boolean;
 }
 
-type PlaylistsState = Record<string, Playlist>;
+interface PlaylistStoreState {
+  playlists: Record<string, Playlist>;
+}
 
-export const state = (): PlaylistsState => {
-  return {};
+export const state = (): PlaylistStoreState => {
+  return {
+    playlists: {},
+  };
 };
 
 export const getters = getterTree(state, {
   getPlaylist(state): (key: string) => DenormalizedItem[] {
     return (key) => {
-      const playlist = state[key];
+      const playlist = state.playlists[key];
       if (!playlist) {
         throw new Error(`undefined playlist ${key}`);
       }
@@ -86,7 +90,7 @@ export const mutations = mutationTree(state, {
       /** whether we've successfully tried to load at least one page */
       hasLoadedInitialItems: false,
     };
-    Vue.set(state, key, playlist);
+    Vue.set(state.playlists, key, playlist);
   },
 
   addToPlaylistHead(
@@ -104,42 +108,45 @@ export const mutations = mutationTree(state, {
     //
     // XXX: This is like O(n^2)-ish but probably fine
     for (const newItem of denormalizedItems) {
-      for (const existingItem of state[key].items) {
+      for (const existingItem of state.playlists[key].items) {
         if (newItem.id === existingItem.id) {
-          state[key].items = state[key].items.filter(
+          state.playlists[key].items = state.playlists[key].items.filter(
             (playlistItem) => playlistItem.id !== newItem.id
           );
         }
       }
     }
 
-    state[key].items = [...denormalizedItems, ...state[key].items];
+    state.playlists[key].items = [
+      ...denormalizedItems,
+      ...state.playlists[key].items,
+    ];
   },
 
   /**
    * Append a new page of items to a playlist.
    */
   pushPlaylist(state, { key, page }: { key: string; page: PlaylistResponse }) {
-    state[key].hasLoadedInitialItems = true;
+    state.playlists[key].hasLoadedInitialItems = true;
 
     const items = page.items.map(denormalizeItem);
-    state[key].items = state[key].items.concat(items);
+    state.playlists[key].items = state.playlists[key].items.concat(items);
     if (page.items.length < page.limit) {
-      state[key].itemsExhausted = true;
+      state.playlists[key].itemsExhausted = true;
     }
   },
 
   deletedPost(state, { id }: { id: number }) {
     // After you delete a post, remove the post from any playlist, including
     // aggregate items where yours was the only post
-    for (const key of Object.keys(state)) {
-      const existingIdx = state[key].items.findIndex(
+    for (const key of Object.keys(state.playlists)) {
+      const existingIdx = state.playlists[key].items.findIndex(
         (entry) =>
           entry.postId === id || entry.posts?.find((post) => post.postId === id)
       );
 
       if (existingIdx !== -1) {
-        const items = state[key].items.slice();
+        const items = state.playlists[key].items.slice();
         const posts = items[existingIdx].posts;
 
         if (!posts || posts.length === 1) {
@@ -149,20 +156,20 @@ export const mutations = mutationTree(state, {
           items[existingIdx].posts = posts.filter((post) => post.postId !== id);
         }
 
-        state[key].items = items;
+        state.playlists[key].items = items;
       }
     }
   },
 
   deleteOwnPlaylistMixtape(state, { mixtapeId }: { mixtapeId: number }) {
-    for (const key of Object.keys(state)) {
-      const existingIdx = state[key].items.findIndex(
+    for (const key of Object.keys(state.playlists)) {
+      const existingIdx = state.playlists[key].items.findIndex(
         (entry) => entry.id === mixtapeKey(mixtapeId)
       );
       if (existingIdx !== -1) {
-        const items = state[key].items.slice();
+        const items = state.playlists[key].items.slice();
         items.splice(existingIdx, 1);
-        state[key].items = items;
+        state.playlists[key].items = items;
       }
     }
   },
@@ -177,7 +184,7 @@ export const actions = actionTree(
     ): Promise<PlaylistResponse> {
       // XXX: This returns resp.data so profile store can pick up the "current
       // profile" from it
-      if (context.state[key]) {
+      if (context.state.playlists[key]) {
         // refresh top of playlist
         return await context.dispatch('loadNewPlaylistEntries', { key });
       } else {
@@ -190,17 +197,17 @@ export const actions = actionTree(
       context,
       { key }: { key: string }
     ): Promise<PlaylistResponse> {
-      if (!context.state[key]) {
+      if (!context.state.playlists[key]) {
         throw new Error(`undefined playlist ${key}`);
       }
 
-      const previousItem = context.state[key].items.slice(-1)[0];
+      const previousItem = context.state.playlists[key].items.slice(-1)[0];
       const previousTimestamp = previousItem
         ? previousItem.timestamp
         : undefined;
 
       const resp = await this.$axios({
-        url: context.state[key].url,
+        url: context.state.playlists[key].url,
         method: 'GET',
         params: { before: previousTimestamp },
       });
@@ -216,11 +223,11 @@ export const actions = actionTree(
       context,
       { key }: { key: string }
     ): Promise<PlaylistResponse> {
-      const firstItem = context.state[key].items[0];
+      const firstItem = context.state.playlists[key].items[0];
       const afterTimestamp = firstItem ? firstItem.timestamp : undefined;
 
       const resp = await this.$axios({
-        url: context.state[key].url,
+        url: context.state.playlists[key].url,
         method: 'GET',
         params: { after: afterTimestamp },
       });
@@ -234,7 +241,7 @@ export const actions = actionTree(
 
     addPlaylistResources(context, page: PlaylistResponse): void {
       this.app.$accessor.playlistItems.addPlaylistItems(page.items);
-      this.app.$accessor.profiles.addProfiles(page.profiles);
+      this.app.$accessor.profile.addProfiles(page.profiles);
     },
 
     async loadProfilePostsPlaylist(context, userName: string): Promise<void> {

@@ -56,7 +56,9 @@ export default {
     ...mapState({
       authenticated: (state) => state.auth.authenticated,
       showFollowToggle(state) {
-        return state.auth.authenticated && state.currentUser.name !== this.name;
+        return (
+          state.auth.authenticated && state.currentUser.user.name !== this.name
+        );
       },
     }),
     name() {

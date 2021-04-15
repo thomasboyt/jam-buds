@@ -29,7 +29,11 @@ export const state = (): ColorSchemeState => {
 export const getters = getterTree(state, {
   currentUserColorScheme(state, getters, rootState): ColorScheme | undefined {
     // TODO: type root getters
-    return rootState.profiles[rootState.currentUser.name]?.colorScheme;
+    const currentUserName = rootState.currentUser.user?.name;
+    if (!currentUserName) {
+      return undefined;
+    }
+    return rootState.profile.profiles[currentUserName]?.colorScheme;
   },
   currentColorScheme(state, getters): ColorScheme {
     if (state.shouldOverride) {
@@ -69,7 +73,7 @@ export const actions = actionTree(
     setOverrideFromProfile(context, profileName: string): void {
       context.commit(
         'setColorSchemeOverride',
-        this.app.$accessor.profiles[profileName].colorScheme
+        this.app.$accessor.profile.profiles[profileName].colorScheme
       );
     },
   }

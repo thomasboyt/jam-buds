@@ -55,7 +55,7 @@ export default {
 
       if (confirmedDelete) {
         try {
-          await this.$store.dispatch('playlists/deletePost', {
+          await this.$store.dispatch('playlist/deletePost', {
             id: this.ownPostId,
           });
         } catch (err) {

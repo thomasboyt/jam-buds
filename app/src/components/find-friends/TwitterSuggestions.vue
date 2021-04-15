@@ -33,7 +33,7 @@ export default {
   },
 
   async fetch() {
-    if (this.$store.state.currentUser.twitterName) {
+    if (this.$store.state.currentUser.user.twitterName) {
       const resp = await this.$axios({
         url: `/friend-suggestions`,
         method: 'GET',
@@ -51,7 +51,7 @@ export default {
 
   computed: {
     ...mapState({
-      showTwitterSuggestions: (state) => state.currentUser.twitterName,
+      showTwitterSuggestions: (state) => state.currentUser.user.twitterName,
     }),
     redirect() {
       return this.$route.fullPath;

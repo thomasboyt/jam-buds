@@ -53,7 +53,7 @@ export default {
       // TODO: should really compare on user ID instead of user name
       return (
         this.type !== 'userLiked' &&
-        this.name !== this.$store.state.currentUser.name
+        this.name !== this.$store.state.currentUser.user?.name
       );
     },
   },

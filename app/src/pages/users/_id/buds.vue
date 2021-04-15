@@ -59,7 +59,7 @@ export default {
     this.followers = followersResp.data.users;
     this.following = followingResp.data.users;
 
-    this.$store.commit('profiles/addProfiles', [
+    this.$store.commit('profile/addProfiles', [
       ...this.followers,
       ...this.following,
     ]);
@@ -80,7 +80,7 @@ export default {
       return `${this.name}'s buds`;
     },
     isCurrentUser() {
-      return this.name === this.$store.state.currentUser.name;
+      return this.name === this.$store.state.currentUser.user?.name;
     },
   },
 };

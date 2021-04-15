@@ -9,9 +9,9 @@ import * as currentUser from './currentUser';
 import * as mixtapes from './mixtapes';
 import * as notifications from './notifications';
 import * as playback from './playback';
+import * as playlist from './playlist';
 import * as playlistItems from './playlistItems';
-import * as playlists from './playlists';
-import * as profiles from './profiles';
+import * as profile from './profile';
 import * as streaming from './streaming';
 
 interface RootState {
@@ -90,7 +90,9 @@ export const actions = actionTree(
 
       const pathname = parseUrl(req.url).pathname!;
       if (this.app.$accessor.auth.authenticated) {
-        const currentProfile = `/users/${this.app.$accessor.currentUser.name}`;
+        const currentProfile = `/users/${
+          this.app.$accessor.currentUser.user!.name
+        }`;
         if (pathname.startsWith(currentProfile)) {
           context.commit('setActiveTab', currentProfile);
           return;
@@ -136,9 +138,9 @@ export const accessorType = getAccessorType({
     mixtapes,
     notifications,
     playback,
+    playlist,
     playlistItems,
-    playlists,
-    profiles,
+    profile,
     streaming,
   },
 });

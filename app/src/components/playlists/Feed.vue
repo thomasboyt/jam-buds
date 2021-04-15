@@ -53,7 +53,7 @@ export default {
   },
 
   async fetch() {
-    return this.$store.dispatch('playlists/loadPlaylist', {
+    return this.$store.dispatch('playlist/loadPlaylist', {
       key: 'feed',
       url: '/feed',
     });
@@ -74,7 +74,7 @@ export default {
       this.loadingNextPage = true;
 
       try {
-        await this.$store.dispatch('playlists/loadNextPlaylistPage', {
+        await this.$store.dispatch('playlist/loadNextPlaylistPage', {
           key: 'feed',
         });
       } catch (err) {

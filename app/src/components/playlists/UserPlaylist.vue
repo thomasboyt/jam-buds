@@ -47,7 +47,7 @@ export default {
 
   fetch() {
     return this.$store.dispatch(
-      'playlists/loadProfilePostsPlaylist',
+      'playlist/loadProfilePostsPlaylist',
       this.userName
     );
   },
@@ -75,7 +75,7 @@ export default {
       this.loadingNextPage = true;
 
       try {
-        await this.$store.dispatch('playlists/loadNextPlaylistPage', {
+        await this.$store.dispatch('playlist/loadNextPlaylistPage', {
           key: this.playlistKey,
         });
       } catch (err) {

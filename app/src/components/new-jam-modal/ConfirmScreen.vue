@@ -67,7 +67,7 @@ export default {
 
   computed: {
     ...mapState({
-      hasTwitter: (state) => !!state.currentUser.twitterName,
+      hasTwitter: (state) => !!state.currentUser.user.twitterName,
     }),
   },
 
@@ -133,15 +133,15 @@ export default {
         return;
       }
 
-      const userName = this.$store.state.currentUser.name;
+      const userName = this.$store.state.currentUser.user.name;
       const currentPath = this.$route.path;
       const profilePath = `/users/${userName}`;
       if (currentPath === '/') {
-        this.$store.dispatch('playlists/loadNewPlaylistEntries', {
+        this.$store.dispatch('playlist/loadNewPlaylistEntries', {
           key: 'feed',
         });
       } else if (currentPath === profilePath) {
-        this.$store.dispatch('playlists/loadNewPlaylistEntries', {
+        this.$store.dispatch('playlist/loadNewPlaylistEntries', {
           key: `${userName}/posts`,
         });
       }

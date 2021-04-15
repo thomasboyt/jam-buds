@@ -13,8 +13,8 @@ export default {
   async fetch() {
     const name = this.$route.params.id;
 
-    if (!this.$store.state.profiles[name]) {
-      await this.$store.dispatch('profiles/loadProfileForUser', name);
+    if (!this.$store.state.profile.profiles[name]) {
+      await this.$store.dispatch('profile/loadProfileForUser', name);
     }
 
     this.$store.dispatch('colorScheme/setOverrideFromProfile', name);

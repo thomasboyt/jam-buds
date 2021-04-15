@@ -4,30 +4,41 @@ import { ApiSchema } from '~/api/_helpers';
 
 type ColorScheme = ApiSchema<'ColorScheme'>;
 type Profile = ApiSchema<'UserProfile'>;
-type ProfileState = Record<string, Profile>; // name -> profile
 
-export const state = (): ProfileState => {
-  return {};
+interface ProfileStoreState {
+  profiles: Record<string, Profile>; // name -> profile
+}
+
+export const state = (): ProfileStoreState => {
+  return {
+    profiles: {},
+  };
 };
 
 export const getters = getterTree(state, {
   currentUserColorScheme(state, getters, rootState): ColorScheme | undefined {
     // TODO: type root state
-    return state[rootState.currentUser.name as string]?.colorScheme;
+    const currentUserName = rootState.currentUser.user?.name as
+      | string
+      | undefined;
+    if (!currentUserName) {
+      return undefined;
+    }
+    return state.profiles[currentUserName]?.colorScheme;
   },
 });
 
 export const mutations = mutationTree(state, {
   addProfiles(state, profiles: Profile[]) {
     for (const profile of profiles) {
-      Vue.set(state, profile.name, profile);
+      Vue.set(state.profiles, profile.name, profile);
     }
   },
   updateProfileColorScheme(
     state,
     { name, colorScheme }: { name: string; colorScheme: ColorScheme }
   ) {
-    state[name].colorScheme = colorScheme;
+    state.profiles[name].colorScheme = colorScheme;
   },
 });
 

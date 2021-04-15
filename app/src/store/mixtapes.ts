@@ -42,7 +42,7 @@ export const getters = getterTree(state, {
       return {
         ...mixtape,
         tracks: state.tracksByMixtapeId[key],
-        author: rootState.profiles[mixtape.authorName],
+        author: rootState.profile.profiles[mixtape.authorName],
       };
     };
   },
@@ -101,7 +101,7 @@ export const actions = actionTree(
       this.app.$accessor.playlistItems.addSongs(data.tracks);
       context.commit('setMixtapeSongs', data);
       this.app.$accessor.playlistItems.addMixtape(data.mixtape);
-      this.app.$accessor.profiles.addProfiles([data.author]);
+      this.app.$accessor.profile.addProfiles([data.author]);
 
       return resp.data;
     },
@@ -208,7 +208,7 @@ export const actions = actionTree(
     ): void {
       context.commit('removeMixtape', { mixtapeId });
       this.app.$accessor.playlistItems.removeMixtape({ mixtapeId });
-      this.app.$accessor.playlists.deleteOwnPlaylistMixtape({
+      this.app.$accessor.playlist.deleteOwnPlaylistMixtape({
         mixtapeId,
       });
     },

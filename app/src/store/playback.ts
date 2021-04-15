@@ -1,7 +1,7 @@
 import { getterTree, mutationTree, actionTree } from 'typed-vuex';
 import { ApiSchema } from '~/api/_helpers';
 import { getInitializedPlayer, getOrCreatePlayer } from '../players';
-import { DenormalizedItem } from './playlists';
+import { DenormalizedItem } from './playlist';
 
 type SongWithMeta = ApiSchema<'SongWithMeta'>;
 type Player = any; // TODO
@@ -219,7 +219,7 @@ export const actions = actionTree(
         });
       } else if (context.state.playlistKey) {
         const playlistKey = context.state.playlistKey;
-        const playlist = this.app.$accessor.playlists[playlistKey];
+        const playlist = this.app.$accessor.playlist.playlists[playlistKey];
         const nextEntry = getNextSongEntry(
           playlist.items,
           context.state.currentSongPlaylistTimestamp!
@@ -234,7 +234,7 @@ export const actions = actionTree(
           // TODO: Put a loading state here, e.g...
           // context.commit('sync', { isBuffering: true });
 
-          await this.app.$accessor.playlists.loadNextPlaylistPage({
+          await this.app.$accessor.playlist.loadNextPlaylistPage({
             key: playlistKey,
           });
 
@@ -286,7 +286,7 @@ export const actions = actionTree(
         return;
       }
 
-      const playlist = this.app.$accessor.playlists[playlistKey].items;
+      const playlist = this.app.$accessor.playlist.playlists[playlistKey].items;
       const entry = playlist.find((entry) => entry.songId === songId);
       context.commit('setPlaybackSource', {
         playlistKey,
