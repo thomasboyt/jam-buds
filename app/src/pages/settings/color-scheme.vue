@@ -43,7 +43,7 @@ export default {
     // copy color scheme out of store
     const colorScheme = {
       ...defaultColorScheme,
-      ...this.$store.getters['profile/currentUserColorScheme'],
+      ...this.$accessor.profile.currentUserColorScheme,
     };
 
     return {

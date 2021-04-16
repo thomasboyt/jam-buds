@@ -62,7 +62,7 @@ export default {
 
   computed: {
     serviceName() {
-      return this.$store.getters['streaming/streamingServiceName'];
+      return this.$accessor.streaming.streamingServiceName;
     },
   },
 

@@ -53,7 +53,7 @@ export default {
 
   computed: {
     mixtape() {
-      return this.$store.getters['mixtapes/getMixtape'](this.mixtapeId);
+      return this.$accessor.mixtapes.getMixtape(this.mixtapeId);
     },
 
     mixtapeTracks: {

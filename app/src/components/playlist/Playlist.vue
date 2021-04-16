@@ -36,7 +36,7 @@ export default {
 
   computed: {
     items() {
-      return this.$store.getters['playlist/getPlaylist'](this.playlistKey);
+      return this.$accessor.playlist.getPlaylist(this.playlistKey);
     },
     itemsExhausted() {
       return this.$accessor.playlist.playlists[this.playlistKey].itemsExhausted;

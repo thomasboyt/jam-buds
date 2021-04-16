@@ -62,7 +62,7 @@ export default {
       return this.$accessor.isWebView;
     },
     serviceName() {
-      return this.$store.getters['streaming/streamingServiceName'];
+      return this.$accessor.streaming.streamingServiceName;
     },
   },
 

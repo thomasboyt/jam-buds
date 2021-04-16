@@ -22,7 +22,7 @@ export default {
 
   computed: {
     isFollowing() {
-      return this.$store.getters['currentUser/isFollowing'](this.name);
+      return this.$accessor.currentUser.isFollowing(this.name);
     },
   },
 
