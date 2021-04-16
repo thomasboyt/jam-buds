@@ -59,7 +59,7 @@ export default {
             id: this.ownPostId,
           });
         } catch (err) {
-          this.$store.commit('showErrorModal');
+          this.$accessor.showErrorModal();
           throw err;
         }
       }

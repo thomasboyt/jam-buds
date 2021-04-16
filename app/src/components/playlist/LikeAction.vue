@@ -60,7 +60,7 @@ export default {
           ...this.likeSourceParams,
         });
       } catch (err) {
-        this.$store.commit('showErrorModal');
+        this.$accessor.showErrorModal();
         throw err;
       } finally {
         this.requestInFlight = false;

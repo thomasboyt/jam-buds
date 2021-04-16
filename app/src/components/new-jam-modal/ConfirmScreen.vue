@@ -90,7 +90,7 @@ export default {
           },
         });
       } catch (err) {
-        this.$store.commit('showErrorModal');
+        this.$accessor.showErrorModal();
         return;
       }
 
@@ -103,7 +103,7 @@ export default {
       evt.preventDefault();
 
       if (this.noteText > MAX_POST_LENGTH) {
-        this.$store.commit('showErrorModal', 'Yo your note is too long');
+        this.$accessor.showErrorModal('Yo your note is too long');
         return;
       }
 

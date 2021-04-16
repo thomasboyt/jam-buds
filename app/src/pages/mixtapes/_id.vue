@@ -204,7 +204,7 @@ export default {
           mixtapeId,
         });
       } catch (err) {
-        this.$store.commit('showErrorModal');
+        this.$accessor.showErrorModal();
         throw err;
       }
 

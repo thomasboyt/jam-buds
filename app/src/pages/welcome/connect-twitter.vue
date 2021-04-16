@@ -63,7 +63,7 @@ export default {
 
   methods: {
     setTab() {
-      this.$store.commit('setActiveTab', '/');
+      this.$accessor.setActiveTab('/');
     },
   },
 };

@@ -68,7 +68,7 @@ export default {
           key: 'publicFeed',
         });
       } catch (err) {
-        this.$store.commit('showErrorModal');
+        this.$accessor.showErrorModal();
         throw err;
       } finally {
         this.loadingNextPage = false;

@@ -95,7 +95,7 @@ export default {
               method: 'DELETE',
             });
           } catch (err) {
-            this.$store.commit('showErrorModal');
+            this.$accessor.showErrorModal();
             throw err;
           }
 

@@ -55,7 +55,7 @@ export default {
           });
         }
       } catch (err) {
-        this.$store.commit('showErrorModal');
+        this.$accessor.showErrorModal();
         this.isSubscribed = !this.isSubscribed;
         throw err;
       } finally {

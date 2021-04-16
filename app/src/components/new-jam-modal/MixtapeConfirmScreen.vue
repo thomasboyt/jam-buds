@@ -69,7 +69,7 @@ export default {
           },
         });
       } catch (err) {
-        this.$store.commit('showErrorModal');
+        this.$accessor.showErrorModal();
       }
 
       this.details = resp.data;

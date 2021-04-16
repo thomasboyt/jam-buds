@@ -61,7 +61,7 @@ export default {
       const prevScheme = { ...this.colorScheme };
       this.colorScheme = colorScheme;
 
-      this.$store.commit('profile/updateProfileColorScheme', {
+      this.$accessor.profile.updateProfileColorScheme({
         name: this.$accessor.currentUser.user.name,
         colorScheme,
       });
@@ -76,7 +76,7 @@ export default {
           },
         });
       } catch (err) {
-        this.$store.commit('showErrorModal');
+        this.$accessor.showErrorModal();
         this.colorScheme = prevScheme;
         throw err;
       }

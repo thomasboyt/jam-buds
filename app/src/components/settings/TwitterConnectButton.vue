@@ -23,13 +23,11 @@ export default {
       this.$router.replace(this.$route.path);
 
       if (error === 'alreadyUsed') {
-        this.$store.commit(
-          'showErrorModal',
+        this.$accessor.showErrorModal(
           'Error connecting Twitter: This Twitter account is already associated with a Jam Buds user! Email us at hello@jambuds.club if you need help accessing your existing account.'
         );
       } else {
-        this.$store.commit(
-          'showErrorModal',
+        this.$accessor.showErrorModal(
           `Unknown error connecting Twitter: ${error}`
         );
       }

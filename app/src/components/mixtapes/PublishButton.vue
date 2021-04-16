@@ -44,7 +44,7 @@ export default {
           mixtapeId: this.mixtape.id,
         });
       } catch (err) {
-        this.$store.commit('showErrorModal');
+        this.$accessor.showErrorModal();
         throw err;
       } finally {
         this.requestInFlight = false;

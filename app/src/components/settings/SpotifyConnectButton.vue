@@ -23,13 +23,11 @@ export default {
       this.$router.replace(this.$route.path);
 
       if (error === 'nonPremium') {
-        this.$store.commit(
-          'showErrorModal',
+        this.$accessor.showErrorModal(
           "Error connecting Spotify: You must have a premium (paid) Spotify account to stream to it from Jam Buds.\n\nSorry, I don't make the rules :("
         );
       } else {
-        this.$store.commit(
-          'showErrorModal',
+        this.$accessor.showErrorModal(
           `Unknown error connecting Spotify: ${error}`
         );
       }

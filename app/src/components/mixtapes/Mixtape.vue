@@ -68,7 +68,7 @@ export default {
             songOrder,
           });
         } catch (err) {
-          this.$store.commit('showErrorModal');
+          this.$accessor.showErrorModal();
           throw err;
         }
       },

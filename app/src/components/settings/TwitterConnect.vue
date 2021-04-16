@@ -51,11 +51,11 @@ export default {
           method: 'DELETE',
         });
       } catch (err) {
-        this.$store.commit('showErrorModal');
+        this.$accessor.showErrorModal();
         throw err;
       }
 
-      this.$store.commit('currentUser/disconnectedTwitter');
+      this.$accessor.currentUser.disconnectedTwitter();
       this.isDisconnecting = false;
     },
   },

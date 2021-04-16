@@ -75,7 +75,7 @@ export default {
         });
       } catch (err) {
         this.$logError(err);
-        this.$store.commit('showErrorModal');
+        this.$accessor.showErrorModal();
         return;
       }
 

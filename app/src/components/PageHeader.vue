@@ -34,15 +34,15 @@ export default {
   },
 
   beforeDestroy() {
-    this.$store.commit('hideMobileHeaderTitle');
+    this.$accessor.hideMobileHeaderTitle();
   },
 
   methods: {
     handleEnter() {
-      this.$store.commit('hideMobileHeaderTitle');
+      this.$accessor.hideMobileHeaderTitle();
     },
     handleLeave() {
-      this.$store.commit('showMobileHeaderTitle', {
+      this.$accessor.showMobileHeaderTitle({
         title: this.title,
       });
     },

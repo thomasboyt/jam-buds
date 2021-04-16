@@ -59,10 +59,7 @@ export default {
     this.followers = followersResp.data.users;
     this.following = followingResp.data.users;
 
-    this.$store.commit('profile/addProfiles', [
-      ...this.followers,
-      ...this.following,
-    ]);
+    this.$accessor.profile.addProfiles([...this.followers, ...this.following]);
   },
 
   data() {

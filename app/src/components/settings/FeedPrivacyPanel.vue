@@ -31,7 +31,7 @@ export default {
   methods: {
     async handleUpdatePrivacy() {
       // optimistic update
-      this.$store.commit('currentUser/updateUserPrivacy', {
+      this.$accessor.currentUser.updateUserPrivacy({
         showInPublicFeed: !this.showInPublicFeed,
       });
 
@@ -46,9 +46,9 @@ export default {
           data: this.colorScheme,
         });
       } catch (err) {
-        this.$store.commit('showErrorModal');
+        this.$accessor.showErrorModal();
         // de...optimistic update
-        this.$store.commit('currentUser/updateUserPrivacy', {
+        this.$accessor.currentUser.updateUserPrivacy({
           showInPublicFeed: !this.showInPublicFeed,
         });
         throw err;
