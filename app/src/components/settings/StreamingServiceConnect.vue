@@ -25,7 +25,6 @@
 <script>
 /* global MusicKit */
 
-import { mapState } from 'vuex';
 import SpotifyConnectButton from '~/components/settings/SpotifyConnectButton.vue';
 import AppleMusicConnectButton from '~/components/settings/AppleMusicConnectButton.vue';
 import JbButton from '~/components/lib/JbButton.vue';
@@ -50,13 +49,18 @@ export default {
   },
 
   computed: {
-    ...mapState({
-      streamingService: (state) => state.streaming.service,
-      isWebView: (state) => state.isWebView,
-      webPlayerEnabled: (state) => state.streaming.webPlayerEnabled,
-      supports: (state) => state.streaming.supports,
-    }),
-
+    streamingService() {
+      return this.$accessor.streaming.service;
+    },
+    webPlayerEnabled() {
+      return this.$accessor.streaming.webPlayerEnabled;
+    },
+    supports() {
+      return this.$accessor.streaming.supports;
+    },
+    isWebView() {
+      return this.$accessor.isWebView;
+    },
     serviceName() {
       return this.$store.getters['streaming/streamingServiceName'];
     },

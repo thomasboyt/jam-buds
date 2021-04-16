@@ -14,7 +14,6 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
 import Icon from '../Icon.vue';
 
 const volumeIcon = require('~/assets/volume.svg');
@@ -29,7 +28,9 @@ export default {
   },
 
   computed: {
-    ...mapState('playback', ['volume']),
+    volume() {
+      return this.$accessor.playback.volume;
+    },
   },
 
   methods: {

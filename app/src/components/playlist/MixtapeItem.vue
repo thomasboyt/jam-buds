@@ -40,7 +40,6 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
 import getMixtapeArt from '../../util/getMixtapeArt';
 import AlbumArt from './AlbumArt.vue';
 import LikeAction from './LikeAction.vue';
@@ -60,11 +59,9 @@ export default {
   props: ['mixtapeId', 'likeSourceParams'],
 
   computed: {
-    ...mapState({
-      mixtape(state) {
-        return state.playlistItems.mixtapes[this.mixtapeId];
-      },
-    }),
+    mixtape() {
+      return this.$accessor.playlistItems.mixtapes[this.mixtapeId];
+    },
 
     art() {
       return getMixtapeArt(this.mixtape.id);

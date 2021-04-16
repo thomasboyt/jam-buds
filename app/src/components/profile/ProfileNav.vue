@@ -18,7 +18,6 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
 import LinkTabs from './LinkTabs.vue';
 import FollowToggle from '~/components/FollowToggle.vue';
 import ShareLandingBanner from '~/components/ShareLandingBanner.vue';
@@ -53,14 +52,15 @@ export default {
   },
 
   computed: {
-    ...mapState({
-      authenticated: (state) => state.auth.authenticated,
-      showFollowToggle(state) {
-        return (
-          state.auth.authenticated && state.currentUser.user.name !== this.name
-        );
-      },
-    }),
+    authenticated() {
+      return this.$accessor.auth.authenticated;
+    },
+    showFollowToggle() {
+      return (
+        this.$accessor.auth.authenticated &&
+        this.$accessor.currentUser.user.name !== this.name
+      );
+    },
     name() {
       return this.$route.params.id;
     },

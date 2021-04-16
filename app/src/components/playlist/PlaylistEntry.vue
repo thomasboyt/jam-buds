@@ -22,7 +22,6 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
 import Song from './Song.vue';
 import MixtapeItem from './MixtapeItem.vue';
 import AlbumItem from './AlbumItem.vue';
@@ -33,27 +32,27 @@ export default {
   props: ['item', 'likeSourceParams'],
 
   computed: {
-    ...mapState({
-      ownPostId(state) {
-        if (!state.auth.authenticated) {
-          return null;
-        }
-
-        if (this.item.posts) {
-          return this.item.posts.find(
-            (post) => post.userName === state.currentUser.user.name
-          )?.postId;
-        }
-
-        // HACK: This should probably use props passed down instead of going off
-        // of route
-        if (this.$route.path === `/users/${state.currentUser.user.name}`) {
-          return this.item.postId;
-        }
-
+    ownPostId() {
+      if (!this.$accessor.auth.authenticated) {
         return null;
-      },
-    }),
+      }
+
+      if (this.item.posts) {
+        return this.item.posts.find(
+          (post) => post.userName === this.$accessor.currentUser.user.name
+        )?.postId;
+      }
+
+      // HACK: This should probably use props passed down instead of going off
+      // of route
+      if (
+        this.$route.path === `/users/${this.$accessor.currentUser.user.name}`
+      ) {
+        return this.item.postId;
+      }
+
+      return null;
+    },
   },
 
   methods: {

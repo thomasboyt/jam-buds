@@ -47,8 +47,6 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex';
-
 import Icon from '../Icon.vue';
 import AudioPlayerSongDisplay from './AudioPlayerSongDisplay.vue';
 import AudioPlayerProgress from './AudioPlayerProgress.vue';
@@ -79,20 +77,31 @@ export default {
   },
 
   computed: {
-    ...mapState('playback', [
-      'isPlaying',
-      'isBuffering',
-      'playbackSourcePath',
-      'playbackSourceLabel',
-      'secondsElapsed',
-      'secondsTotal',
-    ]),
+    isPlaying() {
+      return this.$accessor.playback.isPlaying;
+    },
+    isBuffering() {
+      return this.$accessor.playback.isBuffering;
+    },
+    playbackSourcePath() {
+      return this.$accessor.playback.playbackSourcePath;
+    },
+    playbackSourceLabel() {
+      return this.$accessor.playback.playbackSourceLabel;
+    },
+    secondsElapsed() {
+      return this.$accessor.playback.secondsElapsed;
+    },
+    secondsTotal() {
+      return this.$accessor.playback.secondsTotal;
+    },
+    currentSong() {
+      return this.$accessor.playback.currentSong;
+    },
 
-    ...mapGetters('playback', ['currentSong']),
-
-    ...mapState({
-      authenticated: (state) => state.auth.authenticated,
-    }),
+    authenticated() {
+      return this.$accessor.auth.authenticated;
+    },
 
     playPauseIcon() {
       return this.isPlaying ? pauseIcon : playIcon;

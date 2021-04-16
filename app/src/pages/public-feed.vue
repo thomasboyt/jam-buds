@@ -20,8 +20,6 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
-
 import MainWrapper from '~/components/MainWrapper.vue';
 import PageHeader from '~/components/PageHeader.vue';
 import PublicFeed from '~/components/playlists/PublicFeed.vue';
@@ -40,11 +38,12 @@ export default {
   },
 
   computed: {
-    ...mapState({
-      authenticated: (state) => state.auth.authenticated,
-      enabledPublicPosts: (state) => state.currentUser.user?.showInPublicFeed,
-    }),
-
+    authenticated() {
+      return this.$accessor.auth.authenticated;
+    },
+    enabledPublicPosts() {
+      return this.$accessor.currentUser.user?.showInPublicFeed;
+    },
     publicPostsStatus() {
       return this.enabledPublicPosts ? 'enabled' : 'disabled';
     },

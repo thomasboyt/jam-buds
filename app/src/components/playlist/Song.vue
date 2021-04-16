@@ -54,8 +54,6 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex';
-
 import AlbumArt from './AlbumArt.vue';
 import SongDropdownMenu from './SongDropdownMenu.vue';
 import ConnectStreamingBanner from './ConnectStreamingBanner';
@@ -101,22 +99,28 @@ export default {
   },
 
   computed: {
-    ...mapState({
-      canPlay(state) {
-        return (
-          (state.streaming.service === 'spotify' && this.song.spotifyId) ||
-          (state.streaming.service === 'appleMusic' && this.song.appleMusicId)
-        );
-      },
-      streamingService: (state) => state.streaming.service,
+    streamingService() {
+      return this.$accessor.streaming.service;
+    },
 
-      song(state) {
-        return state.playlistItems.songs[this.songId];
-      },
-    }),
+    canPlay() {
+      return (
+        (this.streamingService === 'spotify' && this.song.spotifyId) ||
+        (this.streamingService === 'appleMusic' && this.song.appleMusicId)
+      );
+    },
 
-    ...mapGetters('playback', ['currentSong']),
-    ...mapGetters('streaming', ['playerEnabled']),
+    song() {
+      return this.$accessor.playlistItems.songs[this.songId];
+    },
+
+    currentSong() {
+      return this.$accessor.playback.currentSong;
+    },
+
+    playerEnabled() {
+      return this.$accessor.playback.playerEnabled;
+    },
 
     canRequestPlay() {
       return this.streamingService && this.playerEnabled && this.canPlay;

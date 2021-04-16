@@ -13,8 +13,6 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
-
 import ProfileNav from '~/components/profile/ProfileNav.vue';
 import DraftMixtapesList from '~/components/DraftMixtapesList.vue';
 import UserMixtapesPlaylist from '~/components/playlists/UserMixtapesPlaylist.vue';
@@ -53,14 +51,15 @@ export default {
   },
 
   computed: {
-    ...mapState({
-      draftMixtapes: (state) => state.mixtapes.draftMixtapes,
-      isCurrentUserPage(state) {
-        return (
-          state.auth.authenticated && state.currentUser.user.name === this.name
-        );
-      },
-    }),
+    draftMixtapes() {
+      return this.$accessor.mixtapes.draftMixtapes;
+    },
+    isCurrentUserPage() {
+      return (
+        this.$accessor.auth.authenticated &&
+        this.$accessor.currentUser.user.name === this.name
+      );
+    },
     name() {
       return this.$route.params.id;
     },

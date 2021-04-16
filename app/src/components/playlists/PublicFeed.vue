@@ -33,7 +33,6 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
 import sortBy from 'lodash/sortBy';
 
 import Playlist from '~/components/playlist/Playlist.vue';

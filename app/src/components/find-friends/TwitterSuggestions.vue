@@ -22,7 +22,6 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
 import TwitterConnectButton from '../settings/TwitterConnectButton';
 import TwitterUsersList from './TwitterUsersList';
 
@@ -50,9 +49,9 @@ export default {
   },
 
   computed: {
-    ...mapState({
-      showTwitterSuggestions: (state) => state.currentUser.user.twitterName,
-    }),
+    showTwitterSuggestions() {
+      return !!this.$accessor.currentUser.user.twitterName;
+    },
     redirect() {
       return this.$route.fullPath;
     },

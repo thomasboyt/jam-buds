@@ -7,7 +7,6 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
 import LoggedInHome from '../components/LoggedInHome.vue';
 import LoggedOutHome from '../components/LoggedOutHome.vue';
 import MainWrapper from '../components/MainWrapper.vue';
@@ -37,8 +36,10 @@ export default {
     };
   },
 
-  computed: mapState({
-    authenticated: (state) => state.auth.authenticated,
-  }),
+  computed: {
+    authenticated() {
+      return this.$accessor.auth.authenticated;
+    },
+  },
 };
 </script>

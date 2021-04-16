@@ -7,7 +7,6 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
 import AudioPlayerProgressBar from './AudioPlayerProgressBar';
 
 function formatTime(sec) {
@@ -26,18 +25,20 @@ export default {
   },
 
   computed: {
-    ...mapState('playback', [
-      'player',
-      'secondsElapsed',
-      'secondsTotal',
-      'isPlaying',
-      'isBuffering',
-    ]),
+    secondsElapsed() {
+      return this.$accessor.playback.secondsElapsed;
+    },
+    secondsTotal() {
+      return this.$accessor.playback.secondsTotal;
+    },
     useLocalTimer() {
-      return this.player === 'spotify';
+      return this.$accessor.playback.player === 'spotify';
     },
     isPlaybackProgressing() {
-      return this.isPlaying && !this.isBuffering;
+      return (
+        this.$accessor.playback.isPlaying &&
+        !this.$accessor.playback.isBuffering
+      );
     },
     secondsElapsedDisplayed() {
       return formatTime(this.secondsElapsed + this.sinceElapsed);

@@ -26,7 +26,6 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
 import AppleMusicLoader from '~/components/AppleMusicLoader.vue';
 import SpotifyLoader from '~/components/SpotifyLoader.vue';
 import AudioPlayer from '~/components/audio-player/AudioPlayer.vue';
@@ -83,12 +82,20 @@ export default {
     };
   },
 
-  computed: mapState({
-    authenticated: (state) => state.auth.authenticated,
-    isWebView: (state) => state.isWebView,
-    supports: (state) => state.streaming.supports,
-    streamingService: (state) => state.streaming.service,
-  }),
+  computed: {
+    streamingService() {
+      return this.$accessor.streaming.service;
+    },
+    supports() {
+      return this.$accessor.streaming.supports;
+    },
+    isWebView() {
+      return this.$accessor.isWebView;
+    },
+    authenticated() {
+      return this.$accessor.auth.authenticated;
+    },
+  },
 
   mounted() {
     // this is an odd place for this, but plugins can't be used since they break

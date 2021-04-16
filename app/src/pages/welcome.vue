@@ -14,7 +14,6 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
 import getGradient from '../util/gradients';
 import LoggedOutHeader from '../components/LoggedOutHeader.vue';
 
@@ -33,9 +32,14 @@ export default {
     };
   },
 
-  computed: mapState({
-    name: (state) => state.auth.authenticated && state.currentUser.user.name,
-  }),
+  computed: {
+    name() {
+      return (
+        this.$accessor.auth.authenticated &&
+        this.$accessor.currentUser.user.name
+      );
+    },
+  },
 };
 </script>
 

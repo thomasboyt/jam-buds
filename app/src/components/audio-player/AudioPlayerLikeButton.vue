@@ -14,7 +14,6 @@ this is copied in large part from SongLikeAction.vue and maybe should be shared?
 
 <script>
 import Icon from '../Icon.vue';
-import { mapState } from 'vuex';
 
 const heartOpenIcon = require('~/assets/heart_open.svg');
 const heartFilledIcon = require('~/assets/heart_filled.svg');
@@ -33,9 +32,9 @@ export default {
   },
 
   computed: {
-    ...mapState({
-      authenticated: (state) => state.auth.authenticated,
-    }),
+    authenticated() {
+      return this.$accessor.auth.authenticated;
+    },
   },
 
   methods: {

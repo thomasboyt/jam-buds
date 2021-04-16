@@ -5,8 +5,6 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
-
 import AudioPlayerBar from './AudioPlayerBar.vue';
 
 export default {
@@ -15,7 +13,9 @@ export default {
   },
 
   computed: {
-    ...mapGetters('playback', ['currentSong']),
+    currentSong() {
+      return this.$accessor.playback.currentSong;
+    },
   },
 };
 </script>

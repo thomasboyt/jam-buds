@@ -43,7 +43,6 @@
 
 <script>
 import _get from 'lodash/get';
-import { mapState } from 'vuex';
 
 import NoteField, { MAX_POST_LENGTH } from './NoteField.vue';
 import ServiceList from './ServiceList.vue';
@@ -66,9 +65,9 @@ export default {
   },
 
   computed: {
-    ...mapState({
-      hasTwitter: (state) => !!state.currentUser.user.twitterName,
-    }),
+    hasTwitter() {
+      return !!this.$accessor.currentUser.user.twitterName;
+    },
   },
 
   mounted() {
