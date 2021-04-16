@@ -43,8 +43,8 @@ export default {
     ];
 
     if (
-      this.$store.state.auth.authenticated &&
-      this.$store.state.currentUser.user.name === this.$route.params.id
+      this.$accessor.auth.authenticated &&
+      this.$accessor.currentUser.user.name === this.$route.params.id
     ) {
       requests.push(this.$store.dispatch('mixtapes/loadDraftMixtapes'));
     }

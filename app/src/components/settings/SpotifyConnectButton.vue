@@ -38,7 +38,7 @@ export default {
 
   methods: {
     handleConnect() {
-      const { webPlayerEnabled, supports } = this.$store.state.streaming;
+      const { webPlayerEnabled, supports } = this.$accessor.streaming;
       if (supports.spotify) {
         if (webPlayerEnabled) {
           document.location = this.spotifyConnectLink;

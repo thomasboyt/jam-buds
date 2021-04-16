@@ -40,7 +40,7 @@ export default {
 
   computed: {
     draftMixtapes() {
-      return this.$store.state.mixtapes.draftMixtapes;
+      return this.$accessor.mixtapes.draftMixtapes;
     },
 
     showDraftMixtapes() {

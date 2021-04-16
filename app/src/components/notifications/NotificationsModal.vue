@@ -43,7 +43,7 @@ export default {
 
   computed: {
     notifications() {
-      return this.$store.state.notifications.items;
+      return this.$accessor.notifications.items;
     },
     isOpen() {
       return this.$route.query.modal === 'notifications';

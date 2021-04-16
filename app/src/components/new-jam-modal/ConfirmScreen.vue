@@ -133,7 +133,7 @@ export default {
         return;
       }
 
-      const userName = this.$store.state.currentUser.user.name;
+      const userName = this.$accessor.currentUser.user.name;
       const currentPath = this.$route.path;
       const profilePath = `/users/${userName}`;
       if (currentPath === '/') {

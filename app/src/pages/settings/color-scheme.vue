@@ -62,7 +62,7 @@ export default {
       this.colorScheme = colorScheme;
 
       this.$store.commit('profile/updateProfileColorScheme', {
-        name: this.$store.state.currentUser.user.name,
+        name: this.$accessor.currentUser.user.name,
         colorScheme,
       });
 

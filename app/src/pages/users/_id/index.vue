@@ -23,9 +23,7 @@ export default {
     };
 
     if (this.$route.query.song) {
-      const song = this.$store.state.playlistItems.songs[
-        this.$route.query.song
-      ];
+      const song = this.$accessor.playlistItems.songs[this.$route.query.song];
       if (song) {
         meta = {
           title: song.title,
@@ -34,7 +32,7 @@ export default {
         };
       }
     } else if (this.$route.query.album) {
-      const album = this.$store.state.playlistItems.albums[
+      const album = this.$accessor.playlistItems.albums[
         this.$route.query.album
       ];
       if (album) {

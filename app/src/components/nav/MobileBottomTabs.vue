@@ -27,7 +27,7 @@ export default {
 
   computed: {
     tabs() {
-      const currentUserName = this.$store.state.currentUser.user.name;
+      const currentUserName = this.$accessor.currentUser.user.name;
       return [
         { name: 'Feed', link: '/', icon: homeIcon },
         {
@@ -41,7 +41,7 @@ export default {
     },
 
     activeTab() {
-      return this.$store.state.activeBottomTab;
+      return this.$accessor.activeBottomTab;
     },
   },
 

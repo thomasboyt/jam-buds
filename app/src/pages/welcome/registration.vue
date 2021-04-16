@@ -56,7 +56,7 @@ export default {
   },
 
   created() {
-    if (this.$store.state.auth.authenticated) {
+    if (this.$accessor.auth.authenticated) {
       this.$router.push('/welcome/connect');
     }
   },

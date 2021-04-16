@@ -33,7 +33,7 @@ export default {
   },
 
   async fetch() {
-    if (this.$store.state.currentUser.user.twitterName) {
+    if (this.$accessor.currentUser.user.twitterName) {
       const resp = await this.$axios({
         url: `/friend-suggestions`,
         method: 'GET',

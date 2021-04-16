@@ -155,14 +155,12 @@ export default {
     },
 
     isOwnMixtape() {
-      return (
-        this.mixtape.author.name === this.$store.state.currentUser.user?.name
-      );
+      return this.mixtape.author.name === this.$accessor.currentUser.user?.name;
     },
 
     isEditing() {
       return (
-        this.mixtape.author.id === this.$store.state.currentUser.user?.id &&
+        this.mixtape.author.id === this.$accessor.currentUser.user?.id &&
         !this.mixtape.publishedAt
       );
     },

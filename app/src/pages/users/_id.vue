@@ -13,7 +13,7 @@ export default {
   async fetch() {
     const name = this.$route.params.id;
 
-    if (!this.$store.state.profile.profiles[name]) {
+    if (!this.$accessor.profile.profiles[name]) {
       await this.$store.dispatch('profile/loadProfileForUser', name);
     }
 

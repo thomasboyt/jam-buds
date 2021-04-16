@@ -80,7 +80,7 @@ export default {
       return `${this.name}'s buds`;
     },
     isCurrentUser() {
-      return this.name === this.$store.state.currentUser.user?.name;
+      return this.name === this.$accessor.currentUser.user?.name;
     },
   },
 };

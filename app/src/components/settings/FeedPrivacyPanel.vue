@@ -24,7 +24,7 @@ export default {
 
   computed: {
     showInPublicFeed() {
-      return this.$store.state.currentUser.user.showInPublicFeed;
+      return this.$accessor.currentUser.user.showInPublicFeed;
     },
   },
 

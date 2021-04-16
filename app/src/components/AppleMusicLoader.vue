@@ -7,11 +7,7 @@
 export default {
   computed: {
     usingAppleMusicWebPlayer() {
-      const {
-        supports,
-        service,
-        webPlayerEnabled,
-      } = this.$store.state.streaming;
+      const { supports, service, webPlayerEnabled } = this.$accessor.streaming;
       return (
         service === 'appleMusic' && webPlayerEnabled && supports.appleMusic
       );
@@ -36,7 +32,7 @@ export default {
     loaded() {
       // MusicKit global is now defined
       MusicKit.configure({
-        developerToken: this.$store.state.streaming.musicKitToken,
+        developerToken: this.$accessor.streaming.musicKitToken,
         app: {
           name: 'Jam Buds',
           build: '0.0.1',
