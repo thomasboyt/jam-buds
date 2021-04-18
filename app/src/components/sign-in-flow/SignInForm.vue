@@ -82,7 +82,7 @@ export default {
       } catch (err) {
         this.requestInFlight = false;
 
-        this.$store.commit('showErrorModal');
+        this.$accessor.showErrorModal();
         throw err;
       }
 

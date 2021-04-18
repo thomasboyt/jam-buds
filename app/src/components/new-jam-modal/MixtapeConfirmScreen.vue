@@ -69,7 +69,7 @@ export default {
           },
         });
       } catch (err) {
-        this.$store.commit('showErrorModal');
+        this.$accessor.showErrorModal();
       }
 
       this.details = resp.data;
@@ -102,7 +102,7 @@ export default {
         return;
       }
 
-      this.$store.dispatch('mixtapes/addSongToMixtape', {
+      this.$accessor.mixtapes.addSongToMixtape({
         mixtapeId: this.mixtapeId,
         song: resp.data,
       });

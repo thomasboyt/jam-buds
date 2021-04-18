@@ -33,7 +33,6 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
 import sortBy from 'lodash/sortBy';
 
 import Playlist from '~/components/playlist/Playlist.vue';
@@ -44,7 +43,7 @@ export default {
   components: { Playlist, PlaylistEntry, EntryDetails },
 
   async fetch() {
-    await this.$store.dispatch('playlist/loadPlaylist', {
+    await this.$accessor.playlist.loadPlaylist({
       key: 'publicFeed',
       url: '/public-feed',
     });
@@ -65,11 +64,11 @@ export default {
       this.loadingNextPage = true;
 
       try {
-        await this.$store.dispatch('playlist/loadNextPlaylistPage', {
+        await this.$accessor.playlist.loadNextPlaylistPage({
           key: 'publicFeed',
         });
       } catch (err) {
-        this.$store.commit('showErrorModal');
+        this.$accessor.showErrorModal();
         throw err;
       } finally {
         this.loadingNextPage = false;
@@ -77,7 +76,7 @@ export default {
     },
 
     handleRequestPlay(songId) {
-      this.$store.dispatch('playback/playFromPlaylist', {
+      this.$accessor.playback.playFromPlaylist({
         songId,
         playlistKey: 'publicFeed',
         playbackSourceLabel: 'public feed',

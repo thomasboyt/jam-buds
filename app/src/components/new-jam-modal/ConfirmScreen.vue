@@ -43,7 +43,6 @@
 
 <script>
 import _get from 'lodash/get';
-import { mapState } from 'vuex';
 
 import NoteField, { MAX_POST_LENGTH } from './NoteField.vue';
 import ServiceList from './ServiceList.vue';
@@ -66,9 +65,9 @@ export default {
   },
 
   computed: {
-    ...mapState({
-      hasTwitter: (state) => !!state.currentUser.user.twitterName,
-    }),
+    hasTwitter() {
+      return !!this.$accessor.currentUser.user.twitterName;
+    },
   },
 
   mounted() {
@@ -91,7 +90,7 @@ export default {
           },
         });
       } catch (err) {
-        this.$store.commit('showErrorModal');
+        this.$accessor.showErrorModal();
         return;
       }
 
@@ -104,7 +103,7 @@ export default {
       evt.preventDefault();
 
       if (this.noteText > MAX_POST_LENGTH) {
-        this.$store.commit('showErrorModal', 'Yo your note is too long');
+        this.$accessor.showErrorModal('Yo your note is too long');
         return;
       }
 
@@ -133,15 +132,15 @@ export default {
         return;
       }
 
-      const userName = this.$store.state.currentUser.user.name;
+      const userName = this.$accessor.currentUser.user.name;
       const currentPath = this.$route.path;
       const profilePath = `/users/${userName}`;
       if (currentPath === '/') {
-        this.$store.dispatch('playlist/loadNewPlaylistEntries', {
+        this.$accessor.playlist.loadNewPlaylistEntries({
           key: 'feed',
         });
       } else if (currentPath === profilePath) {
-        this.$store.dispatch('playlist/loadNewPlaylistEntries', {
+        this.$accessor.playlist.loadNewPlaylistEntries({
           key: `${userName}/posts`,
         });
       }

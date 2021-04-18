@@ -14,7 +14,7 @@ export default {
 
   methods: {
     async handleConnectAppleMusic() {
-      const { webPlayerEnabled, supports } = this.$store.state.streaming;
+      const { webPlayerEnabled, supports } = this.$accessor.streaming;
       if (supports.appleMusic) {
         if (webPlayerEnabled) {
           await MusicKit.getInstance().authorize();
@@ -22,7 +22,7 @@ export default {
           // TODO: native connection
         }
       }
-      this.$store.dispatch('streaming/updateStreamingService', 'appleMusic');
+      this.$accessor.streaming.updateStreamingService('appleMusic');
       this.$emit('connected');
     },
   },

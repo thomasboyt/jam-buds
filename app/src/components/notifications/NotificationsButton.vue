@@ -11,7 +11,6 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
 import Icon from '../Icon.vue';
 const notificationsIcon = require('~/assets/bell.svg');
 
@@ -25,7 +24,9 @@ export default {
   },
 
   computed: {
-    ...mapGetters('notifications', ['hasUnreadNotifications']),
+    hasUnreadNotifications() {
+      return this.$accessor.notifications.hasUnreadNotifications;
+    },
     label() {
       return this.hasUnreadNotifications
         ? 'Unread notifications'

@@ -10,12 +10,11 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
 export default {
   computed: {
-    ...mapState({
-      authenticated: (state) => state.auth.authenticated,
-    }),
+    authenticated() {
+      return this.$accessor.auth.authenticated;
+    },
   },
 };
 </script>

@@ -38,7 +38,6 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
 import sortBy from 'lodash/sortBy';
 
 import Playlist from '~/components/playlist/Playlist.vue';
@@ -53,7 +52,7 @@ export default {
   },
 
   async fetch() {
-    return this.$store.dispatch('playlist/loadPlaylist', {
+    return this.$accessor.playlist.loadPlaylist({
       key: 'feed',
       url: '/feed',
     });
@@ -74,11 +73,11 @@ export default {
       this.loadingNextPage = true;
 
       try {
-        await this.$store.dispatch('playlist/loadNextPlaylistPage', {
+        await this.$accessor.playlist.loadNextPlaylistPage({
           key: 'feed',
         });
       } catch (err) {
-        this.$store.commit('showErrorModal');
+        this.$accessor.showErrorModal();
         throw err;
       } finally {
         this.loadingNextPage = false;
@@ -86,7 +85,7 @@ export default {
     },
 
     handleRequestPlay(songId) {
-      this.$store.dispatch('playback/playFromPlaylist', {
+      this.$accessor.playback.playFromPlaylist({
         songId,
         playlistKey: 'feed',
         playbackSourceLabel: 'your feed',

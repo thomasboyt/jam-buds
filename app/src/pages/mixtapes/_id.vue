@@ -126,12 +126,11 @@ export default {
 
   async fetch() {
     const mixtapeId = this.$route.params.id;
-    const { mixtape, author } = await this.$store.dispatch(
-      'mixtapes/loadMixtape',
+    const { mixtape, author } = await this.$accessor.mixtapes.loadMixtape(
       mixtapeId
     );
     // this is also done when navigating in - see <mixtape-item>
-    this.$store.dispatch('colorScheme/setOverrideFromProfile', author.name);
+    this.$accessor.colorScheme.setOverrideFromProfile(author.name);
 
     if (this.$route.params.slug !== mixtape.slug) {
       this.$nuxt.context.redirect(`/mixtapes/${mixtapeId}/${mixtape.slug}`);
@@ -151,18 +150,16 @@ export default {
     },
 
     mixtape() {
-      return this.$store.getters['mixtapes/getMixtape'](this.mixtapeId);
+      return this.$accessor.mixtapes.getMixtape(this.mixtapeId);
     },
 
     isOwnMixtape() {
-      return (
-        this.mixtape.author.name === this.$store.state.currentUser.user?.name
-      );
+      return this.mixtape.author.name === this.$accessor.currentUser.user?.name;
     },
 
     isEditing() {
       return (
-        this.mixtape.author.id === this.$store.state.currentUser.user?.id &&
+        this.mixtape.author.id === this.$accessor.currentUser.user?.id &&
         !this.mixtape.publishedAt
       );
     },
@@ -202,16 +199,16 @@ export default {
       const { mixtapeId } = this;
 
       try {
-        await this.$store.dispatch('mixtapes/deleteMixtape', {
+        await this.$accessor.mixtapes.deleteMixtape({
           mixtapeId,
         });
       } catch (err) {
-        this.$store.commit('showErrorModal');
+        this.$accessor.showErrorModal();
         throw err;
       }
 
       this.$router.push('/', () => {
-        this.$store.dispatch('mixtapes/removeMixtapeFromCache', { mixtapeId });
+        this.$accessor.mixtapes.removeMixtapeFromCache({ mixtapeId });
       });
     },
   },

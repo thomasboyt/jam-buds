@@ -28,7 +28,7 @@ export default {
   props: ['isMixtapeSearch'],
 
   fetch() {
-    return this.$store.dispatch('mixtapes/loadDraftMixtapes');
+    return this.$accessor.mixtapes.loadDraftMixtapes();
   },
 
   data() {
@@ -40,7 +40,7 @@ export default {
 
   computed: {
     draftMixtapes() {
-      return this.$store.state.mixtapes.draftMixtapes;
+      return this.$accessor.mixtapes.draftMixtapes;
     },
 
     showDraftMixtapes() {
@@ -70,7 +70,7 @@ export default {
           data: { title: this.mixtapeTitle },
         });
       } catch (err) {
-        this.$store.commit('showErrorModal');
+        this.$accessor.showErrorModal();
         throw err;
       } finally {
         this.requestInFlight = false;

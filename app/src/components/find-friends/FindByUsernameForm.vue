@@ -35,7 +35,7 @@ export default {
           return;
         }
 
-        this.$store.commit('showErrorModal');
+        this.$accessor.showErrorModal();
         throw err;
       }
 

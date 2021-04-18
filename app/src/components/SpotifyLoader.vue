@@ -7,7 +7,7 @@
 // `checkSpotifyConnection` comes back true, so that first play time is faster
 export default {
   mounted() {
-    this.$store.dispatch('streaming/checkSpotifyConnection');
+    this.$accessor.streaming.checkSpotifyConnection();
   },
 };
 </script>

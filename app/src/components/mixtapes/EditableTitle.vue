@@ -55,7 +55,7 @@ export default {
       try {
         const prevSlug = this.mixtape.slug;
 
-        await this.$store.dispatch('mixtapes/renameMixtape', {
+        await this.$accessor.mixtapes.renameMixtape({
           mixtapeId: this.mixtape.id,
           title: this.value,
         });
@@ -67,7 +67,7 @@ export default {
           });
         }
       } catch (err) {
-        this.$store.commit('showErrorModal');
+        this.$accessor.showErrorModal();
         throw err;
       } finally {
         this.requestInFlight = false;

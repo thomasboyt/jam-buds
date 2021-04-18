@@ -15,7 +15,6 @@
 
 <script>
 import Icon from '../Icon.vue';
-import { mapState } from 'vuex';
 
 const heartOpenIcon = require('~/assets/heart_open.svg');
 const heartFilledIcon = require('~/assets/heart_filled.svg');
@@ -41,9 +40,9 @@ export default {
   },
 
   computed: {
-    ...mapState({
-      authenticated: (state) => state.auth.authenticated,
-    }),
+    authenticated() {
+      return this.$accessor.auth.authenticated;
+    },
   },
 
   methods: {
@@ -51,18 +50,23 @@ export default {
       e.preventDefault();
       e.stopPropagation();
 
-      const action = this.isLiked ? 'unlikeItem' : 'likeItem';
-
       this.requestInFlight = true;
 
       try {
-        await this.$store.dispatch(`playlistItems/${action}`, {
-          itemId: this.itemId,
-          itemType: this.itemType,
-          ...this.likeSourceParams,
-        });
+        if (this.isLiked) {
+          await this.$accessor.playlistItems.unlikeItem({
+            itemId: this.itemId,
+            itemType: this.itemType,
+          });
+        } else {
+          await this.$accessor.playlistItems.likeItem({
+            itemId: this.itemId,
+            itemType: this.itemType,
+            ...this.likeSourceParams,
+          });
+        }
       } catch (err) {
-        this.$store.commit('showErrorModal');
+        this.$accessor.showErrorModal();
         throw err;
       } finally {
         this.requestInFlight = false;

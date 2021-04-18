@@ -43,7 +43,7 @@ export default {
     // copy color scheme out of store
     const colorScheme = {
       ...defaultColorScheme,
-      ...this.$store.getters['profile/currentUserColorScheme'],
+      ...this.$accessor.profile.currentUserColorScheme,
     };
 
     return {
@@ -61,8 +61,8 @@ export default {
       const prevScheme = { ...this.colorScheme };
       this.colorScheme = colorScheme;
 
-      this.$store.commit('profile/updateProfileColorScheme', {
-        name: this.$store.state.currentUser.user.name,
+      this.$accessor.profile.updateProfileColorScheme({
+        name: this.$accessor.currentUser.user.name,
         colorScheme,
       });
 
@@ -76,12 +76,12 @@ export default {
           },
         });
       } catch (err) {
-        this.$store.commit('showErrorModal');
+        this.$accessor.showErrorModal();
         this.colorScheme = prevScheme;
         throw err;
       }
 
-      this.$store.dispatch('setFlashMessage', {
+      this.$accessor.setFlashMessage({
         message: 'Your color scheme has been updated.',
         clearMs: 4000,
       });

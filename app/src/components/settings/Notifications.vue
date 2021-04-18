@@ -55,14 +55,14 @@ export default {
           });
         }
       } catch (err) {
-        this.$store.commit('showErrorModal');
+        this.$accessor.showErrorModal();
         this.isSubscribed = !this.isSubscribed;
         throw err;
       } finally {
         this.requestInFlight = false;
       }
 
-      this.$store.dispatch('setFlashMessage', {
+      this.$accessor.setFlashMessage({
         message: this.isSubscribed
           ? 'Thanks for subscribing!'
           : "You've been unsubscribed from the newsletter.",

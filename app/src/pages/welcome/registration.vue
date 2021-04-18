@@ -56,7 +56,7 @@ export default {
   },
 
   created() {
-    if (this.$store.state.auth.authenticated) {
+    if (this.$accessor.auth.authenticated) {
       this.$router.push('/welcome/connect');
     }
   },
@@ -81,7 +81,7 @@ export default {
         if (err.response && err.response.data && err.response.data.details) {
           this.errors = err.response.data.details[0];
         } else {
-          this.$store.commit('showErrorModal');
+          this.$accessor.showErrorModal();
           throw err;
         }
 

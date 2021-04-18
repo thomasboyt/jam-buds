@@ -53,7 +53,7 @@ export default {
 
   computed: {
     mixtape() {
-      return this.$store.getters['mixtapes/getMixtape'](this.mixtapeId);
+      return this.$accessor.mixtapes.getMixtape(this.mixtapeId);
     },
 
     mixtapeTracks: {
@@ -63,12 +63,12 @@ export default {
 
       async set(songOrder) {
         try {
-          await this.$store.dispatch('mixtapes/updateMixtapeSongOrder', {
+          await this.$accessor.mixtapes.updateMixtapeSongOrder({
             mixtapeId: this.mixtapeId,
             songOrder,
           });
         } catch (err) {
-          this.$store.commit('showErrorModal');
+          this.$accessor.showErrorModal();
           throw err;
         }
       },
@@ -77,7 +77,7 @@ export default {
 
   methods: {
     handleRequestPlay(songId) {
-      this.$store.dispatch('playback/playFromMixtape', {
+      this.$accessor.playback.playFromMixtape({
         mixtapeId: this.mixtapeId,
         mixtapeSlug: this.mixtape.slug,
         songId,

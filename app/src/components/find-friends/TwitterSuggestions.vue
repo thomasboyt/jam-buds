@@ -22,7 +22,6 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
 import TwitterConnectButton from '../settings/TwitterConnectButton';
 import TwitterUsersList from './TwitterUsersList';
 
@@ -33,7 +32,7 @@ export default {
   },
 
   async fetch() {
-    if (this.$store.state.currentUser.user.twitterName) {
+    if (this.$accessor.currentUser.user.twitterName) {
       const resp = await this.$axios({
         url: `/friend-suggestions`,
         method: 'GET',
@@ -50,9 +49,9 @@ export default {
   },
 
   computed: {
-    ...mapState({
-      showTwitterSuggestions: (state) => state.currentUser.user.twitterName,
-    }),
+    showTwitterSuggestions() {
+      return !!this.$accessor.currentUser.user.twitterName;
+    },
     redirect() {
       return this.$route.fullPath;
     },

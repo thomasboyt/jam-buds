@@ -26,7 +26,6 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
 import JbButton from '../lib/JbButton';
 import PagePlaceholder from '../PagePlaceholder.vue';
 
@@ -37,16 +36,15 @@ export default {
 
   computed: {
     items() {
-      return this.$store.getters['playlist/getPlaylist'](this.playlistKey);
+      return this.$accessor.playlist.getPlaylist(this.playlistKey);
     },
-    ...mapState({
-      itemsExhausted(state) {
-        return state.playlist.playlists[this.playlistKey].itemsExhausted;
-      },
-      hasLoadedInitialItems(state) {
-        return state.playlist.playlists[this.playlistKey].hasLoadedInitialItems;
-      },
-    }),
+    itemsExhausted() {
+      return this.$accessor.playlist.playlists[this.playlistKey].itemsExhausted;
+    },
+    hasLoadedInitialItems() {
+      return this.$accessor.playlist.playlists[this.playlistKey]
+        .hasLoadedInitialItems;
+    },
   },
 
   methods: {

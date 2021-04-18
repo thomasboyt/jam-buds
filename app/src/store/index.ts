@@ -50,14 +50,14 @@ export const mutations = mutationTree(state, {
   hideMobileHeaderTitle(state) {
     state.mobileHeaderTitle = null;
   },
-  setFlashMessage(
+  _setFlashMessage(
     state,
     { message, timeoutHandle }: { message: string; timeoutHandle: number }
   ) {
     state.flashMessage = message;
     state.timeoutHandle = timeoutHandle;
   },
-  clearFlashMessage(state) {
+  _clearFlashMessage(state) {
     state.flashMessage = null;
     state.timeoutHandle = null;
   },
@@ -105,7 +105,10 @@ export const actions = actionTree(
       context.commit('setActiveTab', pathname);
     },
 
-    setFlashMessage({ state }, { message, clearMs = 3000 }): void {
+    setFlashMessage(
+      { state },
+      { message, clearMs = 3000 }: { message: string; clearMs?: number }
+    ): void {
       if (state.timeoutHandle) {
         clearTimeout(state.timeoutHandle);
       }
@@ -114,7 +117,7 @@ export const actions = actionTree(
         this.commit('clearFlashMessage');
       }, clearMs);
 
-      this.commit('setFlashMessage', { message, timeoutHandle });
+      this.commit('_setFlashMessage', { message, timeoutHandle });
     },
 
     clearFlashMessage({ state }): void {
@@ -122,7 +125,7 @@ export const actions = actionTree(
         clearTimeout(state.timeoutHandle);
       }
 
-      this.commit('clearFlashMessage');
+      this.commit('_clearFlashMessage');
     },
   }
 );

@@ -44,8 +44,7 @@ export default {
   props: ['userName'],
 
   fetch() {
-    return this.$store.dispatch(
-      'playlist/loadProfileLikesPlaylist',
+    return this.$accessor.playlist.loadProfileLikesPlaylist(
       this.$route.params.id
     );
   },
@@ -73,11 +72,11 @@ export default {
       this.loadingNextPage = true;
 
       try {
-        await this.$store.dispatch('playlist/loadNextPlaylistPage', {
+        await this.$accessor.playlist.loadNextPlaylistPage({
           key: this.playlistKey,
         });
       } catch (err) {
-        this.$store.commit('showErrorModal');
+        this.$accessor.showErrorModal();
         throw err;
       } finally {
         this.loadingNextPage = false;
@@ -85,7 +84,7 @@ export default {
     },
 
     handleRequestPlay(songId) {
-      this.$store.dispatch('playback/playFromPlaylist', {
+      this.$accessor.playback.playFromPlaylist({
         songId,
         playlistKey: this.playlistKey,
         playbackSourceLabel: this.title,

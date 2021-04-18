@@ -38,12 +38,12 @@ export default {
   components: { Modal, JbButton },
 
   fetch() {
-    return this.$store.dispatch('notifications/load');
+    return this.$accessor.notifications.load();
   },
 
   computed: {
     notifications() {
-      return this.$store.state.notifications.items;
+      return this.$accessor.notifications.items;
     },
     isOpen() {
       return this.$route.query.modal === 'notifications';
@@ -52,10 +52,10 @@ export default {
 
   methods: {
     handleMarkAllRead() {
-      this.$store.dispatch('notifications/readAll');
+      this.$accessor.notifications.readAll();
     },
     handleClickNotification(notification) {
-      this.$store.dispatch('notifications/read', { id: notification.id });
+      this.$accessor.notifications.read({ id: notification.id });
     },
     formatTimestamp(timestamp) {
       const date = new Date(timestamp);

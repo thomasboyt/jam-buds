@@ -42,8 +42,6 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
-
 import AlbumArt from './AlbumArt.vue';
 import ConnectStreamingBanner from './ConnectStreamingBanner';
 import LikeAction from './LikeAction.vue';
@@ -88,13 +86,13 @@ export default {
   },
 
   computed: {
-    ...mapState({
-      streamingService: (state) => state.streaming.service,
+    streamingService() {
+      return this.$accessor.streaming.service;
+    },
 
-      album(state) {
-        return state.playlistItems.albums[this.albumId];
-      },
-    }),
+    album() {
+      return this.$accessor.playlistItems.albums[this.albumId];
+    },
 
     canOpen() {
       if (this.streamingService === 'spotify') {

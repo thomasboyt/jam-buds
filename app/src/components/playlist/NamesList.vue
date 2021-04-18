@@ -40,7 +40,7 @@ export default {
     },
 
     currentUserName() {
-      return this.$store.state.currentUser.user?.name;
+      return this.$accessor.currentUser.user?.name;
     },
   },
 };

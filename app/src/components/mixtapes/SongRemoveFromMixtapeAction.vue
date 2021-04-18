@@ -40,12 +40,12 @@ export default {
       this.requestInFlight = true;
 
       try {
-        await this.$store.dispatch('mixtapes/removeSongFromMixtape', {
+        await this.$accessor.mixtapes.removeSongFromMixtape({
           mixtapeId: this.mixtapeId,
           songId: this.songId,
         });
       } catch (err) {
-        this.$store.commit('showErrorModal');
+        this.$accessor.showErrorModal();
         throw err;
       } finally {
         this.requestInFlight = false;

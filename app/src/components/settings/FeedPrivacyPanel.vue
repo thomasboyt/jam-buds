@@ -24,14 +24,14 @@ export default {
 
   computed: {
     showInPublicFeed() {
-      return this.$store.state.currentUser.user.showInPublicFeed;
+      return this.$accessor.currentUser.user.showInPublicFeed;
     },
   },
 
   methods: {
     async handleUpdatePrivacy() {
       // optimistic update
-      this.$store.commit('currentUser/updateUserPrivacy', {
+      this.$accessor.currentUser.updateUserPrivacy({
         showInPublicFeed: !this.showInPublicFeed,
       });
 
@@ -46,9 +46,9 @@ export default {
           data: this.colorScheme,
         });
       } catch (err) {
-        this.$store.commit('showErrorModal');
+        this.$accessor.showErrorModal();
         // de...optimistic update
-        this.$store.commit('currentUser/updateUserPrivacy', {
+        this.$accessor.currentUser.updateUserPrivacy({
           showInPublicFeed: !this.showInPublicFeed,
         });
         throw err;

@@ -12,13 +12,13 @@
 export default {
   computed: {
     activeFlashMessage() {
-      return this.$store.state.flashMessage;
+      return this.$accessor.flashMessage;
     },
   },
 
   methods: {
     handleClose() {
-      this.$store.dispatch('clearFlashMessage');
+      this.$accessor.clearFlashMessage();
     },
   },
 };

@@ -22,24 +22,24 @@ export default {
 
   computed: {
     isFollowing() {
-      return this.$store.getters['currentUser/isFollowing'](this.name);
+      return this.$accessor.currentUser.isFollowing(this.name);
     },
   },
 
   methods: {
     async handleFollow() {
-      await this.$store.dispatch('currentUser/followUser', this.name);
+      await this.$accessor.currentUser.followUser(this.name);
 
-      this.$store.dispatch('setFlashMessage', {
+      this.$accessor.setFlashMessage({
         message: `You're now following ${this.name}!`,
         clearMs: 4000,
       });
     },
 
     async handleUnfollow() {
-      await this.$store.dispatch('currentUser/unfollowUser', this.name);
+      await this.$accessor.currentUser.unfollowUser(this.name);
 
-      this.$store.dispatch('setFlashMessage', {
+      this.$accessor.setFlashMessage({
         message: `You have unfollowed ${this.name}.`,
         clearMs: 4000,
       });

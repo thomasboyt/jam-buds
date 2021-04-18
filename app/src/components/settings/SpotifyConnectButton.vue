@@ -23,13 +23,11 @@ export default {
       this.$router.replace(this.$route.path);
 
       if (error === 'nonPremium') {
-        this.$store.commit(
-          'showErrorModal',
+        this.$accessor.showErrorModal(
           "Error connecting Spotify: You must have a premium (paid) Spotify account to stream to it from Jam Buds.\n\nSorry, I don't make the rules :("
         );
       } else {
-        this.$store.commit(
-          'showErrorModal',
+        this.$accessor.showErrorModal(
           `Unknown error connecting Spotify: ${error}`
         );
       }
@@ -38,7 +36,7 @@ export default {
 
   methods: {
     handleConnect() {
-      const { webPlayerEnabled, supports } = this.$store.state.streaming;
+      const { webPlayerEnabled, supports } = this.$accessor.streaming;
       if (supports.spotify) {
         if (webPlayerEnabled) {
           document.location = this.spotifyConnectLink;
@@ -47,7 +45,7 @@ export default {
           // TODO: native connection
         }
       }
-      this.$store.dispatch('streaming/updateStreamingService', 'spotify');
+      this.$accessor.streaming.updateStreamingService('spotify');
       this.$emit('connected');
     },
   },

@@ -90,7 +90,7 @@ export default {
           params: { query, type: this.jamType },
         });
       } catch (err) {
-        this.$store.commit('showErrorModal');
+        this.$accessor.showErrorModal();
         this.requestInFlight = false;
         throw err;
       }

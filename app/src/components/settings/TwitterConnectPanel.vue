@@ -12,7 +12,6 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
 import SettingsPanelExpanding from './SettingsPanelExpanding.vue';
 import TwitterConnect from './TwitterConnect.vue';
 
@@ -20,9 +19,9 @@ export default {
   components: { SettingsPanelExpanding, TwitterConnect },
 
   computed: {
-    ...mapState({
-      twitterName: (state) => state.currentUser.user.twitterName,
-    }),
+    twitterName() {
+      return this.$accessor.currentUser.user.twitterName;
+    },
 
     title() {
       if (this.twitterName) {

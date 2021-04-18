@@ -22,8 +22,6 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
-
 import JbButton from '../lib/JbButton.vue';
 import TwitterConnectButton from './TwitterConnectButton.vue';
 
@@ -36,9 +34,11 @@ export default {
     };
   },
 
-  computed: mapState({
-    twitterName: (state) => state.currentUser.user.twitterName,
-  }),
+  computed: {
+    twitterName() {
+      return this.$accessor.currentUser.user.twitterName;
+    },
+  },
 
   methods: {
     async handleDisconnect() {
@@ -51,11 +51,11 @@ export default {
           method: 'DELETE',
         });
       } catch (err) {
-        this.$store.commit('showErrorModal');
+        this.$accessor.showErrorModal();
         throw err;
       }
 
-      this.$store.commit('currentUser/disconnectedTwitter');
+      this.$accessor.currentUser.disconnectedTwitter();
       this.isDisconnecting = false;
     },
   },

@@ -47,10 +47,10 @@ export default {
 
   computed: {
     pageTitle() {
-      return this.$store.state.mobileHeaderTitle;
+      return this.$accessor.mobileHeaderTitle;
     },
     authenticated() {
-      return this.$store.state.auth.authenticated;
+      return this.$accessor.auth.authenticated;
     },
     isRootPage() {
       return isRootPage(this.$store, this.$route);

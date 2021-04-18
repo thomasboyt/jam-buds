@@ -42,8 +42,6 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
-
 import TwitterConnectButton from '~/components/settings/TwitterConnectButton.vue';
 import JbButton from '~/components/lib/JbButton.vue';
 import WelcomeStepPanel from '~/components/WelcomeStepPanel';
@@ -57,13 +55,15 @@ export default {
     };
   },
 
-  computed: mapState({
-    twitterName: (state) => state.currentUser.user.twitterName,
-  }),
+  computed: {
+    twitterName() {
+      return this.$accessor.currentUser.user.twitterName;
+    },
+  },
 
   methods: {
     setTab() {
-      this.$store.commit('setActiveTab', '/');
+      this.$accessor.setActiveTab('/');
     },
   },
 };

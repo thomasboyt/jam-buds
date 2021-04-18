@@ -53,7 +53,7 @@ export default {
       // TODO: should really compare on user ID instead of user name
       return (
         this.type !== 'userLiked' &&
-        this.name !== this.$store.state.currentUser.user?.name
+        this.name !== this.$accessor.currentUser.user?.name
       );
     },
   },
@@ -75,11 +75,11 @@ export default {
         });
       } catch (err) {
         this.$logError(err);
-        this.$store.commit('showErrorModal');
+        this.$accessor.showErrorModal();
         return;
       }
 
-      this.$store.dispatch('setFlashMessage', {
+      this.$accessor.setFlashMessage({
         message: 'Thanks for reporting!',
       });
     },

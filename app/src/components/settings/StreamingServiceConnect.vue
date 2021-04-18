@@ -25,7 +25,6 @@
 <script>
 /* global MusicKit */
 
-import { mapState } from 'vuex';
 import SpotifyConnectButton from '~/components/settings/SpotifyConnectButton.vue';
 import AppleMusicConnectButton from '~/components/settings/AppleMusicConnectButton.vue';
 import JbButton from '~/components/lib/JbButton.vue';
@@ -50,15 +49,20 @@ export default {
   },
 
   computed: {
-    ...mapState({
-      streamingService: (state) => state.streaming.service,
-      isWebView: (state) => state.isWebView,
-      webPlayerEnabled: (state) => state.streaming.webPlayerEnabled,
-      supports: (state) => state.streaming.supports,
-    }),
-
+    streamingService() {
+      return this.$accessor.streaming.service;
+    },
+    webPlayerEnabled() {
+      return this.$accessor.streaming.webPlayerEnabled;
+    },
+    supports() {
+      return this.$accessor.streaming.supports;
+    },
+    isWebView() {
+      return this.$accessor.isWebView;
+    },
     serviceName() {
-      return this.$store.getters['streaming/streamingServiceName'];
+      return this.$accessor.streaming.streamingServiceName;
     },
   },
 
@@ -69,7 +73,7 @@ export default {
       } else if (this.streamingService === 'appleMusic') {
         this.handleDisconnectAppleMusic();
       }
-      this.$store.dispatch('streaming/unsetStreamingService');
+      this.$accessor.streaming.unsetStreamingService();
     },
 
     async handleDisconnectAppleMusic() {
@@ -91,7 +95,7 @@ export default {
               method: 'DELETE',
             });
           } catch (err) {
-            this.$store.commit('showErrorModal');
+            this.$accessor.showErrorModal();
             throw err;
           }
 
@@ -105,7 +109,7 @@ export default {
 
     handleConnected() {
       this.$router.push('/settings');
-      this.$store.dispatch('setFlashMessage', {
+      this.$accessor.setFlashMessage({
         message: `You've set ${this.serviceName} as your streaming service.`,
         clearMs: 4000,
       });

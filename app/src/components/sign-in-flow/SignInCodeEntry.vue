@@ -78,7 +78,7 @@ export default {
           this.errors = err.response.data.details[0];
           return;
         } else {
-          this.$store.commit('showErrorModal');
+          this.$accessor.showErrorModal();
           throw err;
         }
       }

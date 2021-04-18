@@ -13,8 +13,6 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
-
 import ProfileNav from '~/components/profile/ProfileNav.vue';
 import DraftMixtapesList from '~/components/DraftMixtapesList.vue';
 import UserMixtapesPlaylist from '~/components/playlists/UserMixtapesPlaylist.vue';
@@ -36,31 +34,29 @@ export default {
 
   fetch() {
     const requests = [
-      this.$store.dispatch(
-        'playlist/loadProfileMixtapes',
-        this.$route.params.id
-      ),
+      this.$accessor.playlist.loadProfileMixtapes(this.$route.params.id),
     ];
 
     if (
-      this.$store.state.auth.authenticated &&
-      this.$store.state.currentUser.user.name === this.$route.params.id
+      this.$accessor.auth.authenticated &&
+      this.$accessor.currentUser.user.name === this.$route.params.id
     ) {
-      requests.push(this.$store.dispatch('mixtapes/loadDraftMixtapes'));
+      requests.push(this.$accessor.mixtapes.loadDraftMixtapes());
     }
 
     return Promise.all(requests);
   },
 
   computed: {
-    ...mapState({
-      draftMixtapes: (state) => state.mixtapes.draftMixtapes,
-      isCurrentUserPage(state) {
-        return (
-          state.auth.authenticated && state.currentUser.user.name === this.name
-        );
-      },
-    }),
+    draftMixtapes() {
+      return this.$accessor.mixtapes.draftMixtapes;
+    },
+    isCurrentUserPage() {
+      return (
+        this.$accessor.auth.authenticated &&
+        this.$accessor.currentUser.user.name === this.name
+      );
+    },
     name() {
       return this.$route.params.id;
     },

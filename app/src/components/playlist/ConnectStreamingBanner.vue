@@ -60,10 +60,7 @@ export default {
       this.$emit('connected');
     },
     handleSelectYoutube() {
-      this.$store.dispatch(
-        'streaming/updateSessionStreamingService',
-        'youtube'
-      );
+      this.$accessor.streaming.updateSessionStreamingService('youtube');
       this.$emit('connected');
     },
     handleClose() {

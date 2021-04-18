@@ -26,7 +26,6 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
 import AppleMusicLoader from '~/components/AppleMusicLoader.vue';
 import SpotifyLoader from '~/components/SpotifyLoader.vue';
 import AudioPlayer from '~/components/audio-player/AudioPlayer.vue';
@@ -83,22 +82,30 @@ export default {
     };
   },
 
-  computed: mapState({
-    authenticated: (state) => state.auth.authenticated,
-    isWebView: (state) => state.isWebView,
-    supports: (state) => state.streaming.supports,
-    streamingService: (state) => state.streaming.service,
-  }),
+  computed: {
+    streamingService() {
+      return this.$accessor.streaming.service;
+    },
+    supports() {
+      return this.$accessor.streaming.supports;
+    },
+    isWebView() {
+      return this.$accessor.isWebView;
+    },
+    authenticated() {
+      return this.$accessor.auth.authenticated;
+    },
+  },
 
   mounted() {
     // this is an odd place for this, but plugins can't be used since they break
     // dom matching between server/client rendering
-    this.$store.dispatch('streaming/initializeStreaming', {
+    this.$accessor.streaming.initializeStreaming({
       userAgent: navigator.userAgent,
     });
 
     if ('spotifySuccess' in this.$route.query) {
-      this.$store.dispatch('streaming/updateStreamingService', 'spotify');
+      this.$accessor.streaming.updateStreamingService('spotify');
       this.$router.replace(this.$route.path);
     }
   },
