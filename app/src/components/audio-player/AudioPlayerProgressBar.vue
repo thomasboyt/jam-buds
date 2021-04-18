@@ -4,21 +4,28 @@
   </div>
 </template>
 
-<script>
-export default {
-  props: ['progress'],
+<script lang="ts">
+import Vue from 'vue';
+
+export default Vue.extend({
+  props: {
+    progress: {
+      type: Number,
+      required: true,
+    },
+  },
 
   computed: {
-    cappedProgress() {
+    cappedProgress(): number {
       return Math.min(1, this.progress);
     },
-    progressShadedStyle() {
+    progressShadedStyle(): Record<string, string> {
       return {
         transform: `scaleX(${this.cappedProgress})`,
       };
     },
   },
-};
+});
 </script>
 
 <style lang="scss" scoped>

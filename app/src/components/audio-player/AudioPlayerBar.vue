@@ -46,19 +46,21 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue';
 import Icon from '../Icon.vue';
 import AudioPlayerSongDisplay from './AudioPlayerSongDisplay.vue';
 import AudioPlayerProgress from './AudioPlayerProgress.vue';
 import LoadingSpinner from './LoadingSpinner.vue';
 import AudioPlayerLikeButton from './AudioPlayerLikeButton.vue';
 import AudioPlayerVolumeBar from './AudioPlayerVolumeBar.vue';
+import { ApiSchema } from '~/api/_helpers';
 
-const playIcon = require('~/assets/play-filled.svg');
-const pauseIcon = require('~/assets/pause.svg');
-const nextIcon = require('~/assets/next.svg');
+const playIcon: string = require('~/assets/play-filled.svg');
+const pauseIcon: string = require('~/assets/pause.svg');
+const nextIcon: string = require('~/assets/next.svg');
 
-export default {
+export default Vue.extend({
   components: {
     Icon,
     LoadingSpinner,
@@ -77,37 +79,37 @@ export default {
   },
 
   computed: {
-    isPlaying() {
+    isPlaying(): boolean {
       return this.$accessor.playback.isPlaying;
     },
-    isBuffering() {
+    isBuffering(): boolean {
       return this.$accessor.playback.isBuffering;
     },
-    playbackSourcePath() {
+    playbackSourcePath(): string | null {
       return this.$accessor.playback.playbackSourcePath;
     },
-    playbackSourceLabel() {
+    playbackSourceLabel(): string | null {
       return this.$accessor.playback.playbackSourceLabel;
     },
-    secondsElapsed() {
+    secondsElapsed(): number | null {
       return this.$accessor.playback.secondsElapsed;
     },
-    secondsTotal() {
+    secondsTotal(): number | null {
       return this.$accessor.playback.secondsTotal;
     },
-    currentSong() {
+    currentSong(): ApiSchema<'SongWithMeta'> | null {
       return this.$accessor.playback.currentSong;
     },
 
-    authenticated() {
+    authenticated(): boolean {
       return this.$accessor.auth.authenticated;
     },
 
-    playPauseIcon() {
+    playPauseIcon(): string {
       return this.isPlaying ? pauseIcon : playIcon;
     },
 
-    hasMobileTabBar() {
+    hasMobileTabBar(): boolean {
       return this.authenticated;
     },
   },
@@ -129,7 +131,7 @@ export default {
       this.$accessor.playback.nextSong();
     },
   },
-};
+});
 </script>
 
 <style lang="scss" scoped>

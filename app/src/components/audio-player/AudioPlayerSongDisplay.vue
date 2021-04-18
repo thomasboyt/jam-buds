@@ -22,17 +22,33 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue, { PropType } from 'vue';
+import { ApiSchema } from '~/api/_helpers';
 import Icon from '../Icon.vue';
 
-const placeholderIcon = require('~/assets/record.svg');
+const placeholderIcon: string = require('~/assets/record.svg');
 
-export default {
+export default Vue.extend({
   components: {
     Icon,
   },
 
-  props: ['song', 'playbackSourcePath', 'playbackSourceLabel'],
+  // props: ['song', 'playbackSourcePath', 'playbackSourceLabel'],
+  props: {
+    song: {
+      type: Object as PropType<ApiSchema<'SongWithMeta'>>,
+      required: true,
+    },
+    playbackSourcePath: {
+      type: String,
+      required: true,
+    },
+    playbackSourceLabel: {
+      type: String,
+      required: true,
+    },
+  },
 
   data() {
     return {
@@ -41,19 +57,19 @@ export default {
   },
 
   computed: {
-    artist() {
+    artist(): string {
       return this.song.artists[0];
     },
 
-    title() {
+    title(): string {
       return this.song.title;
     },
 
-    albumArt() {
+    albumArt(): string | undefined {
       return this.song.albumArt;
     },
   },
-};
+});
 </script>
 
 <style lang="scss" scoped>

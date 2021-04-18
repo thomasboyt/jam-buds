@@ -6,48 +6,50 @@
   </div>
 </template>
 
-<script>
-import AudioPlayerProgressBar from './AudioPlayerProgressBar';
+<script lang="ts">
+import Vue from 'vue';
+import AudioPlayerProgressBar from './AudioPlayerProgressBar.vue';
 
-function formatTime(sec) {
+function formatTime(sec: number): string {
   const mins = Math.floor(sec / 60);
   const secs = (sec % 60).toString().padStart(2, '0');
   return `${mins}:${secs}`;
 }
 
-export default {
+export default Vue.extend({
   components: { AudioPlayerProgressBar },
 
   data() {
     return {
       sinceElapsed: 0,
+      interval: null as ReturnType<typeof setInterval> | null,
     };
   },
 
   computed: {
-    secondsElapsed() {
+    secondsElapsed(): number | null {
       return this.$accessor.playback.secondsElapsed;
     },
-    secondsTotal() {
+    secondsTotal(): number | null {
       return this.$accessor.playback.secondsTotal;
     },
-    useLocalTimer() {
+    useLocalTimer(): boolean {
       return this.$accessor.playback.player === 'spotify';
     },
-    isPlaybackProgressing() {
+    isPlaybackProgressing(): boolean {
       return (
         this.$accessor.playback.isPlaying &&
         !this.$accessor.playback.isBuffering
       );
     },
-    secondsElapsedDisplayed() {
-      return formatTime(this.secondsElapsed + this.sinceElapsed);
+    secondsElapsedDisplayed(): string {
+      return formatTime(this.secondsElapsed! + this.sinceElapsed);
     },
-    secondsTotalDisplayed() {
-      return formatTime(this.secondsTotal);
+    secondsTotalDisplayed(): string {
+      return formatTime(this.secondsTotal!);
     },
-    progress() {
-      return (this.secondsElapsed + this.sinceElapsed) / this.secondsTotal;
+    progress(): number {
+      return (this.secondsElapsed! + this.sinceElapsed) / this.secondsTotal!;
     },
   },
 
@@ -79,12 +81,12 @@ export default {
     }
   },
 
-  unmounted() {
+  destroyed() {
     this.clearTimer();
   },
 
   methods: {
-    startTimer() {
+    startTimer(): void {
       if (!this.useLocalTimer) {
         return;
       }
@@ -92,14 +94,13 @@ export default {
         this.sinceElapsed += 1;
       }, 1000);
     },
-    clearTimer() {
-      if (!this.useLocalTimer) {
-        return;
+    clearTimer(): void {
+      if (this.interval) {
+        clearInterval(this.interval);
       }
-      clearInterval(this.interval);
     },
   },
-};
+});
 </script>
 
 <style lang="scss" scoped>

@@ -4,10 +4,11 @@
   </transition>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue';
 import AudioPlayerBar from './AudioPlayerBar.vue';
 
-export default {
+export default Vue.extend({
   components: {
     AudioPlayerBar,
   },
@@ -17,5 +18,5 @@ export default {
       return this.$accessor.playback.currentSong;
     },
   },
-};
+});
 </script>
