@@ -136,11 +136,11 @@ export default {
       const currentPath = this.$route.path;
       const profilePath = `/users/${userName}`;
       if (currentPath === '/') {
-        this.$store.dispatch('playlist/loadNewPlaylistEntries', {
+        this.$accessor.playlist.loadNewPlaylistEntries({
           key: 'feed',
         });
       } else if (currentPath === profilePath) {
-        this.$store.dispatch('playlist/loadNewPlaylistEntries', {
+        this.$accessor.playlist.loadNewPlaylistEntries({
           key: `${userName}/posts`,
         });
       }

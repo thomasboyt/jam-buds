@@ -18,7 +18,7 @@ export default {
 
   methods: {
     handleClose() {
-      this.$store.dispatch('clearFlashMessage');
+      this.$accessor.clearFlashMessage();
     },
   },
 };

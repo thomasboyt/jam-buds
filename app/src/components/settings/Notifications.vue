@@ -62,7 +62,7 @@ export default {
         this.requestInFlight = false;
       }
 
-      this.$store.dispatch('setFlashMessage', {
+      this.$accessor.setFlashMessage({
         message: this.isSubscribed
           ? 'Thanks for subscribing!'
           : "You've been unsubscribed from the newsletter.",

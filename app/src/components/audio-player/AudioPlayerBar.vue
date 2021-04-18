@@ -122,11 +122,11 @@ export default {
 
   methods: {
     handlePlayPauseClick() {
-      this.$store.dispatch('playback/togglePlayback');
+      this.$accessor.playback.togglePlayback();
     },
 
     handleNextClick() {
-      this.$store.dispatch('playback/nextSong');
+      this.$accessor.playback.nextSong();
     },
   },
 };

@@ -79,7 +79,7 @@ export default {
         return;
       }
 
-      this.$store.dispatch('setFlashMessage', {
+      this.$accessor.setFlashMessage({
         message: 'Thanks for reporting!',
       });
     },

@@ -64,7 +64,7 @@ export const actions = actionTree(
       }
     },
 
-    async read(context, { id }): Promise<void> {
+    async read(context, { id }: { id: number }): Promise<void> {
       context.commit('markRead', id);
 
       // don't show an error since it's easier to just ignore...

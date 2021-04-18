@@ -40,7 +40,7 @@ export default {
       this.requestInFlight = true;
 
       try {
-        await this.$store.dispatch('mixtapes/removeSongFromMixtape', {
+        await this.$accessor.mixtapes.removeSongFromMixtape({
           mixtapeId: this.mixtapeId,
           songId: this.songId,
         });

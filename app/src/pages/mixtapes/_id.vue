@@ -126,12 +126,11 @@ export default {
 
   async fetch() {
     const mixtapeId = this.$route.params.id;
-    const { mixtape, author } = await this.$store.dispatch(
-      'mixtapes/loadMixtape',
+    const { mixtape, author } = await this.$accessor.mixtapes.loadMixtape(
       mixtapeId
     );
     // this is also done when navigating in - see <mixtape-item>
-    this.$store.dispatch('colorScheme/setOverrideFromProfile', author.name);
+    this.$accessor.colorScheme.setOverrideFromProfile(author.name);
 
     if (this.$route.params.slug !== mixtape.slug) {
       this.$nuxt.context.redirect(`/mixtapes/${mixtapeId}/${mixtape.slug}`);
@@ -200,7 +199,7 @@ export default {
       const { mixtapeId } = this;
 
       try {
-        await this.$store.dispatch('mixtapes/deleteMixtape', {
+        await this.$accessor.mixtapes.deleteMixtape({
           mixtapeId,
         });
       } catch (err) {
@@ -209,7 +208,7 @@ export default {
       }
 
       this.$router.push('/', () => {
-        this.$store.dispatch('mixtapes/removeMixtapeFromCache', { mixtapeId });
+        this.$accessor.mixtapes.removeMixtapeFromCache({ mixtapeId });
       });
     },
   },

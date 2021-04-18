@@ -73,7 +73,7 @@ export default {
       } else if (this.streamingService === 'appleMusic') {
         this.handleDisconnectAppleMusic();
       }
-      this.$store.dispatch('streaming/unsetStreamingService');
+      this.$accessor.streaming.unsetStreamingService();
     },
 
     async handleDisconnectAppleMusic() {
@@ -109,7 +109,7 @@ export default {
 
     handleConnected() {
       this.$router.push('/settings');
-      this.$store.dispatch('setFlashMessage', {
+      this.$accessor.setFlashMessage({
         message: `You've set ${this.serviceName} as your streaming service.`,
         clearMs: 4000,
       });

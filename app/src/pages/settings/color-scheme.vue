@@ -81,7 +81,7 @@ export default {
         throw err;
       }
 
-      this.$store.dispatch('setFlashMessage', {
+      this.$accessor.setFlashMessage({
         message: 'Your color scheme has been updated.',
         clearMs: 4000,
       });

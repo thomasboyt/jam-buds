@@ -74,8 +74,7 @@ export default {
 
   methods: {
     setColorScheme() {
-      this.$store.dispatch(
-        'colorScheme/setOverrideFromProfile',
+      this.$accessor.colorScheme.setOverrideFromProfile(
         this.mixtape.authorName
       );
     },

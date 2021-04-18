@@ -14,10 +14,10 @@ export default {
     const name = this.$route.params.id;
 
     if (!this.$accessor.profile.profiles[name]) {
-      await this.$store.dispatch('profile/loadProfileForUser', name);
+      await this.$accessor.profile.loadProfileForUser(name);
     }
 
-    this.$store.dispatch('colorScheme/setOverrideFromProfile', name);
+    this.$accessor.colorScheme.setOverrideFromProfile(name);
   },
 };
 </script>

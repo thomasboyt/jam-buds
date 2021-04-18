@@ -60,7 +60,7 @@ export default {
       this.loadingNextPage = true;
 
       try {
-        await this.$store.dispatch('playlist/loadNextPlaylistPage', {
+        await this.$accessor.playlist.loadNextPlaylistPage({
           key: this.playlistKey,
         });
       } catch (err) {

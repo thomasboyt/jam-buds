@@ -102,7 +102,7 @@ export default {
         return;
       }
 
-      this.$store.dispatch('mixtapes/addSongToMixtape', {
+      this.$accessor.mixtapes.addSongToMixtape({
         mixtapeId: this.mixtapeId,
         song: resp.data,
       });

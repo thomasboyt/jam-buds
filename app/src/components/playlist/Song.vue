@@ -184,7 +184,7 @@ export default {
       } else {
         window.open(getYoutubeSearchUrl(this.song));
       }
-      this.$store.dispatch('playlistItems/markSongPlayed', this.songId);
+      this.$accessor.playlistItems.markSongPlayed(this.songId);
     },
     handleConnectedFromStreamingBanner() {
       this.showConnectStreamingBanner = false;

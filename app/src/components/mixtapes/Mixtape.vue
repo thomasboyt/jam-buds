@@ -63,7 +63,7 @@ export default {
 
       async set(songOrder) {
         try {
-          await this.$store.dispatch('mixtapes/updateMixtapeSongOrder', {
+          await this.$accessor.mixtapes.updateMixtapeSongOrder({
             mixtapeId: this.mixtapeId,
             songOrder,
           });
@@ -77,7 +77,7 @@ export default {
 
   methods: {
     handleRequestPlay(songId) {
-      this.$store.dispatch('playback/playFromMixtape', {
+      this.$accessor.playback.playFromMixtape({
         mixtapeId: this.mixtapeId,
         mixtapeSlug: this.mixtape.slug,
         songId,

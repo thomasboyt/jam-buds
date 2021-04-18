@@ -41,15 +41,20 @@ export default {
     async handleToggleLike(e) {
       e.preventDefault();
 
-      const action = this.song.meta.isLiked ? 'unlikeItem' : 'likeItem';
+      // TODO: like source goes here
+      const payload = {
+        itemId: this.song.id,
+        itemType: 'song',
+      };
 
       this.requestInFlight = true;
 
       try {
-        await this.$store.dispatch(`playlistItems/${action}`, {
-          itemId: this.song.id,
-          itemType: 'song',
-        });
+        if (this.song.meta.isLiked) {
+          await this.$accessor.playlistItems.unlikeItem(payload);
+        } else {
+          await this.$accessor.playlistItems.likeItem(payload);
+        }
       } catch (err) {
         this.$accessor.showErrorModal();
         throw err;

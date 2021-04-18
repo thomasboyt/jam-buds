@@ -52,7 +52,7 @@ export default {
   },
 
   async fetch() {
-    return this.$store.dispatch('playlist/loadPlaylist', {
+    return this.$accessor.playlist.loadPlaylist({
       key: 'feed',
       url: '/feed',
     });
@@ -73,7 +73,7 @@ export default {
       this.loadingNextPage = true;
 
       try {
-        await this.$store.dispatch('playlist/loadNextPlaylistPage', {
+        await this.$accessor.playlist.loadNextPlaylistPage({
           key: 'feed',
         });
       } catch (err) {
@@ -85,7 +85,7 @@ export default {
     },
 
     handleRequestPlay(songId) {
-      this.$store.dispatch('playback/playFromPlaylist', {
+      this.$accessor.playback.playFromPlaylist({
         songId,
         playlistKey: 'feed',
         playbackSourceLabel: 'your feed',

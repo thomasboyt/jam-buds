@@ -35,7 +35,7 @@ export default {
 
   methods: {
     handleChangeVolume(e) {
-      this.$store.dispatch('playback/changeVolume', parseFloat(e.target.value));
+      this.$accessor.playback.changeVolume(parseFloat(e.target.value));
     },
   },
 };
