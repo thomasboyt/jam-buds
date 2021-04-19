@@ -57,7 +57,7 @@ class LikeRoutesTest : AppTest() {
         assertEquals(3, playlist.items.size)
         assertTrue(playlist.items.any { it.song?.id == ids.songId})
         assertTrue(playlist.items.any { it.mixtape?.id == ids.mixtapeId})
-        assertTrue(playlist.items.any { it.album?.id == ids.mixtapeId})
+        assertTrue(playlist.items.any { it.album?.id == ids.albumId})
     }
 
     @Test
