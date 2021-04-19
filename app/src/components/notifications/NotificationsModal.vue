@@ -27,14 +27,17 @@
   </modal>
 </template>
 
-<script>
-import Modal from '../Modal.vue';
-import JbButton from '../lib/JbButton.vue';
+<script lang="ts">
+import Vue from 'vue';
 import formatDistanceToNowStrict from 'date-fns/formatDistanceToNowStrict';
 import subDays from 'date-fns/subDays';
 import isBefore from 'date-fns/isBefore';
 
-export default {
+import { ApiSchema } from '~/api/_helpers';
+import Modal from '../Modal.vue';
+import JbButton from '../lib/JbButton.vue';
+
+export default Vue.extend({
   components: { Modal, JbButton },
 
   fetch() {
@@ -54,10 +57,10 @@ export default {
     handleMarkAllRead() {
       this.$accessor.notifications.readAll();
     },
-    handleClickNotification(notification) {
+    handleClickNotification(notification: ApiSchema<'NotificationItem'>) {
       this.$accessor.notifications.read({ id: notification.id });
     },
-    formatTimestamp(timestamp) {
+    formatTimestamp(timestamp: string) {
       const date = new Date(timestamp);
       const yday = subDays(new Date(), 1);
       if (isBefore(date, yday)) {
@@ -76,7 +79,7 @@ export default {
       }
     },
   },
-};
+});
 </script>
 
 <style lang="scss" scoped>

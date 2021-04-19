@@ -10,11 +10,12 @@
   </nuxt-link>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue';
 import Icon from '../Icon.vue';
-const notificationsIcon = require('~/assets/bell.svg');
+const notificationsIcon: string = require('~/assets/bell.svg');
 
-export default {
+export default Vue.extend({
   components: { Icon },
 
   data() {
@@ -24,16 +25,16 @@ export default {
   },
 
   computed: {
-    hasUnreadNotifications() {
+    hasUnreadNotifications(): boolean {
       return this.$accessor.notifications.hasUnreadNotifications;
     },
-    label() {
+    label(): string {
       return this.hasUnreadNotifications
         ? 'Unread notifications'
         : 'Past notifications';
     },
   },
-};
+});
 </script>
 
 <style lang="scss" scoped>
