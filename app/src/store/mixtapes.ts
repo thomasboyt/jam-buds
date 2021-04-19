@@ -7,7 +7,7 @@ type MixtapePreview = ApiSchema<'MixtapePreview'>;
 type MixtapeWithSongsReponse = ApiSchema<'MixtapeWithSongsReponse'>;
 type UserProfile = ApiSchema<'UserProfile'>;
 
-interface MixtapeHydrated extends MixtapePreview {
+export interface MixtapeHydrated extends MixtapePreview {
   tracks: number[];
   author: UserProfile;
 }

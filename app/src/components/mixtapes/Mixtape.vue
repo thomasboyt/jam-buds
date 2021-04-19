@@ -26,16 +26,18 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue';
 import Draggable from 'vuedraggable';
 
+import { MixtapeHydrated } from '~/store/mixtapes';
 import Song from '../playlist/Song.vue';
 import SongRemoveFromMixtapeAction from './SongRemoveFromMixtapeAction.vue';
 import Icon from '../Icon.vue';
 
-const dragIcon = require('~/assets/menu.svg');
+const dragIcon: string = require('~/assets/menu.svg');
 
-export default {
+export default Vue.extend({
   components: {
     Song,
     SongRemoveFromMixtapeAction,
@@ -43,7 +45,16 @@ export default {
     Icon,
   },
 
-  props: ['mixtapeId', 'isEditing'],
+  props: {
+    mixtapeId: {
+      type: Number,
+      required: true,
+    },
+    isEditing: {
+      type: Boolean,
+      required: true,
+    },
+  },
 
   data() {
     return {
@@ -52,16 +63,16 @@ export default {
   },
 
   computed: {
-    mixtape() {
-      return this.$accessor.mixtapes.getMixtape(this.mixtapeId);
+    mixtape(): MixtapeHydrated {
+      return this.$accessor.mixtapes.getMixtape(this.mixtapeId)!;
     },
 
     mixtapeTracks: {
-      get() {
+      get(): number[] {
         return this.mixtape.tracks;
       },
 
-      async set(songOrder) {
+      async set(songOrder: number[]): Promise<void> {
         try {
           await this.$accessor.mixtapes.updateMixtapeSongOrder({
             mixtapeId: this.mixtapeId,
@@ -76,7 +87,7 @@ export default {
   },
 
   methods: {
-    handleRequestPlay(songId) {
+    handleRequestPlay(songId: number) {
       this.$accessor.playback.playFromMixtape({
         mixtapeId: this.mixtapeId,
         mixtapeSlug: this.mixtape.slug,
@@ -84,5 +95,5 @@ export default {
       });
     },
   },
-};
+});
 </script>

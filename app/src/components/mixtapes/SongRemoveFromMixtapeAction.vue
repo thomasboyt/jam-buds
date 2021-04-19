@@ -8,15 +8,25 @@
   </button>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue';
 import Icon from '../Icon.vue';
 
-const deleteIcon = require('~/assets/close.svg');
+const deleteIcon: string = require('~/assets/close.svg');
 
-export default {
+export default Vue.extend({
   components: { Icon },
 
-  props: ['songId', 'mixtapeId'],
+  props: {
+    songId: {
+      type: Number,
+      required: true,
+    },
+    mixtapeId: {
+      type: Number,
+      required: true,
+    },
+  },
 
   data() {
     return {
@@ -26,7 +36,7 @@ export default {
   },
 
   methods: {
-    async handleRemoveSong(e) {
+    async handleRemoveSong(e: Event) {
       e.preventDefault();
 
       const confirmed = window.confirm(
@@ -52,5 +62,5 @@ export default {
       }
     },
   },
-};
+});
 </script>
