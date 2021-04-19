@@ -10,8 +10,10 @@
   </form>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import Vue from 'vue';
+
+export default Vue.extend({
   data() {
     return {
       username: '',
@@ -20,7 +22,7 @@ export default {
   },
 
   methods: {
-    async onSubmit(evt) {
+    async onSubmit(evt: Event) {
       this.noUserError = false;
 
       evt.preventDefault();
@@ -43,7 +45,7 @@ export default {
       this.$router.push(`/users/${this.username}`);
     },
   },
-};
+});
 </script>
 
 <style lang="scss" scoped>

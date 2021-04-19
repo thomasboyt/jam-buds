@@ -1,6 +1,6 @@
 <template>
   <ul>
-    <li v-for="user of users" :key="user.id">
+    <li v-for="user of users" :key="user.twitterName">
       <img :src="user.twitterAvatar" />
 
       <div class="body">
@@ -21,14 +21,21 @@
   </ul>
 </template>
 
-<script>
+<script lang="ts">
+import Vue, { PropType } from 'vue';
+import { ApiSchema } from '~/api/_helpers';
 import FollowToggle from '../FollowToggle.vue';
 
-export default {
+export default Vue.extend({
   components: { FollowToggle },
 
-  props: ['users'],
-};
+  props: {
+    users: {
+      type: Object as PropType<ApiSchema<'TwitterFriendSuggestion'>[]>,
+      required: true,
+    },
+  },
+});
 </script>
 
 <style scoped lang="scss">

@@ -18,12 +18,13 @@
   </modal>
 </template>
 
-<script>
-import Modal from '../Modal';
-import TwitterSuggestions from './TwitterSuggestions';
-import FindByUsernameForm from './FindByUsernameForm';
+<script lang="ts">
+import Vue from 'vue';
+import Modal from '../Modal.vue';
+import TwitterSuggestions from './TwitterSuggestions.vue';
+import FindByUsernameForm from './FindByUsernameForm.vue';
 
-export default {
+export default Vue.extend({
   components: {
     Modal,
     TwitterSuggestions,
@@ -35,7 +36,7 @@ export default {
       return this.$route.query.modal === 'find-friends';
     },
   },
-};
+});
 </script>
 
 <style lang="scss" scoped>

@@ -5,7 +5,10 @@
       Error loading friend suggestions.
     </div>
     <template v-else>
-      <div v-if="friendSuggestions.length === 0" class="friends-placeholder">
+      <div
+        v-if="!friendSuggestions || friendSuggestions.length === 0"
+        class="friends-placeholder"
+      >
         No suggestions found! Try inviting your Twitter friends to Jam Buds!
       </div>
       <twitter-users-list v-else :users="friendSuggestions" />
@@ -21,42 +24,46 @@
   </div>
 </template>
 
-<script>
-import TwitterConnectButton from '../settings/TwitterConnectButton';
-import TwitterUsersList from './TwitterUsersList';
+<script lang="ts">
+import Vue from 'vue';
+import { ApiSchema } from '~/api/_helpers';
+import TwitterConnectButton from '../settings/TwitterConnectButton.vue';
+import TwitterUsersList from './TwitterUsersList.vue';
 
-export default {
+export default Vue.extend({
   components: {
     TwitterConnectButton,
     TwitterUsersList,
   },
 
-  async fetch() {
-    if (this.$accessor.currentUser.user.twitterName) {
+  async fetch(): Promise<void> {
+    if (this.$accessor.currentUser.user!.twitterName) {
       const resp = await this.$axios({
         url: `/friend-suggestions`,
         method: 'GET',
       });
 
-      this.friendSuggestions = resp.data.users;
+      const data = resp.data as ApiSchema<'TwitterFriendSuggestionsResponse'>;
+
+      this.friendSuggestions = data.users;
     }
   },
 
   data() {
     return {
-      friendSuggestions: null,
+      friendSuggestions: null as ApiSchema<'TwitterFriendSuggestion'>[] | null,
     };
   },
 
   computed: {
-    showTwitterSuggestions() {
-      return !!this.$accessor.currentUser.user.twitterName;
+    showTwitterSuggestions(): boolean {
+      return !!this.$accessor.currentUser.user!.twitterName;
     },
-    redirect() {
+    redirect(): string {
       return this.$route.fullPath;
     },
   },
-};
+});
 </script>
 
 <style lang="scss" scoped>
