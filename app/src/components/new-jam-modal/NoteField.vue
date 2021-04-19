@@ -12,24 +12,31 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue';
+
 export const MAX_POST_LENGTH = 500;
 
-export default {
-  props: ['value'],
+export default Vue.extend({
+  props: {
+    value: {
+      type: String,
+      required: true,
+    },
+  },
 
   computed: {
-    remainingChars() {
+    remainingChars(): number {
       return MAX_POST_LENGTH - this.value.length;
     },
   },
 
   methods: {
-    updateText(value) {
+    updateText(value: string) {
       this.$emit('input', value);
     },
   },
-};
+});
 </script>
 
 <style lang="scss" scoped>

@@ -30,20 +30,34 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue, { PropType } from 'vue';
+import { ApiSchema } from '~/api/_helpers';
 import { getSpotifyAlbumUrl, getSpotifySongUrl } from '~/util/getSpotifyUrl';
 import getYoutubeSearchUrl from '../../util/getYoutubeSearchUrl';
+import { SelectedItem } from './common';
 import ServiceListItem from './ServiceListItem.vue';
 
-export default {
+export default Vue.extend({
   components: { ServiceListItem },
-  props: ['details', 'item', 'type'],
+
+  props: {
+    details: {
+      type: Object as PropType<ApiSchema<'SearchDetailsResponse'>>,
+    },
+    item: {
+      type: Object as PropType<SelectedItem>,
+    },
+    type: {
+      type: String as PropType<'album' | 'song'>,
+    },
+  },
 
   computed: {
-    youtubeSearchUrl() {
+    youtubeSearchUrl(): string {
       return getYoutubeSearchUrl(this.item);
     },
-    spotifyUrl() {
+    spotifyUrl(): string {
       if (this.type === 'album') {
         return getSpotifyAlbumUrl(this.details.spotifyId);
       } else {
@@ -51,7 +65,7 @@ export default {
       }
     },
   },
-};
+});
 </script>
 
 <style lang="scss" scoped>

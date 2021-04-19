@@ -13,10 +13,17 @@
   </div>
 </template>
 
-<script>
-export default {
-  props: ['item'],
-};
+<script lang="ts">
+import Vue, { PropType } from 'vue';
+import { SelectedItem } from './common';
+
+export default Vue.extend({
+  props: {
+    item: {
+      type: Object as PropType<SelectedItem>,
+    },
+  },
+});
 </script>
 
 <style lang="scss" scoped>

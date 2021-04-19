@@ -24,16 +24,24 @@
   </div>
 </template>
 
-<script>
-export default {
-  props: ['jamType'],
+<script lang="ts">
+import Vue, { PropType } from 'vue';
+
+import { JamType } from './common';
+
+export default Vue.extend({
+  props: {
+    jamType: {
+      type: String as PropType<JamType>,
+    },
+  },
 
   methods: {
-    setJamType(type) {
+    setJamType(type: JamType) {
       this.$emit('changeJamType', type);
     },
 
-    buttonClass(type) {
+    buttonClass(type: JamType) {
       return {
         'filter-button': true,
         [type]: true,
@@ -41,7 +49,7 @@ export default {
       };
     },
   },
-};
+});
 </script>
 
 <style scoped lang="scss">

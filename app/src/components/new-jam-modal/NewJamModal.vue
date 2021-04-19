@@ -3,7 +3,7 @@
     <transition name="fade">
       <div
         class="new-jam-modal fade-screen"
-        v-if="state === INITIAL_STATE"
+        v-if="state === 'initial'"
         key="initial"
       >
         <initial-screen
@@ -14,7 +14,7 @@
 
       <div
         class="new-jam-modal fade-screen"
-        v-if="state === CONFIRM_STATE"
+        v-if="state === 'confirm'"
         key="confirm"
       >
         <mixtape-confirm-screen
@@ -35,58 +35,67 @@
   </modal>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue';
+
+import { closeModal } from '~/util/modal';
 import Modal from '../Modal.vue';
 import InitialScreen from './InitialScreen.vue';
 import ConfirmScreen from './ConfirmScreen.vue';
 import MixtapeConfirmScreen from './MixtapeConfirmScreen.vue';
-import { closeModal } from '~/util/modal';
+import { JamType, SelectedItem } from './common';
 
-const INITIAL_STATE = 'initial';
-const CONFIRM_STATE = 'confirm';
+type ModalState = 'initial' | 'confirm';
 
-export default {
+export default Vue.extend({
   components: { Modal, InitialScreen, ConfirmScreen, MixtapeConfirmScreen },
 
-  props: ['mixtapeId', 'title'],
+  props: {
+    title: {
+      type: String,
+      required: true,
+    },
+    mixtapeId: {
+      type: Number,
+      required: true,
+    },
+  },
 
   data() {
     return {
-      state: INITIAL_STATE,
-      INITIAL_STATE,
-      CONFIRM_STATE,
-      selectedItem: null,
-      selectedType: null,
+      state: 'initial' as ModalState,
+      selectedItem: null as SelectedItem | null,
+      selectedType: null as JamType | null,
     };
   },
 
   computed: {
-    isOpen() {
+    isOpen(): boolean {
       return this.$route.query.modal === 'new-jam';
     },
   },
 
   watch: {
-    isOpen(isOpen) {
+    isOpen(isOpen: boolean) {
       if (!isOpen) {
-        this.state = INITIAL_STATE;
-        this.selectedSong = null;
+        this.state = 'initial';
+        this.selectedItem = null;
       }
     },
   },
 
   methods: {
-    handleSelectedItem({ type, item }) {
+    handleSelectedItem({ type, item }: { type: JamType; item: SelectedItem }) {
       this.selectedItem = item;
       this.selectedType = type;
-      this.state = CONFIRM_STATE;
+      this.state = 'confirm';
     },
 
     handleCloseModal() {
       closeModal(this.$router, this.$route);
     },
   },
-};
+});
 </script>
 
 <style lang="scss" scoped>
