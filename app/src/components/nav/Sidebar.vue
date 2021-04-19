@@ -51,23 +51,28 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue';
 import Logo from '~/components/Logo.vue';
 import NotificationsButton from '~/components/notifications/NotificationsButton.vue';
 
-export default {
+export default Vue.extend({
   components: { Logo, NotificationsButton },
 
-  props: ['open'],
+  props: {
+    open: {
+      type: Boolean,
+    },
+  },
 
   computed: {
-    currentUserName() {
-      return this.$accessor.currentUser.user.name;
+    currentUserName(): string {
+      return this.$accessor.currentUser.user!.name;
     },
-    authenticated() {
+    authenticated(): boolean {
       return this.$accessor.auth.authenticated;
     },
-    profileActive() {
+    profileActive(): boolean {
       return (
         this.$route.path.startsWith(`/users/${this.currentUserName}`) &&
         this.$route.path !== `/users/${this.currentUserName}/liked` &&
@@ -76,7 +81,7 @@ export default {
       );
     },
   },
-};
+});
 </script>
 
 <style lang="scss" scoped>

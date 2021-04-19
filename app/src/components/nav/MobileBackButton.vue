@@ -4,11 +4,12 @@
   </button>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue';
 import Icon from '~/components/Icon.vue';
-const chevronIcon = require('~/assets/arrow.svg');
+const chevronIcon: string = require('~/assets/arrow.svg');
 
-export default {
+export default Vue.extend({
   components: { Icon },
 
   data() {
@@ -26,7 +27,7 @@ export default {
       }
     },
   },
-};
+});
 </script>
 
 <style lang="scss" scoped>

@@ -26,13 +26,14 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue';
 import MobileBackButton from './MobileBackButton.vue';
 import NotificationsButton from '../notifications/NotificationsButton.vue';
 import Logo from '../Logo.vue';
 import isRootPage from '~/util/isRootPage';
 
-export default {
+export default Vue.extend({
   components: {
     MobileBackButton,
     Logo,
@@ -46,13 +47,13 @@ export default {
   },
 
   computed: {
-    pageTitle() {
+    pageTitle(): string | null {
       return this.$accessor.mobileHeaderTitle;
     },
-    authenticated() {
+    authenticated(): boolean {
       return this.$accessor.auth.authenticated;
     },
-    isRootPage() {
+    isRootPage(): boolean {
       return isRootPage(this.$store, this.$route);
     },
   },
@@ -61,7 +62,7 @@ export default {
     document.addEventListener('scroll', this.handleScroll);
   },
 
-  unmounted() {
+  beforeDestroy() {
     document.removeEventListener('scroll', this.handleScroll);
   },
 
@@ -74,7 +75,7 @@ export default {
       }
     },
   },
-};
+});
 </script>
 
 <style lang="scss">

@@ -15,19 +15,26 @@
   </div>
 </template>
 
-<script>
-import Icon from '~/components/Icon';
-const homeIcon = require('~/assets/home.svg');
-const profileIcon = require('~/assets/profile.svg');
-const globeIcon = require('~/assets/globe.svg');
-const settingsIcon = require('~/assets/settings.svg');
+<script lang="ts">
+import Vue from 'vue';
+import Icon from '~/components/Icon.vue';
+const homeIcon: string = require('~/assets/home.svg');
+const profileIcon: string = require('~/assets/profile.svg');
+const globeIcon: string = require('~/assets/globe.svg');
+const settingsIcon: string = require('~/assets/settings.svg');
 
-export default {
+interface Tab {
+  name: string;
+  link: string;
+  icon: string;
+}
+
+export default Vue.extend({
   components: { Icon },
 
   computed: {
-    tabs() {
-      const currentUserName = this.$accessor.currentUser.user.name;
+    tabs(): Tab[] {
+      const currentUserName = this.$accessor.currentUser.user!.name;
       return [
         { name: 'Feed', link: '/', icon: homeIcon },
         {
@@ -40,17 +47,17 @@ export default {
       ];
     },
 
-    activeTab() {
+    activeTab(): string {
       return this.$accessor.activeBottomTab;
     },
   },
 
   methods: {
-    setActiveTab(path) {
+    setActiveTab(path: string) {
       this.$accessor.setActiveTab(path);
     },
   },
-};
+});
 </script>
 
 <style lang="scss" scoped>
