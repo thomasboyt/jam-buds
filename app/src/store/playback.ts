@@ -5,13 +5,12 @@ import { DenormalizedItem } from './playlist';
 
 type SongWithMeta = ApiSchema<'SongWithMeta'>;
 type Player = any; // TODO
-type Timestamp = number; // TODO: should be string
 const getNativeBridge = (obj: any): any => obj.$nativeBridge; // TODO
 
 // This takes advantage of playlist being ordered
 const getNextSongEntry = (
   playlist: DenormalizedItem[],
-  prevSongTimestamp: Timestamp
+  prevSongTimestamp: string
 ) => {
   return playlist.find((entry) => {
     if (!entry.songId) {
@@ -37,7 +36,7 @@ interface PlaybackState {
   playbackSourcePath: string | null;
   playlistKey: string | null;
   mixtapeId: number | null;
-  currentSongPlaylistTimestamp: Timestamp | null;
+  currentSongPlaylistTimestamp: string | null;
 }
 
 export const state = (): PlaybackState => {
@@ -107,7 +106,7 @@ export const mutations = mutationTree(state, {
     {
       songId,
       songPlaylistTimestamp,
-    }: { songId: number; songPlaylistTimestamp: Timestamp }
+    }: { songId: number; songPlaylistTimestamp: string }
   ) {
     state.currentSongId = songId;
     state.currentSongPlaylistTimestamp = songPlaylistTimestamp;
@@ -148,7 +147,7 @@ export const actions = actionTree(
       {
         songId,
         songPlaylistTimestamp,
-      }: { songId: number; songPlaylistTimestamp: Timestamp }
+      }: { songId: number; songPlaylistTimestamp: string }
     ): Promise<void> {
       const player = this.app.$accessor.streaming.service;
 

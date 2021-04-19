@@ -148,7 +148,7 @@ export interface components {
       textColor: string;
     };
     FeedPlaylistEntry: {
-      timestamp: number;
+      timestamp: string;
       song?: components["schemas"]["SongWithMeta"];
       mixtape?: components["schemas"]["MixtapePreview"];
       album?: components["schemas"]["Album"];
@@ -159,7 +159,7 @@ export interface components {
       postId: number;
       userName: string;
       noteText?: string;
-      timestamp: number;
+      timestamp: string;
     };
     FeedPlaylistResponse: {
       items: components["schemas"]["FeedPlaylistEntry"][];
@@ -174,7 +174,7 @@ export interface components {
       id: number;
       title: string;
       slug: string;
-      publishedAt?: number;
+      publishedAt?: string;
       songCount: number;
       authorName: string;
       meta: components["schemas"]["ItemMeta"];
@@ -199,7 +199,7 @@ export interface components {
       colorScheme: components["schemas"]["ColorScheme"];
     };
     UserPlaylistEntry: {
-      timestamp: number;
+      timestamp: string;
       song?: components["schemas"]["SongWithMeta"];
       mixtape?: components["schemas"]["MixtapePreview"];
       album?: components["schemas"]["Album"];
@@ -310,7 +310,7 @@ export interface components {
       type: "like" | "follow" | "join" | "system";
       body: string;
       url: string;
-      timestamp: number;
+      timestamp: string;
       seen: boolean;
     };
     SendSignInTokenBody: {

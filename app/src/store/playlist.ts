@@ -2,7 +2,6 @@ import Vue from 'vue';
 import { getterTree, mutationTree, actionTree } from 'typed-vuex';
 import { ApiSchema } from '~/api/_helpers';
 
-type Timestamp = number; // TODO: should be string
 type FeedPlaylistEntry = ApiSchema<'FeedPlaylistEntry'>;
 type UserPlaylistEntry = ApiSchema<'UserPlaylistEntry'>;
 type PlaylistEntry = FeedPlaylistEntry | UserPlaylistEntry;
@@ -14,7 +13,7 @@ const mixtapeKey = (id: number) => `mixtape:${id}`;
 
 export interface DenormalizedItem {
   id: string;
-  timestamp: Timestamp;
+  timestamp: string;
   songId?: number;
   albumId?: number;
   mixtapeId?: number;
