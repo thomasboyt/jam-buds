@@ -19,9 +19,20 @@
   </header>
 </template>
 
-<script>
-export default {
-  props: ['mixtape', 'editing'],
+<script lang="ts">
+import Vue, { PropType } from 'vue';
+import { MixtapeHydrated } from '~/store/mixtapes';
+
+export default Vue.extend({
+  props: {
+    mixtape: {
+      type: Object as PropType<MixtapeHydrated>,
+      required: true,
+    },
+    editing: {
+      type: Boolean,
+    },
+  },
 
   data() {
     return {
@@ -36,8 +47,9 @@ export default {
       // nextTick() fixes input not being rendered yet!
       if (newVal === true && oldVal === false) {
         this.$nextTick(() => {
-          this.$refs.titleInput.focus();
-        }, 0);
+          const input = this.$refs.titleInput as HTMLInputElement;
+          input.focus();
+        });
       }
     },
   },
@@ -47,7 +59,7 @@ export default {
       this.$emit('enter');
     },
 
-    async handleSubmit(e) {
+    async handleSubmit(e: Event) {
       e.preventDefault();
 
       this.requestInFlight = true;
@@ -63,7 +75,7 @@ export default {
         if (this.mixtape.slug !== prevSlug) {
           this.$router.replace({
             name: 'mixtape-with-slug',
-            params: { id: this.mixtape.id, slug: this.mixtape.slug },
+            params: { id: `${this.mixtape.id}`, slug: this.mixtape.slug },
           });
         }
       } catch (err) {
@@ -76,7 +88,7 @@ export default {
       this.$emit('exit');
     },
   },
-};
+});
 </script>
 
 <style scoped lang="scss">

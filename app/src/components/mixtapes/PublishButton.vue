@@ -9,13 +9,20 @@
   </jb-button>
 </template>
 
-<script>
-import JbButton from '../lib/JbButton';
+<script lang="ts">
+import Vue, { PropType } from 'vue';
+import { MixtapeHydrated } from '~/store/mixtapes';
+import JbButton from '../lib/JbButton.vue';
 
-export default {
+export default Vue.extend({
   components: { JbButton },
 
-  props: ['mixtape'],
+  props: {
+    mixtape: {
+      type: Object as PropType<MixtapeHydrated>,
+      required: true,
+    },
+  },
 
   data() {
     return {
@@ -24,13 +31,13 @@ export default {
   },
 
   computed: {
-    hasSongs() {
+    hasSongs(): boolean {
       return this.mixtape.tracks ? this.mixtape.tracks.length > 0 : false;
     },
   },
 
   methods: {
-    async handleClick(e) {
+    async handleClick(e: Event) {
       e.preventDefault();
 
       if (!window.confirm('Are you sure you want to publish this mixtape?')) {
@@ -51,7 +58,7 @@ export default {
       }
     },
   },
-};
+});
 </script>
 
 <style lang="scss" scoped>

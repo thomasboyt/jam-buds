@@ -8,12 +8,13 @@
   </jb-button>
 </template>
 
-<script>
-import JbButton from '../lib/JbButton';
+<script lang="ts">
+import Vue from 'vue';
+import JbButton from '../lib/JbButton.vue';
 
-export default {
+export default Vue.extend({
   components: { JbButton },
-};
+});
 </script>
 
 <style lang="scss" scoped>

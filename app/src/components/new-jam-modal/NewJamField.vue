@@ -18,11 +18,12 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue';
 import Icon from '../Icon.vue';
-const searchIcon = require('~/assets/search.svg');
+const searchIcon: string = require('~/assets/search.svg');
 
-export default {
+export default Vue.extend({
   components: { Icon },
 
   props: {
@@ -42,10 +43,10 @@ export default {
   },
 
   computed: {
-    placeholder() {
+    placeholder(): string {
       return this.isSearch ? 'Search...' : 'Your mixtape title';
     },
-    label() {
+    label(): string {
       return this.isSearch ? 'Search query' : 'Mixtape title';
     },
   },
@@ -62,10 +63,11 @@ export default {
       window.navigator.userAgent.includes('iPad');
 
     if (!iOS) {
-      this.$refs.input.focus();
+      const input = this.$refs.input as HTMLInputElement;
+      input.focus();
     }
   },
-};
+});
 </script>
 
 <style lang="scss" scoped>

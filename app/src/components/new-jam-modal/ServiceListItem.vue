@@ -9,8 +9,20 @@
   </li>
 </template>
 
-<script>
-export default {
-  props: ['present', 'name', 'url'],
-};
+<script lang="ts">
+import Vue from 'vue';
+
+export default Vue.extend({
+  props: {
+    present: {
+      type: Boolean,
+    },
+    name: {
+      type: String,
+    },
+    url: {
+      type: String,
+    },
+  },
+});
 </script>

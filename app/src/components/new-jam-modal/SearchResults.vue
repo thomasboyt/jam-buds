@@ -17,22 +17,28 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue, { PropType } from 'vue';
 import SearchItemPreview from './SearchItemPreview.vue';
+import { SearchResults, SelectedItem } from './common';
 
-export default {
+export default Vue.extend({
   components: { SearchItemPreview },
 
-  props: ['searchResults'],
+  props: {
+    searchResults: {
+      type: Array as PropType<SearchResults>,
+    },
+  },
 
   methods: {
-    handleSelectItem(evt, item) {
+    handleSelectItem(evt: Event, item: SelectedItem) {
       evt.preventDefault();
 
       this.$emit('selectItem', item);
     },
   },
-};
+});
 </script>
 
 <style lang="scss" scoped>

@@ -41,32 +41,43 @@
   </div>
 </template>
 
-<script>
-import _get from 'lodash/get';
+<script lang="ts">
+import Vue, { PropType } from 'vue';
+import { ApiSchema } from '~/api/_helpers';
 
 import NoteField, { MAX_POST_LENGTH } from './NoteField.vue';
 import ServiceList from './ServiceList.vue';
 import SearchItemPreview from './SearchItemPreview.vue';
-import JbButton from '../lib/JbButton';
+import JbButton from '../lib/JbButton.vue';
+import { SelectedItem } from './common';
 
-export default {
+export default Vue.extend({
   components: { NoteField, ServiceList, SearchItemPreview, JbButton },
 
-  props: ['selectedItem', 'selectedType'],
+  props: {
+    selectedItem: {
+      type: Object as PropType<SelectedItem>,
+      required: true,
+    },
+    selectedType: {
+      type: String as PropType<'song' | 'album'>,
+      required: true,
+    },
+  },
 
   data() {
     return {
       loadedDetails: false,
-      details: null,
+      details: null as ApiSchema<'SearchDetailsResponse'> | null,
       noteText: '',
       twitterPostEnabled: false,
-      error: null,
+      error: null as string | null,
     };
   },
 
   computed: {
-    hasTwitter() {
-      return !!this.$accessor.currentUser.user.twitterName;
+    hasTwitter(): boolean {
+      return !!this.$accessor.currentUser.user!.twitterName;
     },
   },
 
@@ -94,21 +105,20 @@ export default {
         return;
       }
 
-      this.details = resp.data;
+      this.details = resp.data as ApiSchema<'SearchDetailsResponse'>;
 
       this.loadedDetails = true;
     },
 
-    async handleSubmit(evt) {
+    async handleSubmit(evt: Event) {
       evt.preventDefault();
 
-      if (this.noteText > MAX_POST_LENGTH) {
+      if (this.noteText.length > MAX_POST_LENGTH) {
         this.$accessor.showErrorModal('Yo your note is too long');
         return;
       }
 
       const params = {
-        spotifyId: this.selectedItem.spotifyId,
         type: this.selectedType,
         postTweet: this.twitterPostEnabled,
         noteText: this.noteText === '' ? null : this.noteText,
@@ -123,7 +133,7 @@ export default {
           data: params,
         });
       } catch (err) {
-        const error = _get(err.response.data, 'error');
+        const error = err.response.data?.error;
         if (error) {
           this.error = error;
         } else {
@@ -132,7 +142,7 @@ export default {
         return;
       }
 
-      const userName = this.$accessor.currentUser.user.name;
+      const userName = this.$accessor.currentUser.user!.name;
       const currentPath = this.$route.path;
       const profilePath = `/users/${userName}`;
       if (currentPath === '/') {
@@ -148,7 +158,7 @@ export default {
       this.$emit('finished');
     },
   },
-};
+});
 </script>
 
 <style lang="scss" scoped>

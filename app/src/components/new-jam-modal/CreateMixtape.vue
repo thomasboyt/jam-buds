@@ -13,21 +13,21 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue';
+import { ApiSchema } from '~/api/_helpers';
 import NewJamField from './NewJamField.vue';
 import PostJamButton from './PostJamButton.vue';
 import DraftMixtapesList from '../DraftMixtapesList.vue';
 
-export default {
+export default Vue.extend({
   components: {
     NewJamField,
     PostJamButton,
     DraftMixtapesList,
   },
 
-  props: ['isMixtapeSearch'],
-
-  fetch() {
+  fetch(): Promise<void> {
     return this.$accessor.mixtapes.loadDraftMixtapes();
   },
 
@@ -39,21 +39,21 @@ export default {
   },
 
   computed: {
-    draftMixtapes() {
+    draftMixtapes(): ApiSchema<'MixtapePreview'>[] {
       return this.$accessor.mixtapes.draftMixtapes;
     },
 
-    showDraftMixtapes() {
+    showDraftMixtapes(): boolean {
       return (
         !this.$fetchState.pending &&
         !this.$fetchState.error &&
-        this.draftMixtapes.length
+        this.draftMixtapes.length > 0
       );
     },
   },
 
   methods: {
-    async handleCreateMixtape(e) {
+    async handleCreateMixtape(e: Event) {
       e.preventDefault();
 
       if (!this.mixtapeTitle || this.requestInFlight) {
@@ -76,11 +76,12 @@ export default {
         this.requestInFlight = false;
       }
 
-      const { id, slug } = resp.data.mixtape;
+      const data = resp.data as ApiSchema<'MixtapeWithSongsReponse'>;
+      const { id, slug } = data.mixtape;
       this.$router.push(`/mixtapes/${id}/${slug}`);
     },
   },
-};
+});
 </script>
 
 <style lang="scss" scoped>

@@ -12,8 +12,10 @@
   </component>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import Vue from 'vue';
+
+export default Vue.extend({
   props: {
     to: {
       type: String,
@@ -33,11 +35,11 @@ export default {
   },
 
   methods: {
-    handleClick(evt) {
+    handleClick(evt: Event) {
       this.$emit('click', evt);
     },
   },
-};
+});
 </script>
 
 <style lang="scss" scoped>

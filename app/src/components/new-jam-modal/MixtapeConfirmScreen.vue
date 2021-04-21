@@ -28,25 +28,35 @@
   </div>
 </template>
 
-<script>
-import _get from 'lodash/get';
+<script lang="ts">
+import Vue, { PropType } from 'vue';
+import { ApiSchema } from '~/api/_helpers';
 
 import serializeSongLabel from '../../util/serializeSongLabel';
 import ServiceList from './ServiceList.vue';
 import SearchItemPreview from './SearchItemPreview.vue';
-import JbButton from '../lib/JbButton';
+import JbButton from '../lib/JbButton.vue';
 
-export default {
+export default Vue.extend({
   components: { ServiceList, SearchItemPreview, JbButton },
 
-  props: ['selectedItem', 'mixtapeId'],
+  props: {
+    selectedItem: {
+      type: Object as PropType<ApiSchema<'SongSearchResult'>>,
+      required: true,
+    },
+    mixtapeId: {
+      type: Number,
+      required: true,
+    },
+  },
 
   data() {
     return {
       loadedDetails: false,
-      details: null,
+      details: null as ApiSchema<'SearchDetailsResponse'> | null,
       songLabel: serializeSongLabel(this.selectedItem),
-      error: null,
+      error: null as string | null,
     };
   },
 
@@ -70,14 +80,15 @@ export default {
         });
       } catch (err) {
         this.$accessor.showErrorModal();
+        return;
       }
 
-      this.details = resp.data;
+      this.details = resp.data as ApiSchema<'SearchDetailsResponse'>;
 
       this.loadedDetails = true;
     },
 
-    async handleSubmit(evt) {
+    async handleSubmit(evt: Event) {
       evt.preventDefault();
 
       const params = {
@@ -93,7 +104,7 @@ export default {
           data: params,
         });
       } catch (err) {
-        const error = _get(err.response.data, 'error');
+        const error = err.response.data?.error;
         if (error) {
           this.error = error;
         } else {
@@ -110,7 +121,7 @@ export default {
       this.$emit('finished');
     },
   },
-};
+});
 </script>
 
 <style lang="scss" scoped>

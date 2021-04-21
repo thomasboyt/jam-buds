@@ -71,6 +71,8 @@ import io.javalin.plugin.json.JavalinJackson
 import io.javalin.plugin.metrics.MicrometerPlugin
 import io.javalin.plugin.openapi.OpenApiOptions
 import io.javalin.plugin.openapi.OpenApiPlugin
+import io.javalin.plugin.openapi.jackson.JacksonModelConverterFactory
+import io.javalin.plugin.openapi.jackson.JacksonToJsonMapper
 import io.javalin.plugin.openapi.ui.SwaggerOptions
 import io.lettuce.core.RedisClient
 import io.micrometer.core.instrument.MeterRegistry
@@ -181,8 +183,11 @@ class Application {
         }
 
         fun createObjectMapper(): ObjectMapper {
+            return createObjectMapper(ObjectMapper())
+        }
+        private fun createObjectMapper(objectMapper: ObjectMapper): ObjectMapper {
             val df = SimpleDateFormat("yyyy-MM-dd'T'HH:mmX")
-            return ObjectMapper()
+            return objectMapper
                 .registerModule(KotlinModule())
                 .registerModule(JavaTimeModule())
                 .setDateFormat(df)
@@ -215,6 +220,9 @@ class Application {
             }.apply {
                 path("/swagger-docs")
                 swagger(SwaggerOptions("/swagger-ui"))
+                val om = createObjectMapper(JacksonToJsonMapper.createObjectMapperWithDefaults())
+                toJsonMapper(JacksonToJsonMapper(om))
+                modelConverterFactory(JacksonModelConverterFactory(om))
             }
             return OpenApiPlugin(opts)
         }

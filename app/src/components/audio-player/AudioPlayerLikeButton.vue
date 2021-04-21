@@ -12,16 +12,24 @@ this is copied in large part from SongLikeAction.vue and maybe should be shared?
   </button>
 </template>
 
-<script>
+<script lang="ts">
+import Vue, { PropType } from 'vue';
+import { ApiSchema } from '~/api/_helpers';
 import Icon from '../Icon.vue';
+type SongWithMeta = ApiSchema<'SongWithMeta'>;
 
-const heartOpenIcon = require('~/assets/heart_open.svg');
-const heartFilledIcon = require('~/assets/heart_filled.svg');
+const heartOpenIcon: string = require('~/assets/heart_open.svg');
+const heartFilledIcon: string = require('~/assets/heart_filled.svg');
 
-export default {
+export default Vue.extend({
   components: { Icon },
 
-  props: ['song'],
+  props: {
+    song: {
+      type: Object as PropType<SongWithMeta>,
+      required: true,
+    },
+  },
 
   data() {
     return {
@@ -32,19 +40,18 @@ export default {
   },
 
   computed: {
-    authenticated() {
+    authenticated(): boolean {
       return this.$accessor.auth.authenticated;
     },
   },
 
   methods: {
-    async handleToggleLike(e) {
+    async handleToggleLike(e: Event) {
       e.preventDefault();
 
-      // TODO: like source goes here
       const payload = {
         itemId: this.song.id,
-        itemType: 'song',
+        itemType: 'song' as const,
       };
 
       this.requestInFlight = true;
@@ -53,7 +60,10 @@ export default {
         if (this.song.meta.isLiked) {
           await this.$accessor.playlistItems.unlikeItem(payload);
         } else {
-          await this.$accessor.playlistItems.likeItem(payload);
+          await this.$accessor.playlistItems.likeItem({
+            ...payload,
+            // TODO: like source goes here
+          } as any);
         }
       } catch (err) {
         this.$accessor.showErrorModal();
@@ -63,5 +73,5 @@ export default {
       }
     },
   },
-};
+});
 </script>

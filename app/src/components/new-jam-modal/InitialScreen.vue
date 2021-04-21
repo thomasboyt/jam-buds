@@ -26,13 +26,20 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue';
+import { ApiSchema } from '~/api/_helpers';
 import SearchResults from './SearchResults.vue';
 import NewJamField from './NewJamField.vue';
 import JamTypeFilter from './JamTypeFilter.vue';
 import CreateMixtape from './CreateMixtape.vue';
+import {
+  JamType,
+  SearchResults as SearchResultsT,
+  SelectedItem,
+} from './common';
 
-export default {
+export default Vue.extend({
   components: {
     SearchResults,
     JamTypeFilter,
@@ -40,38 +47,42 @@ export default {
     CreateMixtape,
   },
 
-  props: ['isMixtapeSearch'],
+  props: {
+    isMixtapeSearch: {
+      type: Boolean,
+    },
+  },
 
   data() {
     return {
       requestInFlight: false,
-      searchResults: null,
-      jamType: 'song',
+      searchResults: null as SearchResultsT | null,
+      jamType: 'song' as JamType,
       searchQuery: '',
     };
   },
 
   computed: {
-    jamTypeLabel() {
+    jamTypeLabel(): string {
       return this.jamType === 'album' ? 'an album' : 'a song';
     },
   },
 
   methods: {
-    handleChangeJamType(type) {
+    handleChangeJamType(type: JamType) {
       this.jamType = type;
       this.searchResults = null;
       this.searchQuery = '';
     },
 
-    handleSelectItem(item) {
+    handleSelectItem(item: SelectedItem) {
       this.$emit('selectItem', {
         item,
         type: this.jamType,
       });
     },
 
-    async handleSubmitSearch(e) {
+    async handleSubmitSearch(e: Event) {
       e.preventDefault();
 
       const query = this.searchQuery;
@@ -95,12 +106,13 @@ export default {
         throw err;
       }
 
-      this.searchResults = resp.data.albums || resp.data.songs;
+      const data = resp.data as ApiSchema<'SearchResponse'>;
+      this.searchResults = data.albums || data.songs!;
 
       this.requestInFlight = false;
     },
   },
-};
+});
 </script>
 
 <style lang="scss" scoped>

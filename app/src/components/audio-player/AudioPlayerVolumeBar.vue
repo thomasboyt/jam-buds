@@ -13,12 +13,13 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue';
 import Icon from '../Icon.vue';
 
-const volumeIcon = require('~/assets/volume.svg');
+const volumeIcon: string = require('~/assets/volume.svg');
 
-export default {
+export default Vue.extend({
   components: { Icon },
 
   data() {
@@ -34,11 +35,12 @@ export default {
   },
 
   methods: {
-    handleChangeVolume(e) {
-      this.$accessor.playback.changeVolume(parseFloat(e.target.value));
+    handleChangeVolume(e: Event) {
+      const target = e.target as HTMLInputElement;
+      this.$accessor.playback.changeVolume(parseFloat(target.value));
     },
   },
-};
+});
 </script>
 
 <style lang="scss" scoped>
