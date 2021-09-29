@@ -90,13 +90,9 @@ open class AppleMusicService(musickitToken: String, private val disabled: Boolea
             return null
         }
 
-        if (body.data[0].attributes.playParams == null) {
-            // when play params is null, that means the song can be played in iTunes, but not
-            // apple music
-            return null
-        }
-
-        return body.data[0]
+        // when play params is null, that means the song can be played in iTunes, but not
+        // apple music
+        return body.data.find { it -> it.attributes.playParams != null }
     }
 
     open fun getAlbumById(id: String): AppleMusicSearchAlbumItem? {
