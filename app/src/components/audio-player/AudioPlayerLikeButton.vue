@@ -13,7 +13,7 @@ this is copied in large part from SongLikeAction.vue and maybe should be shared?
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue';
+import Vue, { PropType } from 'vue'; // eslint-disable-line import/named
 import { ApiSchema } from '~/api/_helpers';
 import Icon from '../Icon.vue';
 type SongWithMeta = ApiSchema<'SongWithMeta'>;

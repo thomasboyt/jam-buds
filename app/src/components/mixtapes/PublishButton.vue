@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue';
+import Vue, { PropType } from 'vue'; // eslint-disable-line import/named
 import { MixtapeHydrated } from '~/store/mixtapes';
 import JbButton from '../lib/JbButton.vue';
 

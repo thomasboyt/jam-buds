@@ -22,7 +22,7 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue';
+import Vue, { PropType } from 'vue'; // eslint-disable-line import/named
 import { ApiSchema } from '~/api/_helpers';
 import FollowToggle from '../FollowToggle.vue';
 

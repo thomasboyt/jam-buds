@@ -18,7 +18,7 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue';
+import Vue, { PropType } from 'vue'; // eslint-disable-line import/named
 import SearchItemPreview from './SearchItemPreview.vue';
 import { SearchResults, SelectedItem } from './common';
 
