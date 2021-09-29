@@ -25,6 +25,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@use "sass:math";
 @import '~/assets/styles/mixins.scss';
 @import '~/assets/styles/z-index.scss';
 
@@ -43,7 +44,7 @@ export default {
   left: calc(50%);
   width: 80%;
   @media (min-width: $breakpoint-small) {
-    left: calc(50% + #{$sidebar-width / 2});
+    left: calc(50% + #{math.div($sidebar-width, 2)});
     width: auto;
   }
 }
