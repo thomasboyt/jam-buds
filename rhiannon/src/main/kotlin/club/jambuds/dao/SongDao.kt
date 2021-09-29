@@ -10,24 +10,37 @@ import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.jdbi.v3.sqlobject.statement.SqlUpdate
 
-@UseClasspathSqlLocator
 interface SongDao {
     @SqlQuery
+    @UseClasspathSqlLocator
     fun getSongsByIds(
         @BindList("songIds") songIds: List<Int>,
         currentUserId: Int = -1
     ): List<SongWithMeta>
 
     @SqlQuery
+    @UseClasspathSqlLocator
     fun getSongsByMixtapeId(mixtapeId: Int, currentUserId: Int? = -1): List<SongWithMeta>
 
     @SqlQuery
+    @UseClasspathSqlLocator
     fun getSongBySpotifyId(spotifyId: String, currentUserId: Int): SongWithMeta?
 
+    @SqlQuery(
+        """
+        SELECT *
+        FROM songs
+        WHERE songs.id = :id
+        """
+    )
+    fun getSongById(id: Int): Song?
+
     @SqlQuery
+    @UseClasspathSqlLocator
     fun getSongByAppleMusicId(appleMusicId: String, currentUserId: Int): SongWithMeta?
 
     @SqlQuery
+    @UseClasspathSqlLocator
     fun getSongByBandcampUrl(bandcampUrl: String, currentUserId: Int): SongWithMeta?
 
     fun getSongBySource(source: ItemSource, key: String, currentUserId: Int): SongWithMeta? {
@@ -39,6 +52,7 @@ interface SongDao {
     }
 
     @SqlUpdate
+    @UseClasspathSqlLocator
     @GetGeneratedKeys
     fun createSong(
         title: String,
@@ -71,14 +85,18 @@ interface SongDao {
     }
 
     @SqlQuery
+    @UseClasspathSqlLocator
     fun getSongExistsById(songId: Int): Boolean
 
     @SqlQuery
+    @UseClasspathSqlLocator
     fun hasSongListenedEntry(userId: Int, songId: Int): Boolean
 
     @SqlUpdate
+    @UseClasspathSqlLocator
     fun createSongListenedEntry(userId: Int, songId: Int)
 
     @SqlUpdate
+    @UseClasspathSqlLocator
     fun deleteSongListenedEntry(userId: Int, songId: Int)
 }

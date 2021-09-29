@@ -19,6 +19,7 @@ class AuthService(
     private val followingService: FollowingService,
     private val emailService: EmailService,
     private val buttondownService: ButtondownService,
+    private val adminNotifyService: AdminNotifyService,
     private val appUrl: String,
     private val skipAuth: Boolean
 ) {
@@ -191,6 +192,8 @@ class AuthService(
                 logger.error("Referral user $referral not found for new registration $email")
             }
         }
+
+        adminNotifyService.notifySignup(user)
 
         return createAuthTokenForUserId(user.id)
     }
