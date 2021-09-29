@@ -7,7 +7,7 @@
 const boomer = {
   query: 'Bartees Strange Boomer',
   title: 'Boomer',
-  spotify: 'https://open.spotify.com/track/3hjaAXpqBfhoQa4I2MYRiv',
+  spotify: 'https://open.spotify.com/track/4e3PRRhCQke1hbdVfNvkQd',
   apple: 'https://music.apple.com/us/album/boomer/1522995665?i=1522995860',
   // bandcamp: 'https://barteesstrange.bandcamp.com/track/boomer'
 };
