@@ -72,6 +72,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@use "sass:math";
 @import '~/assets/styles/mixins.scss';
 @import '~/assets/styles/z-index.scss';
 
@@ -104,8 +105,8 @@ $modal-height: 550px;
     height: $modal-height;
     top: 50%;
     left: 50%;
-    margin-top: -$modal-height/2;
-    margin-left: -$modal-width/2;
+    margin-top: math.div(-$modal-height, 2);
+    margin-left: math.div(-$modal-width, 2);
   }
 
   outline: none;
