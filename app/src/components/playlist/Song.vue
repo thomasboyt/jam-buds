@@ -119,7 +119,7 @@ export default {
     },
 
     playerEnabled() {
-      return this.$accessor.playback.playerEnabled;
+      return this.$accessor.streaming.playerEnabled;
     },
 
     canRequestPlay() {
