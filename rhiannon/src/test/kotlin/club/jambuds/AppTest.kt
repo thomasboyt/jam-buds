@@ -15,6 +15,7 @@ import club.jambuds.dao.SongDao
 import club.jambuds.dao.UserDao
 import club.jambuds.dao.cache.SearchCacheDao
 import club.jambuds.dao.cache.TwitterFollowingCacheDao
+import club.jambuds.service.AdminNotifyService
 import club.jambuds.service.AppleMusicService
 import club.jambuds.service.AuthService
 import club.jambuds.service.BandcampService
@@ -28,6 +29,7 @@ import club.jambuds.service.PlaylistService
 import club.jambuds.service.PostService
 import club.jambuds.service.ReportService
 import club.jambuds.service.SearchService
+import club.jambuds.service.SlackWebhookService
 import club.jambuds.service.SongService
 import club.jambuds.service.SpotifyApiService
 import club.jambuds.service.TwitterService
@@ -83,6 +85,7 @@ open class AppTest {
     lateinit var mockTwitterService: TwitterService
     lateinit var mockEmailClient: EmailClient
     lateinit var mockButtondownService: ButtondownService
+    lateinit var mockSlackWebhookService: SlackWebhookService
 
     lateinit var songDao: SongDao
     lateinit var userDao: UserDao
@@ -101,6 +104,7 @@ open class AppTest {
         mockTwitterService = mock()
         mockEmailClient = mock()
         mockButtondownService = mock()
+        mockSlackWebhookService = mock()
 
         val postDao = txn.attach(PostDao::class.java)
         songDao = txn.attach(SongDao::class.java)
@@ -143,7 +147,8 @@ open class AppTest {
             config.getString("appUrl")
         )
         val likeService = LikeService(likeDao, songDao, mixtapeDao, albumDao, notificationsDao, userDao, postDao)
-        val reportService = ReportService(reportDao, postDao)
+        val adminNotifyService = AdminNotifyService(userDao, postDao, albumDao, songDao, mixtapeDao, mockSlackWebhookService)
+        val reportService = ReportService(adminNotifyService, reportDao, postDao)
         val notificationService = NotificationService(notificationsDao)
         followingService = FollowingService(followingDao, userDao, notificationsDao)
         val emailService = EmailService(mockEmailClient)
@@ -154,6 +159,7 @@ open class AppTest {
             followingService,
             emailService,
             mockButtondownService,
+            adminNotifyService,
             appUrl = config.getString("appUrl"),
             skipAuth = false
         )

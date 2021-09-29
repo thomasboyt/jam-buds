@@ -20,10 +20,12 @@ import club.jambuds.dao.cache.SearchCacheDao
 import club.jambuds.dao.cache.TwitterFollowingCacheDao
 import club.jambuds.model.ItemSource
 import club.jambuds.model.LikeSource
+import club.jambuds.service.AdminNotifyService
 import club.jambuds.service.AppleMusicService
 import club.jambuds.service.AuthService
 import club.jambuds.service.BandcampService
 import club.jambuds.service.ButtondownService
+import club.jambuds.service.DevSlackWebhookService
 import club.jambuds.service.EmailService
 import club.jambuds.service.FollowingService
 import club.jambuds.service.LikeService
@@ -33,6 +35,7 @@ import club.jambuds.service.PlaylistService
 import club.jambuds.service.PostService
 import club.jambuds.service.ReportService
 import club.jambuds.service.SearchService
+import club.jambuds.service.SlackWebhookService
 import club.jambuds.service.SongService
 import club.jambuds.service.SpotifyApiService
 import club.jambuds.service.SpotifyAuthService
@@ -332,7 +335,7 @@ class Application {
             val postService =
                 PostService(postDao, searchService, twitterService, config.getString("appUrl"))
             val likeService = LikeService(likeDao, songDao, mixtapeDao, albumDao, notificationsDao, userDao, postDao)
-            val reportService = ReportService(reportDao, postDao)
+
             val spotifyAuthService = SpotifyAuthService(
                 config.getString("appUrl"),
                 oAuthStateDao,
@@ -357,6 +360,17 @@ class Application {
                 ButtondownService(buttondownClient)
             }
 
+            val slackWebhookService = if (config.getBoolean("disableSlackWebhooks")) {
+                DevSlackWebhookService()
+            } else {
+                SlackWebhookService(
+                    signupHookUrl = config.getString(("slackWebhookSignups")),
+                    reportHookUrl = config.getString(("slackWebhookReports")),
+                )
+            }
+
+            val adminNotifyService = AdminNotifyService(userDao, postDao, albumDao, songDao, mixtapeDao, slackWebhookService)
+            val reportService = ReportService(adminNotifyService, reportDao, postDao)
             val authService =
                 AuthService(
                     userDao,
@@ -365,6 +379,7 @@ class Application {
                     followingService,
                     emailService,
                     buttondownService,
+                    adminNotifyService,
                     appUrl = config.getString("appUrl"),
                     skipAuth = config.getBoolean("dangerSkipAuth")
                 )
