@@ -57,7 +57,6 @@ export default Vue.extend({
     },
     mixtapeId: {
       type: Number,
-      required: true,
     },
   },
 
