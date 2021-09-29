@@ -35,7 +35,7 @@ function expectResult(song) {
   }
 }
 
-describe('song cross-search', () => {
+describe('song cross-search', { defaultCommandTimeout: 10000 }, () => {
   it('cross-references apple and spotify', () => {
     cy.login('jeff@jambuds.club');
     cy.visit('/?modal=new-jam');
@@ -84,7 +84,7 @@ describe('song cross-search', () => {
   });
 });
 
-describe('album cross-search', () => {
+describe('album cross-search', { defaultCommandTimeout: 10000 }, () => {
   it('fuzzy cross-searches apple and spotify', () => {
     // Tusk
     // Fuzzy match removing parentheticals
