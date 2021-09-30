@@ -20,13 +20,8 @@
           <apple-music-connect-button @connected="handleConnected" />
         </p>
         <p class="close-line">
-          or
-          <button
-            type="button"
-            @click="handleSelectYoutube"
-            class="link-button"
-          >
-            no thanks, i'll use youtube/bandcamp
+          <button type="button" @click="handleClose" class="link-button">
+            close
           </button>
         </p>
       </div>
@@ -57,10 +52,6 @@ export default {
 
   methods: {
     handleConnected() {
-      this.$emit('connected');
-    },
-    handleSelectYoutube() {
-      this.$accessor.streaming.updateSessionStreamingService('youtube');
       this.$emit('connected');
     },
     handleClose() {

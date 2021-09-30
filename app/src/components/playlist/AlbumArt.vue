@@ -3,10 +3,10 @@
     <img v-if="albumArt" class="album-art" :src="albumArt" />
     <icon v-else class="album-art -placeholder" :glyph="albumPlaceholderIcon" />
 
-    <div v-if="overlayIcon" class="album-art-overlay">
+    <div v-if="isPlaying" class="album-art-overlay">
       <icon
         :class="['playing-icon', { 'is-playing': isPlaying }]"
-        :glyph="overlayIcon"
+        :glyph="playIcon"
       />
     </div>
   </div>
@@ -16,40 +16,17 @@
 import Icon from '../Icon.vue';
 const albumPlaceholderIcon = require('~/assets/record.svg');
 const playIcon = require('~/assets/play-filled.svg');
-const youtubeIcon = require('~/assets/youtube.svg');
-const bandcampIcon = require('~/assets/bandcamp-circle.svg');
 
 export default {
   components: { Icon },
 
-  props: ['albumArt', 'isPlaying', 'isHovering', 'canPlay', 'openInService'],
+  props: ['albumArt', 'isPlaying'],
 
   data() {
     return {
       albumPlaceholderIcon,
+      playIcon,
     };
-  },
-
-  computed: {
-    overlayIcon() {
-      // inline playback current or possible for this song with current service
-      if (this.isPlaying || (this.isHovering && this.canPlay)) {
-        return playIcon;
-      }
-
-      if (this.isHovering) {
-        // TODO: maybe add apple/spotify logos here? but they'd never be seen on mobile
-        // anyways so shrug
-        if (this.openInService === 'bandcamp') {
-          return bandcampIcon;
-        }
-        if (this.openInService === 'youtube') {
-          return youtubeIcon;
-        }
-      }
-
-      return null;
-    },
   },
 };
 </script>

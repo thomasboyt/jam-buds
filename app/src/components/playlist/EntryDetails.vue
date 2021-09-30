@@ -21,6 +21,14 @@
           (report)
         </button>
       </div>
+      <div
+        v-if="showRemove"
+        :style="{ 'flex-flow': '0 0 auto', 'margin-left': 'auto' }"
+      >
+        <button class="report-button" @click="handleClickRemove(id)">
+          (remove)
+        </button>
+      </div>
     </div>
 
     <p v-if="!!note" class="note-text">
@@ -56,6 +64,13 @@ export default {
         this.name !== this.$accessor.currentUser.user?.name
       );
     },
+    showRemove() {
+      // TODO: should really compare on user ID instead of user name
+      return (
+        this.type !== 'userLiked' &&
+        this.name === this.$accessor.currentUser.user?.name
+      );
+    },
   },
 
   methods: {
@@ -82,6 +97,22 @@ export default {
       this.$accessor.setFlashMessage({
         message: 'Thanks for reporting!',
       });
+    },
+    async handleClickRemove(postId) {
+      const confirmedDelete = window.confirm(
+        'Are you sure you want to remove your post?'
+      );
+
+      if (confirmedDelete) {
+        try {
+          await this.$accessor.playlist.deletePost({
+            id: postId,
+          });
+        } catch (err) {
+          this.$accessor.showErrorModal();
+          throw err;
+        }
+      }
     },
   },
 };

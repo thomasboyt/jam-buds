@@ -22,15 +22,18 @@
     >
       Load next page
     </jb-button>
+
+    <item-detail-modal />
   </div>
 </template>
 
 <script>
 import JbButton from '../lib/JbButton';
 import PagePlaceholder from '../PagePlaceholder.vue';
+import ItemDetailModal from '../item-detail-modal/ItemDetailModal.vue';
 
 export default {
-  components: { JbButton, PagePlaceholder },
+  components: { JbButton, PagePlaceholder, ItemDetailModal },
 
   props: ['playlistKey', 'loadingNextPage', 'isLoading'],
 

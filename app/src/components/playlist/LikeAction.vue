@@ -82,6 +82,7 @@ export default {
 .like-group {
   display: flex;
   align-items: center;
+  flex-direction: row-reverse;
 
   display: none;
   &.mobile {
@@ -96,6 +97,7 @@ export default {
   }
 
   &.mobile {
+    flex-direction: row;
     height: 20px;
     svg {
       width: 16px;
@@ -107,6 +109,9 @@ export default {
 .like-count {
   min-width: 40px;
   padding: 0 5px;
+  text-align: right;
+}
+.mobile .like-count {
   text-align: left;
 }
 </style>

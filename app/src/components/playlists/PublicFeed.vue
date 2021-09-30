@@ -18,11 +18,11 @@
       <entry-details
         v-for="post in item.posts"
         type="feed"
-        :id="post.id"
+        :id="post.postId"
         :name="post.userName"
         :note="post.noteText"
         :date="post.timestamp"
-        :key="post.id"
+        :key="post.postId"
       />
     </template>
 

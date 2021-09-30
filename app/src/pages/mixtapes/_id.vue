@@ -48,7 +48,7 @@
         <!-- ... loading ... -->
       </template>
       <template v-else-if="mixtape.tracks.length > 0">
-        <mixtape :mixtape-id="$route.params.id" :is-editing="isEditing" />
+        <mixtape :mixtape-id="mixtapeId" :is-editing="isEditing" />
 
         <post-jam-button @click="handleAddSongOpen" v-if="isEditing"
           >+ add a song</post-jam-button
@@ -146,7 +146,7 @@ export default {
 
   computed: {
     mixtapeId() {
-      return this.$route.params.id;
+      return parseInt(this.$route.params.id);
     },
 
     mixtape() {
