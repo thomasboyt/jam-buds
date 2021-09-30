@@ -1,20 +1,7 @@
 <template>
   <div>
-    <playlist-item-row
-      component="div"
-      @mouseover="isHovering = true"
-      @mouseleave="isHovering = false"
-      @click="handleClick"
-      :can-play="canRequestPlay"
-      :is-link="!canRequestPlay"
-    >
-      <album-art
-        :album-art="song.albumArt"
-        :can-play="canRequestPlay"
-        :is-playing="isPlaying"
-        :is-hovering="isHovering"
-        :open-in-service="bestOpenableService"
-      />
+    <playlist-item-row component="div" @click="handleClick">
+      <album-art :album-art="song.albumArt" :is-playing="isPlaying" />
 
       <playlist-item-label>
         <template #line-one>
@@ -41,8 +28,11 @@
             :like-count="song.meta.likeCount"
             :like-source-params="likeSourceParams"
           />
-          <song-dropdown-menu :song="song" :own-post-id="ownPostId" />
         </slot>
+        <play-action
+          @click.native="handlePlay"
+          :can-play="!streamingService || canPlayOnCurrentService"
+        />
       </playlist-item-actions>
     </playlist-item-row>
     <connect-streaming-banner
@@ -55,21 +45,22 @@
 
 <script>
 import AlbumArt from './AlbumArt.vue';
-import SongDropdownMenu from './SongDropdownMenu.vue';
 import ConnectStreamingBanner from './ConnectStreamingBanner';
 import LikeAction from './LikeAction.vue';
+import PlayAction from './PlayAction.vue';
 import PlaylistItemActions from './PlaylistItemActions';
 import PlaylistItemLabel from './PlaylistItemLabel.vue';
 import PlaylistItemRow from './PlaylistItemRow.vue';
 import { getSpotifySongUrl } from '~/util/getSpotifyUrl';
 import getYoutubeSearchUrl from '~/util/getYoutubeSearchUrl';
+import getArtistsList from '~/util/getArtistsList';
 
 export default {
   components: {
     AlbumArt,
-    SongDropdownMenu,
     ConnectStreamingBanner,
     LikeAction,
+    PlayAction,
     PlaylistItemActions,
     PlaylistItemLabel,
     PlaylistItemRow,
@@ -93,29 +84,24 @@ export default {
 
   data() {
     return {
-      isHovering: false,
       showConnectStreamingBanner: false,
     };
   },
 
   computed: {
-    streamingService() {
-      return this.$accessor.streaming.service;
-    },
-
-    canPlay() {
-      return (
-        (this.streamingService === 'spotify' && this.song.spotifyId) ||
-        (this.streamingService === 'appleMusic' && this.song.appleMusicId)
-      );
-    },
-
     song() {
       return this.$accessor.playlistItems.songs[this.songId];
     },
 
-    currentSong() {
-      return this.$accessor.playback.currentSong;
+    streamingService() {
+      return this.$accessor.streaming.service;
+    },
+
+    canPlayOnCurrentService() {
+      return (
+        (this.streamingService === 'spotify' && this.song.spotifyId) ||
+        (this.streamingService === 'appleMusic' && this.song.appleMusicId)
+      );
     },
 
     playerEnabled() {
@@ -123,21 +109,20 @@ export default {
     },
 
     canRequestPlay() {
-      return this.streamingService && this.playerEnabled && this.canPlay;
+      return (
+        this.streamingService &&
+        this.playerEnabled &&
+        this.canPlayOnCurrentService
+      );
     },
 
     isPlaying() {
-      return this.currentSong && this.currentSong.id === this.song.id;
+      const currentSong = this.$accessor.playback.currentSong;
+      return currentSong && currentSong.id === this.song.id;
     },
 
     artistsLabel() {
-      // filter out artists mentioned in the song title, except for the first artist
-      // so "Disclosure, Kelis - Watch Your Step (Disclosure VIP Remix)" still shows "Disclosure, Kelis"
-      // but "Disclosure, Kelis - Watch Your Step (ft. Kelis)" just says "Disclosure"
-      const artistsToShow = this.song.artists.filter(
-        (artist, idx) => idx === 0 || !this.song.title.includes(artist)
-      );
-      return artistsToShow.join(', ');
+      return getArtistsList(this.song.title, this.song.artists);
     },
 
     bestOpenableService() {
@@ -157,21 +142,27 @@ export default {
   },
 
   methods: {
+    handlePlay() {
+      if (this.canRequestPlay) {
+        this.$emit('requestPlay', this.songId);
+      } else if (this.streamingService) {
+        this.openInPreferredService();
+      } else {
+        this.showConnectStreamingBanner = true;
+      }
+    },
     handleClick(e) {
-      // Don't trigger playback if user was clicking on one of the action
+      // Don't trigger modal if user was clicking on one of the action
       // buttons
       if (e.target.closest('.action-button')) {
         return;
       }
 
-      if (this.streamingService && this.playerEnabled && this.canPlay) {
-        this.$emit('requestPlay', this.songId);
-      } else if (this.streamingService) {
-        // fall back: open in bandcamp or youtube
-        this.openInPreferredService();
-      } else {
-        this.showConnectStreamingBanner = true;
-      }
+      this.$accessor.playlistItems.markSongPlayed(this.songId);
+
+      this.$router.push({
+        query: { modal: 'item-detail', songId: this.songId },
+      });
     },
     openInPreferredService() {
       const service = this.bestOpenableService;
@@ -184,12 +175,11 @@ export default {
       } else {
         window.open(getYoutubeSearchUrl(this.song));
       }
-      this.$accessor.playlistItems.markSongPlayed(this.songId);
     },
     handleConnectedFromStreamingBanner() {
       this.showConnectStreamingBanner = false;
       if (this.playerEnabled) {
-        if (this.canPlay) {
+        if (this.canPlayOnCurrentService) {
           this.$emit('requestPlay', this.songId);
         }
       } else {

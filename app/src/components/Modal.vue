@@ -4,7 +4,7 @@
       <div class="modal" @click="handleModalClick">
         <div class="modal-content">
           <div class="modal-top-row">
-            <div :style="{ textAlign: 'center' }">
+            <div v-if="title" :style="{ textAlign: 'center' }">
               <h2>{{ title }}</h2>
             </div>
 
@@ -160,6 +160,8 @@ $modal-height: 550px;
     @media (min-width: $breakpoint-small) {
       right: 0px;
     }
+
+    z-index: $z-modal-close;
   }
 }
 

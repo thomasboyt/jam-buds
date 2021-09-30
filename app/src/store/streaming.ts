@@ -1,7 +1,7 @@
 import { mutationTree, getterTree, actionTree } from 'typed-vuex';
 import { getStreamingSupport } from '~/util/streamingSupport';
 
-type StreamingService = 'spotify' | 'appleMusic' | 'youtube';
+type StreamingService = 'spotify' | 'appleMusic';
 
 interface StreamingState {
   service: StreamingService | null;
@@ -84,11 +84,7 @@ export const actions = actionTree(
       });
 
       const service = localStorage.getItem('streamingService');
-      if (
-        service === 'youtube' ||
-        service === 'spotify' ||
-        service === 'appleMusic'
-      ) {
+      if (service === 'spotify' || service === 'appleMusic') {
         context.commit('setStreamingService', service);
       }
     },

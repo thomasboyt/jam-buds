@@ -13,14 +13,12 @@
 export default {
   inheritAttrs: false,
 
-  props: ['component', 'canPlay', 'isLink'],
+  props: ['component'],
 
   computed: {
     rowClass() {
       return {
         'playlist-item-row': true,
-        'can-play': this.canPlay,
-        'is-link': this.isLink,
       };
     },
   },
@@ -40,13 +38,8 @@ export default {
   text-decoration: none;
 
   &:hover {
-    &.can-play {
-      cursor: pointer;
-    }
-    &.is-link {
-      background: rgba(0, 0, 0, 0.1);
-      cursor: pointer;
-    }
+    background: rgba(0, 0, 0, 0.1);
+    cursor: pointer;
   }
 
   @media (max-width: $breakpoint-small) {

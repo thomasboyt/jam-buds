@@ -4,7 +4,6 @@
       component="nuxt-link"
       :to="mixtapeLink"
       @click.native="setColorScheme"
-      :is-link="true"
     >
       <album-art :album-art="art" />
 
@@ -33,7 +32,6 @@
           :like-count="mixtape.meta.likeCount"
           :like-source-params="likeSourceParams"
         />
-        <div class="dropdown-action-placeholder" />
       </playlist-item-actions>
     </playlist-item-row>
   </div>
@@ -81,17 +79,3 @@ export default {
   },
 };
 </script>
-
-<style lang="scss" scoped>
-@import '~/assets/styles/mixins.scss';
-
-.dropdown-action-placeholder {
-  // magic numbers match size of dropdown button
-  width: 41px;
-  height: 41px;
-
-  @media (max-width: $breakpoint-small) {
-    display: none;
-  }
-}
-</style>

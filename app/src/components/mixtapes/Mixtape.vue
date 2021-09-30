@@ -23,6 +23,7 @@
         </song>
       </li>
     </draggable>
+    <item-detail-modal />
   </div>
 </template>
 
@@ -34,6 +35,7 @@ import { MixtapeHydrated } from '~/store/mixtapes';
 import Song from '../playlist/Song.vue';
 import SongRemoveFromMixtapeAction from './SongRemoveFromMixtapeAction.vue';
 import Icon from '../Icon.vue';
+import ItemDetailModal from '../item-detail-modal/ItemDetailModal.vue';
 
 const dragIcon: string = require('~/assets/menu.svg');
 
@@ -43,6 +45,7 @@ export default Vue.extend({
     SongRemoveFromMixtapeAction,
     Draggable,
     Icon,
+    ItemDetailModal,
   },
 
   props: {
