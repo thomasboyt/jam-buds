@@ -25,7 +25,11 @@
         v-if="showRemove"
         :style="{ 'flex-flow': '0 0 auto', 'margin-left': 'auto' }"
       >
-        <button class="report-button" @click="handleClickRemove(id)">
+        <button
+          class="report-button"
+          @click="handleClickRemove(id)"
+          data-test="remove-button"
+        >
           (remove)
         </button>
       </div>
