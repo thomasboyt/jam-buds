@@ -2,6 +2,8 @@
 // - could split up by browser on desktop/android
 // - some day could make toggleable without deploy
 
+type StreamingService = 'spotify' | 'appleMusic';
+
 const streamingSupport = {
   spotify: {
     desktopWeb: true,
@@ -29,7 +31,7 @@ const streamingSupport = {
   },
 };
 
-function getPlatformKey(ua, isWebView) {
+function getPlatformKey(ua: string, isWebView: boolean) {
   if (ua.match(/iPhone|iPad|iPod/i)) {
     return isWebView ? 'iosNative' : 'iosWeb';
   } else if (ua.match(/Android/)) {
@@ -43,7 +45,11 @@ function getPlatformKey(ua, isWebView) {
   }
 }
 
-export function getStreamingSupport(service, ua, isWebView) {
+export function getStreamingSupport(
+  service: StreamingService,
+  ua: string,
+  isWebView: boolean
+) {
   const key = getPlatformKey(ua, isWebView);
   return streamingSupport[service][key];
 }

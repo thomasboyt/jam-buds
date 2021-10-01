@@ -37,14 +37,15 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue';
 import LoggedOutHeader from './LoggedOutHeader.vue';
-import corgi from '~/assets/ghettoblaster_corgi.png';
 import getGradient from '../util/gradients';
 import SignInFlow from './sign-in-flow/SignInFlow.vue';
 import SignInHeader from './sign-in-flow/SignInHeader.vue';
+import corgi from '~/assets/ghettoblaster_corgi.png';
 
-export default {
+export default Vue.extend({
   components: { LoggedOutHeader, SignInFlow, SignInHeader },
 
   data() {
@@ -62,7 +63,7 @@ export default {
       this.$router.replace(this.$route.path);
     }
   },
-};
+});
 </script>
 
 <style scoped lang="scss">

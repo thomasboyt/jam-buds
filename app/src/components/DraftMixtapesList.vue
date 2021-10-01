@@ -14,14 +14,22 @@
   </div>
 </template>
 
-<script>
-export default {
-  props: ['mixtapes'],
+<script lang="ts">
+import Vue, { PropType } from 'vue'; // eslint-disable-line import/named
+import { ApiSchema } from '~/api/_helpers';
+
+export default Vue.extend({
+  props: {
+    mixtapes: {
+      type: Array as PropType<ApiSchema<'MixtapePreview'>[]>,
+      required: true,
+    },
+  },
 
   methods: {
-    setColorScheme(mixtape) {
+    setColorScheme(mixtape: ApiSchema<'MixtapePreview'>) {
       this.$accessor.colorScheme.setOverrideFromProfile(mixtape.authorName);
     },
   },
-};
+});
 </script>

@@ -6,12 +6,18 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue';
 import Logo from './Logo.vue';
-export default {
+
+export default Vue.extend({
   components: { Logo },
-  props: ['showMobile'],
-};
+  props: {
+    showMobile: {
+      type: Boolean,
+    },
+  },
+});
 </script>
 
 <style lang="scss">

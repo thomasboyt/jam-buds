@@ -1,7 +1,7 @@
 <template>
   <transition name="modal-open" :duration="{ enter: 400, leave: 400 }">
     <modal-overlay v-if="isOpen" @click="handleCloseModal">
-      <div class="modal" @click="handleModalClick">
+      <div class="modal" @click="handleModalClick" ref="modal">
         <div class="modal-content">
           <div class="modal-top-row">
             <div v-if="title" :style="{ textAlign: 'center' }">
@@ -26,18 +26,31 @@
   </transition>
 </template>
 
-<script>
-import { enableBodyScroll, disableBodyScroll } from 'body-scroll-lock';
+<script lang="ts">
+import Vue from 'vue';
+import {
+  enableBodyScroll,
+  disableBodyScroll,
+  clearAllBodyScrollLocks,
+} from 'body-scroll-lock';
 import Icon from './Icon.vue';
 import { closeModal } from '~/util/modal';
 import ModalOverlay from './ModalOverlay.vue';
 
 const closeIcon = require('~/assets/close.svg');
 
-export default {
+export default Vue.extend({
   components: { Icon, ModalOverlay },
 
-  props: ['title', 'isOpen'],
+  props: {
+    title: {
+      type: String,
+      required: false,
+    },
+    isOpen: {
+      type: Boolean,
+    },
+  },
 
   data() {
     return {
@@ -48,19 +61,19 @@ export default {
   watch: {
     isOpen(isOpen) {
       if (isOpen) {
-        disableBodyScroll();
+        disableBodyScroll(this.$refs.modal! as HTMLElement);
       } else {
-        enableBodyScroll();
+        enableBodyScroll(this.$refs.modal! as HTMLElement);
       }
     },
   },
 
   beforeDestroy() {
-    enableBodyScroll();
+    clearAllBodyScrollLocks();
   },
 
   methods: {
-    handleModalClick(evt) {
+    handleModalClick(evt: Event) {
       evt.stopPropagation();
     },
 
@@ -68,7 +81,7 @@ export default {
       closeModal(this.$router, this.$route);
     },
   },
-};
+});
 </script>
 
 <style lang="scss" scoped>

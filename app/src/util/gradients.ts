@@ -1,5 +1,5 @@
 // https://webgradients.com/
-export const gradients = {
+export const gradients: Record<string, string> = {
   'jam buds': '#ed72df, #89fffd',
   // 120. seashore
   aqua: '#209cff 0%, #68e0cf 100%',
@@ -26,7 +26,7 @@ export const defaultColorScheme = {
   textColor: 'black',
 };
 
-export default function getGradient(name) {
+export default function getGradient(name: string) {
   if (!gradients[name]) {
     console.log(
       `warning: didn't find gradient named ${name}, falling back to default`

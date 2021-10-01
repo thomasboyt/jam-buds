@@ -32,6 +32,7 @@
     "@nuxtjs/proxy": "^2.1.0",
     "@nuxtjs/sentry": "^5.0.3",
     "@tboyt/music-kit-jwt": "^0.1.2",
+    "@types/body-scroll-lock": "^3.1.0",
     "@types/cookie": "^0.4.0",
     "body-scroll-lock": "^3.1.5",
     "cookie": "^0.4.1",

@@ -1,8 +1,11 @@
+import type { Store } from 'vuex';
+import type { Route } from 'vue-router';
+
 /**
  * Returns whether the current page in route is the current root route (as
  * determined by the current bottom tab).
  */
-export default function isRootPage(store, route) {
+export default function isRootPage(store: Store<any>, route: Route) {
   const activeBottomTab = store.state.activeBottomTab;
   if (route.path === activeBottomTab) {
     return true;

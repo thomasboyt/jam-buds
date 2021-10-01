@@ -4,10 +4,16 @@
   </div>
 </template>
 
-<script>
-export default {
-  props: ['small'],
-};
+<script lang="ts">
+import Vue from 'vue';
+export default Vue.extend({
+  props: {
+    small: {
+      type: Boolean,
+      required: false,
+    },
+  },
+});
 </script>
 
 <style lang="scss" scoped>
