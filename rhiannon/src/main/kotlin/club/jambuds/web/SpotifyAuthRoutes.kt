@@ -5,10 +5,10 @@ import club.jambuds.service.SpotifyAuthService
 import com.wrapper.spotify.model_objects.credentials.AuthorizationCodeCredentials
 import io.javalin.apibuilder.ApiBuilder
 import io.javalin.http.Context
+import io.javalin.http.Cookie
+import io.javalin.http.SameSite
 import io.javalin.plugin.openapi.annotations.OpenApi
-import org.eclipse.jetty.http.HttpCookie.SAME_SITE_STRICT_COMMENT
 import java.time.Instant
-import javax.servlet.http.Cookie
 
 class SpotifyAuthRoutes(private val spotifyAuthService: SpotifyAuthService) {
     fun register() {
@@ -113,6 +113,16 @@ class SpotifyAuthRoutes(private val spotifyAuthService: SpotifyAuthService) {
         ctx.status(204)
     }
 
+    private fun createSpotifyCookie(name: String, value: String): Cookie {
+        return Cookie(
+            name = name,
+            value = value,
+            isHttpOnly = true,
+            maxAge = 60 * 60 * 24 * 365,
+            sameSite = SameSite.STRICT
+        )
+    }
+
     private fun setSpotifyCookies(ctx: Context, credentials: AuthorizationCodeCredentials): Long {
         val refreshToken = if (credentials.refreshToken == null) {
             ctx.cookie("spotifyRefreshToken")!!
@@ -123,33 +133,20 @@ class SpotifyAuthRoutes(private val spotifyAuthService: SpotifyAuthService) {
         val expiresAt =
             Instant.now().plusSeconds(credentials.expiresIn.toLong()).toEpochMilli()
 
-        val accessTokenCookie = Cookie("spotifyAccessToken", credentials.accessToken)
-        val refreshTokenCookie = Cookie("spotifyRefreshToken", refreshToken)
-        val expiresAtCookie = Cookie("spotifyExpiresAtMs", expiresAt.toString())
-
+        val accessTokenCookie = createSpotifyCookie("spotifyAccessToken", credentials.accessToken)
+        val refreshTokenCookie = createSpotifyCookie("spotifyRefreshToken", refreshToken)
+        val expiresAtCookie = createSpotifyCookie("spotifyExpiresAtMs", expiresAt.toString())
         val cookies = listOf(accessTokenCookie, refreshTokenCookie, expiresAtCookie)
         for (cookie in cookies) {
-            cookie.isHttpOnly = true
-            cookie.maxAge = 60 * 60 * 24 * 365
-            cookie.comment = SAME_SITE_STRICT_COMMENT
             ctx.cookie(cookie)
         }
 
         return expiresAt
     }
 
-    @OpenApi(ignore = true)
     private fun clearSpotifyCookies(ctx: Context) {
-        val accessTokenCookie = Cookie("spotifyAccessToken", "")
-        val refreshTokenCookie = Cookie("spotifyRefreshToken", "")
-        val expiresAtCookie = Cookie("spotifyExpiresAtMs", "")
-
-        val cookies = listOf(accessTokenCookie, refreshTokenCookie, expiresAtCookie)
-        for (cookie in cookies) {
-            cookie.isHttpOnly = true
-            cookie.maxAge = 0
-            cookie.comment = SAME_SITE_STRICT_COMMENT
-            ctx.cookie(cookie)
-        }
+        ctx.removeCookie("spotifyAccessToken")
+        ctx.removeCookie("spotifyRefreshToken")
+        ctx.removeCookie("spotifyExpiresAtMs")
     }
 }

@@ -6,11 +6,11 @@ import club.jambuds.service.AuthService
 import club.jambuds.web.extensions.validateJsonBody
 import io.javalin.apibuilder.ApiBuilder
 import io.javalin.http.Context
+import io.javalin.http.Cookie
 import io.javalin.plugin.openapi.annotations.OpenApi
 import io.javalin.plugin.openapi.annotations.OpenApiContent
 import io.javalin.plugin.openapi.annotations.OpenApiRequestBody
 import io.javalin.plugin.openapi.annotations.OpenApiResponse
-import javax.servlet.http.Cookie
 import javax.validation.constraints.Pattern
 import javax.validation.constraints.Size
 
@@ -159,11 +159,13 @@ class AuthRoutes(private val authService: AuthService, private val appUrl: Strin
 
     private fun setTokenCookie(ctx: Context, authToken: String) {
         ctx.cookie(
-            Cookie(AUTH_TOKEN_COOKIE, authToken).apply {
-                maxAge = 60 * 60 * 24 * 365
-                isHttpOnly = true
+            Cookie(
+                name = AUTH_TOKEN_COOKIE,
+                value = authToken,
+                maxAge = 60 * 60 * 24 * 365,
+                isHttpOnly = true,
                 secure = appUrl.startsWith("https")
-            }
+            )
         )
     }
 }
