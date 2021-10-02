@@ -58,6 +58,7 @@ import club.jambuds.web.SongRoutes
 import club.jambuds.web.SpotifyAuthRoutes
 import club.jambuds.web.TwitterAuthRoutes
 import club.jambuds.web.UserRoutes
+import club.jambuds.web.extensions.logger
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
@@ -151,7 +152,7 @@ class Application {
                     val spanId = span.spanContext.spanId
                     // TODO: make json? figure out other ways to do structured logging?
                     if (ctx.attribute<Boolean>("hideLog") != true) {
-                        Javalin.log.info(
+                        ctx.logger.info(
                             "method=${ctx.method()} endpoint=${ctx.matchedPath()} status=${ctx.status()} url=${ctx.url()} elapsed=$ms userAgent=${ctx.userAgent()} traceId=$traceId spanId=$spanId"
                         )
                     }
@@ -169,7 +170,7 @@ class Application {
             }
 
             app.exception(Exception::class.java) { e, ctx ->
-                Javalin.log.error("Uncaught exception", e)
+                ctx.logger.error("Uncaught exception", e)
                 HttpResponseExceptionMapper.handle(InternalServerErrorResponse(), ctx)
             }
 
