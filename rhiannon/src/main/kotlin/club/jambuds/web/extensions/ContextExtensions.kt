@@ -6,7 +6,6 @@ import io.javalin.Javalin
 import io.javalin.http.BadRequestResponse
 import io.javalin.http.Context
 import io.javalin.http.UnauthorizedResponse
-import io.javalin.plugin.json.JavalinJson
 import javax.validation.Validation
 
 val Context.currentUser: User?
@@ -23,7 +22,7 @@ fun Context.requireUser(): User {
 fun <T> Context.validateJsonBody(clazz: Class<T>): T {
     // TODO: make json validation error more useful
     val jsonBody = try {
-        JavalinJson.fromJson(body(), clazz)
+        bodyAsClass(clazz)
     } catch (e: Exception) {
         Javalin.log?.info("Couldn't deserialize body to ${clazz.simpleName}", e)
         throw BadRequestResponse("Couldn't deserialize body to ${clazz.simpleName}")

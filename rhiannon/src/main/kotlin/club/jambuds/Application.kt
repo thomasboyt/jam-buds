@@ -71,6 +71,7 @@ import io.javalin.core.validation.JavalinValidation
 import io.javalin.http.HttpResponseExceptionMapper
 import io.javalin.http.InternalServerErrorResponse
 import io.javalin.plugin.json.JavalinJackson
+import io.javalin.plugin.json.JsonMapper
 import io.javalin.plugin.metrics.MicrometerPlugin
 import io.javalin.plugin.openapi.OpenApiOptions
 import io.javalin.plugin.openapi.OpenApiPlugin
@@ -155,9 +156,11 @@ class Application {
                         )
                     }
                 }
+
+                val objectMapper = createObjectMapper()
+                config.jsonMapper(JavalinJackson(objectMapper))
             }
 
-            JavalinJackson.configure(createObjectMapper())
             configureValidation()
 
             app.get("/_prometheus") { ctx ->
@@ -186,11 +189,8 @@ class Application {
         }
 
         fun createObjectMapper(): ObjectMapper {
-            return createObjectMapper(ObjectMapper())
-        }
-        private fun createObjectMapper(objectMapper: ObjectMapper): ObjectMapper {
             val df = SimpleDateFormat("yyyy-MM-dd'T'HH:mmX")
-            return objectMapper
+            return ObjectMapper()
                 .registerModule(KotlinModule())
                 .registerModule(JavaTimeModule())
                 .setDateFormat(df)
@@ -223,7 +223,7 @@ class Application {
             }.apply {
                 path("/swagger-docs")
                 swagger(SwaggerOptions("/swagger-ui"))
-                val om = createObjectMapper(JacksonToJsonMapper.createObjectMapperWithDefaults())
+                val om = createObjectMapper()
                 toJsonMapper(JacksonToJsonMapper(om))
                 modelConverterFactory(JacksonModelConverterFactory(om))
             }
