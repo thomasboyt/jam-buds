@@ -14,7 +14,7 @@ class NotificationRoutes(private val notificationService: NotificationService) {
     fun register() {
         ApiBuilder.get("/api/notifications", this::getNotifications)
         ApiBuilder.post("/api/notifications/mark-all-read", this::markAllRead)
-        ApiBuilder.post("/api/notifications/:id/read", this::markOneRead)
+        ApiBuilder.post("/api/notifications/{id}/read", this::markOneRead)
     }
 
     @OpenApi(

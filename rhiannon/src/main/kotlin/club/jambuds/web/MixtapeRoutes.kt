@@ -21,14 +21,14 @@ import io.javalin.plugin.openapi.annotations.OpenApiResponse
 class MixtapeRoutes(private val mixtapeService: MixtapeService) {
     fun register() {
         ApiBuilder.post("/api/mixtapes", this::createMixtape)
-        ApiBuilder.get("/api/mixtapes/:id", this::getMixtape)
-        ApiBuilder.delete("/api/mixtapes/:id", this::deleteMixtape)
+        ApiBuilder.get("/api/mixtapes/{id}", this::getMixtape)
+        ApiBuilder.delete("/api/mixtapes/{id}", this::deleteMixtape)
 
-        ApiBuilder.post("/api/mixtapes/:mixtapeId/songs", this::addSongToMixtape)
-        ApiBuilder.delete("/api/mixtapes/:mixtapeId/songs/:songId", this::removeSongFromMixtape)
-        ApiBuilder.post("/api/mixtapes/:mixtapeId/order", this::reorderSongsInMixtape)
-        ApiBuilder.post("/api/mixtapes/:mixtapeId/title", this::renameMixtape)
-        ApiBuilder.post("/api/mixtapes/:mixtapeId/publish", this::publishMixtape)
+        ApiBuilder.post("/api/mixtapes/{mixtapeId}/songs", this::addSongToMixtape)
+        ApiBuilder.delete("/api/mixtapes/{mixtapeId}/songs/{songId}", this::removeSongFromMixtape)
+        ApiBuilder.post("/api/mixtapes/{mixtapeId}/order", this::reorderSongsInMixtape)
+        ApiBuilder.post("/api/mixtapes/{mixtapeId}/title", this::renameMixtape)
+        ApiBuilder.post("/api/mixtapes/{mixtapeId}/publish", this::publishMixtape)
 
         ApiBuilder.get("/api/draft-mixtapes", this::getDraftMixtapes)
     }

@@ -19,9 +19,9 @@ class UserRoutes(private val userService: UserService) {
     fun register() {
         get("/api/me", this::getCurrentUser)
         get("/api/friend-suggestions", this::getTwitterFriendSuggestions)
-        get("/api/users/:userName", this::getUserProfile)
-        get("/api/users/:userName/following", this::getUserFollowing)
-        get("/api/users/:userName/followers", this::getUserFollowers)
+        get("/api/users/{userName}", this::getUserProfile)
+        get("/api/users/{userName}/following", this::getUserFollowing)
+        get("/api/users/{userName}/followers", this::getUserFollowers)
     }
 
     @OpenApi(

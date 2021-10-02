@@ -10,8 +10,8 @@ import io.javalin.plugin.openapi.annotations.OpenApiResponse
 
 class SongRoutes(private val songService: SongService) {
     fun register() {
-        ApiBuilder.put("/api/songs/:songId/listened", this::markSongListened)
-        ApiBuilder.delete("/api/songs/:songId/listened", this::unmarkSongListened)
+        ApiBuilder.put("/api/songs/{songId}/listened", this::markSongListened)
+        ApiBuilder.delete("/api/songs/{songId}/listened", this::unmarkSongListened)
     }
 
     @OpenApi(

@@ -22,8 +22,8 @@ class PlaylistRoutes(
     fun register() {
         get("/api/public-feed", this::getPublicFeed)
         get("/api/feed", this::getUserFeed)
-        get("/api/playlists/:userName", this::getUserPlaylist)
-        get("/api/playlists/:userName/liked", this::getUserLikesPlaylist)
+        get("/api/playlists/{userName}", this::getUserPlaylist)
+        get("/api/playlists/{userName}/liked", this::getUserLikesPlaylist)
     }
 
     @OpenApi(

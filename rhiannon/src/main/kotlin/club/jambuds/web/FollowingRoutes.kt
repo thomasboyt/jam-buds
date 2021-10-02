@@ -12,8 +12,8 @@ import io.javalin.plugin.openapi.annotations.OpenApiResponse
 
 class FollowingRoutes(private val followingService: FollowingService) {
     fun register() {
-        ApiBuilder.put("/api/following/:followName", this::followUser)
-        ApiBuilder.delete("/api/following/:followName", this::unfollowUser)
+        ApiBuilder.put("/api/following/{followName}", this::followUser)
+        ApiBuilder.delete("/api/following/{followName}", this::unfollowUser)
     }
 
     @OpenApi(

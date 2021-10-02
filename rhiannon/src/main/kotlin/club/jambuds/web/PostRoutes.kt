@@ -19,8 +19,8 @@ import io.javalin.plugin.openapi.annotations.OpenApiResponse
 class PostRoutes(private val postService: PostService, private val reportService: ReportService) {
     fun register() {
         ApiBuilder.post("/api/posts", this::createPost)
-        ApiBuilder.delete("/api/posts/:postId", this::deletePost)
-        ApiBuilder.put("/api/posts/:postId/report", this::reportPost)
+        ApiBuilder.delete("/api/posts/{postId}", this::deletePost)
+        ApiBuilder.put("/api/posts/{postId}/report", this::reportPost)
     }
 
     enum class PostItemType(@get:JsonValue val type: String) {

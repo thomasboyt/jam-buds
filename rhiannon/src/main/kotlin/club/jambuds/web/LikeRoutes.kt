@@ -14,8 +14,8 @@ import io.javalin.plugin.openapi.annotations.OpenApiResponse
 
 class LikeRoutes(private val likeService: LikeService) {
     fun register() {
-        put("/api/likes/:type/:itemId", this::createLike)
-        delete("/api/likes/:type/:itemId", this::deleteLike)
+        put("/api/likes/{type}/{itemId}", this::createLike)
+        delete("/api/likes/{type}/{itemId}", this::deleteLike)
     }
 
     @OpenApi(
