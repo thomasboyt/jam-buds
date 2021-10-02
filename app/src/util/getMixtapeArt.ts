@@ -4,7 +4,7 @@ const arts = [
   require('~/assets/mixtape_icons/cd-3.jpg'),
 ];
 
-export default function getMixtapeArt(id) {
+export default function getMixtapeArt(id: number): string {
   const artIdx = id % 3;
   return arts[artIdx];
 }

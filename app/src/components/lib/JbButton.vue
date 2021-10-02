@@ -19,6 +19,7 @@ export default Vue.extend({
   props: {
     to: {
       type: String,
+      required: false,
     },
     tag: {
       type: String,

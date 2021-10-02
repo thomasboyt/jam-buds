@@ -20,14 +20,14 @@
         <mixtape-confirm-screen
           v-if="mixtapeId"
           selected-type="song"
-          :selected-item="selectedItem"
+          :selected-item="requiredSelectedItem"
           :mixtape-id="mixtapeId"
           @finished="handleCloseModal"
         />
         <confirm-screen
           v-else
-          :selected-item="selectedItem"
-          :selected-type="selectedType"
+          :selected-item="requiredSelectedItem"
+          :selected-type="confirmType"
           @finished="handleCloseModal"
         />
       </div>
@@ -57,6 +57,7 @@ export default Vue.extend({
     },
     mixtapeId: {
       type: Number,
+      required: false,
     },
   },
 
@@ -71,6 +72,21 @@ export default Vue.extend({
   computed: {
     isOpen(): boolean {
       return this.$route.query.modal === 'new-jam';
+    },
+    requiredSelectedItem(): SelectedItem {
+      if (!this.selectedItem) {
+        throw new Error('cannot show confirm step without selected item');
+      }
+      return this.selectedItem;
+    },
+    confirmType(): 'song' | 'album' {
+      if (!this.selectedType) {
+        throw new Error('cannot show confirm step without selected type');
+      }
+      if (this.selectedType === 'mixtape') {
+        throw new Error('cannot show confirm step for mixtape');
+      }
+      return this.selectedType;
     },
   },
 

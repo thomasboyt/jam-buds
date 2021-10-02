@@ -14,14 +14,15 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue';
 import Feed from '~/components/playlists/Feed.vue';
 import PostJamButton from './PostJamButton.vue';
 import NewJamModal from './new-jam-modal/NewJamModal.vue';
 import PageHeader from './PageHeader.vue';
 import { showModal } from '~/util/modal';
 
-export default {
+export default Vue.extend({
   components: { Feed, NewJamModal, PageHeader, PostJamButton },
 
   head() {
@@ -35,5 +36,5 @@ export default {
       showModal(this.$router, this.$route, 'new-jam');
     },
   },
-};
+});
 </script>

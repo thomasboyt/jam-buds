@@ -12,16 +12,22 @@
   </jb-button>
 </template>
 
-<script>
-import JbButton from '~/components/lib/JbButton';
+<script lang="ts">
+import Vue from 'vue';
+import JbButton from '~/components/lib/JbButton.vue';
 
-export default {
+export default Vue.extend({
   components: { JbButton },
 
-  props: ['name'],
+  props: {
+    name: {
+      type: String,
+      required: true,
+    },
+  },
 
   computed: {
-    isFollowing() {
+    isFollowing(): boolean {
       return this.$accessor.currentUser.isFollowing(this.name);
     },
   },
@@ -45,7 +51,7 @@ export default {
       });
     },
   },
-};
+});
 </script>
 
 <style lang="scss" scoped>

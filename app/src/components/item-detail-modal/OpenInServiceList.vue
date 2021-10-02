@@ -86,9 +86,9 @@ export default Vue.extend({
     },
     spotifyUrl(): string {
       if (this.type === 'album') {
-        return getSpotifyAlbumUrl(this.item.spotifyId);
+        return getSpotifyAlbumUrl(this.item.spotifyId!);
       } else {
-        return getSpotifySongUrl(this.item.spotifyId);
+        return getSpotifySongUrl(this.item.spotifyId!);
       }
     },
   },

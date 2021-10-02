@@ -8,8 +8,10 @@
   </transition>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import Vue from 'vue';
+
+export default Vue.extend({
   computed: {
     activeFlashMessage() {
       return this.$accessor.flashMessage;
@@ -21,7 +23,7 @@ export default {
       this.$accessor.clearFlashMessage();
     },
   },
-};
+});
 </script>
 
 <style lang="scss" scoped>
