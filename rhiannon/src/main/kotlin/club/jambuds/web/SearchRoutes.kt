@@ -31,8 +31,8 @@ class SearchRoutes(private val searchService: SearchService) {
         )]
     )
     private fun search(ctx: Context) {
-        val query = ctx.queryParam<String>("query").get()
-        val type = ctx.queryParam<String>("type")
+        val query = ctx.queryParamAsClass<String>("query").get()
+        val type = ctx.queryParamAsClass<String>("type")
             .check(
                 { it == "song" || it == "album" },
                 "type has to be 'song' or 'album'"
@@ -60,8 +60,8 @@ class SearchRoutes(private val searchService: SearchService) {
         )]
     )
     private fun songDetails(ctx: Context) {
-        val source = ctx.queryParam<ItemSource>("source").get()
-        val key = ctx.queryParam<String>("key").get()
+        val source = ctx.queryParamAsClass<ItemSource>("source").get()
+        val key = ctx.queryParamAsClass<String>("key").get()
         val details = searchService.getSongSearchDetails(source, key)
         ctx.json(details)
     }
@@ -79,8 +79,8 @@ class SearchRoutes(private val searchService: SearchService) {
         )]
     )
     private fun albumDetails(ctx: Context) {
-        val source = ctx.queryParam<ItemSource>("source").get()
-        val key = ctx.queryParam<String>("key").get()
+        val source = ctx.queryParamAsClass<ItemSource>("source").get()
+        val key = ctx.queryParamAsClass<String>("key").get()
         val details = searchService.getAlbumSearchDetails(source, key)
         ctx.json(details)
     }

@@ -63,7 +63,7 @@ class UserRoutes(private val userService: UserService) {
         responses = [OpenApiResponse("200", [OpenApiContent(GetUserProfileResponse::class)])]
     )
     private fun getUserProfile(ctx: Context) {
-        val userName = ctx.pathParam<String>("userName").get()
+        val userName = ctx.pathParamAsClass<String>("userName").get()
         val profile = userService.getUserProfileByName(userName)
             ?: throw NotFoundResponse("User not found with name $userName")
         ctx.json(GetUserProfileResponse(userProfile = profile))
@@ -76,7 +76,7 @@ class UserRoutes(private val userService: UserService) {
         responses = [OpenApiResponse("200", [OpenApiContent(UserFollowingResponse::class)])]
     )
     private fun getUserFollowing(ctx: Context) {
-        val userName = ctx.pathParam<String>("userName").get()
+        val userName = ctx.pathParamAsClass<String>("userName").get()
         val userProfile = userService.getUserProfileByName(userName)
             ?: throw NotFoundResponse("User not found with name $userName")
 
@@ -92,7 +92,7 @@ class UserRoutes(private val userService: UserService) {
         responses = [OpenApiResponse("200", [OpenApiContent(UserFollowingResponse::class)])]
     )
     private fun getUserFollowers(ctx: Context) {
-        val userName = ctx.pathParam<String>("userName").get()
+        val userName = ctx.pathParamAsClass<String>("userName").get()
         val userProfile = userService.getUserProfileByName(userName)
             ?: throw NotFoundResponse("User not found with name $userName")
 

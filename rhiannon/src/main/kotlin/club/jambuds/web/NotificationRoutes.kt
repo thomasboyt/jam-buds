@@ -48,7 +48,7 @@ class NotificationRoutes(private val notificationService: NotificationService) {
     )
     private fun markOneRead(ctx: Context) {
         val currentUser = ctx.requireUser()
-        val notificationId = ctx.pathParam<Int>("id").get()
+        val notificationId = ctx.pathParamAsClass<Int>("id").get()
         notificationService.markOneRead(notificationId = notificationId, user = currentUser)
         ctx.status(204)
     }

@@ -80,7 +80,7 @@ class PostRoutes(private val postService: PostService, private val reportService
     )
     private fun deletePost(ctx: Context) {
         val user = ctx.requireUser()
-        val postId = ctx.pathParam<Int>("postId").get()
+        val postId = ctx.pathParamAsClass<Int>("postId").get()
         postService.deletePost(
             user,
             postId = postId
@@ -96,7 +96,7 @@ class PostRoutes(private val postService: PostService, private val reportService
     )
     private fun reportPost(ctx: Context) {
         val user = ctx.requireUser()
-        val postId = ctx.pathParam<Int>("postId").get()
+        val postId = ctx.pathParamAsClass<Int>("postId").get()
         reportService.createPostReport(user, postId)
         ctx.status(204)
     }

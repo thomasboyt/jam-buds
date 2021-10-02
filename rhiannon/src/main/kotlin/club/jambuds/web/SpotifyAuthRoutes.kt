@@ -20,16 +20,16 @@ class SpotifyAuthRoutes(private val spotifyAuthService: SpotifyAuthService) {
 
     @OpenApi(ignore = true)
     private fun redirectToSpotifyAuth(ctx: Context) {
-        val redirectPath = ctx.queryParam<String>("redirect").get()
+        val redirectPath = ctx.queryParamAsClass<String>("redirect").get()
         val uri = spotifyAuthService.getAuthorizeUri(redirectPath)
         ctx.redirect(uri.toString())
     }
 
     @OpenApi(ignore = true)
     private fun spotifyAuthCallback(ctx: Context) {
-        val state = ctx.queryParam<String>("state").get()
-        val code = ctx.queryParam<String>("code").getOrNull()
-        val error = ctx.queryParam<String>("error").getOrNull()
+        val state = ctx.queryParamAsClass<String>("state").get()
+        val code = ctx.queryParamAsClass<String>("code").allowNullable().get()
+        val error = ctx.queryParamAsClass<String>("error").allowNullable().get()
 
         fun redirectWithParams(params: String) {
             val redirectPath = spotifyAuthService.getRedirectPathForStateToken(state)
