@@ -11,6 +11,7 @@ plugins {
     id("com.google.cloud.tools.jib") version "2.5.0"
     id("org.jlleitschuh.gradle.ktlint") version "9.4.0"
     id("io.swagger.core.v3.swagger-gradle-plugin") version "2.1.6"
+    id("com.github.ben-manes.versions") version "0.39.0"
 }
 
 group = "club.jambuds"
