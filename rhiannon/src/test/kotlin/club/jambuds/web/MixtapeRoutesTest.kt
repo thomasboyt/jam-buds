@@ -4,6 +4,7 @@ import club.jambuds.AppTest
 import club.jambuds.helpers.TestDataFactories
 import club.jambuds.model.ItemSource
 import club.jambuds.model.SongWithMeta
+import club.jambuds.model.cache.SongSearchCache
 import club.jambuds.responses.FeedPlaylistResponse
 import club.jambuds.responses.GetDraftMixtapesResponse
 import club.jambuds.responses.MixtapeWithSongsReponse
@@ -109,9 +110,7 @@ class MixtapeRoutesTest : AppTest() {
         val songId = TestDataFactories.createSong(txn)
         TestDataFactories.addSongToMixtape(txn, mixtapeId = mixtapeId, songId = songId, rank = 1)
 
-        val cachedSong = TestDataFactories.createFullSongSearchCacheEntry()
-        searchCacheDao.setTrackSearchCache(ItemSource.SPOTIFY, cachedSong.spotifyId!!, cachedSong)
-
+        val cachedSong = createSearchCachedSong()
         val req = MixtapeRoutes.AddSongBody(
             source = ItemSource.SPOTIFY,
             key = cachedSong.spotifyId!!
@@ -138,9 +137,10 @@ class MixtapeRoutesTest : AppTest() {
 
     @Test
     fun `POST mixtapes_(id)_songs - prevents posts to another user's mixtapes`() {
+        val cachedSong = createSearchCachedSong()
         val req = MixtapeRoutes.AddSongBody(
             source = ItemSource.SPOTIFY,
-            key = "asdf"
+            key = cachedSong.spotifyId!!
         )
 
         assertUnauthorizedMixtapeAccess { mixtapeId ->
@@ -151,9 +151,15 @@ class MixtapeRoutesTest : AppTest() {
 
     @Test
     fun `POST mixtapes_(id)_songs - prevents posts to an already-published mixtape`() {
+        val cachedSong = createSearchCachedSong()
+        val req = MixtapeRoutes.AddSongBody(
+            source = ItemSource.SPOTIFY,
+            key = cachedSong.spotifyId!!
+        )
+
         assertCannotUpdatePublishedMixtape { mixtapeId ->
             Unirest.post("$appUrl/mixtapes/$mixtapeId/songs")
-                .body(JSONObject(mapOf("spotifyId" to "asdf")))
+                .body(objectMapper.writeValueAsString(req))
         }
     }
 
@@ -161,15 +167,27 @@ class MixtapeRoutesTest : AppTest() {
     fun `POST mixtapes_(id)_songs - prevents adding the same song multiple times to a mixtape`() {
         val jeff = TestDataFactories.createUser(txn, "jeff", true)
         val mixtapeId = TestDataFactories.createMixtape(txn, jeff.id, false)
-        val songId = TestDataFactories.createSong(txn, spotifyId = "someSongId")
+        val cachedSong = createSearchCachedSong()
+        val songId = TestDataFactories.createSong(txn, spotifyId = cachedSong.spotifyId!!)
         TestDataFactories.addSongToMixtape(txn, mixtapeId = mixtapeId, songId = songId, rank = 1)
+
+        val req = MixtapeRoutes.AddSongBody(
+            source = ItemSource.SPOTIFY,
+            key = cachedSong.spotifyId!!
+        )
 
         val authToken = TestDataFactories.createAuthToken(txn, jeff.id)
         val resp = Unirest.post("$appUrl/mixtapes/$mixtapeId/songs")
             .header("X-Auth-Token", authToken)
-            .body(JSONObject(mapOf("spotifyId" to "someSongId")))
+            .body(objectMapper.writeValueAsString(req))
             .asString()
         assertEquals(400, resp.status)
+    }
+
+    private fun createSearchCachedSong(): SongSearchCache {
+        val cachedSong = TestDataFactories.createFullSongSearchCacheEntry()
+        searchCacheDao.setTrackSearchCache(ItemSource.SPOTIFY, cachedSong.spotifyId!!, cachedSong)
+        return cachedSong
     }
 
     @Test
