@@ -24,7 +24,7 @@ repositories {
 dependencies {
     implementation(kotlin("stdlib"))
 
-    val javalinVersion = "3.12.0"
+    val javalinVersion = "4.1.0"
     implementation("io.javalin:javalin:$javalinVersion")
     implementation("io.javalin:javalin-openapi:$javalinVersion")
     implementation("com.typesafe:config:1.4.0")
