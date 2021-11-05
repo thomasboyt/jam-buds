@@ -1,4 +1,5 @@
 import './src/util/loadDotEnv';
+import { defineNuxtConfig } from '@nuxt/bridge';
 
 // url check here is to prevent proxy config during builds
 const proxyEnabled =
@@ -16,7 +17,17 @@ function getProxyConfig() {
   };
 }
 
-export default {
+export default defineNuxtConfig({
+  // bridge: {
+  //   nitro: true,
+  //   app: false,
+  //   capi: false,
+  //   transpile: true,
+  //   scriptSetup: false,
+  //   autoImports: false,
+  //   constraints: false,
+  // },
+
   srcDir: 'src/',
 
   features: {
@@ -85,7 +96,7 @@ export default {
    ** Nuxt.js modules
    */
   modules: ['@nuxtjs/sentry', '@nuxtjs/axios', '@nuxtjs/proxy'],
-  buildModules: ['@nuxt/typescript-build', 'nuxt-typed-vuex', '@nuxtjs/svg'],
+  buildModules: ['nuxt-typed-vuex', '@nuxtjs/svg'],
 
   // Note: unlike other variables, this has to be set during build time! It's
   // used for two purposes:
@@ -134,4 +145,4 @@ export default {
       };
     },
   },
-};
+});
