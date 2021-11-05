@@ -37,7 +37,7 @@ import Icon from './Icon.vue';
 import { closeModal } from '~/util/modal';
 import ModalOverlay from './ModalOverlay.vue';
 
-import closeIcon from '~/assets/close.svg';
+import closeIcon from '~/assets/close.svg?sprite';
 
 export default Vue.extend({
   components: { Icon, ModalOverlay },

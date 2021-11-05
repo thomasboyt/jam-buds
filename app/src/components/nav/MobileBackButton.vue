@@ -8,7 +8,7 @@
 import Vue from 'vue';
 import Icon from '~/components/Icon.vue';
 
-import chevronIcon from '~/assets/arrow.svg';
+import chevronIcon from '~/assets/arrow.svg?sprite';
 
 export default Vue.extend({
   components: { Icon },

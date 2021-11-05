@@ -17,7 +17,7 @@
 import Vue from 'vue';
 import Icon from '../Icon.vue';
 
-import volumeIcon from '~/assets/volume.svg';
+import volumeIcon from '~/assets/volume.svg?sprite';
 
 export default Vue.extend({
   components: { Icon },

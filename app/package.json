@@ -31,6 +31,7 @@
     "@nuxtjs/axios": "^5.13.1",
     "@nuxtjs/proxy": "^2.1.0",
     "@nuxtjs/sentry": "^5.0.3",
+    "@nuxtjs/svg": "^0.3.0",
     "@tboyt/music-kit-jwt": "^0.1.2",
     "@types/body-scroll-lock": "^3.1.0",
     "@types/cookie": "^0.4.0",
@@ -43,7 +44,7 @@
     "nuxt-typed-vuex": "^0.1.22",
     "sass": "^1.32.8",
     "sass-loader": "^10.0.1",
-    "svg-sprite-loader": "^6.0.2",
+    "svg-sprite-loader": "^6.0.11",
     "vuedraggable": "^2.24.3"
   }
 }

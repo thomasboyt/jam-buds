@@ -12,7 +12,7 @@
 import Vue from 'vue';
 import Icon from '../Icon.vue';
 
-import deleteIcon from '~/assets/close.svg';
+import deleteIcon from '~/assets/close.svg?sprite';
 
 export default Vue.extend({
   components: { Icon },

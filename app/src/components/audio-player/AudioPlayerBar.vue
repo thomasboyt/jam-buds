@@ -56,9 +56,9 @@ import AudioPlayerLikeButton from './AudioPlayerLikeButton.vue';
 import AudioPlayerVolumeBar from './AudioPlayerVolumeBar.vue';
 import { ApiSchema } from '~/api/_helpers';
 
-import playIcon from '~/assets/play-filled.svg';
-import pauseIcon from '~/assets/pause.svg';
-import nextIcon from '~/assets/next.svg';
+import playIcon from '~/assets/play-filled.svg?sprite';
+import pauseIcon from '~/assets/pause.svg?sprite';
+import nextIcon from '~/assets/next.svg?sprite';
 
 const foo: string = 'bar';
 
