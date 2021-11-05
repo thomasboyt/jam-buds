@@ -12,8 +12,8 @@ import io.javalin.plugin.openapi.annotations.OpenApiResponse
 
 class FollowingRoutes(private val followingService: FollowingService) {
     fun register() {
-        ApiBuilder.put("/api/following/:followName", this::followUser)
-        ApiBuilder.delete("/api/following/:followName", this::unfollowUser)
+        ApiBuilder.put("/api/following/{followName}", this::followUser)
+        ApiBuilder.delete("/api/following/{followName}", this::unfollowUser)
     }
 
     @OpenApi(
@@ -24,7 +24,7 @@ class FollowingRoutes(private val followingService: FollowingService) {
     )
     private fun followUser(ctx: Context) {
         val currentUser = ctx.requireUser()
-        val followName = ctx.pathParam<String>("followName").get()
+        val followName = ctx.pathParamAsClass<String>("followName").get()
         val followingUser = followingService.followUser(currentUser, followName)
         ctx.json(FollowUserResponse(followingUser))
     }
@@ -37,7 +37,7 @@ class FollowingRoutes(private val followingService: FollowingService) {
     )
     private fun unfollowUser(ctx: Context) {
         val currentUser = ctx.requireUser()
-        val followName = ctx.pathParam<String>("followName").get()
+        val followName = ctx.pathParamAsClass<String>("followName").get()
         followingService.unfollowUser(currentUser, followName)
         ctx.status(204)
     }

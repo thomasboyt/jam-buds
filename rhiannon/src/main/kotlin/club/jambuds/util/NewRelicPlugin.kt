@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse
 
 class NewRelicPlugin : Plugin {
     override fun apply(app: Javalin) {
-        val server = app.server()?.server() ?: return
+        val server = app.jettyServer()?.server() ?: return
 
         val handler = object : ServletHandler() {
             override fun doHandle(
@@ -23,7 +23,7 @@ class NewRelicPlugin : Plugin {
             ) {
                 // logic via:
                 // https://github.com/tipsy/javalin/blob/master/javalin/src/main/java/io/javalin/plugin/metrics/MicrometerPlugin.kt
-                val uri = app.servlet()
+                val uri = app.javalinServlet()
                     .matcher
                     .findEntries(HandlerType.valueOf(request.method), request.pathInfo)
                     .stream()

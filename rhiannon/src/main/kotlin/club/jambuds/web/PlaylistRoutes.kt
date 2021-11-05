@@ -22,8 +22,8 @@ class PlaylistRoutes(
     fun register() {
         get("/api/public-feed", this::getPublicFeed)
         get("/api/feed", this::getUserFeed)
-        get("/api/playlists/:userName", this::getUserPlaylist)
-        get("/api/playlists/:userName/liked", this::getUserLikesPlaylist)
+        get("/api/playlists/{userName}", this::getUserPlaylist)
+        get("/api/playlists/{userName}/liked", this::getUserLikesPlaylist)
     }
 
     @OpenApi(
@@ -97,9 +97,9 @@ class PlaylistRoutes(
     private fun getUserPlaylist(ctx: Context) {
         val currentUserId = ctx.currentUser?.id
         val timestamps = getTimestamps(ctx)
-        val onlyMixtapes = ctx.queryParam<Boolean>("onlyMixtapes").getOrNull() ?: false
+        val onlyMixtapes = ctx.queryParamAsClass<Boolean>("onlyMixtapes").allowNullable().get() ?: false
 
-        val userName = ctx.pathParam<String>("userName").get()
+        val userName = ctx.pathParamAsClass<String>("userName").get()
         val userProfile = userService.getUserProfileByName(userName)
             ?: throw NotFoundResponse("User not found with name $userName")
 
@@ -133,7 +133,7 @@ class PlaylistRoutes(
         val currentUserId = ctx.currentUser?.id
         val timestamps = getTimestamps(ctx)
 
-        val userName = ctx.pathParam<String>("userName").get()
+        val userName = ctx.pathParamAsClass<String>("userName").get()
         val userProfile = userService.getUserProfileByName(userName)
             ?: throw NotFoundResponse("User not found with name $userName")
 
@@ -155,13 +155,14 @@ class PlaylistRoutes(
     private data class Timestamps(val beforeTimestamp: Instant?, val afterTimestamp: Instant?)
 
     private fun getTimestamps(ctx: Context): Timestamps {
-        val beforeTimestamp = ctx.queryParam<Instant>("before").getOrNull()
-        val afterTimestamp = ctx.queryParam<Instant>("after")
+        val beforeTimestamp = ctx.queryParamAsClass<Instant>("before").allowNullable().get()
+        val afterTimestamp = ctx.queryParamAsClass<Instant>("after")
+            .allowNullable()
             .check(
-                { beforeTimestamp == null },
+                { it == null || beforeTimestamp == null },
                 "cannot have both 'beforeTimestamp' and 'afterTimestamp'"
             )
-            .getOrNull()
+            .get()
         return Timestamps(beforeTimestamp, afterTimestamp)
     }
 }

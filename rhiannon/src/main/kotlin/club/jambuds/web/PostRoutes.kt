@@ -19,8 +19,8 @@ import io.javalin.plugin.openapi.annotations.OpenApiResponse
 class PostRoutes(private val postService: PostService, private val reportService: ReportService) {
     fun register() {
         ApiBuilder.post("/api/posts", this::createPost)
-        ApiBuilder.delete("/api/posts/:postId", this::deletePost)
-        ApiBuilder.put("/api/posts/:postId/report", this::reportPost)
+        ApiBuilder.delete("/api/posts/{postId}", this::deletePost)
+        ApiBuilder.put("/api/posts/{postId}/report", this::reportPost)
     }
 
     enum class PostItemType(@get:JsonValue val type: String) {
@@ -80,7 +80,7 @@ class PostRoutes(private val postService: PostService, private val reportService
     )
     private fun deletePost(ctx: Context) {
         val user = ctx.requireUser()
-        val postId = ctx.pathParam<Int>("postId").get()
+        val postId = ctx.pathParamAsClass<Int>("postId").get()
         postService.deletePost(
             user,
             postId = postId
@@ -96,7 +96,7 @@ class PostRoutes(private val postService: PostService, private val reportService
     )
     private fun reportPost(ctx: Context) {
         val user = ctx.requireUser()
-        val postId = ctx.pathParam<Int>("postId").get()
+        val postId = ctx.pathParamAsClass<Int>("postId").get()
         reportService.createPostReport(user, postId)
         ctx.status(204)
     }

@@ -14,8 +14,8 @@ import io.javalin.plugin.openapi.annotations.OpenApiResponse
 
 class LikeRoutes(private val likeService: LikeService) {
     fun register() {
-        put("/api/likes/:type/:itemId", this::createLike)
-        delete("/api/likes/:type/:itemId", this::deleteLike)
+        put("/api/likes/{type}/{itemId}", this::createLike)
+        delete("/api/likes/{type}/{itemId}", this::deleteLike)
     }
 
     @OpenApi(
@@ -54,10 +54,10 @@ class LikeRoutes(private val likeService: LikeService) {
     private fun createLike(ctx: Context) {
         val currentUser = ctx.requireUser()
         val itemType = getItemType(ctx)
-        val itemId = ctx.pathParam<Int>("itemId").get()
-        val likeSource = ctx.queryParam<LikeSource>("likeSource").getOrNull()
-        val sourceMixtapeId = ctx.queryParam<Int>("sourceMixtapeId").getOrNull()
-        val sourceUserNames = ctx.queryParam<String>("sourceUserNames").getOrNull()
+        val itemId = ctx.pathParamAsClass<Int>("itemId").get()
+        val likeSource = ctx.queryParamAsClass<LikeSource>("likeSource").allowNullable().get()
+        val sourceMixtapeId = ctx.queryParamAsClass<Int>("sourceMixtapeId").allowNullable().get()
+        val sourceUserNames = ctx.queryParamAsClass<String>("sourceUserNames").allowNullable().get()
         likeService.createLike(currentUser, itemType, itemId, likeSource, sourceMixtapeId, sourceUserNames)
         ctx.status(204)
     }
@@ -79,13 +79,13 @@ class LikeRoutes(private val likeService: LikeService) {
     private fun deleteLike(ctx: Context) {
         val currentUser = ctx.requireUser()
         val itemType = getItemType(ctx)
-        val itemId = ctx.pathParam<Int>("itemId").get()
+        val itemId = ctx.pathParamAsClass<Int>("itemId").get()
         likeService.deleteLike(currentUser, itemType, itemId)
         ctx.status(204)
     }
 
     private fun getItemType(ctx: Context): ItemType {
-        val type = ctx.pathParam<String>("type").get()
+        val type = ctx.pathParamAsClass<String>("type").get()
         return when (type) {
             "songs" -> ItemType.SONG
             "mixtapes" -> ItemType.MIXTAPE

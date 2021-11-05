@@ -10,8 +10,8 @@ import io.javalin.plugin.openapi.annotations.OpenApiResponse
 
 class SongRoutes(private val songService: SongService) {
     fun register() {
-        ApiBuilder.put("/api/songs/:songId/listened", this::markSongListened)
-        ApiBuilder.delete("/api/songs/:songId/listened", this::unmarkSongListened)
+        ApiBuilder.put("/api/songs/{songId}/listened", this::markSongListened)
+        ApiBuilder.delete("/api/songs/{songId}/listened", this::unmarkSongListened)
     }
 
     @OpenApi(
@@ -22,7 +22,7 @@ class SongRoutes(private val songService: SongService) {
     )
     private fun markSongListened(ctx: Context) {
         val currentUser = ctx.requireUser()
-        val songId = ctx.pathParam<Int>("songId").get()
+        val songId = ctx.pathParamAsClass<Int>("songId").get()
         songService.markSongListened(currentUser = currentUser, songId = songId)
         ctx.status(204)
     }
@@ -35,7 +35,7 @@ class SongRoutes(private val songService: SongService) {
     )
     private fun unmarkSongListened(ctx: Context) {
         val currentUser = ctx.requireUser()
-        val songId = ctx.pathParam<Int>("songId").get()
+        val songId = ctx.pathParamAsClass<Int>("songId").get()
         songService.unmarkSongListened(currentUser = currentUser, songId = songId)
         ctx.status(204)
     }

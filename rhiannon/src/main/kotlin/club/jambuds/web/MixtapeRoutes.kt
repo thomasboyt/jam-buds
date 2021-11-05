@@ -21,14 +21,14 @@ import io.javalin.plugin.openapi.annotations.OpenApiResponse
 class MixtapeRoutes(private val mixtapeService: MixtapeService) {
     fun register() {
         ApiBuilder.post("/api/mixtapes", this::createMixtape)
-        ApiBuilder.get("/api/mixtapes/:id", this::getMixtape)
-        ApiBuilder.delete("/api/mixtapes/:id", this::deleteMixtape)
+        ApiBuilder.get("/api/mixtapes/{id}", this::getMixtape)
+        ApiBuilder.delete("/api/mixtapes/{id}", this::deleteMixtape)
 
-        ApiBuilder.post("/api/mixtapes/:mixtapeId/songs", this::addSongToMixtape)
-        ApiBuilder.delete("/api/mixtapes/:mixtapeId/songs/:songId", this::removeSongFromMixtape)
-        ApiBuilder.post("/api/mixtapes/:mixtapeId/order", this::reorderSongsInMixtape)
-        ApiBuilder.post("/api/mixtapes/:mixtapeId/title", this::renameMixtape)
-        ApiBuilder.post("/api/mixtapes/:mixtapeId/publish", this::publishMixtape)
+        ApiBuilder.post("/api/mixtapes/{mixtapeId}/songs", this::addSongToMixtape)
+        ApiBuilder.delete("/api/mixtapes/{mixtapeId}/songs/{songId}", this::removeSongFromMixtape)
+        ApiBuilder.post("/api/mixtapes/{mixtapeId}/order", this::reorderSongsInMixtape)
+        ApiBuilder.post("/api/mixtapes/{mixtapeId}/title", this::renameMixtape)
+        ApiBuilder.post("/api/mixtapes/{mixtapeId}/publish", this::publishMixtape)
 
         ApiBuilder.get("/api/draft-mixtapes", this::getDraftMixtapes)
     }
@@ -58,7 +58,7 @@ class MixtapeRoutes(private val mixtapeService: MixtapeService) {
     )
     private fun getMixtape(ctx: Context) {
         val currentUserId = ctx.currentUser?.id
-        val id = ctx.pathParam<Int>("id").get()
+        val id = ctx.pathParamAsClass<Int>("id").get()
 
         val mixtape = mixtapeService.getMixtapeById(id, currentUserId = currentUserId)
             ?: throw NotFoundResponse("Could not find mixtape with id $id")
@@ -74,7 +74,7 @@ class MixtapeRoutes(private val mixtapeService: MixtapeService) {
     )
     private fun deleteMixtape(ctx: Context) {
         val currentUser = ctx.requireUser()
-        val id = ctx.pathParam<Int>("id").get()
+        val id = ctx.pathParamAsClass<Int>("id").get()
 
         mixtapeService.deleteMixtapeById(id, currentUserId = currentUser.id)
 
@@ -95,7 +95,7 @@ class MixtapeRoutes(private val mixtapeService: MixtapeService) {
     )
     private fun addSongToMixtape(ctx: Context) {
         val currentUser = ctx.requireUser()
-        val mixtapeId = ctx.pathParam<Int>("mixtapeId").get()
+        val mixtapeId = ctx.pathParamAsClass<Int>("mixtapeId").get()
         val body = ctx.validateJsonBody(AddSongBody::class.java)
 
         val song = mixtapeService.addSongToMixtape(
@@ -119,8 +119,8 @@ class MixtapeRoutes(private val mixtapeService: MixtapeService) {
     )
     private fun removeSongFromMixtape(ctx: Context) {
         val currentUser = ctx.requireUser()
-        val mixtapeId = ctx.pathParam<Int>("mixtapeId").get()
-        val songId = ctx.pathParam<Int>("songId").get()
+        val mixtapeId = ctx.pathParamAsClass<Int>("mixtapeId").get()
+        val songId = ctx.pathParamAsClass<Int>("songId").get()
 
         mixtapeService.removeSongFromMixtape(
             mixtapeId = mixtapeId,
@@ -144,7 +144,7 @@ class MixtapeRoutes(private val mixtapeService: MixtapeService) {
     )
     private fun reorderSongsInMixtape(ctx: Context) {
         val currentUser = ctx.requireUser()
-        val mixtapeId = ctx.pathParam<Int>("mixtapeId").get()
+        val mixtapeId = ctx.pathParamAsClass<Int>("mixtapeId").get()
         val body = ctx.validateJsonBody(ReorderSongsBody::class.java)
 
         mixtapeService.reorderSongsInMixtape(
@@ -169,7 +169,7 @@ class MixtapeRoutes(private val mixtapeService: MixtapeService) {
     )
     private fun renameMixtape(ctx: Context) {
         val currentUser = ctx.requireUser()
-        val mixtapeId = ctx.pathParam<Int>("mixtapeId").get()
+        val mixtapeId = ctx.pathParamAsClass<Int>("mixtapeId").get()
         val body = ctx.validateJsonBody(RenameMixtapeBody::class.java)
 
         val newSlug = mixtapeService.renameMixtape(
@@ -189,7 +189,7 @@ class MixtapeRoutes(private val mixtapeService: MixtapeService) {
     )
     private fun publishMixtape(ctx: Context) {
         val currentUser = ctx.requireUser()
-        val mixtapeId = ctx.pathParam<Int>("mixtapeId").get()
+        val mixtapeId = ctx.pathParamAsClass<Int>("mixtapeId").get()
 
         mixtapeService.publishMixtape(mixtapeId = mixtapeId, currentUser = currentUser)
 

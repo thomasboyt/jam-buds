@@ -58,6 +58,7 @@ import club.jambuds.web.SongRoutes
 import club.jambuds.web.SpotifyAuthRoutes
 import club.jambuds.web.TwitterAuthRoutes
 import club.jambuds.web.UserRoutes
+import club.jambuds.web.extensions.logger
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
@@ -71,6 +72,7 @@ import io.javalin.core.validation.JavalinValidation
 import io.javalin.http.HttpResponseExceptionMapper
 import io.javalin.http.InternalServerErrorResponse
 import io.javalin.plugin.json.JavalinJackson
+import io.javalin.plugin.json.JsonMapper
 import io.javalin.plugin.metrics.MicrometerPlugin
 import io.javalin.plugin.openapi.OpenApiOptions
 import io.javalin.plugin.openapi.OpenApiPlugin
@@ -150,14 +152,16 @@ class Application {
                     val spanId = span.spanContext.spanId
                     // TODO: make json? figure out other ways to do structured logging?
                     if (ctx.attribute<Boolean>("hideLog") != true) {
-                        Javalin.log.info(
+                        ctx.logger.info(
                             "method=${ctx.method()} endpoint=${ctx.matchedPath()} status=${ctx.status()} url=${ctx.url()} elapsed=$ms userAgent=${ctx.userAgent()} traceId=$traceId spanId=$spanId"
                         )
                     }
                 }
+
+                val objectMapper = createObjectMapper()
+                config.jsonMapper(JavalinJackson(objectMapper))
             }
 
-            JavalinJackson.configure(createObjectMapper())
             configureValidation()
 
             app.get("/_prometheus") { ctx ->
@@ -166,7 +170,7 @@ class Application {
             }
 
             app.exception(Exception::class.java) { e, ctx ->
-                Javalin.log.error("Uncaught exception", e)
+                ctx.logger.error("Uncaught exception", e)
                 HttpResponseExceptionMapper.handle(InternalServerErrorResponse(), ctx)
             }
 
@@ -186,11 +190,8 @@ class Application {
         }
 
         fun createObjectMapper(): ObjectMapper {
-            return createObjectMapper(ObjectMapper())
-        }
-        private fun createObjectMapper(objectMapper: ObjectMapper): ObjectMapper {
             val df = SimpleDateFormat("yyyy-MM-dd'T'HH:mmX")
-            return objectMapper
+            return ObjectMapper()
                 .registerModule(KotlinModule())
                 .registerModule(JavaTimeModule())
                 .setDateFormat(df)
@@ -223,7 +224,7 @@ class Application {
             }.apply {
                 path("/swagger-docs")
                 swagger(SwaggerOptions("/swagger-ui"))
-                val om = createObjectMapper(JacksonToJsonMapper.createObjectMapperWithDefaults())
+                val om = createObjectMapper()
                 toJsonMapper(JacksonToJsonMapper(om))
                 modelConverterFactory(JacksonModelConverterFactory(om))
             }
