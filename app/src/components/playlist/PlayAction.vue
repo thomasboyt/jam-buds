@@ -11,7 +11,7 @@
 <script>
 import Icon from '../Icon.vue';
 
-const playIcon = require('~/assets/play.svg');
+import playIcon from '~/assets/play.svg';
 
 export default {
   components: { Icon },
