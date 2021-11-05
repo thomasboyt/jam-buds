@@ -7,7 +7,8 @@
 <script lang="ts">
 import Vue from 'vue';
 import Icon from '~/components/Icon.vue';
-const chevronIcon: string = require('~/assets/arrow.svg');
+
+import chevronIcon from '~/assets/arrow.svg';
 
 export default Vue.extend({
   components: { Icon },

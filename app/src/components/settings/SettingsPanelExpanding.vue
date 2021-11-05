@@ -31,7 +31,8 @@
 
 <script>
 import Icon from '../Icon';
-const arrow = require('~/assets/arrow.svg');
+
+import arrow from '~/assets/arrow.svg';
 
 export default {
   components: { Icon },

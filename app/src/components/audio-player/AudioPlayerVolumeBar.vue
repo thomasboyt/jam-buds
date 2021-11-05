@@ -17,7 +17,7 @@
 import Vue from 'vue';
 import Icon from '../Icon.vue';
 
-const volumeIcon: string = require('~/assets/volume.svg');
+import volumeIcon from '~/assets/volume.svg';
 
 export default Vue.extend({
   components: { Icon },

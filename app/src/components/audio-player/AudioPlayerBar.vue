@@ -56,9 +56,11 @@ import AudioPlayerLikeButton from './AudioPlayerLikeButton.vue';
 import AudioPlayerVolumeBar from './AudioPlayerVolumeBar.vue';
 import { ApiSchema } from '~/api/_helpers';
 
-const playIcon: string = require('~/assets/play-filled.svg');
-const pauseIcon: string = require('~/assets/pause.svg');
-const nextIcon: string = require('~/assets/next.svg');
+import playIcon from '~/assets/play-filled.svg';
+import pauseIcon from '~/assets/pause.svg';
+import nextIcon from '~/assets/next.svg';
+
+const foo: string = 'bar';
 
 export default Vue.extend({
   components: {

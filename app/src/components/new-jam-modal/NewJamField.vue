@@ -21,7 +21,8 @@
 <script lang="ts">
 import Vue from 'vue';
 import Icon from '../Icon.vue';
-const searchIcon: string = require('~/assets/search.svg');
+
+import searchIcon from '~/assets/search.svg';
 
 export default Vue.extend({
   components: { Icon },

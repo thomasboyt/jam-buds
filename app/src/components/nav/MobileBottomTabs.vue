@@ -18,10 +18,11 @@
 <script lang="ts">
 import Vue from 'vue';
 import Icon from '~/components/Icon.vue';
-const homeIcon: string = require('~/assets/home.svg');
-const profileIcon: string = require('~/assets/profile.svg');
-const globeIcon: string = require('~/assets/globe.svg');
-const settingsIcon: string = require('~/assets/settings.svg');
+
+import homeIcon from '~/assets/home.svg';
+import profileIcon from '~/assets/profile.svg';
+import globeIcon from '~/assets/globe.svg';
+import settingsIcon from '~/assets/settings.svg';
 
 interface Tab {
   name: string;

@@ -27,7 +27,7 @@ import Vue, { PropType } from 'vue'; // eslint-disable-line import/named
 import { ApiSchema } from '~/api/_helpers';
 import Icon from '../Icon.vue';
 
-const placeholderIcon: string = require('~/assets/record.svg');
+import placeholderIcon from '~/assets/record.svg';
 
 export default Vue.extend({
   components: {

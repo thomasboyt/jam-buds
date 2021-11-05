@@ -18,8 +18,8 @@ import { ApiSchema } from '~/api/_helpers';
 import Icon from '../Icon.vue';
 type SongWithMeta = ApiSchema<'SongWithMeta'>;
 
-const heartOpenIcon: string = require('~/assets/heart_open.svg');
-const heartFilledIcon: string = require('~/assets/heart_filled.svg');
+import heartOpenIcon from '~/assets/heart_open.svg';
+import heartFilledIcon from '~/assets/heart_filled.svg';
 
 export default Vue.extend({
   components: { Icon },

@@ -13,7 +13,8 @@
 <script lang="ts">
 import Vue from 'vue';
 import Icon from '../Icon.vue';
-const notificationsIcon: string = require('~/assets/bell.svg');
+
+import notificationsIcon from '~/assets/bell.svg';
 
 export default Vue.extend({
   components: { Icon },
