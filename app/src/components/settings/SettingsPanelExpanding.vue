@@ -32,7 +32,7 @@
 <script>
 import Icon from '../Icon';
 
-import arrow from '~/assets/arrow.svg';
+import arrow from '~/assets/arrow.svg?sprite';
 
 export default {
   components: { Icon },

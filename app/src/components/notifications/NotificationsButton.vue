@@ -14,7 +14,7 @@
 import Vue from 'vue';
 import Icon from '../Icon.vue';
 
-import notificationsIcon from '~/assets/bell.svg';
+import notificationsIcon from '~/assets/bell.svg?sprite';
 
 export default Vue.extend({
   components: { Icon },

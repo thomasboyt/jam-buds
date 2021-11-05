@@ -15,8 +15,8 @@
 <script>
 import Icon from '../Icon.vue';
 
-import albumPlaceholderIcon from '~/assets/record.svg';
-import playIcon from '~/assets/play-filled.svg';
+import albumPlaceholderIcon from '~/assets/record.svg?sprite';
+import playIcon from '~/assets/play-filled.svg?sprite';
 
 export default {
   components: { Icon },

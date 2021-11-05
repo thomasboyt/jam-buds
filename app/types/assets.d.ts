@@ -8,7 +8,7 @@ declare module '*.jpg' {
   export default value;
 }
 
-declare module '*.svg' {
+declare module '*.svg?sprite' {
   const value: string;
   export default value;
 }

@@ -37,7 +37,7 @@ import SongRemoveFromMixtapeAction from './SongRemoveFromMixtapeAction.vue';
 import Icon from '../Icon.vue';
 import ItemDetailModal from '../item-detail-modal/ItemDetailModal.vue';
 
-import dragIcon from '~/assets/menu.svg';
+import dragIcon from '~/assets/menu.svg?sprite';
 
 export default Vue.extend({
   components: {

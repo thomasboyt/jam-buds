@@ -16,8 +16,8 @@
 <script>
 import Icon from '../Icon.vue';
 
-import heartOpenIcon from '~/assets/heart_open.svg';
-import heartFilledIcon from '~/assets/heart_filled.svg';
+import heartOpenIcon from '~/assets/heart_open.svg?sprite';
+import heartFilledIcon from '~/assets/heart_filled.svg?sprite';
 
 export default {
   components: { Icon },

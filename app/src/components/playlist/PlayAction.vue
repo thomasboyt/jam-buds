@@ -11,7 +11,7 @@
 <script>
 import Icon from '../Icon.vue';
 
-import playIcon from '~/assets/play.svg';
+import playIcon from '~/assets/play.svg?sprite';
 
 export default {
   components: { Icon },

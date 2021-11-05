@@ -19,10 +19,10 @@
 import Vue from 'vue';
 import Icon from '~/components/Icon.vue';
 
-import homeIcon from '~/assets/home.svg';
-import profileIcon from '~/assets/profile.svg';
-import globeIcon from '~/assets/globe.svg';
-import settingsIcon from '~/assets/settings.svg';
+import homeIcon from '~/assets/home.svg?sprite';
+import profileIcon from '~/assets/profile.svg?sprite';
+import globeIcon from '~/assets/globe.svg?sprite';
+import settingsIcon from '~/assets/settings.svg?sprite';
 
 interface Tab {
   name: string;

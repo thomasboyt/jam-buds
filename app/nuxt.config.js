@@ -76,7 +76,6 @@ export default {
    */
   plugins: [
     '~/plugins/axios',
-    '~/plugins/spriteExtract',
     '~/plugins/logError',
     '~/plugins/appleMusicToken.server.js',
     '~/plugins/attachFromStateToRoutes',
@@ -85,13 +84,8 @@ export default {
   /*
    ** Nuxt.js modules
    */
-  modules: [
-    '@nuxtjs/sentry',
-    '@nuxtjs/axios',
-    '@nuxtjs/proxy',
-    '~modules/spriteInject',
-  ],
-  buildModules: ['@nuxt/typescript-build', 'nuxt-typed-vuex'],
+  modules: ['@nuxtjs/sentry', '@nuxtjs/axios', '@nuxtjs/proxy'],
+  buildModules: ['@nuxt/typescript-build', 'nuxt-typed-vuex', '@nuxtjs/svg'],
 
   // Note: unlike other variables, this has to be set during build time! It's
   // used for two purposes:
@@ -133,16 +127,6 @@ export default {
      ** You can extend webpack config here
      */
     extend(config, { loaders }) {
-      removeExistingSvgRule(config);
-
-      config.module.rules.push({
-        test: /assets\/(.*)\.svg$/,
-        loader: 'svg-sprite-loader',
-        options: {
-          esModule: false,
-        },
-      });
-
       config.devtool = '#source-map';
 
       loaders.vue.compilerOptions = {
@@ -151,26 +135,3 @@ export default {
     },
   },
 };
-
-// Borrowed from https://github.com/nuxt-community/svg-module/blob/master/lib/module.js
-function removeExistingSvgRule(config) {
-  const ORIGINAL_TEST = /\.(png|jpe?g|gif|svg|webp|avif)$/i;
-  const REPLACEMENT_TEST = /\.(png|jpe?g|gif|webp|avif)$/i;
-
-  const rules = config.module.rules;
-
-  // Remove any original svg rules
-  const svgRules = rules.filter((rule) => rule.test.test('.svg'));
-
-  for (const rule of svgRules) {
-    if (
-      rule.test.source !== ORIGINAL_TEST.source &&
-      rule.test.source !== REPLACEMENT_TEST.source
-    ) {
-      throw new Error(
-        "nuxt-svg: Unexpected '.svg' rule in the webpack configuration"
-      );
-    }
-    rule.test = REPLACEMENT_TEST;
-  }
-}

@@ -22,7 +22,7 @@
 import Vue from 'vue';
 import Icon from '../Icon.vue';
 
-import searchIcon from '~/assets/search.svg';
+import searchIcon from '~/assets/search.svg?sprite';
 
 export default Vue.extend({
   components: { Icon },
